@@ -1,0 +1,648 @@
+// Package dashboard provides an embedded HTTP dashboard for k8ops.
+// It serves a single-page web UI and REST APIs for querying diagnostics,
+// remediations, optimizations, and cluster health.
+package dashboard
+
+import (
+	"context"
+	"embed"
+	"encoding/json"
+	"fmt"
+	"io/fs"
+	"log/slog"
+	"net/http"
+	"os"
+	"sort"
+	"strconv"
+	"strings"
+	"time"
+
+	aiv1alpha1 "github.com/ggai/k8ops/api/v1alpha1"
+	"github.com/ggai/k8ops/internal/audit"
+	"github.com/ggai/k8ops/internal/auth"
+	"github.com/ggai/k8ops/internal/chat"
+	_ "github.com/ggai/k8ops/internal/metrics" // register Prometheus metrics (promauto)
+	"github.com/ggai/k8ops/internal/providermanager"
+	"github.com/ggai/k8ops/internal/tools/k8s"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+)
+
+//go:embed web/*
+var webFS embed.FS
+
+// Server is the dashboard HTTP server.
+type Server struct {
+	k8sClient     client.Client
+	clientset     *kubernetes.Clientset
+	restConfig    *rest.Config
+	scheme        *runtime.Scheme
+	auditLog      *audit.Logger
+	chatEngine    *chat.Engine
+	providerMgr   *providermanager.Manager
+	k8sClientTool *k8s.KubeClient
+	cache         *responseCache
+	auth              *auth.Authenticator
+	log               *slog.Logger
+	server            *http.Server
+	corsAllowedOrigins []string
+	tlsCert           string
+	tlsKey            string
+}
+
+// New creates a new dashboard server.
+func New(k8sClient client.Client, config *rest.Config, scheme *runtime.Scheme, auditLog *audit.Logger, log *slog.Logger) (*Server, error) {
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create clientset: %w", err)
+	}
+	kubeClient, err := k8s.NewKubeClientFromConfig(config)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create kube client: %w", err)
+	}
+	allowedOrigins := parseCORSOrigins(os.Getenv("CORS_ALLOWED_ORIGINS"))
+	if len(allowedOrigins) > 0 {
+		log.Info("CORS: allowed origins configured", "origins", allowedOrigins)
+	} else {
+		log.Info("CORS: no allowed origins configured (same-origin only)")
+	}
+
+	return &Server{
+		k8sClient:          k8sClient,
+		clientset:          clientset,
+		restConfig:         config,
+		scheme:             scheme,
+		auditLog:           auditLog,
+		k8sClientTool:      kubeClient,
+		cache:              newResponseCache(10 * time.Minute),
+		log:                log,
+		corsAllowedOrigins: allowedOrigins,
+	}, nil
+}
+
+// Start starts the dashboard HTTP server.
+// If TLS cert and key files are configured (via DASHBOARD_TLS_CERT/DASHBOARD_TLS_KEY
+// env vars or SetTLS), the server uses HTTPS; otherwise it falls back to plain HTTP.
+func (s *Server) Start(addr string) error {
+	mux := http.NewServeMux()
+
+	// Serve embedded frontend
+	webRoot, err := fs.Sub(webFS, "web")
+	if err != nil {
+		return fmt.Errorf("failed to get web subfs: %w", err)
+	}
+	mux.Handle("/", http.FileServer(http.FS(webRoot)))
+
+	// API routes
+	mux.HandleFunc("/api/health", s.handleHealth)
+	mux.HandleFunc("/api/version", s.handleVersion)
+	mux.HandleFunc("/api/cluster/overview", s.cacheMiddleware(30*time.Second, s.handleClusterOverview))
+	mux.HandleFunc("/api/diagnostics", s.handleDiagnostics)
+	mux.HandleFunc("/api/diagnostics/history", s.handleDiagnosticsHistory) // must be before catch-all
+	mux.HandleFunc("/api/diagnostics/", s.handleDiagnosticDetail)
+	mux.HandleFunc("/api/remediations", s.handleRemediations)
+	mux.HandleFunc("/api/remediation/", s.handleRemediationAction)
+	mux.HandleFunc("/api/optimizations", s.handleOptimizations)
+	mux.HandleFunc("/api/config", s.handleConfig)
+	mux.HandleFunc("/api/nodes", s.cacheMiddleware(30*time.Second, s.handleNodes))
+	mux.HandleFunc("/api/events", s.handleEvents)
+	mux.HandleFunc("/api/audit", s.handleAudit)
+	mux.HandleFunc("/api/audit/stats", s.handleAuditStats)
+	mux.HandleFunc("/api/audit/events", s.handleAuditEvents)
+	mux.HandleFunc("/api/audit/events/", s.handleAuditEventDetail)
+	mux.HandleFunc("/api/pods", s.cacheMiddleware(30*time.Second, s.handlePods))
+	mux.HandleFunc("/api/chat", s.handleChat)
+	mux.HandleFunc("/api/chat/conversations", s.handleConversations)
+	mux.HandleFunc("/api/provider/status", s.handleProviderStatus)
+	mux.HandleFunc("/api/provider/update", s.handleProviderUpdate)
+	mux.HandleFunc("/api/provider/reload", s.handleProviderReload)
+	mux.HandleFunc("/api/tools", s.handleToolList)
+
+	// Resource browser + drill-down
+	mux.HandleFunc("/api/nodes/", s.handleNodePods)           // /api/nodes/{node}/pods
+	mux.HandleFunc("/api/pods/", s.handlePodActions)          // /api/pods/{ns}/{name}/logs|exec|containers
+	mux.HandleFunc("/api/resources", s.cacheMiddleware(60*time.Second, s.handleResources))        // 1min cache
+	mux.HandleFunc("/api/crds", s.cacheMiddleware(10*time.Minute, s.handleCRDs))                  // 10min cache (expensive with_counts)
+	mux.HandleFunc("/api/crd-resources", s.cacheMiddleware(60*time.Second, s.handleCRDResources)) // 1min cache
+	mux.HandleFunc("/api/yaml", s.handleYAML)                  // view YAML of any resource
+
+	// Cost / FinOps
+	mux.HandleFunc("/api/cost/summary", s.cacheMiddleware(60*time.Second, s.handleCostSummary))                       // 1min cache
+	mux.HandleFunc("/api/cost/recommendations", s.cacheMiddleware(60*time.Second, s.handleCostRecommendations))       // 1min cache
+
+	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
+	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))
+
+	// Slack webhook — admin-only endpoint
+	mux.Handle("/api/webhooks/slack", s.adminOnlyMiddleware(s.handleSlackWebhook))
+
+	// Auth routes
+	if s.auth != nil {
+		s.auth.RegisterRoutes(mux)
+	}
+
+	// RBAC management routes (admin only)
+	s.registerRBACRoutes(mux)
+
+	// Wrap all routes with auth middleware (if enabled)
+	// Order: AuthMiddleware (validates JWT, sets user) → ImpersonationMiddleware (creates per-user K8s client) → mux
+	var handler http.Handler = mux
+	if s.auth != nil {
+		handler = s.auth.Middleware(s.ImpersonationMiddleware(mux))
+	}
+
+	s.server = &http.Server{
+		Addr:         addr,
+		Handler:      s.securityHeadersMiddleware(s.corsMiddleware(handler)),
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 300 * time.Second, // long for SSE chat streaming
+	}
+
+	// TLS support: use HTTPS if cert/key are configured
+	if s.tlsCert != "" && s.tlsKey != "" {
+		s.log.Info("starting dashboard with TLS", "address", addr, "cert", s.tlsCert)
+		return s.server.ListenAndServeTLS(s.tlsCert, s.tlsKey)
+	}
+
+	s.log.Info("starting dashboard", "address", addr, "tls", false)
+	return s.server.ListenAndServe()
+}
+
+// SetChatEngine injects the chat engine (called after provider is ready).
+func (s *Server) SetChatEngine(engine *chat.Engine) {
+	s.chatEngine = engine
+}
+
+// SetProviderManager injects the provider manager.
+func (s *Server) SetProviderManager(mgr *providermanager.Manager) {
+	s.providerMgr = mgr
+}
+
+// SetAuthenticator injects the authenticator (enables login).
+func (s *Server) SetAuthenticator(a *auth.Authenticator) {
+	s.auth = a
+}
+
+// SetTLS configures TLS for the dashboard server.
+// If both cert and key are non-empty, the server will use HTTPS.
+func (s *Server) SetTLS(cert, key string) {
+	s.tlsCert = cert
+	s.tlsKey = key
+}
+
+// IsTLS returns true if TLS is configured.
+func (s *Server) IsTLS() bool {
+	return s.tlsCert != "" && s.tlsKey != ""
+}
+
+// localOnlyMiddleware restricts access to requests from localhost (127.0.0.1, ::1).
+// Used for /metrics which should only be scraped by Prometheus from inside the cluster.
+func (s *Server) localOnlyMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		host := r.RemoteAddr
+		// Strip port: handle both "IP:port" and "[IPv6]:port" formats
+		if strings.HasPrefix(host, "[") {
+			// IPv6 format: [::1]:port → strip after last ]
+			if idx := strings.LastIndex(host, "]"); idx > 0 {
+				host = host[1:idx] // remove brackets
+			}
+		} else if idx := strings.LastIndex(host, ":"); idx > 0 {
+			host = host[:idx]
+		}
+		if host != "127.0.0.1" && host != "::1" && host != "localhost" {
+			http.Error(w, `{"error":"forbidden: metrics endpoint is accessible from localhost only"}`, http.StatusForbidden)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+// adminOnlyMiddleware requires the authenticated user to have the "admin" role.
+func (s *Server) adminOnlyMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		user := auth.UserFromRequest(r)
+		if user == nil || user.Role != "admin" {
+			writeError(w, 403, "admin role required")
+			return
+		}
+		next(w, r)
+	}
+}
+
+// Stop gracefully shuts down the server.
+func (s *Server) Stop(ctx context.Context) error {
+	return s.server.Shutdown(ctx)
+}
+
+func (s *Server) corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Only set CORS headers when the request Origin matches the allowlist.
+		// When no origins are configured (default), no CORS headers are emitted,
+	// meaning the dashboard is same-origin only — the secure default.
+		origin := r.Header.Get("Origin")
+		if origin != "" && s.isOriginAllowed(origin) {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.Header().Set("Vary", "Origin") // cache correctly per origin
+		}
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+// isOriginAllowed reports whether the given origin is in the configured allowlist.
+func (s *Server) isOriginAllowed(origin string) bool {
+	for _, allowed := range s.corsAllowedOrigins {
+		if allowed == origin {
+			return true
+		}
+	}
+	return false
+}
+
+// parseCORSOrigins parses a comma-separated list of origins from the
+// CORS_ALLOWED_ORIGINS environment variable (e.g.
+// "https://k8ops.iot2.win,https://k8ops.example.com").
+func parseCORSOrigins(raw string) []string {
+	if strings.TrimSpace(raw) == "" {
+		return nil
+	}
+	parts := strings.Split(raw, ",")
+	var origins []string
+	for _, p := range parts {
+		o := strings.TrimSpace(p)
+		if o != "" {
+			origins = append(origins, o)
+		}
+	}
+	return origins
+}
+
+func writeJSON(w http.ResponseWriter, data any) {
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		slog.Error("failed to write JSON response", "error", err)
+	}
+}
+
+func writeError(w http.ResponseWriter, code int, msg string) {
+	w.WriteHeader(code)
+	writeJSON(w, map[string]string{"error": msg})
+}
+
+// writeK8sError inspects a K8s API error and writes the appropriate HTTP status.
+// Forbidden -> 403, Unauthorized -> 401, NotFound -> 404, else -> 500.
+func writeK8sError(w http.ResponseWriter, err error) {
+	if err == nil {
+		writeError(w, 500, "unknown error")
+		return
+	}
+	errStr := err.Error()
+	if strings.Contains(errStr, "forbidden") {
+		writeError(w, 403, extractK8sErrMessage(errStr))
+		return
+	}
+	if strings.Contains(errStr, "unauthorized") {
+		writeError(w, 401, "unauthorized")
+		return
+	}
+	if strings.Contains(errStr, "not found") || strings.Contains(errStr, "NotFound") {
+		writeError(w, 404, errStr)
+		return
+	}
+	writeError(w, 500, errStr)
+}
+
+// extractK8sErrMessage extracts the human-readable message from a K8s status error.
+func extractK8sErrMessage(s string) string {
+	// K8s errors look like: "deployments.apps is forbidden: User \"nsviewer1\" cannot list ..."
+	// We want the full message as it's useful for the user
+	return s
+}
+
+// --- Handlers ---
+
+func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, map[string]any{"status": "ok", "time": time.Now().Format(time.RFC3339)})
+}
+
+// handleVersion is defined in middleware.go.
+
+func (s *Server) handleClusterOverview(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	rc := s.clientsFromReq(r)
+	overview := map[string]any{}
+
+	// Node count and status
+	nodes, err := rc.clientset.CoreV1().Nodes().List(ctx, metav1.ListOptions{})
+	if err == nil {
+		ready, notReady := 0, 0
+		for _, n := range nodes.Items {
+			isReady := false
+			for _, c := range n.Status.Conditions {
+				if c.Type == corev1.NodeReady {
+					isReady = c.Status == corev1.ConditionTrue
+				}
+			}
+			if isReady {
+				ready++
+			} else {
+				notReady++
+			}
+		}
+		overview["nodes"] = map[string]any{"total": len(nodes.Items), "ready": ready, "notReady": notReady}
+	}
+
+	// Namespace count
+	nss, err := rc.clientset.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
+	if err == nil {
+		overview["namespaces"] = len(nss.Items)
+	}
+
+	// Diagnostic reports
+	diagList := &aiv1alpha1.DiagnosticReportList{}
+	if err := rc.ctrlClient.List(ctx, diagList); err == nil {
+		byPhase := map[string]int{}
+		for _, d := range diagList.Items {
+			phase := d.Status.Phase
+			if phase == "" {
+				phase = "Pending"
+			}
+			byPhase[phase]++
+		}
+		overview["diagnostics"] = map[string]any{"total": len(diagList.Items), "byPhase": byPhase}
+	}
+
+	// Remediation plans
+	remList := &aiv1alpha1.RemediationPlanList{}
+	if err := rc.ctrlClient.List(ctx, remList); err == nil {
+		byPhase := map[string]int{}
+		for _, r := range remList.Items {
+			phase := r.Status.Phase
+			if phase == "" {
+				phase = "Pending"
+			}
+			byPhase[phase]++
+		}
+		overview["remediations"] = map[string]any{"total": len(remList.Items), "byPhase": byPhase}
+	}
+
+	// Recent warnings
+	events, err := rc.clientset.CoreV1().Events("").List(ctx, metav1.ListOptions{
+		FieldSelector: "type=Warning",
+		Limit:         100,
+	})
+	if err == nil {
+		overview["recentWarnings"] = len(events.Items)
+	}
+
+	// Version info
+	info, err := rc.clientset.Discovery().ServerVersion()
+	if err == nil {
+		overview["clusterVersion"] = info.GitVersion
+	}
+
+	writeJSON(w, overview)
+}
+
+func (s *Server) handleConfig(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	rc := s.clientsFromReq(r)
+	list := &aiv1alpha1.K8opsConfigList{}
+	if err := rc.ctrlClient.List(ctx, list); err != nil {
+		writeK8sError(w, err)
+		return
+	}
+	if len(list.Items) == 0 {
+		writeJSON(w, map[string]any{"configured": false})
+		return
+	}
+	cfg := list.Items[0]
+	writeJSON(w, map[string]any{
+		"configured":         true,
+		"name":               cfg.Name,
+		"provider":           cfg.Spec.Provider.Type,
+		"model":              cfg.Spec.Provider.Model,
+		"autoRemediation":    cfg.Spec.AutoRemediation.Enabled,
+		"maxRiskLevel":       cfg.Spec.AutoRemediation.MaxRiskLevel,
+		"dryRun":             cfg.Spec.AutoRemediation.DryRun,
+	})
+}
+
+func (s *Server) handleNodes(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	rc := s.clientsFromReq(r)
+	nodes, err := rc.clientset.CoreV1().Nodes().List(ctx, metav1.ListOptions{})
+	if err != nil {
+		writeK8sError(w, err)
+		return
+	}
+
+	type nodeInfo struct {
+		Name       string            `json:"name"`
+		Status     string            `json:"status"`
+		Role       string            `json:"role"`
+		Version    string            `json:"version"`
+		CPU        string            `json:"cpu"`
+		Memory     string            `json:"memory"`
+		OS         string            `json:"os"`
+		Arch       string            `json:"arch"`
+		Conditions map[string]string `json:"conditions"`
+	}
+
+	results := make([]nodeInfo, 0, len(nodes.Items))
+	for _, n := range nodes.Items {
+		info := nodeInfo{
+			Name:    n.Name,
+			Status:  "Ready",
+			Version: n.Status.NodeInfo.KubeletVersion,
+			OS:      n.Status.NodeInfo.OperatingSystem,
+			Arch:    n.Status.NodeInfo.Architecture,
+			CPU:     n.Status.Allocatable.Cpu().String(),
+			Memory:  n.Status.Allocatable.Memory().String(),
+			Conditions: make(map[string]string),
+		}
+		for _, c := range n.Status.Conditions {
+			info.Conditions[string(c.Type)] = string(c.Status)
+			if c.Type == corev1.NodeReady && c.Status == corev1.ConditionFalse {
+				info.Status = "NotReady"
+			}
+		}
+		for k := range n.Labels {
+			if strings.HasPrefix(k, "node-role.kubernetes.io/") {
+				info.Role = strings.TrimPrefix(k, "node-role.kubernetes.io/")
+			}
+		}
+		if info.Role == "" {
+			info.Role = "worker"
+		}
+		results = append(results, info)
+	}
+
+	// Sort by name
+	sort.Slice(results, func(i, j int) bool {
+		return results[i].Name < results[j].Name
+	})
+
+	writeJSON(w, map[string]any{"count": len(results), "items": results})
+}
+
+func (s *Server) handleEvents(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	rc := s.clientsFromReq(r)
+	namespace := r.URL.Query().Get("namespace")
+	warning := r.URL.Query().Get("warning") == "true"
+	limit := 50
+
+	fieldSelector := ""
+	if warning {
+		fieldSelector = "type=Warning"
+	}
+
+	var events *corev1.EventList
+	var err error
+	if namespace != "" {
+		events, err = rc.clientset.CoreV1().Events(namespace).List(ctx, metav1.ListOptions{
+			FieldSelector: fieldSelector,
+			Limit:         int64(limit),
+		})
+	} else {
+		events, err = rc.clientset.CoreV1().Events("").List(ctx, metav1.ListOptions{
+			FieldSelector: fieldSelector,
+			Limit:         int64(limit),
+		})
+	}
+	if err != nil {
+		writeK8sError(w, err)
+		return
+	}
+
+	type eventInfo struct {
+		Type      string `json:"type"`
+		Reason    string `json:"reason"`
+		Message   string `json:"message"`
+		Object    string `json:"object"`
+		Namespace string `json:"namespace"`
+		Count     int32  `json:"count"`
+		LastTime  string `json:"lastTime"`
+	}
+
+	results := make([]eventInfo, 0, len(events.Items))
+	for _, e := range events.Items {
+		results = append(results, eventInfo{
+			Type:      e.Type,
+			Reason:    e.Reason,
+			Message:   truncate(e.Message, 300),
+			Object:    fmt.Sprintf("%s/%s", e.InvolvedObject.Kind, e.InvolvedObject.Name),
+			Namespace: e.InvolvedObject.Namespace,
+			Count:     e.Count,
+			LastTime:  e.LastTimestamp.Format(time.RFC3339),
+		})
+	}
+
+	// Sort by last seen time, newest first
+	sort.Slice(results, func(i, j int) bool {
+		return results[i].LastTime > results[j].LastTime
+	})
+
+	writeJSON(w, map[string]any{"count": len(results), "items": results})
+}
+
+func truncate(s string, max int) string {
+	if len(s) <= max {
+		return s
+	}
+	return s[:max] + "..."
+}
+
+// parseInt parses an integer from a string, returning fallback on error.
+func parseInt(s string, fallback int) int {
+	if s == "" {
+		return fallback
+	}
+	n, err := strconv.Atoi(s)
+	if err != nil {
+		return fallback
+	}
+	return n
+}
+
+// userName extracts the current user's name from the request, falling back to "unknown".
+func userName(r *http.Request) string {
+	u := auth.UserFromRequest(r)
+	if u == nil {
+		return "unknown"
+	}
+	return u.Username
+}
+
+// --- Pods endpoint (lightweight listing) ---
+
+func (s *Server) handlePods(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	rc := s.clientsFromReq(r)
+	namespace := r.URL.Query().Get("namespace")
+	fieldSelector := ""
+
+	pods, err := rc.clientset.CoreV1().Pods(namespace).List(ctx, metav1.ListOptions{FieldSelector: fieldSelector, Limit: 200})
+	if err != nil {
+		writeK8sError(w, err)
+		return
+	}
+
+	type podInfo struct {
+		Name       string `json:"name"`
+		Namespace  string `json:"namespace"`
+		Phase      string `json:"phase"`
+		Node       string `json:"node"`
+		Restarts   int32  `json:"restarts"`
+		Age        string `json:"age"`
+	}
+
+	results := make([]podInfo, 0, len(pods.Items))
+	for _, p := range pods.Items {
+		restarts := int32(0)
+		for _, c := range p.Status.ContainerStatuses {
+			restarts += c.RestartCount
+		}
+		results = append(results, podInfo{
+			Name: p.Name, Namespace: p.Namespace,
+			Phase: string(p.Status.Phase), Node: p.Spec.NodeName,
+			Restarts: restarts,
+			Age:      formatDuration(time.Since(p.CreationTimestamp.Time)),
+		})
+	}
+
+	// Sort by namespace, then name
+	sort.Slice(results, func(i, j int) bool {
+		if results[i].Namespace != results[j].Namespace {
+			return results[i].Namespace < results[j].Namespace
+		}
+		return results[i].Name < results[j].Name
+	})
+
+	writeJSON(w, map[string]any{"count": len(results), "items": results})
+}
+
+func formatDuration(d time.Duration) string {
+	if d > 24*time.Hour {
+		return fmt.Sprintf("%.0fd", d.Hours()/24)
+	}
+	if d > time.Hour {
+		return fmt.Sprintf("%.0fh", d.Hours())
+	}
+	return fmt.Sprintf("%.0fm", d.Minutes())
+}
+
+// Slack webhook handler moved to handlers_slack.go
+

@@ -1,0 +1,192 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.21.0
+  name: remediationplans.aiops.ggai.dev
+spec:
+  group: "aiops.ggai.dev"
+  names:
+    kind: RemediationPlan
+    listKind: RemediationPlanList
+    plural: remediationplans
+    singular: remediationplan
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: RemediationPlan is the Schema for the remediationplans API.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: RemediationPlanSpec defines the desired state of RemediationPlan.
+            properties:
+              actions:
+                description: Actions to execute.
+                items:
+                  description: RemediationAction defines a single remediation action.
+                  properties:
+                    command:
+                      description: Command for runCommand actions (runs on the node).
+                      type: string
+                    description:
+                      description: Description of the action.
+                      type: string
+                    manifest:
+                      description: Manifest YAML for createResource/applyManifest.
+                      type: string
+                    patch:
+                      description: Patch is JSON merge patch for patchResource/adjustResource.
+                      type: string
+                    replicas:
+                      description: Replicas for scaleResource.
+                      format: int32
+                      type: integer
+                    risk:
+                      description: Risk level.
+                      enum:
+                      - low
+                      - medium
+                      - high
+                      - critical
+                      type: string
+                    target:
+                      description: Target resource for resource actions.
+                      properties:
+                        apiVersion:
+                          type: string
+                        kind:
+                          type: string
+                        name:
+                          type: string
+                        namespace:
+                          type: string
+                      type: object
+                    timeout:
+                      description: Timeout for the action.
+                      type: string
+                    type:
+                      description: Type of action.
+                      enum:
+                      - patchResource
+                      - scaleResource
+                      - restartPod
+                      - deleteResource
+                      - runCommand
+                      - cordonNode
+                      - uncordonNode
+                      - drainNode
+                      - cleanImages
+                      - cleanLogs
+                      - adjustResource
+                      - createResource
+                      - applyManifest
+                      type: string
+                  required:
+                  - description
+                  - risk
+                  - type
+                  type: object
+                type: array
+              diagnosticRef:
+                description: DiagnosticRef references the DiagnosticReport that triggered
+                  this remediation.
+                type: string
+              mode:
+                default: auto
+                description: 'Mode: auto, manual, dry-run.'
+                enum:
+                - auto
+                - manual
+                - dry-run
+                type: string
+              rollbackOnFailure:
+                default: true
+                description: RollbackOnFailure rolls back all actions if any fails.
+                type: boolean
+            required:
+            - actions
+            type: object
+          status:
+            description: RemediationPlanStatus defines the observed state of RemediationPlan.
+            properties:
+              completedAt:
+                description: CompletedAt timestamp.
+                format: date-time
+                type: string
+              phase:
+                description: 'Phase: Pending, Approved, Executing, Completed, Failed,
+                  Rollback.'
+                enum:
+                - Pending
+                - Approved
+                - Executing
+                - Completed
+                - Failed
+                - RolledBack
+                type: string
+              results:
+                description: Results for each action.
+                items:
+                  description: ActionResult records the outcome of an action.
+                  properties:
+                    executedAt:
+                      description: ExecutedAt timestamp.
+                      format: date-time
+                      type: string
+                    index:
+                      description: Index of the action in the plan.
+                      type: integer
+                    message:
+                      description: Message with details.
+                      type: string
+                    rollbackData:
+                      description: RollbackData stores pre-action state for rollback.
+                      type: string
+                    status:
+                      description: 'Status: Pending, Executing, Success, Failed, Skipped,
+                        RolledBack.'
+                      enum:
+                      - Pending
+                      - Executing
+                      - Success
+                      - Failed
+                      - Skipped
+                      - RolledBack
+                      type: string
+                  required:
+                  - index
+                  - status
+                  type: object
+                type: array
+              startedAt:
+                description: StartedAt timestamp.
+                format: date-time
+                type: string
+              summary:
+                description: Summary message.
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

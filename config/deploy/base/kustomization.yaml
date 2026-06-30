@@ -1,0 +1,41 @@
+# kustomization.yaml — base layer
+# Usage:
+#   kubectl apply -k config/deploy/
+#
+# To customize domain/issuer, create an overlay:
+#   kubectl apply -k config/deploy/overlays/prod/
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: k8ops
+namespace: k8ops-system
+
+resources:
+- namespace.yaml
+- serviceaccount.yaml
+- rbac-roles.yaml
+- rbac-impersonation.yaml
+- secret.yaml
+- deployment.yaml
+- service.yaml
+- ingress.yaml
+- pvc.yaml
+
+configMapGenerator:
+- name: k8ops-config
+  literals:
+  - PROVIDER_TYPE=openai
+  - PROVIDER_MODEL=gpt-4o
+  - PROVIDER_ENDPOINT=https://api.openai.com/v1
+  - cors-allowed-origins=
+  - provider-rate-limit-rpm=0
+  - debug=false
+
+# Shared labels
+commonLabels:
+  app.kubernetes.io/name: k8ops
+  app.kubernetes.io/managed-by: kustomize
+
+images:
+- name: ghcr.io/ggai/k8ops
+  newTag: latest

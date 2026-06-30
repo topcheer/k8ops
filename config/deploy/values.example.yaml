@@ -1,0 +1,152 @@
+# values.example.yaml — k8ops configuration reference
+#
+# Copy to values.yaml and customize for your environment.
+# Environment variables take precedence over these values.
+#
+# Usage with Kustomize:
+#   Edit config/deploy/base/kustomization.yaml configMapGenerator literals
+#   to match your values, then: kubectl apply -k config/deploy/
+#
+# Secrets should be stored in Kubernetes Secrets, not in this file.
+#   kubectl create secret generic k8ops-auth \
+#     --from-literal=jwt-secret="$(openssl rand -base64 32)" \
+#     -n k8ops-system
+
+# ============================================================================
+# Core: AI Provider
+# ============================================================================
+provider:
+  type: openai              # Provider type: openai, anthropic, gemini
+  model: gpt-4o             # AI model name (leave empty for provider default)
+                            #   openai: gpt-4o, gpt-4o-mini, o3-mini, etc.
+                            #   anthropic: claude-3-5-sonnet-20241022, etc.
+                            #   gemini: gemini-2.0-flash, etc.
+  endpoint: ""              # Custom AI API endpoint
+                            #   openai: https://api.openai.com/v1
+                            #   anthropic: https://api.anthropic.com/v1
+                            #   gemini: https://generativelanguage.googleapis.com/v1beta
+  api_key: ""               # API key (store in Secret as AIOPS_API_KEY, not here)
+  rate_limit_rpm: 60        # Max AI API requests per minute (0 = unlimited)
+
+# ============================================================================
+# Core: Cost Estimation
+# ============================================================================
+cost:
+  cloud_provider: default   # Cloud provider preset for cost estimation
+                            #   aws:   CPU $31/core/mo, RAM $4/GB/mo
+                            #   azure: CPU $27/core/mo, RAM $3.2/GB/mo
+                            #   gcp:   CPU $26/core/mo, RAM $3.3/GB/mo
+                            #   default: CPU $28/core/mo, RAM $3.5/GB/mo
+  cpu_price: ""             # Override CPU price per core (USD/month)
+                            #   Takes precedence over cloud_provider preset
+                            #   Env: K8OPS_CPU_PRICE
+  ram_price: ""             # Override RAM price per GB (USD/month)
+                            #   Takes precedence over cloud_provider preset
+                            #   Env: K8OPS_RAM_PRICE
+
+# ============================================================================
+# Security: Authentication
+# ============================================================================
+auth:
+  jwt_secret: ""            # JWT signing secret (generate: openssl rand -base64 32)
+                            #   Store in k8ops-auth Secret as jwt-secret
+  jwt_expiry: 24h           # JWT token expiry duration (e.g. 1h, 8h, 24h, 7d)
+  db_path: /data/k8ops.db   # SQLite database file path
+  db_driver: sqlite         # Database driver: sqlite, postgres
+  db_dsn: ""                # Database DSN (required when driver=postgres)
+                            #   Example: postgres://user:pass@host:5432/k8ops?sslmode=disable
+  default_role: viewer      # Default role for auto-provisioned OIDC/LDAP users
+                            #   Roles: admin, operator, viewer, ns-admin, ns-viewer
+
+# ============================================================================
+# Security: CORS (Cross-Origin Resource Sharing)
+# ============================================================================
+cors:
+  # Comma-separated list of allowed origins for browser access.
+  # Required when dashboard is accessed from a different domain than the API.
+  # Example: https://k8ops.example.com,https://k8ops.internal.net
+  # When empty (default): same-origin only (no CORS headers emitted).
+  allowed_origins: ""
+
+# ============================================================================
+# Security: TLS (Dashboard HTTPS)
+# ============================================================================
+dashboard_tls:
+  cert_path: /data/tls/tls.crt  # TLS certificate file path (empty for plaintext HTTP)
+                                #   Mount cert via k8ops-dashboard-tls Secret
+  key_path: /data/tls/tls.key   # TLS private key path (empty for plaintext HTTP)
+
+# ============================================================================
+# Security: Deployment Security Context
+# ============================================================================
+daemonset:
+  privileged: true          # Run with privileged securityContext (DaemonSet only)
+                            #   Required for nsenter host access
+  host_pid: true            # Access host PID namespace (DaemonSet only)
+  host_network: true        # Access host network for diagnostics (DaemonSet only)
+
+# ============================================================================
+# AI Provider: Notifications
+# ============================================================================
+notifications:
+  slack_webhook_url: ""     # Slack incoming webhook URL for alerts
+                            #   Store in k8ops-notifications Secret as slack-webhook-url
+                            #   Leave empty to disable Slack notifications
+
+# ============================================================================
+# Observability: Audit Log
+# ============================================================================
+audit:
+  log_path: ""              # Audit log file path
+                            #   Default: /tmp/k8ops-audit.log
+                            #   Env: K8OPS_AUDIT_LOG
+
+# ============================================================================
+# Observability: Controller
+# ============================================================================
+controller:
+  metrics_address: :8080        # Prometheus metrics server bind address
+  health_probe_address: :8081   # Health/readiness probe server bind address
+  leader_election: false        # Enable leader election for HA control plane
+                                #   Not needed for DaemonSet mode (one pod per node)
+  disable_event_collector: false # Disable automatic event-triggered diagnostics
+
+# ============================================================================
+# Observability: Dashboard
+# ============================================================================
+dashboard:
+  address: :9090            # Dashboard HTTP server listen address
+
+# ============================================================================
+# Kubernetes Deployment
+# ============================================================================
+deployment:
+  image: ghcr.io/ggai/k8ops:latest  # Container image registry/repo:tag
+                                         #   Override in overlay: config/deploy/overlays/*/kustomization.yaml
+  image_pull_policy: IfNotPresent        # Always, IfNotPresent, Never
+  replicas: 1                            # Number of pod replicas (Deployment mode)
+                                         #   DaemonSet mode runs one pod per node
+  namespace: k8ops-system                # Kubernetes namespace for all k8ops resources
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+
+  # Persistent storage for SQLite DB and audit logs (Deployment mode)
+  storage: 1Gi
+  storage_class: ""         # StorageClass name (empty = cluster default)
+
+  # Service type for the dashboard
+  service_type: ClusterIP   # ClusterIP, NodePort, LoadBalancer
+
+  # Ingress configuration
+  ingress:
+    host: k8ops.example.com   # Dashboard ingress hostname
+                              #   Override in overlay: config/deploy/overlays/*/kustomization.yaml
+    tls_secret: k8ops-dashboard-tls  # TLS secret name (managed by cert-manager)
+    issuer: letsencrypt        # cert-manager ClusterIssuer name
+    ingress_class: traefik     # IngressClass name (traefik, nginx, etc.)

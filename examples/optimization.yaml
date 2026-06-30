@@ -1,0 +1,15 @@
+# Example: Resource optimization analysis
+apiVersion: aiops.ggai.dev/v1alpha1
+kind: OptimizationSuggestion
+metadata:
+  name: resource-optimization-2024-01
+  namespace: default
+spec:
+  scope:
+    type: namespace
+    namespace: production
+  categories:
+  - resource
+  - cost
+  - performance
+  window: 7d

@@ -1,0 +1,19 @@
+# Example: Remediation plan
+apiVersion: aiops.ggai.dev/v1alpha1
+kind: RemediationPlan
+metadata:
+  name: fix-memory-limit
+  namespace: default
+spec:
+  mode: auto
+  actions:
+  - type: patchResource
+    description: "Increase memory limit from 256Mi to 512Mi"
+    risk: low
+    target:
+      apiVersion: apps/v1
+      kind: Deployment
+      namespace: default
+      name: api-server
+    patch: '{"spec":{"template":{"spec":{"containers":[{"name":"api","resources":{"limits":{"memory":"512Mi"}}}]}}}}'
+  rollbackOnFailure: true

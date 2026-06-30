@@ -1,0 +1,155 @@
+# k8ops DaemonSet deployment (parameterized)
+# Runs on every node with cluster-admin privileges to manage both
+# Kubernetes resources and the host node directly.
+#
+# Env vars are sourced from ConfigMap/Secret references (same as deployment.yaml).
+# Override defaults via the k8ops-config ConfigMap or k8s Secrets.
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: k8ops
+  namespace: k8ops-system
+  labels:
+    app.kubernetes.io/name: k8ops
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: k8ops
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: k8ops
+    spec:
+      serviceAccountName: k8ops
+      tolerations:
+      - operator: Exists  # Run on ALL nodes including tainted ones
+      hostPID: true        # Required for nsenter to access host namespace
+      hostNetwork: true    # Access host network for diagnostics
+      containers:
+      - name: k8ops
+        image: ghcr.io/ggai/k8ops:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: AIOPS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: k8ops-credentials
+              key: api-key
+              optional: true
+        - name: AUTH_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: k8ops-auth
+              key: jwt-secret
+              optional: true
+        # CORS: comma-separated list of allowed origins
+        - name: CORS_ALLOWED_ORIGINS
+          valueFrom:
+            configMapRef:
+              name: k8ops-config
+              key: cors-allowed-origins
+              optional: true
+        # Slack notifications: incoming webhook URL for alerting
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: k8ops-notifications
+              key: slack-webhook-url
+              optional: true
+        # Dashboard TLS: paths to cert/key files for HTTPS (mounted via secret)
+        - name: DASHBOARD_TLS_CERT
+          value: /data/tls/tls.crt
+        - name: DASHBOARD_TLS_KEY
+          value: /data/tls/tls.key
+        # AI provider rate limiting (requests per minute, 0 = unlimited)
+        - name: PROVIDER_RATE_LIMIT_RPM
+          valueFrom:
+            configMapRef:
+              name: k8ops-config
+              key: provider-rate-limit-rpm
+              optional: true
+        # DEBUG: enable verbose logging ("true" / "false", default: false)
+        - name: DEBUG
+          valueFrom:
+            configMapRef:
+              name: k8ops-config
+              key: debug
+              optional: true
+        # Auth database path (per-node SQLite via emptyDir)
+        - name: AUTH_DB_PATH
+          value: /data/k8ops.db
+        envFrom:
+        - configMapRef:
+            name: k8ops-config
+            optional: true
+        command:
+        - /manager
+        args:
+        - --metrics-bind-address=:8080
+        - --health-probe-bind-address=:8081
+        - --dashboard-address=:9090
+        ports:
+        - containerPort: 8080
+          name: metrics
+          protocol: TCP
+        - containerPort: 8081
+          name: health
+          protocol: TCP
+        - containerPort: 9090
+          name: dashboard
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        securityContext:
+          privileged: true  # Required for host access via nsenter
+          readOnlyRootFilesystem: false
+        volumeMounts:
+        - name: host-root
+          mountPath: /host
+          readOnly: true
+        - name: var-run
+          mountPath: /var/run
+        - name: audit-log
+          mountPath: /var/log/k8ops
+        - name: data
+          mountPath: /data
+        - name: tls
+          mountPath: /data/tls
+          readOnly: true
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: host-root
+        hostPath:
+          path: /
+          type: Directory
+      - name: var-run
+        hostPath:
+          path: /var/run
+      - name: audit-log
+        hostPath:
+          path: /var/log/k8ops
+          type: DirectoryOrCreate
+      - name: data
+        hostPath:
+          path: /var/lib/k8ops
+          type: DirectoryOrCreate
+      - name: tls
+        secret:
+          secretName: k8ops-dashboard-tls
+          optional: true

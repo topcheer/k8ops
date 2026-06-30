@@ -1,0 +1,47 @@
+# Production overlay
+# Customizes: domain, TLS issuer, image tag
+# Base layer uses k8ops.example.com; this overlay overrides with the real domain
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: k8ops-prod
+
+namespace: k8ops-system
+
+resources:
+- ../../base
+
+# Override domain and TLS via patches
+patches:
+- target:
+    kind: Ingress
+    name: k8ops-dashboard
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: k8ops.iot2.win
+    - op: replace
+      path: /spec/tls/0/hosts/0
+      value: k8ops.iot2.win
+    - op: replace
+      path: /spec/tls/0/secretName
+      value: k8ops-dashboard-tls
+    - op: replace
+      path: /metadata/annotations/cert-manager.io~1cluster-issuer
+      value: letsencrypt
+
+# Override image tag for production
+images:
+- name: ghcr.io/ggai/k8ops
+  newTag: v3.0
+
+configMapGenerator:
+- name: k8ops-config
+  behavior: merge
+  literals:
+  - PROVIDER_TYPE=openai
+  - PROVIDER_MODEL=gpt-4o
+  - PROVIDER_ENDPOINT=https://api.openai.com/v1
+
+# Add extra domains by creating another overlay with patches above.
+# Example: change host to k8ops.example.com, add extra TLS hosts.

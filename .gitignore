@@ -1,0 +1,40 @@
+# Binaries
+bin/
+/manager
+*.exe
+*.test
+*.out
+dist/
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# ggcode runtime data
+.ggcode/
+
+# Secrets / Environment (NEVER commit)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+secrets/
+
+# Local deployment overlay customizations
+# The "local" overlay is a template — copies for personal use are ignored
+config/deploy/overlays/local/custom-*
+
+# Test coverage
+coverage.out
+coverage.html
+*.cover

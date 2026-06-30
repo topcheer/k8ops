@@ -1,0 +1,19 @@
+# Example: Manual diagnostic request
+apiVersion: aiops.ggai.dev/v1alpha1
+kind: DiagnosticReport
+metadata:
+  name: manual-check-001
+  namespace: default
+spec:
+  trigger:
+    type: manual
+    resourceRef:
+      apiVersion: v1
+      kind: Pod
+      namespace: default
+      name: my-app-pod
+    eventMessage: "User requested manual diagnostic"
+  analysis:
+    defaultDepth: deep
+    includeLogs: true
+    includeEvents: true

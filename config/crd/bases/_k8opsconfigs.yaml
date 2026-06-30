@@ -1,0 +1,256 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.21.0
+  name: k8opsconfigs.aiops.ggai.dev
+spec:
+  group: "aiops.ggai.dev"
+  names:
+    kind: K8opsConfig
+    listKind: K8opsConfigList
+    plural: k8opsconfigs
+    singular: k8opsconfig
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: |-
+          K8opsConfig is the Schema for the k8opsconfigs API.
+          It defines the global configuration for the k8ops AI operator.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: K8opsConfigSpec defines the desired state of K8opsConfig.
+            properties:
+              analysis:
+                description: Analysis configures diagnostic analysis behavior.
+                properties:
+                  defaultDepth:
+                    default: standard
+                    description: DefaultDepth sets the default analysis depth.
+                    enum:
+                    - quick
+                    - standard
+                    - deep
+                    type: string
+                  includeEvents:
+                    default: true
+                    description: IncludeEvents includes Kubernetes events in analysis.
+                    type: boolean
+                  includeLogs:
+                    default: true
+                    description: IncludeLogs includes pod logs in analysis.
+                    type: boolean
+                  includeMetrics:
+                    default: false
+                    description: IncludeMetrics includes Prometheus metrics in analysis
+                      (if available).
+                    type: boolean
+                  maxConcurrency:
+                    default: 3
+                    description: MaxConcurrency limits parallel AI analyses.
+                    type: integer
+                  timeout:
+                    default: 120s
+                    description: Timeout for a single analysis request.
+                    type: string
+                type: object
+              autoRemediation:
+                description: AutoRemediation configures auto-remediation behavior.
+                properties:
+                  dryRun:
+                    default: false
+                    description: DryRun runs remediation in simulation mode without
+                      actual changes.
+                    type: boolean
+                  enabled:
+                    default: true
+                    description: Enabled controls whether auto-remediation is active.
+                    type: boolean
+                  maxConcurrentRemediations:
+                    default: 5
+                    description: MaxConcurrentRemediations limits parallel remediation
+                      executions.
+                    type: integer
+                  maxRiskLevel:
+                    default: medium
+                    description: |-
+                      MaxRiskLevel is the maximum risk level that can be auto-applied.
+                      low = only safe operations, medium = moderate changes, high = any operation.
+                    enum:
+                    - low
+                    - medium
+                    - high
+                    - critical
+                    type: string
+                  namespaceAllowList:
+                    description: |-
+                      NamespaceAllowList restricts auto-remediation to specific namespaces.
+                      Empty means all namespaces.
+                    items:
+                      type: string
+                    type: array
+                  namespaceDenyList:
+                    description: NamespaceDenyList prevents auto-remediation in specific
+                      namespaces.
+                    items:
+                      type: string
+                    type: array
+                type: object
+              notifications:
+                description: Notifications configures alerting channels.
+                properties:
+                  prometheusAlerting:
+                    default: true
+                    description: Enable Prometheus alerting rules.
+                    type: boolean
+                  slack:
+                    description: Slack webhook URL secret reference.
+                    properties:
+                      channel:
+                        type: string
+                      webhookSecretRef:
+                        description: SecretKeySelector selects a key from a Secret.
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                        required:
+                        - name
+                        type: object
+                    type: object
+                  webhookUrl:
+                    description: Generic webhook URL for notifications.
+                    type: string
+                type: object
+              provider:
+                description: Provider configures the AI LLM backend.
+                properties:
+                  apiKeySecretRef:
+                    description: APIKeySecretRef references a Secret containing the
+                      API key.
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                    - name
+                    type: object
+                  endpoint:
+                    description: |-
+                      Endpoint overrides the default API endpoint.
+                      Use this to point to a compatible vendor (e.g. Azure OpenAI, DeepSeek, etc.).
+                    type: string
+                  maxTokens:
+                    default: 4096
+                    description: MaxTokens limits the response length.
+                    type: integer
+                  model:
+                    description: Model is the model name to use (e.g. gpt-4o, claude-3-5-sonnet,
+                      gemini-1.5-pro).
+                    type: string
+                  temperature:
+                    default: 0.1
+                    description: Temperature controls randomness (0.0 - 2.0).
+                    type: number
+                  type:
+                    description: |-
+                      Type is the provider standard: openai, anthropic, or gemini.
+                      Any vendor compatible with these standards can be used.
+                    enum:
+                    - openai
+                    - anthropic
+                    - gemini
+                    type: string
+                required:
+                - model
+                - type
+                type: object
+              safety:
+                description: Safety defines guardrails for AI actions.
+                properties:
+                  allowedOperations:
+                    description: AllowedOperations whitelist of operation types the
+                      AI can perform.
+                    items:
+                      type: string
+                    type: array
+                  deniedOperations:
+                    description: DeniedOperations blacklist of operation types the
+                      AI cannot perform.
+                    items:
+                      type: string
+                    type: array
+                  maxActionsPerRemediation:
+                    default: 10
+                    description: MaxActionsPerRemediation limits the number of actions
+                      in a single remediation.
+                    type: integer
+                  protectedResources:
+                    description: ProtectedResources are resources that should never
+                      be modified.
+                    items:
+                      description: ResourceRef references a Kubernetes resource.
+                      properties:
+                        apiVersion:
+                          type: string
+                        kind:
+                          type: string
+                        name:
+                          type: string
+                        namespace:
+                          type: string
+                      type: object
+                    type: array
+                type: object
+            required:
+            - provider
+            type: object
+          status:
+            description: K8opsConfigStatus reflects the observed state of K8opsConfig.
+            properties:
+              activeProvider:
+                description: ActiveProvider shows the currently active provider.
+                type: string
+              diagnosticsCount:
+                description: DiagnosticsCount is total diagnostics performed.
+                format: int64
+                type: integer
+              lastSync:
+                description: LastSync is the last time the config was synced.
+                format: date-time
+                type: string
+              ready:
+                description: Ready indicates the operator is operational.
+                type: boolean
+              remediationsCount:
+                description: RemediationsCount is total remediations executed.
+                format: int64
+                type: integer
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>k8ops Dashboard</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="layout">
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h1>k8ops</h1>
+    <span class="version" id="version">Kubernetes AI Operations</span>
+  </div>
+  <div class="sidebar-nav">
+    <button class="active" onclick="showTab('overview', this)"><span class="nav-icon">&#9632;</span><span>Overview</span></button>
+    <button onclick="showTab('diagnostics', this)"><span class="nav-icon">&#9888;</span><span>Diagnostics</span></button>
+    <button onclick="showTab('remediations', this)"><span class="nav-icon">&#9881;</span><span>Remediations</span></button>
+    <button onclick="showTab('optimizations', this)"><span class="nav-icon">&#9650;</span><span>Optimizations</span></button>
+    <button onclick="showTab('cost', this)"><span class="nav-icon">&#36;</span><span>Cost</span></button>
+    <button onclick="showTab('nodes', this)"><span class="nav-icon">&#9678;</span><span>Nodes</span></button>
+    <button onclick="showTab('events', this)"><span class="nav-icon">&#9888;</span><span>Events</span></button>
+    <button onclick="showTab('pods', this)"><span class="nav-icon">&#9635;</span><span>Pods</span></button>
+    <button onclick="showTab('resources', this)"><span class="nav-icon">&#10010;</span><span>Resources</span></button>
+    <button onclick="showTab('crds', this)"><span class="nav-icon">&#9881;</span><span>CRDs</span></button>
+    <button onclick="showTab('audit', this)"><span class="nav-icon">&#9776;</span><span>Audit</span></button>
+    <button onclick="showTab('rbac', this)" id="rbacTabBtn" style="display:none;"><span class="nav-icon">&#128274;</span><span>Access Control</span></button>
+    <button onclick="openChatOverlay()"><span class="nav-icon">&#128172;</span><span>Chat</span></button>
+    <button onclick="showTab('settings', this)"><span class="nav-icon">&#9881;</span><span>Settings</span></button>
+  </div>
+  <div class="sidebar-footer">
+    <div id="userMenu" class="sidebar-user">
+      <div class="user-info">
+        <div class="user-name" id="userInfo"></div>
+        <div id="userRole"></div>
+      </div>
+      <button onclick="logout()" class="logout-btn">Logout</button>
+    </div>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="top-bar">
+    <div></div>
+    <div class="last-update" id="lastUpdate"></div>
+  </div>
+
+  <!-- Overview -->
+  <div id="tab-overview">
+    <div class="refresh-bar">
+      <div class="section-title">Cluster Overview</div>
+      <button onclick="loadOverview()">Refresh</button>
+    </div>
+    <div id="overviewCards"></div>
+    <div id="overviewDetails" class="detail-panel" style="margin-top:16px;"></div>
+    <div id="costPanel" style="margin-top:16px;"></div>
+  </div>
+
+  <!-- Diagnostics -->
+  <div id="tab-diagnostics" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">Diagnostic Reports</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <label style="font-size:12px;color:#8b949e;">Status:</label>
+        <select id="diagStatusFilter" onchange="loadDiagnostics()" class="form-input" style="width:140px;">
+          <option value="">All</option>
+          <option value="Pending">Pending</option>
+          <option value="Running">Running</option>
+          <option value="Completed">Completed</option>
+          <option value="Failed">Failed</option>
+        </select>
+        <button onclick="loadDiagnostics()">Refresh</button>
+      </div>
+    </div>
+    <div id="diagnosticsTable"><div class="loading">Loading...</div></div>
+  </div>
+
+  <!-- Remediations -->
+  <div id="tab-remediations" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">Remediation Plans</div>
+      <button onclick="loadRemediations()">Refresh</button>
+    </div>
+    <div id="remediationsTable"><div class="loading">Loading...</div></div>
+  </div>
+
+  <!-- Optimizations -->
+  <div id="tab-optimizations" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">Optimization Reports</div>
+      <button onclick="loadOptimizations()">Refresh</button>
+    </div>
+    <div id="optimizationsTable"><div class="loading">Loading...</div></div>
+  </div>
+
+  <!-- Cost / FinOps -->
+  <div id="tab-cost" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">Cost &amp; FinOps</div>
+      <button onclick="loadCost()">Refresh</button>
+    </div>
+    <div id="costSummaryCards" class="cards"></div>
+    <div id="costNamespaces" style="margin-top:16px;"></div>
+    <div id="costRecommendations" style="margin-top:16px;"></div>
+  </div>
+
+  <!-- Nodes -->
+  <div id="tab-nodes" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">Cluster Nodes</div>
+      <button onclick="loadNodes()">Refresh</button>
+    </div>
+    <div id="nodesTable"><div class="loading">Loading...</div></div>
+  </div>
+
+  <!-- Events -->
+  <div id="tab-events" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">Recent Events</div>
+      <button onclick="loadEvents()">Refresh</button>
+    </div>
+    <div id="eventsTable"><div class="loading">Loading...</div></div>
+  </div>
+
+  <!-- Pods -->
+  <div id="tab-pods" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">Pod Browser</div>
+      <button onclick="loadPods()">Refresh</button>
+    </div>
+    <div id="podsTable"><div class="loading">Loading...</div></div>
+  </div>
+
+  <!-- Resources -->
+  <div id="tab-resources" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">Resource Browser</div>
+      <button onclick="loadResources()">Refresh</button>
+    </div>
+    <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-end;">
+      <div style="flex:1;min-width:200px;">
+        <label style="display:block;font-size:12px;color:#8b949e;margin-bottom:4px;">Kind</label>
+        <select id="resKind" onchange="loadResources()" class="form-input">
+          <option value="deployments">Deployments</option>
+          <option value="services">Services</option>
+          <option value="pods">Pods</option>
+          <option value="configmaps">ConfigMaps</option>
+          <option value="secrets">Secrets</option>
+          <option value="ingresses">Ingresses</option>
+          <option value="pvc">PersistentVolumeClaims</option>
+          <option value="pv">PersistentVolumes</option>
+          <option value="storageclasses">StorageClasses</option>
+          <option value="daemonsets">DaemonSets</option>
+          <option value="statefulsets">StatefulSets</option>
+          <option value="jobs">Jobs</option>
+          <option value="cronjobs">CronJobs</option>
+          <option value="hpa">HorizontalPodAutoscalers</option>
+          <option value="serviceaccounts">ServiceAccounts</option>
+          <option value="roles">Roles</option>
+          <option value="rolebindings">RoleBindings</option>
+          <option value="clusterrolebindings">ClusterRoleBindings</option>
+          <option value="networkpolicies">NetworkPolicies</option>
+        </select>
+      </div>
+      <div style="flex:2;min-width:300px;position:relative;" id="nsDropdown">
+        <label style="display:block;font-size:12px;color:#8b949e;margin-bottom:4px;">Namespaces</label>
+        <button onclick="toggleNsDropdown()" type="button" class="form-input" style="text-align:left;display:flex;justify-content:space-between;align-items:center;">
+          <span id="nsDisplayText">All Namespaces</span>
+          <span style="font-size:12px;color:#8b949e;">&#9662;</span>
+        </button>
+        <div id="nsCheckboxList" style="display:none;position:absolute;top:100%;left:0;right:0;max-height:300px;overflow-y:auto;background:#161b22;border:1px solid #30363d;border-radius:6px;z-index:10;margin-top:4px;">
+          <input type="text" id="nsSearch" placeholder="Search namespaces..." oninput="filterNsList()" class="form-input" style="margin:8px;border-radius:6px;">
+          <div id="nsCheckboxes"></div>
+        </div>
+      </div>
+    </div>
+    <div id="resourcesTable"><div class="loading">Select kind and namespace to browse resources</div></div>
+  </div>
+
+  <!-- CRDs -->
+  <div id="tab-crds" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">Custom Resource Definitions</div>
+      <button onclick="loadCRDs()">Refresh</button>
+    </div>
+    <input type="text" id="crdFilter" placeholder="Search CRDs by name, group, or kind..." class="form-input" style="margin-bottom:16px;" oninput="filterCRDs()">
+    <div id="crdList"><div class="loading">Loading...</div></div>
+    <div id="crdDetail" style="display:none;">
+      <div class="refresh-bar">
+        <div class="section-title" id="crdDetailTitle">CRD Instances</div>
+        <button onclick="loadCRDs()" class="btn-secondary">Back</button>
+      </div>
+      <div id="crdResourcesTable"><div class="loading">Loading...</div></div>
+    </div>
+  </div>
+
+  <!-- Audit -->
+  <div id="tab-audit" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">Audit Log</div>
+      <button onclick="loadAudit()">Refresh</button>
+    </div>
+    <div id="auditStats" style="margin-bottom:16px;"></div>
+    <div id="auditTable"><div class="loading">Loading...</div></div>
+  </div>
+
+  <!-- Settings -->
+  <div id="tab-settings" class="hidden">
+    <div class="settings-grid">
+      <div class="detail-panel">
+        <h3>Current Status</h3>
+        <div id="providerStatus"></div>
+      </div>
+      <div class="detail-panel">
+        <h3>Update Provider (Hot-Reload)</h3>
+        <p style="color:#8b949e;font-size:13px;margin-bottom:16px;">Changes take effect immediately without restart.</p>
+        <div class="form-row"><label>Provider Type</label>
+          <select id="cfgType" class="form-input">
+            <option value="openai">OpenAI</option>
+            <option value="anthropic">Anthropic</option>
+            <option value="gemini">Gemini</option>
+          </select>
+        </div>
+        <div class="form-row"><label>Model</label>
+          <input type="text" id="cfgModel" class="form-input" placeholder="gpt-4o / claude-3-5-sonnet-20241022 / gemini-1.5-pro">
+        </div>
+        <div class="form-row"><label>API Key</label>
+          <input type="password" id="cfgApiKey" class="form-input" placeholder="sk-...">
+        </div>
+        <div class="form-row"><label>Endpoint (optional)</label>
+          <input type="text" id="cfgEndpoint" class="form-input" placeholder="https://api.openai.com/v1">
+        </div>
+        <button onclick="updateProvider()" class="btn-primary">Apply &amp; Hot-Reload</button>
+      </div>
+      <div class="detail-panel">
+        <h3>Active Conversations</h3>
+        <div id="convList"></div>
+      </div>
+      <div class="detail-panel">
+        <h3>User Account</h3>
+        <div id="accountInfo" style="color:#8b949e;font-size:13px;"></div>
+        <button onclick="logout()" class="btn-secondary" style="margin-top:12px;">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Access Control (RBAC) -->
+  <div id="tab-rbac" class="hidden">
+    <div class="settings-grid">
+      <div class="detail-panel" style="grid-column:1/-1;">
+        <div class="refresh-bar">
+          <h3>Users</h3>
+          <button onclick="showCreateUserForm()" class="btn-primary">+ New Local User</button>
+        </div>
+        <div id="userCreateForm" style="display:none;margin-bottom:20px;padding:20px;background:#0d1117;border-radius:8px;border:1px solid #30363d;">
+          <div style="margin-bottom:12px;padding:8px 12px;background:#1f6feb1a;border-radius:6px;color:#58a6ff;font-size:13px;">Creating a <b>Local User</b>. LDAP/OIDC users are auto-created on first login.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-row"><label>Username *</label>
+              <input type="text" id="newUsername" class="form-input" placeholder="jdoe"></div>
+            <div class="form-row"><label>Password *</label>
+              <input type="password" id="newPassword" class="form-input" placeholder="initial password"></div>
+            <div class="form-row"><label>Email</label>
+              <input type="text" id="newEmail" class="form-input" placeholder="jdoe@example.com"></div>
+            <div class="form-row"><label>Display Name</label>
+              <input type="text" id="newDisplayName" class="form-input" placeholder="John Doe"></div>
+            <div class="form-row"><label>Role</label>
+              <select id="newRole" class="form-input" onchange="toggleNsField()">
+                <option value="viewer">Viewer (cluster-wide read)</option>
+                <option value="operator">Operator (cluster-wide edit)</option>
+                <option value="admin">Admin (full access)</option>
+                <option value="ns-viewer">Namespace Viewer (read specific namespaces)</option>
+                <option value="ns-admin">Namespace Admin (edit specific namespaces)</option>
+              </select></div>
+            <div class="form-row" id="newNsRow" style="display:none;"><label>Allowed Namespaces</label>
+              <input type="text" id="newNamespaces" class="form-input" placeholder="default, kube-system, dev"></div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:8px;">
+            <button onclick="createUser()" class="btn-primary">Create</button>
+            <button onclick="hideCreateUserForm()" class="btn-secondary">Cancel</button>
+          </div>
+        </div>
+        <div id="userList" style="margin-top:8px;"><div class="loading">Loading...</div></div>
+      </div>
+      <!-- Role Mapping: k8ops role → K8s ClusterRole binding -->
+      <div class="detail-panel" style="grid-column:1/-1;">
+        <div class="refresh-bar">
+          <h3>Role Mapping (k8ops Role → K8s ClusterRole)</h3>
+          <button onclick="loadRoleMappings()" class="btn-secondary">Refresh</button>
+        </div>
+        <div style="margin-bottom:12px;color:#8b949e;font-size:13px;">配置 k8ops 内置角色绑定到哪个 K8s ClusterRole，修改后点击 Save 生效。</div>
+        <div id="roleMappingList"><div class="loading">Loading...</div></div>
+      </div>
+
+      <!-- ClusterRole Management -->
+      <div class="detail-panel" style="grid-column:1/-1;">
+        <div class="refresh-bar">
+          <h3>Cluster Roles</h3>
+          <button onclick="showCreateRoleForm()" class="btn-primary">+ New ClusterRole</button>
+        </div>
+        <div id="roleCreateForm" style="display:none;margin-bottom:20px;padding:20px;background:#0d1117;border-radius:8px;border:1px solid #30363d;">
+          <div style="margin-bottom:12px;padding:8px 12px;background:#1f6feb1a;border-radius:6px;color:#58a6ff;font-size:13px;">输入名称创建角色，创建后点击 <b>Edit Rules</b> 通过可视化编辑器配置权限。</div>
+          <div class="form-row"><label>Name *</label>
+            <input type="text" id="newRoleName" class="form-input" placeholder="k8ops:my-custom-role"></div>
+          <div style="margin-top:16px;display:flex;gap:8px;">
+            <button onclick="createClusterRole()" class="btn-primary">Create</button>
+            <button onclick="hideCreateRoleForm()" class="btn-secondary">Cancel</button>
+          </div>
+        </div>
+        <div id="clusterRoleList" style="margin-top:8px;"><div class="loading">Loading...</div></div>
+      </div>
+
+      <!-- Namespace Role Management -->
+      <div class="detail-panel" style="grid-column:1/-1;">
+        <div class="refresh-bar">
+          <h3>Namespace Roles</h3>
+          <button onclick="showCreateNsRoleForm()" class="btn-primary">+ New Role</button>
+        </div>
+        <div id="nsRoleCreateForm" style="display:none;margin-bottom:20px;padding:20px;background:#0d1117;border-radius:8px;border:1px solid #30363d;">
+          <div style="margin-bottom:12px;padding:8px 12px;background:#1f6feb1a;border-radius:6px;color:#58a6ff;font-size:13px;">Namespace-scoped Role，创建后通过 <b>Edit Rules</b> 配置权限。</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-row"><label>Role Name *</label>
+              <input type="text" id="newNsRoleName" class="form-input" placeholder="my-role"></div>
+            <div class="form-row"><label>Namespace *</label>
+              <select id="newNsRoleNs" class="form-input"><option value="">Select namespace...</option></select></div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:8px;">
+            <button onclick="createNsRole()" class="btn-primary">Create</button>
+            <button onclick="hideCreateNsRoleForm()" class="btn-secondary">Cancel</button>
+          </div>
+        </div>
+        <div id="nsRoleList" style="margin-top:8px;"><div class="loading">Loading...</div></div>
+      </div>
+
+      <!-- RoleBinding Management -->
+      <div class="detail-panel" style="grid-column:1/-1;">
+        <div class="refresh-bar">
+          <h3>Role Bindings</h3>
+          <button onclick="showCreateBindingForm()" class="btn-primary">+ New Binding</button>
+        </div>
+        <div id="bindingCreateForm" style="display:none;margin-bottom:20px;padding:20px;background:#0d1117;border-radius:8px;border:1px solid #30363d;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-row"><label>Binding Name *</label>
+              <input type="text" id="newBindingName" class="form-input" placeholder="k8ops:dev-binding"></div>
+            <div class="form-row" style="grid-column:1/-1;"><label>Namespaces * (multi-select)</label>
+              <select id="newBindingNamespaces" class="form-input" multiple size="5" style="height:auto;"></select></div>
+            <div class="form-row"><label>Subject Type</label>
+              <select id="newBindingSubjectKind" class="form-input" onchange="updateSubjectOptions()">
+                <option value="Group">Group</option>
+                <option value="User">User</option>
+              </select></div>
+            <div class="form-row"><label>Subject</label>
+              <select id="newBindingSubjectName" class="form-input"></select></div>
+            <div class="form-row"><label>Role Kind</label>
+              <select id="newBindingRoleKind" class="form-input" onchange="updateRoleNameOptions()">
+                <option value="ClusterRole">ClusterRole</option>
+                <option value="Role">Role (namespace-scoped)</option>
+              </select></div>
+            <div class="form-row"><label>Role Name</label>
+              <select id="newBindingRoleName" class="form-input"></select></div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:8px;">
+            <button onclick="createRoleBinding()" class="btn-primary">Create Binding(s)</button>
+            <button onclick="hideCreateBindingForm()" class="btn-secondary">Cancel</button>
+          </div>
+        </div>
+        <div id="roleBindingList" style="margin-top:8px;"><div class="loading">Loading...</div></div>
+      </div>
+
+      <!-- Authentication Providers -->
+      <div class="detail-panel" style="grid-column:1/-1;">
+        <div class="refresh-bar">
+          <h3>Authentication Providers</h3>
+          <button onclick="saveAuthConfig()" class="btn-primary">Save &amp; Apply</button>
+        </div>
+
+        <!-- Default Role for auto-provisioned users -->
+        <div style="margin-bottom:24px;padding:16px;background:#0d1117;border-radius:8px;border:1px solid #1f6feb33;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+            <span style="font-size:14px;font-weight:600;color:#58a6ff;">新用户默认角色 (LDAP/OIDC 自动创建用户)</span>
+          </div>
+          <div style="display:flex;gap:12px;align-items:end;flex-wrap:wrap;">
+            <div class="form-row"><label>默认角色</label>
+              <select id="defaultRole" class="form-input" style="width:auto;"></select></div>
+            <div class="form-row"><label>默认命名空间 (仅 ns- 角色生效)</label>
+              <input type="text" id="defaultAllowedNs" class="form-input" placeholder="default, dev" style="width:300px;"></div>
+            <button onclick="saveAuthConfig()" class="btn-primary" style="font-size:12px;">Save Default</button>
+          </div>
+          <div style="margin-top:8px;font-size:12px;color:#8b949e;">当 LDAP/OIDC 用户首次登录时自动创建本地用户并赋此角色。之后管理员可单独修改。</div>
+        </div>
+
+        <!-- Auth Provider Management (multi-instance) -->
+        <div style="margin-bottom:24px;padding:20px;background:#0d1117;border-radius:8px;border:1px solid #23863633;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <span style="font-size:16px;font-weight:600;color:#3fb950;">Auth Providers (多实例)</span>
+            <span style="font-size:12px;color:#8b949e;">支持多个 LDAP/OIDC 同时启用</span>
+          </div>
+          <div id="authProviderList"></div>
+        </div>
+
+    </div>
+  </div>
+
+</div><!-- /main-content -->
+</div><!-- /layout -->
+
+<div class="footer">k8ops &mdash; Kubernetes AI Operations Operator</div>
+
+<!-- Full-screen Chat Overlay -->
+<div id="chatOverlay" class="chat-overlay">
+  <div class="chat-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="title">k8ops AI Chat</div>
+      <span id="chatConvInfo" style="font-size:12px;color:#8b949e;"></span>
+      <span id="chatContext" style="font-size:12px;color:#8b949e;"></span>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button onclick="newConversation()" class="btn-secondary">New Chat</button>
+      <button onclick="closeChatOverlay()" class="btn-secondary" style="color:#f85149;">Close</button>
+    </div>
+  </div>
+  <div class="chat-body" id="chatMessages"></div>
+  <div class="chat-footer">
+    <input type="text" id="chatInput" placeholder="Ask about cluster issues..." autocomplete="off"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage();}"
+      style="flex:1;background:#0d1117;border:1px solid #30363d;color:#c9d1d9;padding:10px 14px;border-radius:6px;font-size:14px;outline:none;">
+    <button onclick="sendChatMessage()" id="chatSendBtn" class="btn-primary">Send</button>
+  </div>
+</div>
+
+<!-- Node Pods Overlay -->
+<div id="nodePodsOverlay" class="chat-overlay">
+  <div class="chat-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="title" id="nodePodsTitle">Pods on Node</div>
+    </div>
+    <button onclick="closeNodePods()" class="btn-secondary" style="color:#f85149;">Close</button>
+  </div>
+  <div class="chat-body">
+    <div id="nodePodsTable"></div>
+  </div>
+</div>
+
+<!-- Log Viewer Overlay -->
+<div id="logOverlay" class="chat-overlay">
+  <div class="chat-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="title" id="logPodName">Logs</div>
+      <select id="logContainer" class="form-input" style="width:auto;font-size:12px;padding:4px 8px;" onchange="restartLogs()"></select>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#8b949e;cursor:pointer;">
+        <input type="checkbox" id="logFollow" onchange="restartLogs()" style="accent-color:#58a6ff;"> Follow
+      </label>
+      <button onclick="clearLogs()" class="btn-secondary">Clear</button>
+      <button onclick="closeLogViewer()" class="btn-secondary" style="color:#f85149;">Close</button>
+    </div>
+  </div>
+  <div class="chat-body">
+    <pre id="logOutput" style="padding:16px;font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;"></pre>
+  </div>
+</div>
+
+<!-- YAML Viewer Overlay -->
+<div id="yamlOverlay" class="chat-overlay">
+  <div class="chat-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="title" id="yamlTitle">YAML</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button onclick="copyYAML()" id="yamlCopyBtn" class="btn-secondary">Copy</button>
+      <button onclick="closeYAMLViewer()" class="btn-secondary" style="color:#f85149;">Close</button>
+    </div>
+  </div>
+  <div class="chat-body">
+    <pre id="yamlOutput" style="padding:16px;font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;"></pre>
+  </div>
+</div>
+
+<!-- Terminal Overlay -->
+<div id="termOverlay" class="chat-overlay">
+  <div class="chat-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="title" id="termPodName">Terminal</div>
+    </div>
+    <button onclick="closeTerminal()" class="btn-secondary" style="color:#f85149;">Close</button>
+  </div>
+  <div class="chat-body">
+    <div id="termOutput" style="padding:16px;font-family:monospace;font-size:13px;color:#3fb950;"></div>
+  </div>
+  <div class="chat-footer">
+    <input type="text" id="termInput" placeholder="type command..." autocomplete="off"
+      onkeydown="if(event.key==='Enter'){runCommand();}"
+      style="flex:1;background:#0d1117;border:1px solid #30363d;color:#3fb950;padding:10px 14px;border-radius:6px;font-family:monospace;font-size:13px;outline:none;">
+    <button onclick="runCommand()" class="btn-primary">Run</button>
+  </div>
+</div>
+
+<!-- Diagnostic Detail Overlay -->
+<div id="diagDetailOverlay" class="chat-overlay">
+  <div class="chat-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="title" id="diagDetailTitle">Diagnostic Report</div>
+    </div>
+    <button onclick="closeDiagDetail()" class="btn-secondary" style="color:#f85149;">Close</button>
+  </div>
+  <div class="chat-body">
+    <div id="diagDetailBody" style="max-width:900px;margin:0 auto;color:#c9d1d9;line-height:1.7;">
+      <div class="loading">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Role Editor Overlay (WYSIWYG) -->
+<div id="roleEditorOverlay" class="chat-overlay">
+  <div class="chat-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="title" id="roleEditorTitle">Edit Role Rules</div>
+      <span id="roleEditorName" style="font-size:12px;color:#8b949e;"></span>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button onclick="selectAllVerbs(true)" class="btn-secondary" style="font-size:12px;">Select All</button>
+      <button onclick="selectAllVerbs(false)" class="btn-secondary" style="font-size:12px;">Clear All</button>
+      <button onclick="saveRoleRules()" class="btn-primary">Save</button>
+      <button onclick="closeRoleEditor()" class="btn-secondary" style="color:#f85149;">Cancel</button>
+    </div>
+  </div>
+  <div class="chat-body" style="padding:16px;">
+    <div id="roleEditorBody" style="max-width:1100px;margin:0 auto;">
+      <div class="loading">Loading cluster resources...</div>
+    </div>
+  </div>
+</div>
+
+<script src="/core.js"></script>
+<script src="/overview.js"></script>
+<script src="/nodes.js"></script>
+<script src="/pods.js"></script>
+<script src="/chat.js"></script>
+<script src="/resources.js"></script>
+<script src="/rbac.js"></script>
+<script src="/providers.js"></script>
+<script>initTabFromHash();</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+---
+# ClusterRole: k8ops impersonator — allows SA to impersonate users/groups
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: k8ops-impersonator
+  labels:
+    app.kubernetes.io/name: k8ops
+rules:
+# Impersonate any user and group for RBAC enforcement
+- apiGroups: [""]
+  resources: ["users", "groups", "serviceaccounts"]
+  verbs: ["impersonate"]
+# Manage RoleBindings for namespace-scoped users
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["rolebindings"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+# Read namespaces to validate namespace-scoped users
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list", "watch"]
+---
+# ClusterRoleBinding: k8ops SA gets impersonator role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8ops-impersonator
+  labels:
+    app.kubernetes.io/name: k8ops
+subjects:
+- kind: ServiceAccount
+  name: k8ops
+  namespace: k8ops-system
+roleRef:
+  kind: ClusterRole
+  name: k8ops-impersonator
+  apiGroup: rbac.authorization.k8s.io
+---
+# ClusterRoleBinding: k8ops admin group → k8ops-role-admin (custom, vendor-independent)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8ops-group-admin
+  labels:
+    app.kubernetes.io/name: k8ops
+subjects:
+- kind: Group
+  name: k8ops:admin
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: k8ops-role-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+# ClusterRoleBinding: k8ops operator group → k8ops-role-operator (custom, vendor-independent)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8ops-group-operator
+  labels:
+    app.kubernetes.io/name: k8ops
+subjects:
+- kind: Group
+  name: k8ops:operator
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: k8ops-role-operator
+  apiGroup: rbac.authorization.k8s.io
+---
+# ClusterRoleBinding: k8ops viewer group → k8ops-role-viewer (custom, vendor-independent)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8ops-group-viewer
+  labels:
+    app.kubernetes.io/name: k8ops
+subjects:
+- kind: Group
+  name: k8ops:viewer
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: k8ops-role-viewer
+  apiGroup: rbac.authorization.k8s.io
+---
+# ClusterRole: k8ops controller — full access for autonomous operations
+# (diagnostics, remediations, optimizations run with SA permissions, not user-scoped)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8ops-controller
+  labels:
+    app.kubernetes.io/name: k8ops
+subjects:
+- kind: ServiceAccount
+  name: k8ops
+  namespace: k8ops-system
+roleRef:
+  kind: ClusterRole
+  name: k8ops-role-admin
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,58 @@
+# Local development overlay
+# Customizes: domain, TLS, image tag, provider settings for local network
+#
+# Usage:
+#   kubectl apply -k config/deploy/overlays/local
+#
+# To customize: copy this directory to custom-myenv/ and edit values.
+#   cp -r config/deploy/overlays/local config/deploy/overlays/custom-myenv
+# Custom copies (custom-*) are gitignored — safe for local addresses.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: k8ops-local
+
+namespace: k8ops-system
+
+resources:
+- ../../base
+
+# Override domain, TLS, and image for local network
+patches:
+- target:
+    kind: Ingress
+    name: k8ops-dashboard
+  patch: |-
+    # Replace with your local domain or IP
+    - op: replace
+      path: /spec/rules/0/host
+      value: k8ops.local
+    - op: replace
+      path: /spec/tls/0/hosts/0
+      value: k8ops.local
+    - op: replace
+      path: /spec/tls/0/secretName
+      value: k8ops-dashboard-tls-local
+    # Use self-signed issuer for local, or remove TLS entirely
+    - op: replace
+      path: /metadata/annotations/cert-manager.io~1cluster-issuer
+      value: selfsigned
+
+# Override image tag for local builds
+images:
+- name: ghcr.io/ggai/k8ops
+  newTag: latest
+
+# Override provider config for local network
+configMapGenerator:
+- name: k8ops-config
+  behavior: merge
+  literals:
+  - PROVIDER_TYPE=openai
+  - PROVIDER_MODEL=gpt-4o
+  - PROVIDER_ENDPOINT=https://api.openai.com/v1
+  # CORS: comma-separated, e.g. http://192.168.1.100:9090,http://k8ops.local
+  - cors-allowed-origins=
+  - provider-rate-limit-rpm=0
+  - debug=true

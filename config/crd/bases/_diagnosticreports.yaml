@@ -1,0 +1,278 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.21.0
+  name: diagnosticreports.aiops.ggai.dev
+spec:
+  group: "aiops.ggai.dev"
+  names:
+    kind: DiagnosticReport
+    listKind: DiagnosticReportList
+    plural: diagnosticreports
+    singular: diagnosticreport
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: DiagnosticReport is the Schema for the diagnosticreports API.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: DiagnosticReportSpec defines the desired state of DiagnosticReport.
+            properties:
+              analysis:
+                description: Analysis configuration.
+                properties:
+                  defaultDepth:
+                    default: standard
+                    description: DefaultDepth sets the default analysis depth.
+                    enum:
+                    - quick
+                    - standard
+                    - deep
+                    type: string
+                  includeEvents:
+                    default: true
+                    description: IncludeEvents includes Kubernetes events in analysis.
+                    type: boolean
+                  includeLogs:
+                    default: true
+                    description: IncludeLogs includes pod logs in analysis.
+                    type: boolean
+                  includeMetrics:
+                    default: false
+                    description: IncludeMetrics includes Prometheus metrics in analysis
+                      (if available).
+                    type: boolean
+                  maxConcurrency:
+                    default: 3
+                    description: MaxConcurrency limits parallel AI analyses.
+                    type: integer
+                  timeout:
+                    default: 120s
+                    description: Timeout for a single analysis request.
+                    type: string
+                type: object
+              resourceScope:
+                description: ResourceScope narrows the diagnostic scope.
+                properties:
+                  apiVersion:
+                    type: string
+                  kind:
+                    type: string
+                  name:
+                    type: string
+                  namespace:
+                    type: string
+                type: object
+              trigger:
+                description: Trigger describes what initiated this diagnostic.
+                properties:
+                  eventMessage:
+                    description: EventMessage is the original event/alert message.
+                    type: string
+                  reason:
+                    description: Reason from the triggering event.
+                    type: string
+                  resourceRef:
+                    description: ResourceRef is the resource that triggered the diagnostic.
+                    properties:
+                      apiVersion:
+                        type: string
+                      kind:
+                        type: string
+                      name:
+                        type: string
+                      namespace:
+                        type: string
+                    type: object
+                  type:
+                    description: Type of trigger.
+                    enum:
+                    - event
+                    - alert
+                    - manual
+                    - schedule
+                    - watch
+                    type: string
+                required:
+                - type
+                type: object
+            required:
+            - trigger
+            type: object
+          status:
+            description: DiagnosticReportStatus defines the observed state of DiagnosticReport.
+            properties:
+              agentTrace:
+                description: AgentTrace records the AI agent's tool calls during analysis.
+                items:
+                  description: AgentStep records a single step in the agent's reasoning
+                    chain.
+                  properties:
+                    action:
+                      description: Action tool name.
+                      type: string
+                    actionInput:
+                      description: ActionInput parameters passed to the tool.
+                      type: string
+                    observation:
+                      description: Observation result from the tool.
+                      type: string
+                    step:
+                      description: Step number.
+                      type: integer
+                    thought:
+                      description: Thought is the AI's reasoning for this step.
+                      type: string
+                  required:
+                  - step
+                  type: object
+                type: array
+              aiModel:
+                description: AIModel used for analysis.
+                type: string
+              analyzedAt:
+                description: AnalyzedAt timestamp.
+                format: date-time
+                type: string
+              confidence:
+                description: Confidence score (0.0 - 1.0).
+                type: number
+              error:
+                description: Error message if analysis failed.
+                type: string
+              findings:
+                description: Findings from the analysis.
+                items:
+                  description: Finding represents a single diagnostic finding.
+                  properties:
+                    category:
+                      description: Category classifies the finding (e.g. CrashLoopBackOff,
+                        OOMKilled, PVC Pending).
+                      type: string
+                    description:
+                      description: Description of the finding.
+                      type: string
+                    evidence:
+                      description: Evidence supporting the finding.
+                      items:
+                        description: Evidence is data backing a finding.
+                        properties:
+                          message:
+                            description: Message the evidence content.
+                            type: string
+                          source:
+                            description: Source where the evidence was collected from.
+                            type: string
+                          timestamp:
+                            description: Timestamp of the evidence.
+                            format: date-time
+                            type: string
+                          type:
+                            description: 'Type: log, event, metric, yaml, command-output.'
+                            type: string
+                        required:
+                        - message
+                        - type
+                        type: object
+                      type: array
+                    rootCause:
+                      description: RootCause analysis result.
+                      type: string
+                    severity:
+                      description: 'Severity: critical, high, medium, low, info.'
+                      enum:
+                      - critical
+                      - high
+                      - medium
+                      - low
+                      - info
+                      type: string
+                    suggestedActions:
+                      description: SuggestedActions for remediation.
+                      items:
+                        description: SuggestedAction is an AI-generated remediation
+                          suggestion.
+                        properties:
+                          command:
+                            description: Command for runCommand actions.
+                            type: string
+                          description:
+                            description: Description of the action.
+                            type: string
+                          patch:
+                            description: Patch is a JSON patch for patchResource actions.
+                            type: string
+                          risk:
+                            description: 'Risk level: low, medium, high, critical.'
+                            enum:
+                            - low
+                            - medium
+                            - high
+                            - critical
+                            type: string
+                          target:
+                            description: Target resource.
+                            properties:
+                              apiVersion:
+                                type: string
+                              kind:
+                                type: string
+                              name:
+                                type: string
+                              namespace:
+                                type: string
+                            type: object
+                          type:
+                            description: 'Type of action: patchResource, scaleResource,
+                              restartPod, deleteResource, runCommand, etc.'
+                            type: string
+                        required:
+                        - description
+                        - risk
+                        - type
+                        type: object
+                      type: array
+                  required:
+                  - category
+                  - description
+                  - severity
+                  type: object
+                type: array
+              phase:
+                description: 'Phase: Pending, Analyzing, Completed, Failed.'
+                enum:
+                - Pending
+                - Analyzing
+                - Completed
+                - Failed
+                type: string
+              summary:
+                description: Summary is a human-readable summary.
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

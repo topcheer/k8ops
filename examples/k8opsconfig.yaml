@@ -1,0 +1,59 @@
+# K8opsConfig CRD - global configuration for the k8ops operator
+# Create this to configure the AI provider and auto-remediation settings.
+apiVersion: aiops.ggai.dev/v1alpha1
+kind: K8opsConfig
+metadata:
+  name: cluster-default
+spec:
+  provider:
+    type: openai
+    model: gpt-4o
+    # Get API key from a Kubernetes Secret
+    apiKeySecretRef:
+      name: k8ops-credentials
+      key: api-key
+    # Use a custom endpoint (compatible with OpenAI API):
+    # endpoint: https://api.deepseek.com/v1
+    # For Anthropic:
+    # type: anthropic
+    # model: claude-3-5-sonnet-20241022
+    # For Gemini:
+    # type: gemini
+    # model: gemini-1.5-pro
+    maxTokens: 4096
+    temperature: 0.1
+  analysis:
+    defaultDepth: standard
+    maxConcurrency: 3
+    timeout: 120s
+    includeLogs: true
+    includeEvents: true
+    includeMetrics: false
+  autoRemediation:
+    enabled: true
+    maxRiskLevel: medium
+    dryRun: false
+    maxConcurrentRemediations: 5
+    namespaceDenyList:
+    - kube-system
+    - k8ops-system
+  notifications:
+    prometheusAlerting: true
+    # slack:
+    #   webhookSecretRef:
+    #     name: k8ops-slack
+    #     key: webhook-url
+    #   channel: "#ops-alerts"
+  safety:
+    allowedOperations:
+    - patchResource
+    - scaleResource
+    - restartPod
+    - cordonNode
+    - uncordonNode
+    - deleteResource
+    - createResource
+    - applyManifest
+    - runCommand
+    deniedOperations: []
+    maxActionsPerRemediation: 10
