@@ -67,7 +67,7 @@ export async function loadAuthProviders() {
         <div style="flex-grow:1;">
           <div style="display:flex;align-items:center;gap:8px;">
             <span style="font-weight:600;font-size:14px;">${escapeHtml(p.display_name)}</span>
-            <span style="background:#21262d;border:1px solid #30363d;padding:1px 6px;border-radius:4px;font-size:10px;text-transform:uppercase;color:#8b949e;">${p.type}</span>
+            <span style="background:#21262d;border:1px solid #30363d;padding:1px 6px;border-radius:4px;font-size:10px;text-transform:uppercase;color:#8b949e;">${escapeHtml(p.type)}</span>
             ${statusBadge}
           </div>
           <div style="font-size:12px;color:#8b949e;font-family:monospace;">${escapeHtml(p.name)}</div>
@@ -97,8 +97,8 @@ export async function loadAuthProviders() {
             onmouseover="this.style.borderColor='#58a6ff'"
             onmouseout="if(this.dataset.selected!=='true')this.style.borderColor='#30363d'">
             <div style="margin-bottom:4px;">${providerIcon(ps.icon, 28)}</div>
-            <div style="font-size:12px;font-weight:600;">${ps.display_name}</div>
-            <div style="font-size:10px;color:#8b949e;">${ps.description}</div>
+            <div style="font-size:12px;font-weight:600;">${escapeHtml(ps.display_name)}</div>
+            <div style="font-size:10px;color:#8b949e;">${escapeHtml(ps.description)}</div>
           </div>
         `).join('')}
       </div>
