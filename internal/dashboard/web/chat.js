@@ -403,7 +403,8 @@ export function renderMarkdown(md) {
     const trimmedUrl = url.trim();
     // Allow only http:, https:, mailto:, and relative URLs
     if (/^(https?:|mailto:|#|\/)/i.test(trimmedUrl)) {
-      return '<a href="' + trimmedUrl + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
+      const safeUrl = trimmedUrl.replace(/"/g, '&quot;');
+      return '<a href="' + safeUrl + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
     }
     // Block javascript:, data:, vbscript: etc — show label as plain text
     return label;
