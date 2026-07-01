@@ -112,10 +112,124 @@ export function quickChat(msg) {
   sendChatMessage();
 }
 
+// --- NL-to-kubectl intent parser ---
+// Detects natural language shortcuts and offers one-click kubectl execution
+var _nlPatterns = [
+  // Pods
+  { re: /^(show|list|get|查看|显示)\s+(all\s+)?(pods?|pod|容器)/i, cmd: function(m, ns) { return 'kubectl get pods' + (ns ? ' -n ' + ns : ' --all-namespaces') + ' -o wide'; }, label: 'List Pods' },
+  { re: /^(show|list|get|查看|显示)\s+(all\s+)?(nodes?|node|节点)/i, cmd: function(m, ns) { return 'kubectl get nodes -o wide'; }, label: 'List Nodes' },
+  { re: /^(show|list|get|查看|显示)\s+(all\s+)?(services?|svc|服务)/i, cmd: function(m, ns) { return 'kubectl get svc' + (ns ? ' -n ' + ns : ' --all-namespaces'); }, label: 'List Services' },
+  { re: /^(show|list|get|查看|显示)\s+(all\s+)?(deployments?|deploy|部署)/i, cmd: function(m, ns) { return 'kubectl get deploy' + (ns ? ' -n ' + ns : ' --all-namespaces'); }, label: 'List Deployments' },
+  { re: /^(show|list|get|查看|显示)\s+(all\s+)?(namespaces?|ns|命名空间)/i, cmd: function() { return 'kubectl get namespaces'; }, label: 'List Namespaces' },
+  { re: /^(show|list|get|查看|显示)\s+(all\s+)?(configmaps?|cm)/i, cmd: function(m, ns) { return 'kubectl get cm' + (ns ? ' -n ' + ns : ' --all-namespaces'); }, label: 'List ConfigMaps' },
+  { re: /^(show|list|get|查看|显示)\s+(all\s+)?(secrets?|secret)/i, cmd: function(m, ns) { return 'kubectl get secrets' + (ns ? ' -n ' + ns : ' --all-namespaces'); }, label: 'List Secrets' },
+  { re: /^(show|list|get|查看|显示)\s+(all\s+)?(ingress|ing)/i, cmd: function(m, ns) { return 'kubectl get ingress' + (ns ? ' -n ' + ns : ' --all-namespaces'); }, label: 'List Ingress' },
+  { re: /^(show|list|get|查看|显示)\s+(all\s+)?(pvc|pv|storage)/i, cmd: function(m, ns) { return 'kubectl get pvc,pv' + (ns ? ' -n ' + ns : ' --all-namespaces'); }, label: 'List Volumes' },
+  // Describe
+  { re: /^(describe|describe pod|查看详情)\s+(\S+)\s+(in\s+)?(\S+)?/i, cmd: function(m) { var ns = m[4] || 'default'; return 'kubectl describe pod ' + m[2] + ' -n ' + ns; }, label: 'Describe Pod' },
+  // Logs
+  { re: /^(logs?|查看日志)\s+(?:of\s+)?(\S+)/i, cmd: function(m) { return 'kubectl logs ' + m[2] + ' --tail=100'; }, label: 'Get Logs' },
+  // Events
+  { re: /^(show|list|get|查看|显示)\s+(all\s+)?(events?|event|事件)/i, cmd: function(m, ns) { return 'kubectl get events' + (ns ? ' -n ' + ns : ' --all-namespaces') + ' --sort-by=.lastTimestamp'; }, label: 'List Events' },
+  // Unhealthy
+  { re: /(unhealthy|crashing|failed|not running|problem|issue|异常|故障)/i, cmd: function(m, ns) { return 'kubectl get pods' + (ns ? ' -n ' + ns : ' --all-namespaces') + ' --field-selector=status.phase!=Running'; }, label: 'Find Unhealthy Pods' },
+];
+
+function parseNLIntent(msg) {
+  // Extract namespace from message
+  var nsMatch = msg.match(/(?:in|namespace|ns|命名空间)\s+(\S+)/i);
+  var ns = nsMatch ? nsMatch[1].replace(/[;,.]$/, '') : '';
+  
+  for (var i = 0; i < _nlPatterns.length; i++) {
+    var p = _nlPatterns[i];
+    var m = msg.match(p.re);
+    if (m) {
+      return { cmd: p.cmd(m, ns), label: p.label, ns: ns };
+    }
+  }
+  return null;
+}
+
+function showKubectlSuggestion(msg) {
+  var intent = parseNLIntent(msg);
+  if (!intent) return false;
+  
+  var messages = document.getElementById('chatMessages');
+  var card = document.createElement('div');
+  card.className = 'chat-msg user';
+  card.innerHTML = '<div class="chat-bubble user-bubble">' + escapeHtml(msg) + '</div>';
+  messages.appendChild(card);
+  
+  // Remove welcome message if present
+  var welcome = messages.querySelector('div[style*="text-align:center"]');
+  if (welcome) welcome.remove();
+  
+  var sugg = document.createElement('div');
+  sugg.className = 'chat-msg nl-suggestion';
+  sugg.innerHTML =
+    '<div class="nl-suggestion-card">' +
+      '<div class="nl-suggestion-header">Quick Command Detected</div>' +
+      '<div class="nl-suggestion-label">' + escapeHtml(intent.label) + '</div>' +
+      '<pre class="nl-suggestion-cmd"><code>' + escapeHtml(intent.cmd) + '</code></pre>' +
+      '<div class="nl-suggestion-actions">' +
+        '<button class="nl-run-btn" onclick="runQuickCmd(this, \'' + intent.cmd.replace(/'/g, "\\'") + '\')">Run Now</button>' +
+        '<button class="nl-ai-btn" onclick="this.closest(\'.nl-suggestion\').remove(); window._sendToAI(\'' + msg.replace(/'/g, "\\'") + '\')">Ask AI Instead</button>' +
+      '</div>' +
+    '</div>';
+  messages.appendChild(sugg);
+  messages.scrollTop = messages.scrollHeight;
+  return true;
+}
+
+export function runQuickCmd(btn, cmd) {
+  var card = btn.closest('.nl-suggestion');
+  var output = card.querySelector('.nl-suggestion-output');
+  if (!output) {
+    output = document.createElement('div');
+    output.className = 'nl-suggestion-output';
+    card.querySelector('.nl-suggestion-card').appendChild(output);
+  }
+  output.innerHTML = '<span style="color:var(--text-muted);">Running...</span>';
+  btn.disabled = true;
+  
+  fetch('/api/exec', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({command: cmd}),
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    btn.disabled = false;
+    if (data.error) {
+      output.innerHTML = '<pre class="nl-cmd-error">' + escapeHtml(data.error) + '</pre>';
+    } else {
+      output.innerHTML = '<pre class="nl-cmd-output">' + escapeHtml(data.output || data.stdout || 'Done') + '</pre>';
+    }
+  }).catch(function(e) {
+    btn.disabled = false;
+    output.innerHTML = '<pre class="nl-cmd-error">Error: ' + escapeHtml(e.message) + '</pre>';
+  });
+}
+
+// Expose for inline onclick
+window._sendToAI = function(msg) {
+  var input = document.getElementById('chatInput');
+  if (input) { input.value = msg; }
+  sendChatMessage();
+};
+
 export async function sendChatMessage() {
   const input = document.getElementById('chatInput');
   const msg = input.value.trim();
   if (!msg) return;
+  
+  // Check if this is a natural language kubectl shortcut
+  if (showKubectlSuggestion(msg)) {
+    input.value = '';
+    input.style.height = 'auto';
+    var sugg = document.getElementById('chatSuggestions');
+    if (sugg) sugg.style.display = 'none';
+    return;
+  }
+  
   input.value = '';
   input.style.height = 'auto';
   input.disabled = true;

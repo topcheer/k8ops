@@ -106,6 +106,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/healthz", s.handleHealthz)   // K8s liveness probe
 	mux.HandleFunc("/readyz", s.handleReadyz)     // K8s readiness probe
 	mux.HandleFunc("/api/version", s.handleVersion)
+	mux.HandleFunc("/api/exec", s.handleQuickExec)           // NL-to-kubectl quick command execution
 	mux.HandleFunc("/api/cluster/overview", s.cacheMiddleware(30*time.Second, s.handleClusterOverview))
 	mux.HandleFunc("/api/diagnostics", s.handleDiagnostics)
 	mux.HandleFunc("/api/diagnostics/history", s.handleDiagnosticsHistory) // must be before catch-all

@@ -1,11 +1,15 @@
 package dashboard
 
 import (
+	"bytes"
 	"compress/gzip"
+	"context"
 	"encoding/json"
 	"net/http"
+	"os/exec"
 	"strings"
 	"sync"
+	"time"
 )
 
 // --- Gzip Compression Middleware ---
@@ -119,5 +123,77 @@ func (s *Server) handleVersion(w http.ResponseWriter, r *http.Request) {
 		"gitCommit": GitCommit,
 		"buildDate": BuildDate,
 		"name":      "k8ops",
+	})
+}
+
+// handleQuickExec executes a safe kubectl get/describe/explain command from the NL-to-kubectl feature.
+// Only read-only verbs are allowed: get, describe, explain, logs (with limits).
+func (s *Server) handleQuickExec(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	var req struct {
+		Command string `json:"command"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+
+	cmd := strings.TrimSpace(req.Command)
+	if cmd == "" {
+		writeError(w, http.StatusBadRequest, "command is required")
+		return
+	}
+
+	// Security: only allow kubectl prefix
+	if !strings.HasPrefix(cmd, "kubectl ") {
+		writeError(w, http.StatusForbidden, "only kubectl commands are allowed")
+		return
+	}
+
+	// Security: whitelist verbs
+	allowed := []string{"kubectl get ", "kubectl describe ", "kubectl explain "}
+	matched := false
+	for _, a := range allowed {
+		if strings.HasPrefix(cmd, a) {
+			matched = true
+			break
+		}
+	}
+	if !matched {
+		writeError(w, http.StatusForbidden, "only read-only kubectl commands (get, describe, explain) are allowed")
+		return
+	}
+
+	// Execute via nsenter on host kubectl
+	parts := strings.Fields(cmd)
+	execCmd := exec.Command("nsenter", append([]string{"-t", "1", "-m", "-u", "-i", "-n", "--"}, parts...)...)
+	var stdout, stderr bytes.Buffer
+	execCmd.Stdout = &stdout
+	execCmd.Stderr = &stderr
+	execCmd.Env = []string{"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 15*time.Second)
+	defer cancel()
+	execCmd = exec.CommandContext(ctx, execCmd.Path, execCmd.Args[1:]...)
+	execCmd.Stdout = &stdout
+	execCmd.Stderr = &stderr
+
+	if err := execCmd.Run(); err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK) // return 200 with error field for frontend convenience
+		_ = json.NewEncoder(w).Encode(map[string]string{
+			"output": stdout.String(),
+			"error":  err.Error() + ": " + stderr.String(),
+		})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]string{
+		"output": stdout.String(),
 	})
 }
