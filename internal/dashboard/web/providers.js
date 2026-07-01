@@ -66,17 +66,17 @@ export async function loadAuthProviders() {
         <div style="flex-shrink:0;">${providerIcon(p.icon, 32)}</div>
         <div style="flex-grow:1;">
           <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-weight:600;font-size:14px;">${p.display_name}</span>
+            <span style="font-weight:600;font-size:14px;">${escapeHtml(p.display_name)}</span>
             <span style="background:#21262d;border:1px solid #30363d;padding:1px 6px;border-radius:4px;font-size:10px;text-transform:uppercase;color:#8b949e;">${p.type}</span>
             ${statusBadge}
           </div>
-          <div style="font-size:12px;color:#8b949e;font-family:monospace;">${p.name}</div>
+          <div style="font-size:12px;color:#8b949e;font-family:monospace;">${escapeHtml(p.name)}</div>
           <div>${cfgSummary}</div>
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0;">
           <button onclick="toggleProvider(${p.id}, ${!p.enabled})" class="btn-secondary" style="padding:4px 12px;font-size:11px;color:${toggleColor};">${toggleLabel}</button>
           <button onclick="editProvider(${p.id})" class="btn-secondary" style="padding:4px 12px;font-size:11px;">Edit</button>
-          <button onclick="deleteProvider(${p.id}, '${p.name}')" class="btn-secondary" style="padding:4px 12px;font-size:11px;color:#f85149;">Delete</button>
+          <button onclick="deleteProvider(${p.id}, '${escapeHtml(p.name)}')" class="btn-secondary" style="padding:4px 12px;font-size:11px;color:#f85149;">Delete</button>
         </div>
       </div>`;
     }

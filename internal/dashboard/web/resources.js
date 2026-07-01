@@ -301,15 +301,15 @@ export async function viewNodePods(nodeName) {
       <tbody>${data.pods.map(p => `<tr>
         <td style="color:#58a6ff;font-family:monospace;">${escapeHtml(p.name)}</td>
         <td>${escapeHtml(p.namespace)}</td>
-        <td><span class="badge ${p.status==='Running'?'Ready':'Warning'}">${p.status}</span></td>
+        <td><span class="badge ${p.status==='Running'?'Ready':'Warning'}">${escapeHtml(p.status)}</span></td>
         <td>${p.restarts > 0 ? `<span style="color:#f85149;">${p.restarts}</span>` : '0'}</td>
-        <td style="font-size:13px;">${p.ip||'-'}</td>
-        <td style="font-size:12px;color:#8b949e;">${(p.containers||[]).join(', ')}</td>
-        <td>${p.age}</td>
+        <td style="font-size:13px;">${escapeHtml(p.ip)||'-'}</td>
+        <td style="font-size:12px;color:#8b949e;">${(p.containers||[]).map(escapeHtml).join(', ')}</td>
+        <td>${escapeHtml(p.age)}</td>
         <td>
-          <button onclick="openLogViewer('${p.namespace}','${p.name}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">Logs</button>
-          <button onclick="openTerminal('${p.namespace}','${p.name}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">Terminal</button>
-          <button onclick="viewYAML('pods','${p.namespace}','${p.name}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">YAML</button>
+          <button onclick="openLogViewer('${escapeHtml(p.namespace)}','${escapeHtml(p.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">Logs</button>
+          <button onclick="openTerminal('${escapeHtml(p.namespace)}','${escapeHtml(p.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">Terminal</button>
+          <button onclick="viewYAML('pods','${escapeHtml(p.namespace)}','${escapeHtml(p.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">YAML</button>
         </td>
       </tr>`).join('')}</tbody></table>`;
   } catch(e) { container.innerHTML = '<div style="color:#f85149;">Error: ' + escapeHtml(e.message) + '</div>'; }
@@ -337,7 +337,7 @@ export async function openLogViewer(ns, name) {
     const data = await fetchJSON('/api/pods/' + ns + '/' + name + '/containers');
     const sel = document.getElementById('logContainer');
     sel.innerHTML = (data.containers || []).map((c, i) =>
-      `<option value="${c.name}" ${i===0?'selected':''}>${c.name} ${c.ready?'\u2713':'\u2715'}</option>`).join('');
+      `<option value="${escapeHtml(c.name)}" ${i===0?'selected':''}>${escapeHtml(c.name)} ${c.ready?'\u2713':'\u2715'}</option>`).join('');
   } catch(e) { /* single container */ }
 
   openLogViewer._ns = ns;

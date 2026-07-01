@@ -22,15 +22,15 @@ export async function loadUsers() {
       </tr></thead>
       <tbody>
         ${users.map(u => `<tr style="border-bottom:1px solid #21262d;">
-          <td style="padding:8px;font-weight:600;">${u.username}</td>
+          <td style="padding:8px;font-weight:600;">${escapeHtml(u.username)}</td>
           <td style="padding:8px;">${sourceBadge(u.provider)}</td>
-          <td style="padding:8px;color:#8b949e;">${u.display_name || '-'}</td>
+          <td style="padding:8px;color:#8b949e;">${escapeHtml(u.display_name) || '-'}</td>
           <td style="padding:8px;">${roleBadge(u.role)}</td>
-          <td style="padding:8px;font-size:13px;color:#8b949e;">${u.allowed_namespaces || (u.role.startsWith('ns-') ? '<span style="color:#f85149;">not set</span>' : '-')}</td>
+          <td style="padding:8px;font-size:13px;color:#8b949e;">${escapeHtml(u.allowed_namespaces) || (u.role.startsWith('ns-') ? '<span style="color:#f85149;">not set</span>' : '-')}</td>
           <td style="padding:8px;white-space:nowrap;">
             ${u.role === 'admin' && u.username === 'admin' ? '<span style="color:#8b949e;font-size:12px;">protected</span>' : `
-              <button onclick="editUserRole(${u.id}, '${u.username}', '${u.role}', '${u.allowed_namespaces || ''}')" class="btn-secondary" style="padding:4px 10px;font-size:12px;">Edit Role</button>
-              <button onclick="deleteUser(${u.id}, '${u.username}')" class="btn-secondary" style="padding:4px 10px;font-size:12px;color:#f85149;">Delete</button>
+              <button onclick="editUserRole(${u.id}, '${escapeHtml(u.username)}', '${escapeHtml(u.role)}', '${escapeHtml(u.allowed_namespaces) || ''}')" class="btn-secondary" style="padding:4px 10px;font-size:12px;">Edit Role</button>
+              <button onclick="deleteUser(${u.id}, '${escapeHtml(u.username)}')" class="btn-secondary" style="padding:4px 10px;font-size:12px;color:#f85149;">Delete</button>
             `}
           </td>
         </tr>`).join('')}
