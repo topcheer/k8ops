@@ -382,3 +382,119 @@ export function filterTable(containerId, inputId) {
     badge.style.display = 'none';
   }
 }
+
+// --- Notification Center ---
+var _notifItems = [];
+var _notifMaxItems = 50;
+var _notifPolling = null;
+
+export function toggleNotifPanel() {
+  var panel = document.getElementById('notifPanel');
+  if (!panel) return;
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  if (panel.style.display === 'block') {
+    // Clear unread badge when opened
+    var badge = document.getElementById('notifBadge');
+    if (badge) badge.classList.remove('notif-pulse');
+  }
+}
+
+export function initNotificationCenter(alerts) {
+  // Reset and populate from initial alerts
+  _notifItems = [];
+  var list = document.getElementById('notifList');
+  if (!list) return;
+
+  if (alerts && alerts.length) {
+    for (var i = 0; i < alerts.length; i++) {
+      addNotification(alerts[i]);
+    }
+  } else {
+    list.innerHTML = '<div class="notif-empty">No alerts. Cluster is healthy.</div>';
+    updateNotifBadge();
+  }
+}
+
+export function addNotification(alert) {
+  if (!alert) return;
+
+  var list = document.getElementById('notifList');
+  if (!list) return;
+
+  // Remove empty placeholder
+  var empty = list.querySelector('.notif-empty');
+  if (empty) empty.remove();
+
+  _notifItems.unshift(alert);
+  if (_notifItems.length > _notifMaxItems) _notifItems.pop();
+
+  // Determine icon and severity class
+  var sev = alert.severity || 'info';
+  var icon = '\u2139'; // info
+  var cls = 'notif-info';
+  if (sev === 'critical') { icon = '\u26A0'; cls = 'notif-critical'; }
+  else if (sev === 'warning') { icon = '\u26A0'; cls = 'notif-warn'; }
+  else if (sev === 'success') { icon = '\u2713'; cls = 'notif-success'; }
+
+  var item = document.createElement('div');
+  item.className = 'notif-item ' + cls;
+  var timeStr = alert.time ? timeAgo(alert.time) : 'just now';
+  item.innerHTML =
+    '<span class="notif-item-icon">' + icon + '</span>' +
+    '<div class="notif-item-body">' +
+      '<div class="notif-item-text">' + escapeHtml(alert.text || alert.message || '') + '</div>' +
+      '<div class="notif-item-meta">' +
+        '<span class="notif-item-time">' + timeStr + '</span>' +
+      '</div>' +
+    '</div>';
+  list.insertBefore(item, list.firstChild);
+
+  // Pulse the badge
+  var badge = document.getElementById('notifBadge');
+  if (badge) badge.classList.add('notif-pulse');
+
+  updateNotifBadge();
+}
+
+function updateNotifBadge() {
+  var badge = document.getElementById('notifBadge');
+  if (!badge) return;
+  if (_notifItems.length > 0) {
+    badge.textContent = _notifItems.length > 99 ? '99+' : String(_notifItems.length);
+    badge.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+// Auto-poll cluster for alerts every 60s
+export function startNotifPolling() {
+  if (_notifPolling) clearInterval(_notifPolling);
+  pollNotifAlerts(); // immediate
+  _notifPolling = setInterval(pollNotifAlerts, 60000);
+}
+
+async function pollNotifAlerts() {
+  try {
+    var data = await fetchJSON('/api/cluster/overview');
+    var alerts = [];
+
+    // Check failed diagnostics
+    var diags = data.diagnostics || {};
+    var failed = (diags.byPhase && diags.byPhase.Failed) || 0;
+    if (failed > 0) {
+      alerts.push({ severity: 'critical', text: failed + ' failed diagnostic' + (failed > 1 ? 's' : '') + ' need attention', time: new Date().toISOString() });
+    }
+
+    // Check pending remediations
+    var rems = data.remediations || {};
+    var pending = (rems.byPhase && rems.byPhase.Pending) || 0;
+    if (pending > 0) {
+      alerts.push({ severity: 'warning', text: pending + ' remediation plan' + (pending > 1 ? 's' : '') + ' awaiting approval', time: new Date().toISOString() });
+    }
+
+    if (alerts.length > 0) {
+      initNotificationCenter(alerts);
+    }
+  } catch(e) { /* silently ignore */ }
+}

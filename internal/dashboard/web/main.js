@@ -35,6 +35,10 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   // Check provider configuration
   checkProviderConfig();
+  // Start notification center polling
+  if (typeof core.startNotifPolling === 'function') {
+    core.startNotifPolling();
+  }
 });
 
 // Check if AI provider is configured, show banner if not
