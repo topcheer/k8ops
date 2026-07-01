@@ -8,8 +8,15 @@ export function openChatOverlay() {
   document.getElementById('chatOverlay').classList.add('active');
   if (!currentConvId) {
     document.getElementById('chatMessages').innerHTML =
-      '<div style="text-align:center;color:var(--text-muted);padding:80px 40px;">Start a conversation with k8ops AI</div>' +
-      '<div style="text-align:center;color:var(--text-faded);font-size:12px;">Ask questions like: <code style="color:var(--accent-blue);">show pods in default namespace</code> or <code style="color:var(--accent-blue);">why is my pod crashing?</code></div>';
+      '<div style="text-align:center;color:var(--text-muted);padding:60px 40px;">' +
+      '<div style="font-size:28px;margin-bottom:12px;">k8ops AI</div>' +
+      '<div style="font-size:14px;">Ask questions about your cluster or use a quick action below</div>' +
+      '</div>';
+    var sugg = document.getElementById('chatSuggestions');
+    if (sugg) sugg.style.display = 'flex';
+  } else {
+    var sugg = document.getElementById('chatSuggestions');
+    if (sugg) sugg.style.display = 'none';
   }
   // Check provider status
   checkChatProvider();
@@ -76,11 +83,26 @@ export function newConversation() {
   currentConvId = null;
   pendingToolCalls = '';
   document.getElementById('chatMessages').innerHTML =
-    '<div style="text-align:center;color:#8b949e;padding:120px 40px;">New conversation started. Ask anything!</div>';
+    '<div style="text-align:center;color:var(--text-muted);padding:60px 40px;">' +
+    '<div style="font-size:28px;margin-bottom:12px;">k8ops AI</div>' +
+    '<div style="font-size:14px;">Ask questions about your cluster or use a quick action below</div>' +
+    '</div>';
   document.getElementById('chatContext').textContent = '';
   document.getElementById('chatConvInfo').textContent = '';
+  var sugg = document.getElementById('chatSuggestions');
+  if (sugg) sugg.style.display = 'flex';
   document.getElementById('chatInput').focus();
   showToast('New conversation started', 'info', 2000);
+}
+
+export function quickChat(msg) {
+  var input = document.getElementById('chatInput');
+  if (input) {
+    input.value = msg;
+    var sugg = document.getElementById('chatSuggestions');
+    if (sugg) sugg.style.display = 'none';
+  }
+  sendChatMessage();
 }
 
 export async function sendChatMessage() {

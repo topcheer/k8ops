@@ -470,6 +470,26 @@
     </div>
   </div>
   <div class="chat-body" id="chatMessages"></div>
+  <div class="chat-suggestions" id="chatSuggestions">
+    <button class="chat-suggestion-btn" onclick="quickChat('List all pods that are not running in the cluster')">
+      <span class="chat-suggestion-icon">&#9888;</span> Find unhealthy pods
+    </button>
+    <button class="chat-suggestion-btn" onclick="quickChat('Show me the resource usage of all nodes (CPU and memory)')">
+      <span class="chat-suggestion-icon">&#9776;</span> Node resource usage
+    </button>
+    <button class="chat-suggestion-btn" onclick="quickChat('What events happened in the last hour? Focus on warnings.')">
+      <span class="chat-suggestion-icon">&#9201;</span> Recent events
+    </button>
+    <button class="chat-suggestion-btn" onclick="quickChat('Diagnose why pods might be failing or crashing in any namespace')">
+      <span class="chat-suggestion-icon">&#128269;</span> Diagnose issues
+    </button>
+    <button class="chat-suggestion-btn" onclick="quickChat('Show me services and their endpoints across all namespaces')">
+      <span class="chat-suggestion-icon">&#128279;</span> Service map
+    </button>
+    <button class="chat-suggestion-btn" onclick="quickChat('Check for any pods with high restart counts')">
+      <span class="chat-suggestion-icon">&#128260;</span> CrashLoop check
+    </button>
+  </div>
   <div class="chat-footer">
     <div class="chat-footer-inner">
       <textarea id="chatInput" placeholder="Ask about cluster issues..." rows="1" autocomplete="off"

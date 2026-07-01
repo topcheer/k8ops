@@ -105,6 +105,25 @@ body {
   color: var(--text-faded);
 }
 
+/* Chat quick suggestions */
+.chat-suggestions {
+  display: none; flex-wrap: wrap; gap: 8px;
+  max-width: 900px; margin: 0 auto 12px;
+  padding: 0 24px;
+}
+.chat-suggestion-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; font-size: 12px; font-weight: 500;
+  background: var(--bg-tertiary); border: 1px solid var(--border-default);
+  border-radius: 20px; cursor: pointer; color: var(--text-secondary);
+  transition: all 0.15s ease; white-space: nowrap;
+}
+.chat-suggestion-btn:hover {
+  background: var(--accent-blue); color: #fff; border-color: var(--accent-blue);
+  transform: translateY(-1px);
+}
+.chat-suggestion-icon { font-size: 14px; }
+
 /* --- Markdown render styles --- */
 .md p { margin: 8px 0; line-height: 1.7; }
 .md h1 { font-size: 1.5em; margin: 16px 0 8px; color: var(--text-bright); font-weight: 700; }
