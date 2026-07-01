@@ -41,7 +41,7 @@ func TestWriteJSON_Array(t *testing.T) {
 	writeJSON(w, []string{"a", "b", "c"})
 
 	var resp []string
-	json.NewDecoder(w.Body).Decode(&resp)
+	_ = json.NewDecoder(w.Body).Decode(&resp)
 	if len(resp) != 3 {
 		t.Errorf("len = %d, want 3", len(resp))
 	}
@@ -56,7 +56,7 @@ func TestWriteError(t *testing.T) {
 	}
 
 	var resp map[string]string
-	json.NewDecoder(w.Body).Decode(&resp)
+	_ = json.NewDecoder(w.Body).Decode(&resp)
 	if resp["error"] != "invalid input" {
 		t.Errorf("error = %q, want 'invalid input'", resp["error"])
 	}
@@ -147,7 +147,7 @@ func TestHandleVersion(t *testing.T) {
 	}
 
 	var resp map[string]string
-	json.NewDecoder(w.Body).Decode(&resp)
+	_ = json.NewDecoder(w.Body).Decode(&resp)
 	if resp["version"] != "v1.2.3" {
 		t.Errorf("version = %q, want v1.2.3", resp["version"])
 	}
@@ -532,7 +532,7 @@ func TestHandleAuditEvents_NilLogger(t *testing.T) {
 	}
 
 	var resp map[string]any
-	json.NewDecoder(w.Body).Decode(&resp)
+	_ = json.NewDecoder(w.Body).Decode(&resp)
 	if resp["total"].(float64) != 0 {
 		t.Errorf("total = %v, want 0", resp["total"])
 	}
@@ -581,7 +581,7 @@ func TestHandleAudit_NilLogger(t *testing.T) {
 	}
 
 	var resp map[string]any
-	json.NewDecoder(w.Body).Decode(&resp)
+	_ = json.NewDecoder(w.Body).Decode(&resp)
 	if resp["count"].(float64) != 0 {
 		t.Errorf("count = %v, want 0", resp["count"])
 	}
@@ -599,7 +599,7 @@ func TestHandleAuditStats_NilLogger(t *testing.T) {
 	}
 
 	var resp map[string]any
-	json.NewDecoder(w.Body).Decode(&resp)
+	_ = json.NewDecoder(w.Body).Decode(&resp)
 	if resp["total"].(float64) != 0 {
 		t.Errorf("total = %v, want 0", resp["total"])
 	}

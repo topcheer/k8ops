@@ -346,7 +346,7 @@ func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleHealthz(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(200)
-	w.Write([]byte("ok\n"))
+	_, _ = w.Write([]byte("ok\n"))
 }
 
 // handleReadyz is the K8s readiness probe endpoint.
@@ -368,7 +368,7 @@ func (s *Server) handleReadyz(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(200)
-	w.Write([]byte("ok\n"))
+	_, _ = w.Write([]byte("ok\n"))
 }
 
 // handleVersion is defined in middleware.go.

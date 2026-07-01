@@ -1,0 +1,28 @@
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+  disable:
+    - typecheck
+
+linters-settings:
+  errcheck:
+    exclude-functions:
+      - (io.Closer).Close
+      - (net/http.ResponseWriter).Write
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - errcheck
+        - unused
+    - linters:
+        - unused
+      text: "k8opsBuiltinRoles|isCoreGroup|slackLogHelper"
+  max-issues-per-linter: 0
+  max-same-issues: 0

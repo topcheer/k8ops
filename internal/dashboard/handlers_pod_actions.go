@@ -53,7 +53,7 @@ func (s *Server) handlePodLogs(w http.ResponseWriter, r *http.Request) {
 	follow := r.URL.Query().Get("follow") == "true"
 	tailLines := int64(500)
 	if tl := r.URL.Query().Get("tailLines"); tl != "" {
-		fmt.Sscanf(tl, "%d", &tailLines)
+		_, _ = fmt.Sscanf(tl, "%d", &tailLines)
 	}
 
 	opts := &corev1.PodLogOptions{Container: container, Follow: follow}
