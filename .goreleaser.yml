@@ -179,7 +179,7 @@ release:
     name: k8ops
   draft: true
   prerelease: auto
-  name_template: "{{ .TagName }}"
+  name_template: "{{ .Tag }}"
   header: |
     ## k8ops {{ .Version }}
 
