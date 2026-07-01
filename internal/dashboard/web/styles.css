@@ -593,37 +593,99 @@ code {
 .topology-container {
   overflow-x: auto; padding: 16px 0;
 }
-.topology-wrapper {
-  min-height: 400px;
-}
-.topology-svg {
-  background: var(--bg-primary); border-radius: 8px;
+
+/* --- Namespace-Grouped Topology --- */
+.topo-summary-bar {
+  display: flex; gap: 24px; padding: 16px 20px; margin-bottom: 16px;
+  background: var(--bg-secondary); border-radius: 10px;
   border: 1px solid var(--border-subtle);
 }
-.topo-pod-rect {
-  transition: fill 0.15s, stroke-width 0.15s;
-  cursor: pointer;
+.topo-stat { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.topo-stat-val { font-size: 24px; font-weight: 700; }
+.topo-stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+.topo-ns-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
 }
-.topo-pod-rect:hover {
-  fill: var(--bg-secondary);
-  stroke-width: 2;
+.topo-ns-card {
+  background: var(--bg-secondary); border-radius: 10px; border: 1px solid var(--border-default);
+  overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s;
 }
-.topo-pod-crash {
-  animation: topo-crash-pulse 2s ease infinite;
+.topo-ns-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+.topo-healthy { border-left: 3px solid var(--accent-green); }
+.topo-warning { border-left: 3px solid var(--accent-yellow); }
+.topo-critical { border-left: 3px solid var(--accent-red); }
+.topo-system { opacity: 0.75; }
+
+.topo-ns-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 14px; border-bottom: 1px solid var(--border-subtle);
+}
+.topo-ns-name {
+  font-size: 13px; font-weight: 600; color: var(--text-primary);
+  font-family: 'SF Mono', monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px;
+}
+.topo-ns-badge {
+  font-size: 11px; padding: 2px 8px; border-radius: 10px;
+  background: var(--bg-tertiary); color: var(--text-muted); white-space: nowrap;
+}
+.topo-ns-stats {
+  display: flex; gap: 12px; padding: 6px 14px;
+  font-size: 11px; color: var(--text-muted);
+}
+
+.topo-pod-list { padding: 8px 14px 12px; max-height: 320px; overflow-y: auto; }
+.topo-pod-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 3px 0; font-size: 12px; color: var(--text-muted);
+  cursor: default; border-radius: 4px; padding-left: 4px;
+}
+.topo-pod-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+.topo-pod-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.topo-pod-name {
+  flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: 'SF Mono', monospace; font-size: 11px;
+}
+.topo-pod-warn {
+  font-size: 10px; font-weight: 700; color: var(--accent-red);
+  background: rgba(248,81,73,0.15); padding: 1px 5px; border-radius: 8px; flex-shrink: 0;
+}
+.topo-pod-crash .topo-pod-dot { animation: topo-crash-pulse 2s ease infinite; }
+.topo-pod-more {
+  text-align: center; padding: 6px; font-size: 11px; color: var(--text-faded);
+  font-style: italic;
 }
 @keyframes topo-crash-pulse {
-  0%, 100% { stroke-opacity: 1; }
-  50% { stroke-opacity: 0.4; }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
-.topology-stats {
-  display: flex; gap: 20px; padding: 12px 16px;
-  margin-top: 12px; background: var(--bg-secondary); border-radius: 8px;
-  border: 1px solid var(--border-subtle); flex-wrap: wrap;
+
+/* Node resource cards */
+.topo-nodes-section { margin-top: 20px; }
+.topo-nodes-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px; margin-top: 10px;
 }
-.topo-stat {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 13px; color: var(--text-primary);
+.topo-node-card {
+  background: var(--bg-secondary); border-radius: 8px;
+  border: 1px solid var(--border-subtle); padding: 12px 14px;
 }
+.topo-node-down { border-color: var(--accent-red); }
+.topo-node-name {
+  font-size: 13px; font-weight: 600; margin-bottom: 8px;
+  font-family: 'SF Mono', monospace;
+}
+.topo-node-bars { display: flex; flex-direction: column; gap: 6px; }
+.topo-bar-row { display: flex; align-items: center; gap: 8px; }
+.topo-bar-label { font-size: 10px; width: 30px; color: var(--text-muted); font-weight: 600; }
+.topo-bar-track {
+  flex: 1; height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden;
+}
+.topo-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s ease; }
+.topo-bar-val { font-size: 10px; width: 36px; text-align: right; color: var(--text-muted); }
 
 /* --- Notification Center --- */
 .notif-bell-wrapper {
