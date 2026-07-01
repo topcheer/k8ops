@@ -30,7 +30,11 @@ export function showTab(name, btn) {
 
 export function initTabFromHash() {
   const hash = location.hash.replace('#', '');
-  const validTabs = ['overview','diagnostics','remediations','optimizations','nodes','events','pods','resources','crds','audit','settings','rbac'];
+  if (hash === 'chat') {
+    window.openChatOverlay();
+    return;
+  }
+  const validTabs = ['overview','diagnostics','remediations','optimizations','nodes','events','pods','resources','crds','audit','settings','rbac','cost','topology'];
   if (hash && validTabs.includes(hash)) {
     const btn = document.querySelector('.sidebar-nav button[onclick*="' + hash + '"]');
     showTab(hash, btn);
@@ -38,6 +42,17 @@ export function initTabFromHash() {
     window.loadOverview();
   }
 }
+
+// Handle browser back/forward
+window.addEventListener('hashchange', function() {
+  var hash = location.hash.replace('#', '');
+  var chatEl = document.getElementById('chatOverlay');
+  if (hash === 'chat' && chatEl && !chatEl.classList.contains('active')) {
+    window.openChatOverlay();
+  } else if (hash !== 'chat' && chatEl && chatEl.classList.contains('active')) {
+    chatEl.classList.remove('active');
+  }
+});
 
 // ============================
 // Command Palette (Ctrl+K)

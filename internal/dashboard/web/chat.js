@@ -4,8 +4,12 @@ import { escapeHtml, fetchJSON, showToast } from './modules/utils.js';
 let currentConvId = null;
 let pendingToolCalls = ''; // accumulate tool calls before final answer
 
+var _preChatHash = '';
+
 export function openChatOverlay() {
   document.getElementById('chatOverlay').classList.add('active');
+  _preChatHash = location.hash;
+  if (location.hash !== '#chat') history.replaceState(null, '', '#chat');
   if (!currentConvId) {
     document.getElementById('chatMessages').innerHTML =
       '<div style="text-align:center;color:var(--text-muted);padding:60px 40px;">' +
@@ -45,6 +49,9 @@ async function checkChatProvider() {
 
 export function closeChatOverlay() {
   document.getElementById('chatOverlay').classList.remove('active');
+  if (location.hash === '#chat') {
+    history.replaceState(null, '', _preChatHash || '#overview');
+  }
 }
 
 // ESC to close
