@@ -1,0 +1,13 @@
+# Dockerfile.goreleaser — used by GoReleaser for pre-built binaries
+# GoReleaser compiles the binary, then this Dockerfile just copies it in.
+FROM alpine:3.21
+
+RUN apk add --no-cache ca-certificates
+
+WORKDIR /
+COPY manager /manager
+COPY k8ops /usr/local/bin/k8ops
+
+USER 65532:65532
+
+ENTRYPOINT ["/manager"]
