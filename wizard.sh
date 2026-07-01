@@ -119,8 +119,65 @@ check_prereqs() {
     if ! confirm "Continue anyway?"; then
       exit 1
     fi
+  fi
+}
+
+select_context() {
+  # Get current context
+  local current
+  current=$(kubectl config current-context 2>/dev/null || echo "unknown")
+
+  # Get server info for current context
+  local server
+  server=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}' 2>/dev/null || echo "")
+
+  echo ""
+  echo -e "${BL}${B}Current Kubernetes Context:${RST}"
+  echo -e "  ${B}Context:${RST}  $current"
+  [[ -n "$server" ]] && echo -e "  ${B}Server:${RST}   $server"
+
+  # List all available contexts
+  local contexts
+  mapfile -t contexts < <(kubectl config get-contexts -o name 2>/dev/null || echo "")
+
+  if [[ ${#contexts[@]} -le 1 ]]; then
+    ok "Using context: $current"
+    return
+  fi
+
+  echo ""
+  echo -e "${YL}Available contexts:${RST}"
+  for i in "${!contexts[@]}"; do
+    local ctx="${contexts[$i]}"
+    local srv
+    srv=$(kubectl config view -o jsonpath="{.contexts[?(@.name=='$ctx')].cluster.cluster.server}" 2>/dev/null || echo "")
+    if [[ "$ctx" == "$current" ]]; then
+      echo -e "  ${GR}${B}[$((i+1))] $ctx${RST} ${GR}(active)${RST} — $srv"
+    else
+      echo -e "  $((i+1)) $ctx — $srv"
+    fi
+  done
+
+  ask "Switch context? Enter number or press Enter to keep current:"
+  read -r choice
+  if [[ -z "$choice" ]]; then
+    ok "Keeping current context: $current"
+    return
+  fi
+  if [[ "$choice" =~ ^[0-9]+$ ]] && (( choice >= 1 && choice <= ${#contexts[@]} )); then
+    local target="${contexts[$((choice-1))]}"
+    if kubectl config use-context "$target" &>/dev/null; then
+      ok "Switched to context: $target"
+      # Re-check connectivity
+      if ! kubectl cluster-info &>/dev/null; then
+        warn "Cannot reach cluster via context '$target'"
+      fi
+    else
+      err "Failed to switch to context: $target"
+      exit 1
+    fi
   else
-    ok "Kubernetes cluster reachable"
+    warn "Invalid choice, keeping current context: $current"
   fi
 }
 
@@ -655,6 +712,11 @@ main() {
   done
 
   check_prereqs
+
+  # Context selection (skip in --values mode unless --select-context)
+  if [[ -z "$VALUES_FILE" ]]; then
+    select_context
+  fi
 
   if [[ -n "$VALUES_FILE" ]]; then
     load_values
