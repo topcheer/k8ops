@@ -291,15 +291,7 @@ body {
 }
 .main-content .top-bar .last-update { font-size: 12px; color: var(--text-muted); }
 /* Responsive: collapse sidebar on small screens */
-@media (max-width: 768px) {
-  .sidebar { width: 56px; }
-  .sidebar-header h1 { display: none; }
-  .sidebar-header .version { display: none; }
-  .sidebar-nav button { padding: 10px 0; justify-content: center; }
-  .sidebar-nav button span:not(.nav-icon) { display: none; }
-  .sidebar-footer { display: none; }
-  .main-content { margin-left: 56px; padding: 16px; }
-}
+/* Mobile responsive rules consolidated at end of file */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
 .card {
   background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: 8px; padding: 20px;
@@ -1066,4 +1058,97 @@ tbody tr.kbd-selected {
 @keyframes loadingSlide {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+/* ============================
+   Mobile Responsive
+   ============================ */
+@media (max-width: 768px) {
+  /* Sidebar: collapse to icon-only */
+  .sidebar { width: 56px; }
+  .sidebar-header h1 { display: none; }
+  .sidebar-header .version { display: none; }
+  .sidebar-nav button { padding: 10px 0; justify-content: center; }
+  .sidebar-nav button span:not(.nav-icon) { display: none; }
+  .sidebar-footer { display: none; }
+  .nav-chat-btn { margin: 4px auto; padding: 10px 0 !important; max-width: 40px; }
+  .main-content { margin-left: 56px; padding: 12px; }
+
+  /* Top bar: stack vertically */
+  .top-bar { flex-direction: column; align-items: stretch; gap: 8px; padding: 8px 12px; }
+  .topbar-chat-btn { width: 100%; justify-content: center; }
+  .notif-bell-wrapper { display: none; }
+
+  /* Cards: single column */
+  .cards { grid-template-columns: 1fr; gap: 8px; }
+
+  /* Tables: horizontal scroll */
+  table { font-size: 12px; }
+  th, td { padding: 8px 10px; }
+
+  /* Chat overlay: full screen on mobile */
+  .chat-overlay { width: 100% !important; right: 0 !important; }
+  .chat-overlay .chat-header { padding: 10px 12px; flex-wrap: wrap; }
+  .chat-overlay .chat-footer { padding: 10px 12px; }
+  .chat-overlay .chat-footer textarea { font-size: 14px; }
+  .chat-suggestion-btn { font-size: 11px; padding: 6px 10px; }
+
+  /* Log viewer: full screen */
+  #logOverlay { width: 100% !important; right: 0 !important; }
+  #logOverlay .chat-header { flex-wrap: wrap; gap: 6px; }
+  .log-toolbar { flex-wrap: wrap; }
+
+  /* YAML overlay: full screen */
+  #yamlOverlay { width: 100% !important; right: 0 !important; }
+
+  /* Terminal overlay: full screen */
+  #terminalOverlay { width: 100% !important; right: 0 !important; }
+
+  /* Command palette: full width */
+  .cmd-palette-overlay { width: 95%; max-width: 95%; }
+  .cmd-item { padding: 10px 16px; }
+
+  /* Node resource bars: stack */
+  .node-resource-row { flex-direction: column; }
+  .resource-bars { width: 100%; }
+
+  /* Hide expensive animations */
+  .sparkline-svg, .health-gauge-wrap { transform: scale(0.85); }
+}
+
+/* ============================
+   Tablet tweaks (768-1024px)
+   ============================ */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .cards { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .chat-overlay { width: 420px !important; }
+}
+
+/* ============================
+   Print styles
+   ============================ */
+@media print {
+  .sidebar, .top-bar, .chat-overlay, #logOverlay, #yamlOverlay,
+  #terminalOverlay, .notif-bell-wrapper, .provider-banner,
+  .cmd-palette-overlay, #kbdHelpOverlay, .footer { display: none !important; }
+  .main-content { margin-left: 0; padding: 0; }
+  .card { border: 1px solid #ccc; }
+  body { background: white; color: black; }
+}
+
+/* Smooth focus ring for keyboard navigation */
+*:focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 2px; border-radius: 4px; }
+
+/* Better scrollbar styling */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
