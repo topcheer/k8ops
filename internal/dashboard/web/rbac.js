@@ -1,5 +1,5 @@
 // --- User Management ---
-import { escapeHtml, fetchJSON } from './modules/utils.js';
+import { escapeHtml, fetchJSON, showToast } from './modules/utils.js';
 
 export async function loadUsers() {
   const container = document.getElementById('userList');
@@ -96,7 +96,7 @@ export async function createUser() {
   const username = document.getElementById('newUsername').value.trim();
   const password = document.getElementById('newPassword').value;
   const role = document.getElementById('newRole').value;
-  if (!username || !password) { alert('Username and password are required'); return; }
+  if (!username || !password) { showToast('Username and password are required', 'error'); return; }
   const ns = role.startsWith('ns-') ? document.getElementById('newNamespaces').value.trim() : '';
   try {
     const res = await fetch('/api/admin/users', {
@@ -116,7 +116,7 @@ export async function createUser() {
     document.getElementById('newEmail').value = '';
     document.getElementById('newDisplayName').value = '';
     loadUsers();
-  } catch(e) { alert('Failed to create user: ' + e.message); }
+  } catch(e) { showToast('Failed to create user: ' + e.message, 'error'); }
 }
 
 export function editUserRole(id, username, currentRole, currentNs) {
@@ -131,7 +131,7 @@ export function editUserRole(id, username, currentRole, currentNs) {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ role, allowed_namespaces: ns }),
-  }).then(r => r.json()).then(() => loadUsers()).catch(e => alert('Update failed: ' + e.message));
+  }).then(r => r.json()).then(() => loadUsers()).catch(e => showToast('Update failed: ' + e.message), 'error');
 }
 
 export async function deleteUser(id, username) {
@@ -139,7 +139,7 @@ export async function deleteUser(id, username) {
   try {
     await fetch('/api/admin/users/' + id, { method: 'DELETE' });
     loadUsers();
-  } catch(e) { alert('Delete failed: ' + e.message); }
+  } catch(e) { showToast('Delete failed: ' + e.message, 'error'); }
 }
 
 // --- Auth Provider Configuration ---
@@ -174,7 +174,7 @@ export async function saveAuthConfig() {
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'HTTP ' + res.status); }
     loadAuthConfig();
-  } catch(e) { alert('Failed: ' + e.message); }
+  } catch(e) { showToast('Failed: ' + e.message, 'error'); }
 }
 // --- Shared data cache ---
 
@@ -321,7 +321,7 @@ export async function addRoleMapping(roleName) {
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'HTTP ' + res.status); }
     loadRoleMappings();
-  } catch(e) { alert('Failed: ' + e.message); }
+  } catch(e) { showToast('Failed: ' + e.message, 'error'); }
 }
 
 export async function removeRoleMapping(roleName, kind, name, ns) {
@@ -330,12 +330,12 @@ export async function removeRoleMapping(roleName, kind, name, ns) {
     if (ns) params.set('namespace', ns);
     await fetch('/api/rbac/role-mapping?' + params, { method: 'DELETE' });
     loadRoleMappings();
-  } catch(e) { alert('Failed: ' + e.message); }
+  } catch(e) { showToast('Failed: ' + e.message, 'error'); }
 }
 
 export async function createCustomRole() {
   const name = document.getElementById('newCustomRoleName').value.trim();
-  if (!name) { alert('角色名必填'); return; }
+  if (!name) { showToast('角色名必填', 'error'); return; }
   const displayName = document.getElementById('newCustomRoleDisplay').value.trim();
   const scope = document.getElementById('newCustomRoleScope').value;
   const desc = document.getElementById('newCustomRoleDesc').value.trim();
@@ -350,7 +350,7 @@ export async function createCustomRole() {
     document.getElementById('newCustomRoleDisplay').value = '';
     document.getElementById('newCustomRoleDesc').value = '';
     loadRoleMappings();
-  } catch(e) { alert('Failed: ' + e.message); }
+  } catch(e) { showToast('Failed: ' + e.message, 'error'); }
 }
 
 export async function deleteCustomRole(name) {
@@ -358,7 +358,7 @@ export async function deleteCustomRole(name) {
   try {
     await fetch('/api/rbac/role-defs?name=' + name, { method: 'DELETE' });
     loadRoleMappings();
-  } catch(e) { alert('Failed: ' + e.message); }
+  } catch(e) { showToast('Failed: ' + e.message, 'error'); }
 }
 
 // --- ClusterRole Management ---
@@ -400,7 +400,7 @@ export function hideCreateRoleForm() { document.getElementById('roleCreateForm')
 
 export async function createClusterRole() {
   const name = document.getElementById('newRoleName').value.trim();
-  if (!name) { alert('Name is required'); return; }
+  if (!name) { showToast('Name is required', 'error'); return; }
   try {
     const res = await fetch('/api/rbac/clusterroles', {
       method: 'POST',
@@ -412,7 +412,7 @@ export async function createClusterRole() {
     document.getElementById('newRoleName').value = '';
     await loadClusterRoles();
     editRoleRules(name);
-  } catch(e) { alert('Failed: ' + e.message); }
+  } catch(e) { showToast('Failed: ' + e.message, 'error'); }
 }
 
 export async function deleteClusterRole(name) {
@@ -420,7 +420,7 @@ export async function deleteClusterRole(name) {
   try {
     await fetch('/api/rbac/clusterroles/' + name, { method: 'DELETE' });
     loadClusterRoles();
-  } catch(e) { alert('Delete failed: ' + e.message); }
+  } catch(e) { showToast('Delete failed: ' + e.message, 'error'); }
 }
 
 export async function viewRoleYAML(name) {
@@ -430,7 +430,7 @@ export async function viewRoleYAML(name) {
     document.getElementById('yamlTitle').textContent = 'ClusterRole: ' + name;
     document.getElementById('yamlOutput').textContent = data.yaml || '';
     overlay.classList.add('active');
-  } catch(e) { alert('Failed: ' + e.message); }
+  } catch(e) { showToast('Failed: ' + e.message, 'error'); }
 }
 
 // --- Namespace Role Management ---
@@ -483,7 +483,7 @@ export function hideCreateNsRoleForm() { document.getElementById('nsRoleCreateFo
 export async function createNsRole() {
   const name = document.getElementById('newNsRoleName').value.trim();
   const ns = document.getElementById('newNsRoleNs').value;
-  if (!name || !ns) { alert('Name and namespace are required'); return; }
+  if (!name || !ns) { showToast('Name and namespace are required', 'error'); return; }
   try {
     const res = await fetch('/api/rbac/roles', {
       method: 'POST',
@@ -495,7 +495,7 @@ export async function createNsRole() {
     document.getElementById('newNsRoleName').value = '';
     await loadNsRoles();
     editNsRoleRules(ns, name);
-  } catch(e) { alert('Failed: ' + e.message); }
+  } catch(e) { showToast('Failed: ' + e.message, 'error'); }
 }
 
 export async function deleteNsRole(ns, name) {
@@ -503,7 +503,7 @@ export async function deleteNsRole(ns, name) {
   try {
     await fetch(`/api/rbac/roles/${ns}/${name}`, { method: 'DELETE' });
     loadNsRoles();
-  } catch(e) { alert('Delete failed: ' + e.message); }
+  } catch(e) { showToast('Delete failed: ' + e.message, 'error'); }
 }
 
 // --- RoleBinding Management ---
@@ -608,7 +608,7 @@ export async function createRoleBinding() {
   const roleName = document.getElementById('newBindingRoleName').value;
 
   if (!name || !namespaces.length || !subjectName || !roleName) {
-    alert('Binding name, at least one namespace, subject, and role are required');
+    showToast('Binding name, at least one namespace, subject, and role are required', 'error');
     return;
   }
 
@@ -630,9 +630,9 @@ export async function createRoleBinding() {
     document.getElementById('newBindingName').value = '';
     loadRoleBindings();
     if (data.errors && data.errors.length > 0) {
-      alert('Created in: ' + data.created.join(', ') + '\nErrors: ' + data.errors.join('; '));
+      showToast('Created in: ' + data.created.join(', ') + ' | Errors: ' + data.errors.join('; '), 'warning');
     }
-  } catch(e) { alert('Failed: ' + e.message); }
+  } catch(e) { showToast('Failed: ' + e.message, 'error'); }
 }
 
 export async function deleteRoleBinding(ns, name) {
@@ -640,7 +640,7 @@ export async function deleteRoleBinding(ns, name) {
   try {
     await fetch(`/api/rbac/rolebindings/${ns}/${name}`, { method: 'DELETE' });
     loadRoleBindings();
-  } catch(e) { alert('Delete failed: ' + e.message); }
+  } catch(e) { showToast('Delete failed: ' + e.message, 'error'); }
 }
 
 // --- WYSIWYG Role Rule Editor ---
@@ -862,7 +862,7 @@ export async function saveRoleRules() {
     closeRoleEditor();
     loadClusterRoles();
   } catch(e) {
-    alert('Failed to save: ' + e.message);
+    showToast('Failed to save: ' + e.message, 'error');
   }
 }
 

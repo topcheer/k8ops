@@ -1,5 +1,5 @@
 // --- Overview ---
-import { escapeHtml, fetchJSON, isForbidden, renderForbidden, badge, timeAgo } from './modules/utils.js';
+import { escapeHtml, fetchJSON, isForbidden, renderForbidden, badge, timeAgo, showToast } from './modules/utils.js';
 
 const _sparklineHistory = { pods: [], warnings: [], events: [] };
 const MAX_SPARK_POINTS = 30;
@@ -214,7 +214,7 @@ export async function viewDiagnostic(ns, name) {
   body.innerHTML = '<div class="loading">Loading report...</div>';
   try {
     const data = await fetchJSON(`/api/diagnostics/${ns}/${name}`);
-    body.innerHTML = `<div class="md" style="font-size:14px;">${renderMarkdown(data.markdown)}</div>`;
+    body.innerHTML = `<div class="md" style="font-size:14px;">${window.renderMarkdown ? window.renderMarkdown(data.markdown) : escapeHtml(data.markdown || '')}</div>`;
   } catch(e) {
     body.innerHTML = `<div class="error">Failed to load: ${escapeHtml(e.message)}</div>`;
   }
@@ -425,10 +425,10 @@ export async function approveRemediation(namespace, name) {
   if (!confirm(`Approve remediation plan "${name}"?`)) return;
   try {
     const res = await fetchJSON(`/api/remediation/${namespace}/${name}/approve`, { method: 'POST' });
-    alert(`Approved: ${res.status}`);
+    showToast('Approved: ' + (res.status || 'OK'), 'success');
     loadRemediations();
   } catch(e) {
-    alert('Error: ' + (e.message || 'Unknown error'));
+    showToast('Error: ' + (e.message || 'Unknown error'), 'error');
   }
 }
 
@@ -436,10 +436,10 @@ export async function rejectRemediation(namespace, name) {
   if (!confirm(`Reject remediation plan "${name}"?`)) return;
   try {
     const res = await fetchJSON(`/api/remediation/${namespace}/${name}/reject`, { method: 'POST' });
-    alert(`Rejected: ${res.status}`);
+    showToast('Rejected: ' + (res.status || 'OK'), 'success');
     loadRemediations();
   } catch(e) {
-    alert('Error: ' + (e.message || 'Unknown error'));
+    showToast('Error: ' + (e.message || 'Unknown error'), 'error');
   }
 }
 

@@ -13,6 +13,7 @@ export function showTab(name, btn) {
     history.replaceState(null, '', '#' + name);
   }
   if (name === 'overview') window.loadOverview();
+  if (name === 'topology') window.loadTopology();
   if (name === 'diagnostics') window.loadDiagnostics();
   if (name === 'remediations') window.loadRemediations();
   if (name === 'optimizations') window.loadOptimizations();

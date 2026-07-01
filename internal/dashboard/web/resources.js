@@ -1,5 +1,5 @@
 // --- Settings ---
-import { escapeHtml, fetchJSON, isForbidden, renderForbidden, truncateText } from './modules/utils.js';
+import { escapeHtml, fetchJSON, isForbidden, renderForbidden, truncateText, showToast } from './modules/utils.js';
 
 export async function loadSettings() {
   try {
@@ -41,7 +41,7 @@ export async function updateProvider() {
     maxTokens: 4096, temperature: 0.1,
   };
   if (!cfg.type || !cfg.model || !cfg.apiKey) {
-    alert('Provider type, model, and API key are required');
+    showToast('Provider type, model, and API key are required', 'error');
     return;
   }
   try {
@@ -51,12 +51,12 @@ export async function updateProvider() {
     });
     const result = await resp.json();
     if (resp.ok) {
-      alert('Provider updated! ' + (result.message || ''));
+      showToast('Provider updated! ' + (result.message || ''), 'success');
       window.loadSettings();
     } else {
-      alert('Error: ' + (result.error || 'Unknown'));
+      showToast('Error: ' + (result.error || 'Unknown'), 'error');
     }
-  } catch(e) { alert('Error: ' + e.message); }
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
 // --- Resources Browser ---

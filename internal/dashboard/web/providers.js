@@ -1,6 +1,6 @@
 // --- Auth Provider Icons ---
 // Returns an HTML span with icon/emoji for common auth providers.
-import { escapeHtml, fetchJSON } from './modules/utils.js';
+import { escapeHtml, fetchJSON, showToast } from './modules/utils.js';
 
 export function providerIcon(name, size) {
   size = size || 24;
@@ -199,9 +199,9 @@ export function selectPreset(key) {
 }
 
 export async function createProvider() {
-  if (!_selectedPreset) { alert('Select a provider preset first'); return; }
+  if (!_selectedPreset) { showToast('Select a provider preset first', 'error'); return; }
   const name = document.getElementById('newProviderName').value.trim();
-  if (!name) { alert('Name is required'); return; }
+  if (!name) { showToast('Name is required', 'error'); return; }
 
   const body = {
     name,
@@ -240,7 +240,7 @@ export async function createProvider() {
     if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'HTTP ' + res.status); }
     _selectedPreset = null;
     loadAuthProviders();
-  } catch(e) { alert('Failed: ' + e.message); }
+  } catch(e) { showToast('Failed: ' + e.message, 'error'); }
 }
 
 export async function toggleProvider(id, enable) {
@@ -251,7 +251,7 @@ export async function toggleProvider(id, enable) {
       body: JSON.stringify({enabled: enable}),
     });
     loadAuthProviders();
-  } catch(e) { alert(e.message); }
+  } catch(e) { showToast(e.message, 'error'); }
 }
 
 export async function deleteProvider(id, name) {
@@ -259,10 +259,10 @@ export async function deleteProvider(id, name) {
   try {
     await fetch('/api/auth/providers/' + id, {method: 'DELETE'});
     loadAuthProviders();
-  } catch(e) { alert(e.message); }
+  } catch(e) { showToast(e.message, 'error'); }
 }
 
 export function editProvider(id) {
   // For now, just scroll to top. Full edit form can be added later.
-  alert('Edit functionality — provider ID ' + id + '. Use delete + recreate for now.');
+  showToast('Edit functionality — provider ID ' + id + '. Use delete + recreate for now.', 'warning');
 }
