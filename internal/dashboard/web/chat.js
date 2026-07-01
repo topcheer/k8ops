@@ -1,5 +1,5 @@
 // --- Chat ---
-import { escapeHtml } from './modules/utils.js';
+import { escapeHtml, fetchJSON, showToast } from './modules/utils.js';
 
 let currentConvId = null;
 let pendingToolCalls = ''; // accumulate tool calls before final answer
@@ -80,6 +80,7 @@ export function newConversation() {
   document.getElementById('chatContext').textContent = '';
   document.getElementById('chatConvInfo').textContent = '';
   document.getElementById('chatInput').focus();
+  showToast('New conversation started', 'info', 2000);
 }
 
 export async function sendChatMessage() {
@@ -253,6 +254,7 @@ export async function sendChatMessage() {
     }
   } catch(e) {
     addChatMessage('error', 'Connection error: ' + e.message);
+    showToast('Chat connection failed: ' + e.message, 'error', 6000);
   }
 
   input.disabled = false;

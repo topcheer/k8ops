@@ -1,5 +1,5 @@
 // core.js — Core navigation, command palette, theme, namespace switcher
-import { API, escapeHtml, fetchJSON } from './modules/utils.js';
+import { API, escapeHtml, fetchJSON, showToast } from './modules/utils.js';
 
 // ============================
 // Tab Navigation
@@ -285,6 +285,9 @@ export function toggleTheme() {
   const next = current === 'light' ? 'dark' : 'light';
   applyTheme(next);
   localStorage.setItem('k8ops_theme', next);
+  const btn = document.getElementById('themeToggle');
+  if (btn) btn.innerHTML = next === 'light' ? '\u2600 Light' : '\u263E Dark';
+  showToast('Theme: ' + next, 'info', 1500);
 }
 
 // ============================
@@ -328,6 +331,7 @@ export function onNsChange() {
   const sel = document.getElementById('nsFilter');
   _currentNamespace = sel.value;
   localStorage.setItem('k8ops_ns', _currentNamespace);
+  showToast('Namespace: ' + (_currentNamespace || 'all'), 'info', 2000);
   const activeTab = document.querySelector('.sidebar-nav button.active');
   if (activeTab) {
     const tabName = activeTab.getAttribute('onclick');
