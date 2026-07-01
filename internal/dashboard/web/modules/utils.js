@@ -101,3 +101,81 @@ export function podPhaseColor(phase) {
     default: return '#8b949e';
   }
 }
+
+// ============================
+// Toast Notification System
+// ============================
+let _toastContainer = null;
+
+function getToastContainer() {
+  if (!_toastContainer) {
+    _toastContainer = document.createElement('div');
+    _toastContainer.id = 'toastContainer';
+    _toastContainer.className = 'toast-container';
+    document.body.appendChild(_toastContainer);
+  }
+  return _toastContainer;
+}
+
+/**
+ * Show a toast notification.
+ * @param {string} message - The message to display
+ * @param {string} type - success, error, warning, info
+ * @param {number} duration - ms before auto-dismiss (default 4000)
+ */
+export function showToast(message, type = 'info', duration = 4000) {
+  const container = getToastContainer();
+  const toast = document.createElement('div');
+  toast.className = 'toast toast-' + type;
+  
+  const icons = { success: '\u2713', error: '\u2717', warning: '\u26A0', info: '\u2139' };
+  toast.innerHTML = '<span class="toast-icon">' + (icons[type] || icons.info) + '</span>' +
+    '<span class="toast-msg">' + escapeHtml(message) + '</span>' +
+    '<button class="toast-close" onclick="this.parentElement.remove()">&times;</button>';
+  
+  container.appendChild(toast);
+  
+  // Trigger animation
+  requestAnimationFrame(() => toast.classList.add('toast-show'));
+  
+  // Auto-dismiss
+  if (duration > 0) {
+    setTimeout(() => {
+      toast.classList.remove('toast-show');
+      setTimeout(() => toast.remove(), 300);
+    }, duration);
+  }
+  return toast;
+}
+
+// ============================
+// Global Loading Indicator
+// ============================
+let _loadingCount = 0;
+let _loadingEl = null;
+
+function getLoadingBar() {
+  if (!_loadingEl) {
+    _loadingEl = document.createElement('div');
+    _loadingEl.className = 'global-loading-bar';
+    _loadingEl.style.display = 'none';
+    document.body.appendChild(_loadingEl);
+  }
+  return _loadingEl;
+}
+
+export function showLoading() {
+  _loadingCount++;
+  const bar = getLoadingBar();
+  bar.style.display = 'block';
+  requestAnimationFrame(() => bar.classList.add('loading-active'));
+}
+
+export function hideLoading() {
+  _loadingCount = Math.max(0, _loadingCount - 1);
+  if (_loadingCount === 0) {
+    const bar = getLoadingBar();
+    bar.classList.remove('loading-active');
+    setTimeout(() => { if (_loadingCount === 0) bar.style.display = 'none'; }, 300);
+  }
+}

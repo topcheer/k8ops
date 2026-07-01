@@ -1,0 +1,49 @@
+# k8ops Installation Wizard — Values Template
+# =============================================================================
+# Use this file for non-interactive installation:
+#   ./wizard.sh --values config/wizard-values.yaml
+#
+# All fields are optional — wizard.sh has sensible defaults.
+# =============================================================================
+
+# Deployment mode: "daemonset" (all nodes) or "deployment" (single replica)
+mode: daemonset
+
+# Dashboard hostname (used for Ingress and SSO redirect URLs)
+dashboard:
+  host: k8ops.example.com
+
+# ---- Database Backend ----
+# driver: sqlite (default), mysql, postgres
+# dsn: connection string for mysql/postgres (leave empty for sqlite)
+# internal: true = deploy DB StatefulSet in cluster, false = use external
+# pvcSize: storage size when internal=true
+db:
+  driver: sqlite
+  # dsn: "user:pass@tcp(host:3306)/dbname?charset=utf8mb4&parseTime=True"
+  # dsn: "host=localhost user=postgres password=secret dbname=k8ops sslmode=disable"
+  internal: false
+  pvcSize: 10Gi
+
+# ---- SSO / Identity Provider ----
+# provider: github, google, microsoft, gitlab, keycloak, okta, auth0, ldap, custom-oidc
+# Leave empty or "none" to skip SSO
+sso:
+  provider: none
+  # --- OIDC settings (for github/google/microsoft/etc.) ---
+  # issuer: https://accounts.google.com
+  # clientId: your-client-id
+  # clientSecret: your-client-secret
+  # --- LDAP settings ---
+  # ldapServer: ldap://host:389
+  # ldapBase: ou=users,dc=example,dc=com
+  # ldapBindDN: cn=admin,dc=example,dc=com
+  # ldapBindPW: secret
+
+# ---- AI Provider ----
+# provider: openai, anthropic, gemini, custom
+ai:
+  provider: openai
+  model: gpt-4o
+  # endpoint: https://api.openai.com/v1  # custom only
+  # apiKey: sk-...                       # put your API key here

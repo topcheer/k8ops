@@ -78,6 +78,8 @@ func main() {
 		disableEventCollector bool
 		dashboardAddr        string
 		authDBPath           string
+		authDBDriver         string
+		authDBDSN            string
 		authJWTSecret        string
 	)
 
@@ -112,6 +114,8 @@ func main() {
 	flag.BoolVar(&disableEventCollector, "disable-event-collector", false, "Disable automatic event-triggered diagnostics")
 	flag.StringVar(&dashboardAddr, "dashboard-address", ":9090", "Address for the dashboard web UI")
 	flag.StringVar(&authDBPath, "auth-db-path", os.Getenv("AUTH_DB_PATH"), "Path to auth database (default: /data/k8ops.db)")
+	flag.StringVar(&authDBDriver, "auth-db-driver", func() string { d := os.Getenv("AUTH_DB_DRIVER"); if d == "" { return "sqlite" }; return d }(), "Database driver: sqlite (default), mysql, postgres")
+	flag.StringVar(&authDBDSN, "auth-db-dsn", os.Getenv("AUTH_DB_DSN"), "Database DSN for mysql/postgres (e.g. 'user:pass@tcp(host:3306)/dbname' or 'host=localhost user=postgres dbname=k8ops')")
 	flag.StringVar(&authJWTSecret, "auth-jwt-secret", os.Getenv("AUTH_JWT_SECRET"), "JWT signing secret for auth")
 	flag.Parse()
 
@@ -319,8 +323,8 @@ func main() {
 
 			// Initialize auth if enabled
 			authCfg := &auth.Config{
-				DBDriver:    os.Getenv("AUTH_DB_DRIVER"),
-				DBDSN:       os.Getenv("AUTH_DB_DSN"),
+				DBDriver:    authDBDriver,
+				DBDSN:       authDBDSN,
 				DBPath:      authDBPath,
 				JWTSecret:   authJWTSecret,
 				JWTExpiry:   24 * time.Hour,

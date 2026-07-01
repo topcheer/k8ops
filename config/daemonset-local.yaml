@@ -452,6 +452,20 @@ spec:
         # Auth database path (per-node SQLite via emptyDir)
         - name: AUTH_DB_PATH
           value: /data/k8ops.db
+        # Auth database driver: sqlite (default), mysql, postgres
+        - name: AUTH_DB_DRIVER
+          valueFrom:
+            configMapKeyRef:
+              name: k8ops-config
+              key: auth-db-driver
+              optional: true
+        # Auth database DSN for mysql/postgres (overrides AUTH_DB_PATH when set)
+        - name: AUTH_DB_DSN
+          valueFrom:
+            secretKeyRef:
+              name: k8ops-db
+              key: dsn
+              optional: true
         envFrom:
         - configMapRef:
             name: k8ops-config
