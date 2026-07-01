@@ -221,15 +221,6 @@ export async function sendChatMessage() {
   const msg = input.value.trim();
   if (!msg) return;
   
-  // Check if this is a natural language kubectl shortcut
-  if (showKubectlSuggestion(msg)) {
-    input.value = '';
-    input.style.height = 'auto';
-    var sugg = document.getElementById('chatSuggestions');
-    if (sugg) sugg.style.display = 'none';
-    return;
-  }
-  
   input.value = '';
   input.style.height = 'auto';
   input.disabled = true;
