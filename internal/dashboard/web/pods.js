@@ -27,8 +27,7 @@ export function logout() {
   });
 }
 
-// Initial load moved to end of index.html (after all scripts loaded)
-checkCurrentUser();
+// Initial load handled by main.js DOMContentLoaded
 
 // --- Pods ---
 export async function loadPods(forceRefresh) {
@@ -108,6 +107,6 @@ export async function loadAudit() {
 }
 // Auto-refresh overview every 30s
 setInterval(() => {
-  if (location.hash === '#overview' || location.hash === '') loadOverview();
+  if (location.hash === '#overview' || location.hash === '') window.loadOverview();
 }, 30000);
 

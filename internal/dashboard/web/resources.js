@@ -29,7 +29,7 @@ export async function loadSettings() {
         '<div class="kv"><span class="k">Auth Provider</span><code>' + u.provider + '</code></div>';
     }
   } catch(e) {}
-  loadConversations();
+  window.loadConversations();
 }
 
 export async function updateProvider() {
@@ -52,7 +52,7 @@ export async function updateProvider() {
     const result = await resp.json();
     if (resp.ok) {
       alert('Provider updated! ' + (result.message || ''));
-      loadSettings();
+      window.loadSettings();
     } else {
       alert('Error: ' + (result.error || 'Unknown'));
     }

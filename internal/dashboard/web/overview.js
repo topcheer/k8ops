@@ -102,17 +102,11 @@ export async function loadOverview() {
     document.getElementById('overviewCards').innerHTML = `<div class="card err"><div class="label">Error</div><div class="value" style="font-size:14px;">${escapeHtml(e.message)}</div></div>`;
   }
 
-  // Load cost data (independent of cluster overview)
-  loadCostPanel();
-
-  document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
-
   // Load cost overview panel
   loadCostOverview();
 }
 
-// Generate a lightweight SVG sparkline from an array of numbers
-export // ============================
+// ============================
 // Cluster Health Score Gauge
 // ============================
 export function healthScoreGauge(nodes, diags, warnings, pods) {

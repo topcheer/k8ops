@@ -12,19 +12,19 @@ export function showTab(name, btn) {
   if (location.hash !== '#' + name) {
     history.replaceState(null, '', '#' + name);
   }
-  if (name === 'overview') loadOverview();
-  if (name === 'diagnostics') loadDiagnostics();
-  if (name === 'remediations') loadRemediations();
-  if (name === 'optimizations') loadOptimizations();
-  if (name === 'nodes') loadNodes(false);
-  if (name === 'events') loadEvents();
-  if (name === 'pods') loadPods(false);
-  if (name === 'resources') loadResources(false);
-  if (name === 'crds') loadCRDs(false);
-  if (name === 'audit') loadAudit();
-  if (name === 'settings') loadSettings();
-  if (name === 'rbac') loadRBAC();
-  if (name === 'cost') loadCost();
+  if (name === 'overview') window.loadOverview();
+  if (name === 'diagnostics') window.loadDiagnostics();
+  if (name === 'remediations') window.loadRemediations();
+  if (name === 'optimizations') window.loadOptimizations();
+  if (name === 'nodes') window.loadNodes(false);
+  if (name === 'events') window.loadEvents();
+  if (name === 'pods') window.loadPods(false);
+  if (name === 'resources') window.loadResources(false);
+  if (name === 'crds') window.loadCRDs(false);
+  if (name === 'audit') window.loadAudit();
+  if (name === 'settings') window.loadSettings();
+  if (name === 'rbac') window.loadRBAC();
+  if (name === 'cost') window.loadCost();
 }
 
 export function initTabFromHash() {
@@ -34,7 +34,7 @@ export function initTabFromHash() {
     const btn = document.querySelector('.sidebar-nav button[onclick*="' + hash + '"]');
     showTab(hash, btn);
   } else {
-    loadOverview();
+    window.loadOverview();
   }
 }
 
@@ -46,7 +46,7 @@ const cmdItems = [
   { icon: '\u26A0', label: 'Diagnostics', category: 'Navigate', action: () => showTab('diagnostics') },
   { icon: '\u2699', label: 'Remediations', category: 'Navigate', action: () => showTab('remediations') },
   { icon: '\u25B2', label: 'Optimizations', category: 'Navigate', action: () => showTab('optimizations') },
-  { icon: '\u24', label: 'Cost Analysis', category: 'Navigate', action: () => showTab('cost') },
+  { icon: '\uD83D\uDCB0', label: 'Cost Analysis', category: 'Navigate', action: () => showTab('cost') },
   { icon: '\u25CE', label: 'Nodes', category: 'Navigate', action: () => showTab('nodes') },
   { icon: '\u26A0', label: 'Events', category: 'Navigate', action: () => showTab('events') },
   { icon: '\u25A5', label: 'Pods', category: 'Navigate', action: () => showTab('pods') },
@@ -55,7 +55,7 @@ const cmdItems = [
   { icon: '\u2630', label: 'Audit Log', category: 'Navigate', action: () => showTab('audit') },
   { icon: '\uD83D\uDD12', label: 'Access Control (RBAC)', category: 'Admin', action: () => showTab('rbac') },
   { icon: '\u2699', label: 'Settings', category: 'Navigate', action: () => showTab('settings') },
-  { icon: '\uD83D\uDCAC', label: 'Open AI Chat', category: 'Action', action: () => openChatOverlay() },
+  { icon: '\uD83D\uDCAC', label: 'Open AI Chat', category: 'Action', action: () => window.openChatOverlay() },
   { icon: '\uD83D\uDD0D', label: 'Run Diagnostics', category: 'Action', action: () => { showTab('diagnostics'); } },
   { icon: '\uD83D\uDCCA', label: 'View Cluster Cost', category: 'Action', action: () => showTab('cost') },
 ];
@@ -237,11 +237,11 @@ document.addEventListener('keydown', function(e) {
       const match = activeBtn.getAttribute('onclick').match(/showTab\('([^']+)'/);
       if (match) {
         const name = match[1];
-        if (name === 'overview') loadOverview();
-        else if (name === 'nodes') loadNodes();
-        else if (name === 'pods') loadPods();
-        else if (name === 'events') loadEvents();
-        else if (name === 'audit') loadAudit();
+        if (name === 'overview') window.loadOverview();
+        else if (name === 'nodes') window.loadNodes();
+        else if (name === 'pods') window.loadPods();
+        else if (name === 'events') window.loadEvents();
+        else if (name === 'audit') window.loadAudit();
       }
     }
     return;
@@ -335,11 +335,11 @@ export function onNsChange() {
       const match = tabName.match(/showTab\('([^']+)'/);
       if (match) {
         const name = match[1];
-        if (name === 'overview') loadOverview();
-        else if (name === 'nodes') loadNodes();
-        else if (name === 'events') loadEvents();
-        else if (name === 'pods') loadPods();
-        else if (name === 'resources') loadResources && loadResources();
+        if (name === 'overview') window.loadOverview();
+        else if (name === 'nodes') window.loadNodes();
+        else if (name === 'events') window.loadEvents();
+        else if (name === 'pods') window.loadPods();
+        else if (name === 'resources') window.loadResources && window.loadResources();
       }
     }
   }

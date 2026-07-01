@@ -239,5 +239,5 @@ document.addEventListener('click', function(e) {
 
 // Init on page load
 document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(initNotificationCenter, 2000);
+  setTimeout(function() { window.initNotificationCenter(); }, 2000);
 });
