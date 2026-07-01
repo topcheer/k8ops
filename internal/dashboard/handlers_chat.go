@@ -81,7 +81,7 @@ func (s *Server) handleChat(w http.ResponseWriter, r *http.Request) {
 	if !s.chatLimiter.Allow(username) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(429)
-		json.NewEncoder(w).Encode(map[string]string{
+		_ = json.NewEncoder(w).Encode(map[string]string{
 			"error": "rate limit exceeded",
 			"hint":  "too many chat requests, please slow down",
 		})

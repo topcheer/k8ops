@@ -114,7 +114,7 @@ var (
 
 func (s *Server) handleVersion(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{
+	_ = json.NewEncoder(w).Encode(map[string]string{
 		"version":   Version,
 		"gitCommit": GitCommit,
 		"buildDate": BuildDate,

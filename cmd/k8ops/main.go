@@ -101,7 +101,7 @@ func diagnoseCmd(args []string) {
 	namespace := fs.String("namespace", "default", "Namespace")
 	message := fs.String("message", "", "Custom diagnostic message")
 	maxSteps := fs.Int("max-steps", 15, "Maximum agent steps")
-	fs.Parse(args)
+	_ = fs.Parse(args)
 
 	if *apiKey == "" {
 		fmt.Fprintln(os.Stderr, "Error: --api-key or AIOPS_API_KEY env var required")
@@ -206,7 +206,7 @@ func optimizeCmd(args []string) {
 	apiKey := fs.String("api-key", os.Getenv("AIOPS_API_KEY"), "API key")
 	scope := fs.String("scope", "cluster", "Scope: cluster, namespace, workload")
 	namespace := fs.String("namespace", "", "Namespace")
-	fs.Parse(args)
+	_ = fs.Parse(args)
 
 	if *apiKey == "" {
 		fmt.Fprintln(os.Stderr, "Error: --api-key or AIOPS_API_KEY env var required")
