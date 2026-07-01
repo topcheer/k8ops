@@ -403,9 +403,16 @@ spec:
       serviceAccountName: k8ops
       tolerations:
       - operator: Exists  # Run on ALL nodes including tainted ones
+      initContainers:
+      - name: fix-data-perms
+        image: alpine:3.21
+        command: ['sh', '-c', 'chown -R 65532:65532 /data && chmod 775 /data']
+        volumeMounts:
+        - name: data
+          mountPath: /data
       containers:
       - name: k8ops
-        image: registry.iot2.win/k8ops:v12.3
+        image: registry.iot2.win/k8ops:v14.7
         imagePullPolicy: Always
         env:
         - name: AIOPS_API_KEY

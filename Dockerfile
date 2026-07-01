@@ -27,6 +27,9 @@ WORKDIR /
 COPY --from=builder /workspace/manager /manager
 COPY --from=builder /workspace/k8ops /usr/local/bin/k8ops
 
+# Create /data directory with correct ownership for SQLite
+RUN mkdir -p /data && chown 65532:65532 /data
+
 USER 65532:65532
 
 ENTRYPOINT ["/manager"]
