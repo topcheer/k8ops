@@ -204,6 +204,6 @@ func GetBool(args map[string]any, key string) bool {
 	if !ok {
 		return false
 	}
-	b, ok := v.(bool)
+	b, _ := v.(bool)
 	return b
 }

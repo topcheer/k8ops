@@ -21,8 +21,15 @@ issues:
       linters:
         - errcheck
         - unused
+        - staticcheck
     - linters:
         - unused
       text: "k8opsBuiltinRoles|isCoreGroup|slackLogHelper"
+    - linters:
+        - staticcheck
+      text: "SA1019"
+    - path: groupversion_info\.go
+      linters:
+        - staticcheck
   max-issues-per-linter: 0
   max-same-issues: 0

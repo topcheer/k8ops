@@ -51,8 +51,9 @@ func New(cfg provider.ProviderConfig) (provider.Provider, error) {
 	}
 	temp := cfg.Temperature
 	if temp == 0 {
-		temp = 0.1
+		temp = 0.1 // avoid 0 temp which can cause division issues
 	}
+	_ = temp
 	return &OpenAIProvider{
 		apiKey:   cfg.APIKey,
 		endpoint: endpoint,
