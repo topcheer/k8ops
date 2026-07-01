@@ -9,15 +9,15 @@ export async function loadNodes(forceRefresh) {
     container.innerHTML = `<table>
       <thead><tr><th>Name</th><th>Status</th><th>Role</th><th>Version</th><th>CPU</th><th>Memory</th><th>OS/Arch</th><th>Conditions</th><th></th></tr></thead>
       <tbody>${data.items.map(n => `<tr>
-        <td style="cursor:pointer;color:#58a6ff;" onclick="viewNodePods('${n.name}')">${n.name}</td>
+        <td style="cursor:pointer;color:#58a6ff;" onclick="viewNodePods('${escapeHtml(n.name)}')">${escapeHtml(n.name)}</td>
         <td>${badge(n.status)}</td>
-        <td>${n.role}</td>
-        <td><code>${n.version}</code></td>
-        <td>${n.cpu}</td>
-        <td>${n.memory}</td>
-        <td>${n.os}/${n.arch}</td>
-        <td style="font-size:12px;color:#8b949e;">${Object.entries(n.conditions).map(([k,v])=>k+':'+v).join(', ')}</td>
-        <td><button onclick="viewNodePods('${n.name}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">Pods →</button></td>
+        <td>${escapeHtml(n.role)}</td>
+        <td><code>${escapeHtml(n.version)}</code></td>
+        <td>${escapeHtml(n.cpu)}</td>
+        <td>${escapeHtml(n.memory)}</td>
+        <td>${escapeHtml(n.os)}/${escapeHtml(n.arch)}</td>
+        <td style="font-size:12px;color:#8b949e;">${Object.entries(n.conditions).map(([k,v])=>escapeHtml(k)+':'+escapeHtml(v)).join(', ')}</td>
+        <td><button onclick="viewNodePods('${escapeHtml(n.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">Pods &rarr;</button></td>
       </tr>`).join('')}</tbody>
     </table>`;
   } catch(e) { container.innerHTML = `<div class="empty">Error: ${escapeHtml(e.message)}</div>`; }

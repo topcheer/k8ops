@@ -63,7 +63,8 @@ export function renderForbidden(container) {
 
 /** Render a status badge span. */
 export function badge(text) {
-  return `<span class="badge ${text}">${text}</span>`;
+  const cls = String(text).replace(/[^a-zA-Z0-9_-]/g, '');
+  return `<span class="badge ${cls}">${escapeHtml(text)}</span>`;
 }
 
 /** Human-readable relative time (e.g. "3m ago", "2h ago"). */

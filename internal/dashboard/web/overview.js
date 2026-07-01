@@ -208,12 +208,12 @@ export async function loadDiagnostics() {
     container.innerHTML = `<table>
       <thead><tr><th>ID</th><th>Namespace</th><th>Status</th><th>Summary</th><th>Age</th><th>Details</th></tr></thead>
       <tbody>${data.items.map(d => `<tr>
-        <td><code>${d.name || d.id}</code></td>
-        <td>${d.namespace}</td>
+        <td><code>${escapeHtml(d.name || d.id)}</code></td>
+        <td>${escapeHtml(d.namespace)}</td>
         <td>${badge(d.phase || d.status)}</td>
         <td style="max-width:350px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(d.summary || '-')}</td>
         <td>${timeAgo(d.createdAt || d.created)}</td>
-        <td><a href="javascript:void(0)" onclick="viewDiagnostic('${d.namespace}','${d.name || d.id}')" style="color:var(--accent-blue);text-decoration:none;">View Report</a></td>
+        <td><a href="javascript:void(0)" onclick="viewDiagnostic('${escapeHtml(d.namespace)}','${escapeHtml(d.name || d.id)}')" style="color:var(--accent-blue);text-decoration:none;">View Report</a></td>
       </tr>`).join('')}</tbody>
     </table>`;
   } catch(e) {
@@ -249,17 +249,17 @@ export async function loadRemediations() {
     container.innerHTML = `<table>
       <thead><tr><th>Name</th><th>Namespace</th><th>Phase</th><th>Mode</th><th>Actions</th><th>Diagnostic Ref</th><th>Summary</th><th>Approved By</th><th>Age</th></tr></thead>
       <tbody>${data.items.map(r => `<tr>
-        <td>${r.name}</td>
-        <td>${r.namespace}</td>
+        <td>${escapeHtml(r.name)}</td>
+        <td>${escapeHtml(r.namespace)}</td>
         <td>${badge(r.phase)}</td>
-        <td><code>${r.mode}</code></td>
-        <td>${r.actions}${r.phase === 'Pending' ? `
+        <td><code>${escapeHtml(r.mode)}</code></td>
+        <td>${escapeHtml(r.actions)}${r.phase === 'Pending' ? `
           <br>
-          <button class="btn-sm btn-approve" onclick="approveRemediation('${r.namespace}','${r.name}')">&#10003; Approve</button>
-          <button class="btn-sm btn-reject" onclick="rejectRemediation('${r.namespace}','${r.name}')">&#10007; Reject</button>` : ''}</td>
-        <td>${r.diagnosticRef || '-'}</td>
-        <td style="max-width:300px;color:#8b949e;">${r.summary || '-'}</td>
-        <td>${r.approvedBy || '-'}</td>
+          <button class="btn-sm btn-approve" onclick="approveRemediation('${escapeHtml(r.namespace)}','${escapeHtml(r.name)}')">&#10003; Approve</button>
+          <button class="btn-sm btn-reject" onclick="rejectRemediation('${escapeHtml(r.namespace)}','${escapeHtml(r.name)}')">&#10007; Reject</button>` : ''}</td>
+        <td>${escapeHtml(r.diagnosticRef) || '-'}</td>
+        <td style="max-width:300px;color:#8b949e;">${escapeHtml(r.summary) || '-'}</td>
+        <td>${escapeHtml(r.approvedBy) || '-'}</td>
         <td>${timeAgo(r.created)}</td>
       </tr>`).join('')}</tbody>
     </table>`;
@@ -278,13 +278,13 @@ export async function loadOptimizations() {
     container.innerHTML = `<table>
       <thead><tr><th>Name</th><th>Namespace</th><th>Phase</th><th>Scope</th><th>Suggestions</th><th>Est. Savings</th><th>Summary</th><th>Age</th></tr></thead>
       <tbody>${data.items.map(o => `<tr>
-        <td>${o.name}</td>
-        <td>${o.namespace}</td>
+        <td>${escapeHtml(o.name)}</td>
+        <td>${escapeHtml(o.namespace)}</td>
         <td>${badge(o.phase)}</td>
-        <td>${o.scope}</td>
-        <td>${o.suggestions}</td>
-        <td>${o.estimatedSavings || '-'}</td>
-        <td style="max-width:300px;color:#8b949e;">${o.summary || '-'}</td>
+        <td>${escapeHtml(o.scope)}</td>
+        <td>${escapeHtml(o.suggestions)}</td>
+        <td>${escapeHtml(o.estimatedSavings) || '-'}</td>
+        <td style="max-width:300px;color:#8b949e;">${escapeHtml(o.summary) || '-'}</td>
         <td>${timeAgo(o.created)}</td>
       </tr>`).join('')}</tbody>
     </table>`;

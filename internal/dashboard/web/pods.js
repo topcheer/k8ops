@@ -49,16 +49,16 @@ export async function loadPods(forceRefresh) {
     container.innerHTML = `<table>
       <thead><tr><th>Name</th><th>Namespace</th><th>Phase</th><th>Node</th><th>Restarts</th><th>Age</th><th>Actions</th></tr></thead>
       <tbody>${data.items.map(p => `<tr>
-        <td style="color:#58a6ff;font-family:monospace;">${p.name}</td>
-        <td>${p.namespace}</td>
+        <td style="color:#58a6ff;font-family:monospace;">${escapeHtml(p.name)}</td>
+        <td>${escapeHtml(p.namespace)}</td>
         <td>${badge(p.phase)}</td>
-        <td style="cursor:pointer;color:#58a6ff;" onclick="viewNodePods('${p.node}')">${p.node || '-'}</td>
+        <td style="cursor:pointer;color:#58a6ff;" onclick="viewNodePods('${escapeHtml(p.node)}')">${escapeHtml(p.node) || '-'}</td>
         <td>${p.restarts > 5 ? '<span style="color:#f85149;">'+p.restarts+'</span>' : p.restarts}</td>
-        <td>${p.age}</td>
+        <td>${escapeHtml(p.age)}</td>
         <td>
-          <button onclick="openLogViewer('${p.namespace}','${p.name}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">Logs</button>
-          <button onclick="openTerminal('${p.namespace}','${p.name}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">Terminal</button>
-          <button onclick="viewYAML('pods','${p.namespace}','${p.name}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">YAML</button>
+          <button onclick="openLogViewer('${escapeHtml(p.namespace)}','${escapeHtml(p.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">Logs</button>
+          <button onclick="openTerminal('${escapeHtml(p.namespace)}','${escapeHtml(p.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">Terminal</button>
+          <button onclick="viewYAML('pods','${escapeHtml(p.namespace)}','${escapeHtml(p.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">YAML</button>
         </td>
       </tr>`).join('')}</tbody>
     </table>`;
