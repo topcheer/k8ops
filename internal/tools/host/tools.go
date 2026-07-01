@@ -11,7 +11,6 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
-	"syscall"
 	"time"
 
 	"github.com/ggai/k8ops/internal/tools"
@@ -104,32 +103,9 @@ func (t *HostDiskUsageTool) Execute(ctx context.Context, args map[string]any) (*
 		path = "/"
 	}
 
-	var stat syscall.Statfs_t
-	if err := syscall.Statfs(path, &stat); err != nil {
+	result, err := diskUsage(path)
+	if err != nil {
 		return &tools.ToolResult{Success: false, Error: fmt.Sprintf("failed to stat %s: %v", path, err)}, nil
-	}
-
-	total := stat.Blocks * uint64(stat.Bsize)
-	free := stat.Bfree * uint64(stat.Bsize)
-	avail := stat.Bavail * uint64(stat.Bsize)
-	used := total - free
-	inodesTotal := stat.Files
-	inodesFree := stat.Ffree
-	inodesUsed := inodesTotal - inodesFree
-
-	result := map[string]any{
-		"path":          path,
-		"total_bytes":   total,
-		"used_bytes":    used,
-		"free_bytes":    free,
-		"avail_bytes":   avail,
-		"usage_percent": fmt.Sprintf("%.1f", float64(used)/float64(total)*100),
-		"inodes": map[string]any{
-			"total":         inodesTotal,
-			"used":          inodesUsed,
-			"free":          inodesFree,
-			"usage_percent": fmt.Sprintf("%.1f", float64(inodesUsed)/float64(inodesTotal)*100),
-		},
 	}
 
 	// Also get df -h output for human-readable overview
