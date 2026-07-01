@@ -33,4 +33,37 @@ document.addEventListener('DOMContentLoaded', function() {
   if (typeof pods.checkCurrentUser === 'function') {
     pods.checkCurrentUser();
   }
+  // Check provider configuration
+  checkProviderConfig();
 });
+
+// Check if AI provider is configured, show banner if not
+async function checkProviderConfig() {
+  try {
+    const res = await fetch('/api/provider/status');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.active || !data.hasApiKey) {
+      showProviderBanner(data);
+    }
+  } catch(e) { /* silent */ }
+}
+
+function showProviderBanner(data) {
+  // Avoid duplicate banners
+  if (document.getElementById('providerBanner')) return;
+  const banner = document.createElement('div');
+  banner.id = 'providerBanner';
+  banner.className = 'provider-banner';
+  banner.innerHTML = `
+    <span class="provider-banner-icon">\u26A0</span>
+    <span class="provider-banner-text">
+      AI Provider ${data.active ? 'API Key' : 'is not'} configured. AI Chat, Diagnostics, and Optimization features are unavailable.
+    </span>
+    <button class="provider-banner-btn" onclick="showTab('settings')">Configure Now</button>
+    <button class="provider-banner-close" onclick="this.parentElement.remove()">&times;</button>
+  `;
+  // Insert at top of the app container
+  const app = document.querySelector('.app-container') || document.body;
+  app.insertBefore(banner, app.firstChild);
+}

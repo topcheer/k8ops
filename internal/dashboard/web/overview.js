@@ -24,7 +24,7 @@ export async function loadOverview() {
     cards.innerHTML = `
       <div class="card ${nodes.notReady > 0 ? 'warn' : 'ok'}">
         <div class="label">Nodes</div>
-        <div class="value">${nodes.ready || 0}<span style="font-size:16px;color:#8b949e;">/${nodes.total || 0}</span></div>
+        <div class="value">${nodes.ready || 0}<span style="font-size:16px;color:var(--text-muted);">/${nodes.total || 0}</span></div>
         <div class="sub">${nodes.notReady || 0} Not Ready</div>
         ${sparklineSvg(_sparklineHistory.pods, '#3fb950')}
       </div>
@@ -45,8 +45,9 @@ export async function loadOverview() {
       <div class="card ${data.recentWarnings > 10 ? 'warn' : ''}">
         <div class="label">Recent Warnings</div>
         <div class="value">${data.recentWarnings || 0}</div>
-        ${sparklineSvg(_sparklineHistory.warnings, data.recentWarnings > 10 ? '#f85149' : '#d29922')}
+        ${sparklineSvg(_sparklineHistory.warnings, data.recentWarnings > 10 ? 'var(--accent-red)' : 'var(--accent-yellow)')}
       </div>
+      ${healthScoreGauge(nodes, diags, data.recentWarnings || 0, data.pods)}
     `;
 
     // Node resource utilization bars
@@ -111,6 +112,62 @@ export async function loadOverview() {
 }
 
 // Generate a lightweight SVG sparkline from an array of numbers
+export // ============================
+// Cluster Health Score Gauge
+// ============================
+export function healthScoreGauge(nodes, diags, warnings, pods) {
+  // Calculate score: 0-100
+  let score = 100;
+
+  // Node readiness: -20 per not-ready node (capped)
+  if (nodes.total > 0) {
+    const nodeRatio = nodes.ready / nodes.total;
+    score -= (1 - nodeRatio) * 30;
+  }
+
+  // Warnings: -1 per warning (capped at 20)
+  score -= Math.min(warnings, 20);
+
+  // Failed diagnostics: -5 per failed (capped at 25)
+  const failedDiags = (diags.byPhase && diags.byPhase.Failed) || 0;
+  score -= Math.min(failedDiags * 5, 25);
+
+  // Failed remediations: -3 per failed (capped at 15)
+  // (handled implicitly through diagnostics)
+
+  score = Math.max(0, Math.min(100, Math.round(score)));
+
+  // Determine status
+  let status, color, label;
+  if (score >= 85) { status = 'healthy'; color = 'var(--accent-green)'; label = 'Healthy'; }
+  else if (score >= 60) { status = 'warning'; color = 'var(--accent-yellow)'; label = 'Warning'; }
+  else { status = 'critical'; color = 'var(--accent-red)'; label = 'Critical'; }
+
+  // SVG donut gauge: radius=28, circumference=2*PI*28≈176
+  const r = 28;
+  const circumference = 2 * Math.PI * r;
+  const offset = circumference * (1 - score / 100);
+
+  return `
+    <div class="card health-score-card ${status}" style="display:flex;align-items:center;gap:12px;">
+      <div class="health-gauge">
+        <svg width="72" height="72" viewBox="0 0 72 72">
+          <circle cx="36" cy="36" r="${r}" fill="none" stroke="var(--border-default)" stroke-width="6"/>
+          <circle cx="36" cy="36" r="${r}" fill="none" stroke="${color}" stroke-width="6"
+            stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"
+            stroke-linecap="round" transform="rotate(-90 36 36)"
+            style="transition:stroke-dashoffset 0.6s ease;"/>
+          <text x="36" y="40" text-anchor="middle" font-size="20" font-weight="700" fill="${color}">${score}</text>
+        </svg>
+      </div>
+      <div>
+        <div class="label">Cluster Health</div>
+        <div class="value" style="font-size:18px;color:${color};">${label}</div>
+        <div class="sub">${nodes.ready || 0}/${nodes.total || 0} nodes &middot; ${warnings} warnings</div>
+      </div>
+    </div>`;
+}
+
 export function sparklineSvg(data, color) {
   if (!data || data.length < 2) return '';
   const w = 100, h = 24;

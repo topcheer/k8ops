@@ -8,9 +8,32 @@ export function openChatOverlay() {
   document.getElementById('chatOverlay').classList.add('active');
   if (!currentConvId) {
     document.getElementById('chatMessages').innerHTML =
-      '<div style="text-align:center;color:#8b949e;padding:120px 40px;">Start a conversation with k8ops AI</div>';
+      '<div style="text-align:center;color:var(--text-muted);padding:80px 40px;">Start a conversation with k8ops AI</div>' +
+      '<div style="text-align:center;color:var(--text-faded);font-size:12px;">Ask questions like: <code style="color:var(--accent-blue);">show pods in default namespace</code> or <code style="color:var(--accent-blue);">why is my pod crashing?</code></div>';
   }
+  // Check provider status
+  checkChatProvider();
   document.getElementById('chatInput').focus();
+}
+
+async function checkChatProvider() {
+  try {
+    const status = await fetchJSON('/api/provider/status');
+    if (!status.active || !status.hasApiKey) {
+      const input = document.getElementById('chatInput');
+      const sendBtn = document.getElementById('chatSendBtn');
+      if (input) {
+        input.placeholder = 'AI provider not configured. Go to Settings to set up.';
+        input.disabled = true;
+      }
+      if (sendBtn) sendBtn.disabled = true;
+    } else {
+      const input = document.getElementById('chatInput');
+      const sendBtn = document.getElementById('chatSendBtn');
+      if (input) { input.placeholder = 'Ask k8ops AI...'; input.disabled = false; }
+      if (sendBtn) sendBtn.disabled = false;
+    }
+  } catch(e) { /* silent */ }
 }
 
 export function closeChatOverlay() {
