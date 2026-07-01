@@ -342,6 +342,7 @@ func main() {
 			authn, err = auth.New(authCfg)
 			if err != nil {
 				logger.Error("unable to initialize auth", "error", err)
+				dash.SetAuthRequired(err.Error()) // Fail-closed: block API access
 			} else {
 				dash.SetAuthenticator(authn)
 				// Wire up RBAC syncer for namespace-scoped users

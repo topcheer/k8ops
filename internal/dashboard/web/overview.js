@@ -192,12 +192,12 @@ export async function loadDiagnostics() {
     container.innerHTML = `<table>
       <thead><tr><th>ID</th><th>Namespace</th><th>Status</th><th>Summary</th><th>Age</th><th>Details</th></tr></thead>
       <tbody>${data.items.map(d => `<tr>
-        <td><code>${d.id}</code></td>
+        <td><code>${d.name || d.id}</code></td>
         <td>${d.namespace}</td>
-        <td>${badge(d.status)}</td>
-        <td style="max-width:350px;color:#8b949e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(d.summary || '-')}</td>
-        <td>${timeAgo(d.createdAt)}</td>
-        <td><a href="javascript:void(0)" onclick="viewDiagnostic('${d.namespace}','${d.id}')" style="color:#58a6ff;text-decoration:none;">View Report</a></td>
+        <td>${badge(d.phase || d.status)}</td>
+        <td style="max-width:350px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(d.summary || '-')}</td>
+        <td>${timeAgo(d.createdAt || d.created)}</td>
+        <td><a href="javascript:void(0)" onclick="viewDiagnostic('${d.namespace}','${d.name || d.id}')" style="color:var(--accent-blue);text-decoration:none;">View Report</a></td>
       </tr>`).join('')}</tbody>
     </table>`;
   } catch(e) {

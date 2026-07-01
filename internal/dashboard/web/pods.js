@@ -3,6 +3,12 @@ import { escapeHtml, fetchJSON, badge, timeAgo } from './modules/utils.js';
 
 export async function checkCurrentUser() {
   try {
+    // Check if auth is enabled first, skip silently if not
+    const statusRes = await fetch('/api/auth/status');
+    if (!statusRes.ok) return;
+    const authStatus = await statusRes.json();
+    if (!authStatus.enabled) return;
+
     const res = await fetch('/api/auth/me');
     if (res.ok) {
       const data = await res.json();

@@ -49,6 +49,8 @@ type Server struct {
 	cache         *responseCache
 	chatLimiter   *userRateLimiter // per-user rate limiter for LLM calls
 	auth              *auth.Authenticator
+	authRequired      bool   // true if auth was requested but failed to init (fail-closed)
+	authFailedMsg     string // error message when auth init failed
 	log               *slog.Logger
 	server            *http.Server
 	corsAllowedOrigins []string
@@ -159,6 +161,10 @@ func (s *Server) Start(addr string) error {
 	var handler http.Handler = mux
 	if s.auth != nil {
 		handler = s.auth.Middleware(s.ImpersonationMiddleware(mux))
+	} else if s.authRequired {
+		// Auth was requested but failed to initialize — fail closed.
+		// Block all API requests; allow only static assets (HTML/CSS/JS) so the login page can render.
+		handler = s.authFailClosedMiddleware(mux)
 	}
 
 	s.server = &http.Server{
@@ -182,6 +188,39 @@ func (s *Server) Start(addr string) error {
 // SetChatEngine injects the chat engine (called after provider is ready).
 func (s *Server) SetChatEngine(engine *chat.Engine) {
 	s.chatEngine = engine
+}
+
+// SetAuthRequired marks that authentication was requested but failed.
+// The server will fail-closed: all API requests return 503.
+func (s *Server) SetAuthRequired(errMsg string) {
+	s.authRequired = true
+	s.authFailedMsg = errMsg
+}
+
+// authFailClosedMiddleware blocks all /api/ requests when auth was requested
+// but failed to initialize. Static assets (HTML/CSS/JS) are still served
+// so the login page can render with an error message.
+func (s *Server) authFailClosedMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Allow static assets (non-API paths)
+		if !strings.HasPrefix(r.URL.Path, "/api/") {
+			next.ServeHTTP(w, r)
+			return
+		}
+		// Allow health/readiness probes
+		if r.URL.Path == "/healthz" || r.URL.Path == "/readyz" {
+			next.ServeHTTP(w, r)
+			return
+		}
+		// Block all API requests
+		s.log.Error("auth fail-closed: blocking API request", "path", r.URL.Path, "reason", s.authFailedMsg)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusServiceUnavailable)
+		writeJSON(w, map[string]any{
+			"error":  "Authentication system unavailable",
+			"detail": "The authentication database failed to initialize. Access is blocked for security. Check pod logs for details.",
+		})
+	})
 }
 
 // SetProviderManager injects the provider manager.

@@ -303,15 +303,14 @@ export function getCurrentNamespace() {
 async function loadNamespaceOptions() {
   try {
     const data = await fetchJSON('/api/cluster/overview');
-    const total = data.namespaces || 0;
-    const nsData = await fetchJSON('/api/resources/api/v1/namespaces').catch(() => null);
+    const nsData = await fetchJSON('/api/resources?resource=namespaces&listOnly=true').catch(() => null);
     const sel = document.getElementById('nsFilter');
     if (!sel) return;
     const current = sel.value;
     sel.innerHTML = '<option value="">All Namespaces</option>';
     let names = [];
     if (nsData && nsData.items) {
-      names = nsData.items.map(function(i) { return i.metadata ? i.metadata.name : ''; }).filter(Boolean).sort();
+      names = nsData.items.map(function(i) { return i.name || (i.metadata ? i.metadata.name : ''); }).filter(Boolean).sort();
     }
     for (var i = 0; i < names.length; i++) {
       var opt = document.createElement('option');
