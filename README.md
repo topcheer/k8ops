@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/github/license/topcheer/k8ops?style=flat-square)](LICENSE)
 [![Go](https://img.shields.io/badge/Go-1.26+-00ADD8?style=flat-square&logo=go)](https://go.dev)
 [![Docker](https://img.shields.io/badge/Docker-ghcr.io-2496ED?style=flat-square&logo=docker)](https://github.com/topcheer/k8ops/pkgs/container/k8ops)
-[![Built with ggcode](https://img.shields.io/badge/Built%20with-ggcode-6C43BC?style=flat-square)](https://github.com/nicepkg/ggcode)
+[![Built with ggcode](https://img.shields.io/badge/Built%20with-ggcode-6C43BC?style=flat-square)](https://github.com/topcheer/ggcode)
 
 </div>
 
@@ -241,7 +241,7 @@ go test -race -count=1 ./internal/...
 make manifests
 
 # Build Docker image
-make docker-build IMG=ghcr.io/ggai/k8ops:latest
+make docker-build IMG=ghcr.io/topcheer/k8ops:latest
 ```
 
 ### Project Structure
@@ -336,4 +336,4 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-Apache License 2.0
+GNU Affero General Public License v3.0 (AGPL-3.0). See [LICENSE](LICENSE).
