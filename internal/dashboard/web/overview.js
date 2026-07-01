@@ -93,8 +93,8 @@ export async function loadOverview() {
         <h3>Cluster Info</h3>
         <div class="kv"><span class="k">Version</span><code>${escapeHtml(data.clusterVersion || 'unknown')}</code></div>
         <div class="kv"><span class="k">Node Status</span>${nodes.ready || 0} Ready, ${nodes.notReady || 0} Not Ready</div>
-        <div class="kv"><span class="k">Diagnostics</span>${escapeHtml(JSON.stringify(diags.byPhase || {}))}</div>
-        <div class="kv"><span class="k">Remediations</span>${escapeHtml(JSON.stringify(rems.byPhase || {}))}</div>
+        <div class="kv"><span class="k">Diagnostics</span>${renderPhaseBadges(diags.byPhase)}</div>
+        <div class="kv"><span class="k">Remediations</span>${renderPhaseBadges(rems.byPhase)}</div>
       </div>
     `;
     document.getElementById('version').textContent = data.clusterVersion || 'k8ops Dashboard';
@@ -104,6 +104,22 @@ export async function loadOverview() {
 
   // Load cost overview panel
   loadCostOverview();
+}
+
+function renderPhaseBadges(byPhase) {
+  if (!byPhase || typeof byPhase !== 'object') return '<span style="color:var(--text-muted);">-</span>';
+  var phases = Object.keys(byPhase);
+  if (!phases.length) return '<span style="color:var(--text-muted);">-</span>';
+  var colors = {
+    'Completed': 'var(--accent-green)',
+    'Failed': 'var(--accent-red)',
+    'Pending': 'var(--accent-yellow)',
+    'Running': 'var(--accent-blue)',
+  };
+  return phases.map(function(p) {
+    var c = colors[p] || 'var(--text-muted)';
+    return '<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;background:' + c + '20;color:' + c + ';margin-right:4px;">' + p + ': ' + byPhase[p] + '</span>';
+  }).join('');
 }
 
 // ============================

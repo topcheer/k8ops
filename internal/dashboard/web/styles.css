@@ -268,57 +268,7 @@ body {
 }
 .topbar-chat-btn:active { transform: translateY(0); }
 
-/* NL-to-kubectl suggestion card */
-.nl-suggestion-card {
-  max-width: 500px; margin: 8px auto;
-  background: var(--bg-tertiary); border: 1px solid var(--border-default);
-  border-radius: 10px; padding: 14px 18px;
-}
-.nl-suggestion-header {
-  font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
-  color: var(--accent-purple); font-weight: 600; margin-bottom: 6px;
-}
-.nl-suggestion-label {
-  font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);
-}
-.nl-suggestion-cmd {
-  background: var(--bg-primary); border-radius: 6px; padding: 10px 12px;
-  margin: 0 0 10px; overflow-x: auto;
-}
-.nl-suggestion-cmd code {
-  font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
-  font-size: 12px; color: var(--accent-green);
-}
-.nl-suggestion-actions { display: flex; gap: 8px; }
-.nl-run-btn {
-  padding: 6px 16px; font-size: 12px; font-weight: 600;
-  background: var(--accent-green); color: #fff; border: none; border-radius: 6px;
-  cursor: pointer; transition: opacity 0.15s;
-}
-.nl-run-btn:hover { opacity: 0.85; }
-.nl-run-btn:disabled { opacity: 0.5; cursor: wait; }
-.nl-ai-btn {
-  padding: 6px 16px; font-size: 12px; font-weight: 600;
-  background: transparent; color: var(--accent-blue); border: 1px solid var(--accent-blue);
-  border-radius: 6px; cursor: pointer; transition: all 0.15s;
-}
-.nl-ai-btn:hover { background: rgba(88,166,255,0.1); }
-.nl-suggestion-output {
-  margin-top: 10px; border-top: 1px solid var(--border-subtle); padding-top: 10px;
-}
-.nl-cmd-output {
-  font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
-  font-size: 12px; color: var(--text-secondary);
-  background: var(--bg-primary); border-radius: 6px; padding: 10px 12px;
-  max-height: 300px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;
-  margin: 0;
-}
-.nl-cmd-error {
-  font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
-  font-size: 12px; color: var(--accent-red);
-  background: rgba(248,81,73,0.08); border-radius: 6px; padding: 10px 12px;
-  margin: 0; white-space: pre-wrap;
-}
+/* (NL-to-kubectl CSS removed — feature reverted) */
 .sidebar-footer {
   border-top: 1px solid var(--border-default); padding: 12px 16px;
 }
