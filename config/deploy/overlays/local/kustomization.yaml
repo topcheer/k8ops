@@ -1,12 +1,14 @@
-# Local development overlay
-# Customizes: domain, TLS, image tag, provider settings for local network
+# =============================================================================
+# Local Network Overlay
+# =============================================================================
+# Self-contained deployment for the local K8s cluster.
+# Includes: namespace, secrets, configmap, deployment, service, ingress, PVC.
 #
-# Usage:
+# One command to deploy everything:
 #   kubectl apply -k config/deploy/overlays/local
 #
-# To customize: copy this directory to custom-myenv/ and edit values.
-#   cp -r config/deploy/overlays/local config/deploy/overlays/custom-myenv
-# Custom copies (custom-*) are gitignored — safe for local addresses.
+# One command to remove everything:
+#   kubectl delete -k config/deploy/overlays/local
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
@@ -18,33 +20,33 @@ namespace: k8ops-system
 resources:
 - ../../base
 
-# Override domain, TLS, and image for local network
+# ============================================================================
+# Local Network Overrides
+# ============================================================================
+
+# Use local registry
+images:
+- name: ghcr.io/ggai/k8ops
+  newName: registry.iot2.win/k8ops
+  newTag: latest
+
+# Override Ingress with local domain + TLS
 patches:
 - target:
     kind: Ingress
     name: k8ops-dashboard
   patch: |-
-    # Replace with your local domain or IP
     - op: replace
       path: /spec/rules/0/host
-      value: k8ops.local
+      value: k8ops.iot2.win
     - op: replace
       path: /spec/tls/0/hosts/0
-      value: k8ops.local
+      value: k8ops.iot2.win
     - op: replace
       path: /spec/tls/0/secretName
-      value: k8ops-dashboard-tls-local
-    # Use self-signed issuer for local, or remove TLS entirely
-    - op: replace
-      path: /metadata/annotations/cert-manager.io~1cluster-issuer
-      value: selfsigned
+      value: k8ops-dashboard-tls
 
-# Override image tag for local builds
-images:
-- name: ghcr.io/ggai/k8ops
-  newTag: latest
-
-# Override provider config for local network
+# Override ConfigMap with local values
 configMapGenerator:
 - name: k8ops-config
   behavior: merge
@@ -52,7 +54,21 @@ configMapGenerator:
   - PROVIDER_TYPE=openai
   - PROVIDER_MODEL=gpt-4o
   - PROVIDER_ENDPOINT=https://api.openai.com/v1
-  # CORS: comma-separated, e.g. http://192.168.1.100:9090,http://k8ops.local
-  - cors-allowed-origins=
+  - cors-allowed-origins=https://k8ops.iot2.win
   - provider-rate-limit-rpm=0
-  - debug=true
+  - debug=false
+
+# Override Secrets with local values (overrides base placeholders)
+secretGenerator:
+- name: k8ops-auth
+  behavior: replace
+  literals:
+  - jwt-secret=local-dev-jwt-secret-change-in-prod-8f4a2b9c
+  options:
+    disableNameSuffixHash: true
+- name: k8ops-credentials
+  behavior: replace
+  literals:
+  - api-key=dummy-key-for-local-testing
+  options:
+    disableNameSuffixHash: true

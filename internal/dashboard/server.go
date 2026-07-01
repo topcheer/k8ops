@@ -47,6 +47,7 @@ type Server struct {
 	providerMgr   *providermanager.Manager
 	k8sClientTool *k8s.KubeClient
 	cache         *responseCache
+	chatLimiter   *userRateLimiter // per-user rate limiter for LLM calls
 	auth              *auth.Authenticator
 	log               *slog.Logger
 	server            *http.Server
@@ -100,6 +101,8 @@ func (s *Server) Start(addr string) error {
 
 	// API routes
 	mux.HandleFunc("/api/health", s.handleHealth)
+	mux.HandleFunc("/healthz", s.handleHealthz)   // K8s liveness probe
+	mux.HandleFunc("/readyz", s.handleReadyz)     // K8s readiness probe
 	mux.HandleFunc("/api/version", s.handleVersion)
 	mux.HandleFunc("/api/cluster/overview", s.cacheMiddleware(30*time.Second, s.handleClusterOverview))
 	mux.HandleFunc("/api/diagnostics", s.handleDiagnostics)
@@ -111,6 +114,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/config", s.handleConfig)
 	mux.HandleFunc("/api/nodes", s.cacheMiddleware(30*time.Second, s.handleNodes))
 	mux.HandleFunc("/api/events", s.handleEvents)
+	mux.HandleFunc("/api/events/stream", s.handleEventsStream) // SSE real-time
 	mux.HandleFunc("/api/audit", s.handleAudit)
 	mux.HandleFunc("/api/audit/stats", s.handleAuditStats)
 	mux.HandleFunc("/api/audit/events", s.handleAuditEvents)
@@ -130,6 +134,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/crds", s.cacheMiddleware(10*time.Minute, s.handleCRDs))                  // 10min cache (expensive with_counts)
 	mux.HandleFunc("/api/crd-resources", s.cacheMiddleware(60*time.Second, s.handleCRDResources)) // 1min cache
 	mux.HandleFunc("/api/yaml", s.handleYAML)                  // view YAML of any resource
+	mux.HandleFunc("/api/yaml/apply", s.handleYAMLApply)        // apply YAML (kubectl apply)
 
 	// Cost / FinOps
 	mux.HandleFunc("/api/cost/summary", s.cacheMiddleware(60*time.Second, s.handleCostSummary))                       // 1min cache
@@ -158,9 +163,10 @@ func (s *Server) Start(addr string) error {
 
 	s.server = &http.Server{
 		Addr:         addr,
-		Handler:      s.securityHeadersMiddleware(s.corsMiddleware(handler)),
+		Handler:      s.gzipMiddleware(s.securityHeadersMiddleware(s.corsMiddleware(handler))),
 		ReadTimeout:  15 * time.Second,
-		WriteTimeout: 300 * time.Second, // long for SSE chat streaming
+		WriteTimeout: 0, // no WriteTimeout: SSE streaming can take arbitrarily long
+		IdleTimeout:  120 * time.Second,
 	}
 
 	// TLS support: use HTTPS if cert/key are configured
@@ -336,6 +342,35 @@ func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, map[string]any{"status": "ok", "time": time.Now().Format(time.RFC3339)})
 }
 
+// handleHealthz is the K8s liveness probe endpoint.
+func (s *Server) handleHealthz(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(200)
+	w.Write([]byte("ok\n"))
+}
+
+// handleReadyz is the K8s readiness probe endpoint.
+// Returns 503 if the k8s API is unreachable.
+func (s *Server) handleReadyz(w http.ResponseWriter, r *http.Request) {
+	if s.clientset == nil {
+		w.Header().Set("Content-Type", "text/plain")
+		w.WriteHeader(503)
+		w.Write([]byte("k8s client not initialized\n"))
+		return
+	}
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+	if _, err := s.clientset.CoreV1().Namespaces().List(ctx, metav1.ListOptions{Limit: 1}); err != nil {
+		w.Header().Set("Content-Type", "text/plain")
+		w.WriteHeader(503)
+		w.Write([]byte("k8s API unreachable\n"))
+		return
+	}
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(200)
+	w.Write([]byte("ok\n"))
+}
+
 // handleVersion is defined in middleware.go.
 
 func (s *Server) handleClusterOverview(w http.ResponseWriter, r *http.Request) {
@@ -448,6 +483,30 @@ func (s *Server) handleNodes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get all pods to calculate per-node resource utilization
+	allPods, _ := rc.clientset.CoreV1().Pods("").List(ctx, metav1.ListOptions{})
+	nodeUsage := make(map[string]struct {
+		cpuReq int64 // milli-cores
+		memReq int64 // bytes
+		pods   int
+	})
+	for _, p := range allPods.Items {
+		if p.Spec.NodeName == "" || p.Status.Phase == "Succeeded" || p.Status.Phase == "Failed" {
+			continue
+		}
+		u := nodeUsage[p.Spec.NodeName]
+		u.pods++
+		for _, c := range p.Spec.Containers {
+			if cpuQ := c.Resources.Requests.Cpu(); cpuQ != nil {
+				u.cpuReq += cpuQ.MilliValue()
+			}
+			if memQ := c.Resources.Requests.Memory(); memQ != nil {
+				u.memReq += memQ.Value()
+			}
+		}
+		nodeUsage[p.Spec.NodeName] = u
+	}
+
 	type nodeInfo struct {
 		Name       string            `json:"name"`
 		Status     string            `json:"status"`
@@ -458,6 +517,13 @@ func (s *Server) handleNodes(w http.ResponseWriter, r *http.Request) {
 		OS         string            `json:"os"`
 		Arch       string            `json:"arch"`
 		Conditions map[string]string `json:"conditions"`
+		// Utilization (requested / allocatable as percentage)
+		CPURequested    float64 `json:"cpuRequestedPct"`
+		MemRequested    float64 `json:"memRequestedPct"`
+		CPURequests     string  `json:"cpuRequests"`
+		MemRequests     string  `json:"memRequests"`
+		PodCount        int     `json:"podCount"`
+		PodCapacity     int     `json:"podCapacity"`
 	}
 
 	results := make([]nodeInfo, 0, len(nodes.Items))
@@ -471,6 +537,7 @@ func (s *Server) handleNodes(w http.ResponseWriter, r *http.Request) {
 			CPU:     n.Status.Allocatable.Cpu().String(),
 			Memory:  n.Status.Allocatable.Memory().String(),
 			Conditions: make(map[string]string),
+			PodCapacity: int(n.Status.Allocatable.Pods().Value()),
 		}
 		for _, c := range n.Status.Conditions {
 			info.Conditions[string(c.Type)] = string(c.Status)
@@ -485,6 +552,19 @@ func (s *Server) handleNodes(w http.ResponseWriter, r *http.Request) {
 		}
 		if info.Role == "" {
 			info.Role = "worker"
+		}
+		// Calculate utilization from pod requests
+		usage := nodeUsage[n.Name]
+		info.PodCount = usage.pods
+		allocatableCPU := n.Status.Allocatable.Cpu().MilliValue()
+		allocatableMem := n.Status.Allocatable.Memory().Value()
+		if allocatableCPU > 0 {
+			info.CPURequested = float64(usage.cpuReq) / float64(allocatableCPU) * 100
+			info.CPURequests = fmt.Sprintf("%dm / %dm", usage.cpuReq, allocatableCPU)
+		}
+		if allocatableMem > 0 {
+			info.MemRequested = float64(usage.memReq) / float64(allocatableMem) * 100
+			info.MemRequests = fmt.Sprintf("%.1fGi / %.1fGi", float64(usage.memReq)/1024/1024/1024, float64(allocatableMem)/1024/1024/1024)
 		}
 		results = append(results, info)
 	}

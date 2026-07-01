@@ -50,11 +50,18 @@ run: ## Run manager locally
 
 .PHONY: docker-build
 docker-build: ## Build Docker image
-	docker build -t $(IMG) .
+	docker build --build-arg VERSION=$(VERSION) -t $(IMG) .
 
 .PHONY: docker-push
 docker-push: ## Push Docker image
 	docker push $(IMG)
+
+.PHONY: docker-local
+docker-local: ## Build and push to local registry (registry.iot2.win)
+	docker build --build-arg VERSION=$(VERSION) -t registry.iot2.win/k8ops:$(VERSION) -t registry.iot2.win/k8ops:latest .
+	docker push registry.iot2.win/k8ops:$(VERSION)
+	docker push registry.iot2.win/k8ops:latest
+	@echo "Pushed registry.iot2.win/k8ops:$(VERSION) and :latest"
 
 # ----------------------------------------------------------------------------
 # Test

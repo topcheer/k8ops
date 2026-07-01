@@ -1,6 +1,7 @@
 // --- User Management ---
+import { escapeHtml, fetchJSON } from './modules/utils.js';
 
-async function loadUsers() {
+export async function loadUsers() {
   const container = document.getElementById('userList');
   if (!container) return;
   try {
@@ -40,7 +41,7 @@ async function loadUsers() {
   }
 }
 
-function sourceBadge(provider) {
+export function sourceBadge(provider) {
   const styles = {
     'local':  '<span style="padding:2px 10px;border-radius:12px;font-size:12px;background:#1f6feb1a;color:#58a6ff;border:1px solid #1f6feb33;">Local</span>',
     'ldap':   '<span style="padding:2px 10px;border-radius:12px;font-size:12px;background:#2386361a;color:#3fb950;border:1px solid #23863633;">LDAP</span>',
@@ -49,17 +50,17 @@ function sourceBadge(provider) {
   return styles[provider] || `<span style="padding:2px 10px;border-radius:12px;font-size:12px;background:#30363d;color:#8b949e;">${provider}</span>`;
 }
 
-function roleBadge(role) {
+export function roleBadge(role) {
   const colors = { 'admin': '#f85149', 'operator': '#d29922', 'viewer': '#58a6ff', 'ns-admin': '#f0883e', 'ns-viewer': '#3fb950' };
   const c = colors[role] || '#8b949e';
   return `<span style="color:${c};font-weight:600;">${role}</span>`;
 }
 
 // showCreateUserForm now defined below with dynamic role loading
-function hideCreateUserForm() { document.getElementById('userCreateForm').style.display = 'none'; }
+export function hideCreateUserForm() { document.getElementById('userCreateForm').style.display = 'none'; }
 
 let _userRoleCache = null;
-async function loadUserRoles() {
+export async function loadUserRoles() {
   if (!_userRoleCache) {
     try {
       const data = await fetchJSON('/api/rbac/role-defs');
@@ -71,7 +72,7 @@ async function loadUserRoles() {
   return _userRoleCache;
 }
 
-async function showCreateUserForm() {
+export async function showCreateUserForm() {
   document.getElementById('userCreateForm').style.display = 'block';
   // Populate role dropdown dynamically
   const select = document.getElementById('newRole');
@@ -84,14 +85,14 @@ async function showCreateUserForm() {
   }).join('');
 }
 
-function toggleNsField() {
+export function toggleNsField() {
   const role = document.getElementById('newRole').value;
   // Show namespace field for ns-* roles or namespace-scoped custom roles
   const show = role.startsWith('ns-') || role.includes('-ns');
   document.getElementById('newNsRow').style.display = show ? 'block' : 'none';
 }
 
-async function createUser() {
+export async function createUser() {
   const username = document.getElementById('newUsername').value.trim();
   const password = document.getElementById('newPassword').value;
   const role = document.getElementById('newRole').value;
@@ -118,7 +119,7 @@ async function createUser() {
   } catch(e) { alert('Failed to create user: ' + e.message); }
 }
 
-function editUserRole(id, username, currentRole, currentNs) {
+export function editUserRole(id, username, currentRole, currentNs) {
   const role = prompt(`Role for ${username}:\n(admin, operator, viewer, ns-admin, ns-viewer)`, currentRole);
   if (!role || role === currentRole) return;
   let ns = currentNs;
@@ -133,7 +134,7 @@ function editUserRole(id, username, currentRole, currentNs) {
   }).then(r => r.json()).then(() => loadUsers()).catch(e => alert('Update failed: ' + e.message));
 }
 
-async function deleteUser(id, username) {
+export async function deleteUser(id, username) {
   if (!confirm(`Delete user "${username}"? This also removes their namespace RoleBindings.`)) return;
   try {
     await fetch('/api/admin/users/' + id, { method: 'DELETE' });
@@ -144,7 +145,7 @@ async function deleteUser(id, username) {
 // --- Auth Provider Configuration ---
 
 
-async function loadAuthConfig() {
+export async function loadAuthConfig() {
   try {
     const cfg = await fetchJSON('/api/admin/auth-config');
     const drSelect = document.getElementById('defaultRole');
@@ -160,7 +161,7 @@ async function loadAuthConfig() {
   } catch(e) { console.error('loadAuthConfig:', e); }
 }
 
-async function saveAuthConfig() {
+export async function saveAuthConfig() {
   const body = {
     default_role: document.getElementById('defaultRole')?.value || '',
     default_allowed_namespaces: document.getElementById('defaultAllowedNs')?.value || '',
@@ -181,7 +182,7 @@ let _nsCache = null;
 let _crCache = null;
 let _subjectsCache = null;
 
-async function getNamespaces() {
+export async function getNamespaces() {
   if (!_nsCache) {
     const d = await fetchJSON('/api/rbac/namespaces');
     _nsCache = d.items || [];
@@ -189,7 +190,7 @@ async function getNamespaces() {
   return _nsCache;
 }
 
-async function getClusterRolesForDropdown() {
+export async function getClusterRolesForDropdown() {
   if (!_crCache) {
     const d = await fetchJSON('/api/rbac/clusterroles');
     _crCache = (d.items || []).map(r => r.name);
@@ -197,7 +198,7 @@ async function getClusterRolesForDropdown() {
   return _crCache;
 }
 
-async function getSubjects() {
+export async function getSubjects() {
   if (!_subjectsCache) {
     const d = await fetchJSON('/api/rbac/subjects');
     _subjectsCache = d.items || [];
@@ -209,7 +210,7 @@ async function getSubjects() {
 
 let _roleMappingData = null;
 
-async function loadRoleMappings() {
+export async function loadRoleMappings() {
   const container = document.getElementById('roleMappingList');
   if (!container) return;
   try {
@@ -296,7 +297,7 @@ async function loadRoleMappings() {
   }
 }
 
-function onAddBindingKindChange(roleName) {
+export function onAddBindingKindChange(roleName) {
   const kindSel = document.getElementById(`addBinding-${roleName}-kind`);
   const nsSel = document.getElementById(`addBinding-${roleName}-ns`);
   if (kindSel.value === 'Role') {
@@ -306,7 +307,7 @@ function onAddBindingKindChange(roleName) {
   }
 }
 
-async function addRoleMapping(roleName) {
+export async function addRoleMapping(roleName) {
   const kind = document.getElementById(`addBinding-${roleName}-kind`).value;
   const name = document.getElementById(`addBinding-${roleName}-name`).value;
   const nsSel = document.getElementById(`addBinding-${roleName}-ns`);
@@ -323,7 +324,7 @@ async function addRoleMapping(roleName) {
   } catch(e) { alert('Failed: ' + e.message); }
 }
 
-async function removeRoleMapping(roleName, kind, name, ns) {
+export async function removeRoleMapping(roleName, kind, name, ns) {
   try {
     const params = new URLSearchParams({ role: roleName, kind, name });
     if (ns) params.set('namespace', ns);
@@ -332,7 +333,7 @@ async function removeRoleMapping(roleName, kind, name, ns) {
   } catch(e) { alert('Failed: ' + e.message); }
 }
 
-async function createCustomRole() {
+export async function createCustomRole() {
   const name = document.getElementById('newCustomRoleName').value.trim();
   if (!name) { alert('角色名必填'); return; }
   const displayName = document.getElementById('newCustomRoleDisplay').value.trim();
@@ -352,7 +353,7 @@ async function createCustomRole() {
   } catch(e) { alert('Failed: ' + e.message); }
 }
 
-async function deleteCustomRole(name) {
+export async function deleteCustomRole(name) {
   if (!confirm(`删除自定义角色 "${name}"？所有绑定也会一并删除。`)) return;
   try {
     await fetch('/api/rbac/role-defs?name=' + name, { method: 'DELETE' });
@@ -362,7 +363,7 @@ async function deleteCustomRole(name) {
 
 // --- ClusterRole Management ---
 
-async function loadClusterRoles() {
+export async function loadClusterRoles() {
   const container = document.getElementById('clusterRoleList');
   if (!container) return;
   _crCache = null;
@@ -394,10 +395,10 @@ async function loadClusterRoles() {
   }
 }
 
-function showCreateRoleForm() { document.getElementById('roleCreateForm').style.display = 'block'; }
-function hideCreateRoleForm() { document.getElementById('roleCreateForm').style.display = 'none'; }
+export function showCreateRoleForm() { document.getElementById('roleCreateForm').style.display = 'block'; }
+export function hideCreateRoleForm() { document.getElementById('roleCreateForm').style.display = 'none'; }
 
-async function createClusterRole() {
+export async function createClusterRole() {
   const name = document.getElementById('newRoleName').value.trim();
   if (!name) { alert('Name is required'); return; }
   try {
@@ -414,7 +415,7 @@ async function createClusterRole() {
   } catch(e) { alert('Failed: ' + e.message); }
 }
 
-async function deleteClusterRole(name) {
+export async function deleteClusterRole(name) {
   if (!confirm(`Delete ClusterRole "${name}"?`)) return;
   try {
     await fetch('/api/rbac/clusterroles/' + name, { method: 'DELETE' });
@@ -422,7 +423,7 @@ async function deleteClusterRole(name) {
   } catch(e) { alert('Delete failed: ' + e.message); }
 }
 
-async function viewRoleYAML(name) {
+export async function viewRoleYAML(name) {
   try {
     const data = await fetchJSON('/api/rbac/clusterroles/' + name + '/yaml');
     const overlay = document.getElementById('yamlOverlay');
@@ -434,7 +435,7 @@ async function viewRoleYAML(name) {
 
 // --- Namespace Role Management ---
 
-async function loadNsRoles() {
+export async function loadNsRoles() {
   const container = document.getElementById('nsRoleList');
   if (!container) return;
   try {
@@ -468,7 +469,7 @@ async function loadNsRoles() {
   }
 }
 
-async function showCreateNsRoleForm() {
+export async function showCreateNsRoleForm() {
   document.getElementById('nsRoleCreateForm').style.display = 'block';
   const select = document.getElementById('newNsRoleNs');
   select.innerHTML = '<option value="">Select namespace...</option>';
@@ -477,9 +478,9 @@ async function showCreateNsRoleForm() {
     select.innerHTML += `<option value="${escapeHtml(ns)}">${escapeHtml(ns)}</option>`;
   });
 }
-function hideCreateNsRoleForm() { document.getElementById('nsRoleCreateForm').style.display = 'none'; }
+export function hideCreateNsRoleForm() { document.getElementById('nsRoleCreateForm').style.display = 'none'; }
 
-async function createNsRole() {
+export async function createNsRole() {
   const name = document.getElementById('newNsRoleName').value.trim();
   const ns = document.getElementById('newNsRoleNs').value;
   if (!name || !ns) { alert('Name and namespace are required'); return; }
@@ -497,7 +498,7 @@ async function createNsRole() {
   } catch(e) { alert('Failed: ' + e.message); }
 }
 
-async function deleteNsRole(ns, name) {
+export async function deleteNsRole(ns, name) {
   if (!confirm(`Delete Role "${name}" in "${ns}"?`)) return;
   try {
     await fetch(`/api/rbac/roles/${ns}/${name}`, { method: 'DELETE' });
@@ -507,7 +508,7 @@ async function deleteNsRole(ns, name) {
 
 // --- RoleBinding Management ---
 
-async function loadRoleBindings() {
+export async function loadRoleBindings() {
   const container = document.getElementById('roleBindingList');
   if (!container) return;
   try {
@@ -542,7 +543,7 @@ async function loadRoleBindings() {
   }
 }
 
-async function showCreateBindingForm() {
+export async function showCreateBindingForm() {
   document.getElementById('bindingCreateForm').style.display = 'block';
   const nsSelect = document.getElementById('newBindingNamespaces');
   nsSelect.innerHTML = '';
@@ -554,9 +555,9 @@ async function showCreateBindingForm() {
   await updateRoleNameOptions();
 }
 
-function hideCreateBindingForm() { document.getElementById('bindingCreateForm').style.display = 'none'; }
+export function hideCreateBindingForm() { document.getElementById('bindingCreateForm').style.display = 'none'; }
 
-async function updateSubjectOptions() {
+export async function updateSubjectOptions() {
   const kind = document.getElementById('newBindingSubjectKind').value;
   const select = document.getElementById('newBindingSubjectName');
   select.innerHTML = '';
@@ -574,7 +575,7 @@ async function updateSubjectOptions() {
   });
 }
 
-async function updateRoleNameOptions() {
+export async function updateRoleNameOptions() {
   const kind = document.getElementById('newBindingRoleKind').value;
   const select = document.getElementById('newBindingRoleName');
   select.innerHTML = '';
@@ -597,7 +598,7 @@ async function updateRoleNameOptions() {
   }
 }
 
-async function createRoleBinding() {
+export async function createRoleBinding() {
   const name = document.getElementById('newBindingName').value.trim();
   const nsSelect = document.getElementById('newBindingNamespaces');
   const namespaces = Array.from(nsSelect.selectedOptions).map(o => o.value);
@@ -634,7 +635,7 @@ async function createRoleBinding() {
   } catch(e) { alert('Failed: ' + e.message); }
 }
 
-async function deleteRoleBinding(ns, name) {
+export async function deleteRoleBinding(ns, name) {
   if (!confirm(`Delete RoleBinding "${name}" in "${ns}"?`)) return;
   try {
     await fetch(`/api/rbac/rolebindings/${ns}/${name}`, { method: 'DELETE' });
@@ -648,7 +649,7 @@ let _editingRoleName = null;
 let _apiResourcesCache = null;
 let _currentRules = [];
 
-async function editRoleRules(name) {
+export async function editRoleRules(name) {
   _editingRoleName = name;
   document.getElementById('roleEditorOverlay').classList.add('active');
   document.getElementById('roleEditorName').textContent = name;
@@ -668,7 +669,7 @@ async function editRoleRules(name) {
 }
 
 // Namespace-scoped roles also use clusterrole rules API for now (same ClusterRole underneath via RoleBinding)
-async function editNsRoleRules(ns, name) {
+export async function editNsRoleRules(ns, name) {
   // For ns roles we read the Role resource rules directly
   _editingRoleName = name;
   document.getElementById('roleEditorOverlay').classList.add('active');
@@ -689,12 +690,12 @@ async function editNsRoleRules(ns, name) {
   }
 }
 
-function closeRoleEditor() {
+export function closeRoleEditor() {
   document.getElementById('roleEditorOverlay').classList.remove('active');
   _editingRoleName = null;
 }
 
-function buildResourceTree() {
+export function buildResourceTree() {
   const groups = {};
   for (const res of _apiResourcesCache) {
     const g = res.group || 'core';
@@ -704,7 +705,7 @@ function buildResourceTree() {
   return groups;
 }
 
-function isVerbChecked(group, resource, verb) {
+export function isVerbChecked(group, resource, verb) {
   for (const rule of _currentRules) {
     if (!ruleGroupsMatch(rule.apiGroups, group)) continue;
     if (!ruleResourcesMatch(rule.resources, resource)) continue;
@@ -713,7 +714,7 @@ function isVerbChecked(group, resource, verb) {
   return false;
 }
 
-function ruleGroupsMatch(ruleGroups, group) {
+export function ruleGroupsMatch(ruleGroups, group) {
   if (!ruleGroups) return false;
   for (const g of ruleGroups) {
     if (g === '*' || g === group || (group === 'core' && g === '')) return true;
@@ -721,7 +722,7 @@ function ruleGroupsMatch(ruleGroups, group) {
   return false;
 }
 
-function ruleResourcesMatch(ruleResources, resource) {
+export function ruleResourcesMatch(ruleResources, resource) {
   if (!ruleResources) return false;
   for (const r of ruleResources) {
     if (r === '*' || r === resource) return true;
@@ -729,7 +730,7 @@ function ruleResourcesMatch(ruleResources, resource) {
   return false;
 }
 
-function ruleVerbsMatch(ruleVerbs, verb) {
+export function ruleVerbsMatch(ruleVerbs, verb) {
   if (!ruleVerbs) return false;
   for (const v of ruleVerbs) {
     if (v === '*' || v === verb) return true;
@@ -739,7 +740,7 @@ function ruleVerbsMatch(ruleVerbs, verb) {
 
 const ALL_VERBS = ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete', 'deletecollection'];
 
-function renderRoleEditor() {
+export function renderRoleEditor() {
   const container = document.getElementById('roleEditorBody');
   const groups = buildResourceTree();
   const groupNames = Object.keys(groups).sort((a, b) => {
@@ -804,7 +805,7 @@ function renderRoleEditor() {
   container.innerHTML = html;
 }
 
-function toggleGroup(headerEl) {
+export function toggleGroup(headerEl) {
   const body = headerEl.nextElementSibling;
   if (body.style.display === 'none') {
     body.style.display = '';
@@ -815,11 +816,11 @@ function toggleGroup(headerEl) {
   }
 }
 
-function selectAllVerbs(checked) {
+export function selectAllVerbs(checked) {
   document.querySelectorAll('#roleEditorBody input[type=checkbox]').forEach(cb => cb.checked = checked);
 }
 
-async function saveRoleRules() {
+export async function saveRoleRules() {
   const checkboxMap = {};
   document.querySelectorAll('#roleEditorBody input[type=checkbox]:checked').forEach(cb => {
     const key = cb.dataset.group + '|' + cb.dataset.resource;
@@ -867,7 +868,7 @@ async function saveRoleRules() {
 
 // --- RBAC Tab Loader ---
 
-function loadRBAC() {
+export function loadRBAC() {
   _nsCache = null;
   _crCache = null;
   _subjectsCache = null;

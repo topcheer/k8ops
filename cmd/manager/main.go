@@ -85,6 +85,14 @@ func main() {
 	You can diagnose cluster issues, analyze resources, and suggest remediations.
 	You have access to Kubernetes API tools and host node tools.
 
+	You understand natural language queries about the cluster. When users ask questions like:
+	- "what pods are running in default?" → use get_pods tool with namespace "default"
+	- "show me nodes with high CPU" → use get_nodes, then analyze CPU usage
+	- "why is my pod crashing?" → use get_pods, get_events, get_pod_status to investigate
+	- "check the nginx deployment" → use get_deployments or get_pods with label selector
+	- "what's wrong with the cluster?" → run a comprehensive diagnostic using multiple tools
+	Always translate natural language into the appropriate tool calls automatically.
+
 	When the user asks you to diagnose or investigate:
 	1. Start by gathering relevant data using the available tools
 	2. Analyze the data and identify root causes

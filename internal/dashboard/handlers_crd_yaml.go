@@ -260,3 +260,87 @@ func yamlMarshal(obj map[string]any) ([]byte, error) {
 	}
 	return sigsyaml.JSONToYAML(jsonBytes)
 }
+
+// handleYAMLApply applies a YAML manifest to the cluster (server-side apply).
+// POST /api/yaml/apply body: {"yaml": "...", "dryRun": false}
+func (s *Server) handleYAMLApply(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		writeError(w, 405, "method not allowed")
+		return
+	}
+
+	var req struct {
+		YAML   string `json:"yaml"`
+		DryRun bool   `json:"dryRun"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, 400, "invalid request body: "+err.Error())
+		return
+	}
+	if req.YAML == "" {
+		writeError(w, 400, "yaml field is required")
+		return
+	}
+
+	// Parse YAML to JSON to unstructured
+	jsonBytes, err := sigsyaml.YAMLToJSON([]byte(req.YAML))
+	if err != nil {
+		writeError(w, 400, "YAML parse error: "+err.Error())
+		return
+	}
+
+	obj := &unstructured.Unstructured{}
+	if _, _, err := unstructured.UnstructuredJSONScheme.Decode(jsonBytes, nil, obj); err != nil {
+		writeError(w, 400, "failed to decode object: "+err.Error())
+		return
+	}
+
+	gvk := obj.GroupVersionKind()
+	name := obj.GetName()
+	ns := obj.GetNamespace()
+	if name == "" {
+		writeError(w, 400, "metadata.name is required")
+		return
+	}
+
+	// Map GVK to GVR
+	gvr, err := builtinGVR(gvk.Kind)
+	if err != nil {
+		writeError(w, 400, err.Error())
+		return
+	}
+
+	dyn := s.k8sClientTool.DynamicClient()
+	if dyn == nil {
+		writeError(w, 500, "dynamic client not available")
+		return
+	}
+
+	// Apply (server-side apply)
+	applyOpts := metav1.ApplyOptions{
+		FieldManager: "k8ops-dashboard",
+	}
+	if req.DryRun {
+		applyOpts.DryRun = []string{"All"}
+	}
+
+	obj.SetManagedFields(nil)
+	if ns != "" {
+		_, err = dyn.Resource(gvr).Namespace(ns).Apply(r.Context(), name, obj, applyOpts)
+	} else {
+		_, err = dyn.Resource(gvr).Apply(r.Context(), name, obj, applyOpts)
+	}
+
+	if err != nil {
+		writeError(w, 422, "apply failed: "+err.Error())
+		return
+	}
+
+	writeJSON(w, map[string]any{
+		"status":  "applied",
+		"kind":    gvk.Kind,
+		"name":    name,
+		"dryRun":  req.DryRun,
+		"message": fmt.Sprintf("%s/%s applied successfully", gvk.Kind, name),
+	})
+}

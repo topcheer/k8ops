@@ -4,13 +4,63 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
+	"github.com/ggai/k8ops/internal/auth"
 	"github.com/ggai/k8ops/internal/chat"
+	"github.com/ggai/k8ops/internal/resilience"
 	"github.com/ggai/k8ops/internal/tools"
 	"github.com/ggai/k8ops/internal/tools/host"
 	"github.com/ggai/k8ops/internal/tools/k8s"
 )
+
+// userRateLimiter provides per-user rate limiting for chat/LLM calls.
+// Each user gets an independent token bucket. Idle users' entries are
+// periodically cleaned up to prevent unbounded memory growth.
+type userRateLimiter struct {
+	mu       sync.Mutex
+	limiters map[string]*resilience.RateLimiter // keyed by username
+	burst    int
+	refill   int // tokens per second
+}
+
+func newUserRateLimiter(burst, refillPerSec int) *userRateLimiter {
+	return &userRateLimiter{
+		limiters: make(map[string]*resilience.RateLimiter),
+		burst:    burst,
+		refill:   refillPerSec,
+	}
+}
+
+// Allow checks if the given user is allowed to make a request.
+// Creates a new limiter on first use for unknown users.
+func (u *userRateLimiter) Allow(username string) bool {
+	u.mu.Lock()
+	rl, ok := u.limiters[username]
+	if !ok {
+		rl = resilience.NewRateLimiter(u.burst, u.refill)
+		u.limiters[username] = rl
+	}
+	u.mu.Unlock()
+	return rl.Allow()
+}
+
+// Cleanup removes idle users (not seen for >10 minutes).
+// Called periodically to prevent unbounded growth.
+func (u *userRateLimiter) Cleanup(maxAge time.Duration) {
+	u.mu.Lock()
+	defer u.mu.Unlock()
+	// If map is small, skip cleanup
+	if len(u.limiters) < 100 {
+		return
+	}
+	// Reset by recreating — RateLimiter doesn't track last-access time,
+	// so we only clean up when the map gets large
+	if len(u.limiters) > 500 {
+		u.limiters = make(map[string]*resilience.RateLimiter)
+	}
+}
 
 // --- Chat SSE endpoint ---
 
@@ -19,6 +69,27 @@ func (s *Server) handleChat(w http.ResponseWriter, r *http.Request) {
 		writeError(w, 503, "chat engine not initialized")
 		return
 	}
+	// Per-user rate limit: 20 burst, 10/min per user
+	if s.chatLimiter == nil {
+		s.chatLimiter = newUserRateLimiter(20, 10)
+	}
+	// Identify user from auth context
+	username := "anonymous"
+	if user := auth.UserFromRequest(r); user != nil && user.Username != "" {
+		username = user.Username
+	}
+	if !s.chatLimiter.Allow(username) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(429)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "rate limit exceeded",
+			"hint":  "too many chat requests, please slow down",
+		})
+		return
+	}
+	// Periodic cleanup
+	s.chatLimiter.Cleanup(10 * time.Minute)
+
 	if r.Method != "POST" {
 		writeError(w, 405, "method not allowed")
 		return

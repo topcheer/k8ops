@@ -1,0 +1,15 @@
+apiVersion: v2
+name: k8ops
+description: AIOps platform for Kubernetes - AI-powered diagnostics, remediation, and optimization
+type: application
+version: 1.0.0
+appVersion: "3.0"
+keywords:
+  - kubernetes
+  - aiops
+  - ai
+  - diagnostics
+  - remediation
+home: https://github.com/ggai/k8ops
+maintainers:
+  - name: ggai

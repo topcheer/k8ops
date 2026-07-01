@@ -1,0 +1,148 @@
+# k8ops Helm Chart — Default Values
+#
+# Override with:
+#   helm install k8ops ./deploy/helm/k8ops -f my-values.yaml
+#   helm install k8ops ./deploy/helm/k8ops --set image.tag=v3.0
+
+# ============================================================================
+# Image
+# ============================================================================
+image:
+  repository: ghcr.io/ggai/k8ops
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# ============================================================================
+# Deployment Mode: deployment (single replica) or daemonset (per-node)
+# ============================================================================
+mode: deployment
+
+# ============================================================================
+# Namespace (auto-created if namespace.create=true)
+# ============================================================================
+namespace:
+  create: true
+  name: k8ops-system
+
+# ============================================================================
+# AI Provider
+# ============================================================================
+provider:
+  type: openai          # openai, anthropic, gemini
+  model: gpt-4o
+  endpoint: "https://api.openai.com/v1"
+  apiKey: ""            # Set via --set provider.apiKey=sk-xxx or existingSecret
+
+# ============================================================================
+# Authentication
+# ============================================================================
+auth:
+  jwtSecret: ""        # Auto-generated if empty. Set for persistence.
+  jwtExpiry: 24h
+  dbPath: /data/k8ops.db
+  dbDriver: sqlite      # sqlite, postgres
+  dbDSN: ""
+  defaultRole: viewer   # admin, operator, viewer, ns-admin, ns-viewer
+
+# ============================================================================
+# Dashboard
+# ============================================================================
+dashboard:
+  address: ":9090"
+  debug: false
+
+  # TLS (HTTPS)
+  tls:
+    enabled: false
+    certPath: /data/tls/tls.crt
+    keyPath: /data/tls/tls.key
+    secretName: k8ops-dashboard-tls
+
+# ============================================================================
+# CORS
+# ============================================================================
+cors:
+  allowedOrigins: ""   # comma-separated, e.g. https://k8ops.example.com
+
+# ============================================================================
+# Controller
+# ============================================================================
+controller:
+  metricsAddress: ":8080"
+  healthProbeAddress: ":8081"
+  leaderElection: false
+  disableEventCollector: false
+
+# ============================================================================
+# Notifications
+# ============================================================================
+notifications:
+  slackWebhookUrl: ""
+
+# ============================================================================
+# Rate Limiting
+# ============================================================================
+rateLimit:
+  providerRpm: 0        # AI API requests per minute (0 = unlimited)
+
+# ============================================================================
+# Cost Estimation
+# ============================================================================
+cost:
+  cpuPrice: ""         # Override CPU price per core/month (USD)
+  ramPrice: ""         # Override RAM price per GB/month (USD)
+
+# ============================================================================
+# Resources
+# ============================================================================
+resources:
+  deployment:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  daemonset:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# ============================================================================
+# Storage (Deployment mode only)
+# ============================================================================
+storage:
+  size: 1Gi
+  storageClass: ""    # empty = cluster default
+
+# ============================================================================
+# Service
+# ============================================================================
+service:
+  type: ClusterIP      # ClusterIP, NodePort, LoadBalancer
+  port: 9090
+
+# ============================================================================
+# Ingress
+# ============================================================================
+ingress:
+  enabled: true
+  className: traefik   # traefik, nginx, etc.
+  host: k8ops.example.com
+  tls:
+    enabled: true
+    secretName: k8ops-dashboard-tls
+    issuer: letsencrypt  # cert-manager ClusterIssuer
+
+# ============================================================================
+# DaemonSet-specific (only used when mode=daemonset)
+# ============================================================================
+daemonset:
+  tolerations:
+    - operator: Exists   # Run on ALL nodes including tainted ones
+  hostPID: true
+  hostNetwork: true
+  privileged: true

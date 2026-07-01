@@ -12,6 +12,7 @@
   <div class="sidebar-header">
     <h1>k8ops</h1>
     <span class="version" id="version">Kubernetes AI Operations</span>
+    <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle theme">&#9790; Dark</button>
   </div>
   <div class="sidebar-nav">
     <button class="active" onclick="showTab('overview', this)"><span class="nav-icon">&#9632;</span><span>Overview</span></button>
@@ -19,6 +20,7 @@
     <button onclick="showTab('remediations', this)"><span class="nav-icon">&#9881;</span><span>Remediations</span></button>
     <button onclick="showTab('optimizations', this)"><span class="nav-icon">&#9650;</span><span>Optimizations</span></button>
     <button onclick="showTab('cost', this)"><span class="nav-icon">&#36;</span><span>Cost</span></button>
+    <button onclick="showTab('topology', this)"><span class="nav-icon">&#9672;</span><span>Topology</span></button>
     <button onclick="showTab('nodes', this)"><span class="nav-icon">&#9678;</span><span>Nodes</span></button>
     <button onclick="showTab('events', this)"><span class="nav-icon">&#9888;</span><span>Events</span></button>
     <button onclick="showTab('pods', this)"><span class="nav-icon">&#9635;</span><span>Pods</span></button>
@@ -42,8 +44,24 @@
 
 <div class="main-content">
   <div class="top-bar">
-    <div></div>
-    <div class="last-update" id="lastUpdate"></div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <select id="nsFilter" class="ns-selector" onchange="onNsChange()">
+        <option value="">All Namespaces</option>
+      </select>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div class="last-update" id="lastUpdate"></div>
+      <div class="notif-bell-wrapper" id="notifBell">
+        <svg class="notif-bell-icon" viewBox="0 0 16 16" width="16" height="16" onclick="toggleNotifPanel()">
+          <path d="M8 1.5A4.5 4.5 0 0 0 3.5 6v3.5l-1 1.5h11l-1-1.5V6A4.5 4.5 0 0 0 8 1.5z M6.5 13a1.5 1.5 0 0 0 3 0z" fill="currentColor"/>
+        </svg>
+        <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+        <div class="notif-panel" id="notifPanel" style="display:none;">
+          <div class="notif-panel-header">Recent Alerts</div>
+          <div id="notifList" class="notif-list"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Overview -->
@@ -94,6 +112,15 @@
     <div id="optimizationsTable"><div class="loading">Loading...</div></div>
   </div>
 
+  <!-- Topology -->
+  <div id="tab-topology" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">Cluster Topology</div>
+      <button onclick="loadTopology()">Refresh</button>
+    </div>
+    <div id="topologyContainer" class="topology-container"><div class="loading">Loading topology...</div></div>
+  </div>
+
   <!-- Cost / FinOps -->
   <div id="tab-cost" class="hidden">
     <div class="refresh-bar">
@@ -109,7 +136,10 @@
   <div id="tab-nodes" class="hidden">
     <div class="refresh-bar">
       <div class="section-title">Cluster Nodes</div>
-      <button onclick="loadNodes()">Refresh</button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="nodeSearch" class="search-input" placeholder="Filter nodes..." oninput="filterTable('nodesTable','nodeSearch')">
+        <button onclick="loadNodes()">Refresh</button>
+      </div>
     </div>
     <div id="nodesTable"><div class="loading">Loading...</div></div>
   </div>
@@ -118,16 +148,25 @@
   <div id="tab-events" class="hidden">
     <div class="refresh-bar">
       <div class="section-title">Recent Events</div>
-      <button onclick="loadEvents()">Refresh</button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <label class="log-toggle"><input type="checkbox" id="warningOnly" onchange="loadEvents()"> Warnings only</label>
+        <label class="log-toggle"><input type="checkbox" id="liveEvents" onchange="toggleLiveEvents()" checked> Live</label>
+        <button onclick="loadEvents()">Refresh</button>
+        <button onclick="clearLiveEvents()" class="btn-secondary">Clear</button>
+      </div>
     </div>
     <div id="eventsTable"><div class="loading">Loading...</div></div>
+    <div id="liveEventsFeed" class="live-events-feed"></div>
   </div>
 
   <!-- Pods -->
   <div id="tab-pods" class="hidden">
     <div class="refresh-bar">
       <div class="section-title">Pod Browser</div>
-      <button onclick="loadPods()">Refresh</button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="podSearch" class="search-input" placeholder="Filter pods..." oninput="filterTable('podsTable','podSearch')">
+        <button onclick="loadPods()">Refresh</button>
+      </div>
     </div>
     <div id="podsTable"><div class="loading">Loading...</div></div>
   </div>
@@ -199,7 +238,17 @@
   <div id="tab-audit" class="hidden">
     <div class="refresh-bar">
       <div class="section-title">Audit Log</div>
-      <button onclick="loadAudit()">Refresh</button>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <select id="auditSeverity" class="ns-selector" style="min-width:120px;" onchange="loadAudit()">
+          <option value="">All Severities</option>
+          <option value="info">Info</option>
+          <option value="warning">Warning</option>
+          <option value="error">Error</option>
+          <option value="critical">Critical</option>
+        </select>
+        <input type="text" id="auditSearch" class="search-input" placeholder="Filter audit entries..." oninput="filterTable('auditTable','auditSearch')">
+        <button onclick="loadAudit()">Refresh</button>
+      </div>
     </div>
     <div id="auditStats" style="margin-bottom:16px;"></div>
     <div id="auditTable"><div class="loading">Loading...</div></div>
@@ -421,10 +470,12 @@
   </div>
   <div class="chat-body" id="chatMessages"></div>
   <div class="chat-footer">
-    <input type="text" id="chatInput" placeholder="Ask about cluster issues..." autocomplete="off"
-      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage();}"
-      style="flex:1;background:#0d1117;border:1px solid #30363d;color:#c9d1d9;padding:10px 14px;border-radius:6px;font-size:14px;outline:none;">
-    <button onclick="sendChatMessage()" id="chatSendBtn" class="btn-primary">Send</button>
+    <div class="chat-footer-inner">
+      <textarea id="chatInput" placeholder="Ask about cluster issues..." rows="1" autocomplete="off"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage();}"
+        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,200)+'px'"></textarea>
+      <button onclick="sendChatMessage()" id="chatSendBtn" class="btn-primary" style="height:52px;padding:0 24px;font-size:15px;">Send</button>
+    </div>
   </div>
 </div>
 
@@ -449,15 +500,26 @@
       <select id="logContainer" class="form-input" style="width:auto;font-size:12px;padding:4px 8px;" onchange="restartLogs()"></select>
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
+      <div class="log-toolbar">
+        <input type="text" id="logSearch" class="log-search-input" placeholder="Filter logs..." oninput="filterLogs()">
+        <label class="log-toggle">
+          <input type="checkbox" id="logAutoScroll" checked onchange=""> Auto-scroll
+        </label>
+      </div>
       <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#8b949e;cursor:pointer;">
-        <input type="checkbox" id="logFollow" onchange="restartLogs()" style="accent-color:#58a6ff;"> Follow
+        <input type="checkbox" id="logFollow" onchange="restartLogs()" style="accent-color:#58a6ff;" checked> Follow
       </label>
+      <button onclick="downloadLogs()" class="btn-secondary" title="Download logs">Download</button>
       <button onclick="clearLogs()" class="btn-secondary">Clear</button>
       <button onclick="closeLogViewer()" class="btn-secondary" style="color:#f85149;">Close</button>
     </div>
   </div>
-  <div class="chat-body">
-    <pre id="logOutput" style="padding:16px;font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;"></pre>
+  <div class="chat-body log-body" id="logScrollContainer">
+    <div id="logOutput" class="log-output"></div>
+    <div id="logStatusBar" class="log-status-bar">
+      <span id="logLineCount">0 lines</span>
+      <span id="logFilteredCount" style="display:none;"></span>
+    </div>
   </div>
 </div>
 
@@ -466,14 +528,19 @@
   <div class="chat-header">
     <div style="display:flex;align-items:center;gap:12px;">
       <div class="title" id="yamlTitle">YAML</div>
+      <span id="yamlEditIndicator" class="yaml-edit-indicator" style="display:none;">Editing</span>
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
+      <button onclick="toggleYAMLEdit()" id="yamlEditBtn" class="btn-secondary">Edit</button>
       <button onclick="copyYAML()" id="yamlCopyBtn" class="btn-secondary">Copy</button>
+      <button onclick="applyYAML()" id="yamlApplyBtn" class="btn-secondary" style="display:none;color:#3fb950;">Apply</button>
       <button onclick="closeYAMLViewer()" class="btn-secondary" style="color:#f85149;">Close</button>
     </div>
   </div>
   <div class="chat-body">
     <pre id="yamlOutput" style="padding:16px;font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;"></pre>
+    <textarea id="yamlEditor" class="yaml-editor" style="display:none;" spellcheck="false"></textarea>
+    <div id="yamlApplyResult" style="display:none;"></div>
   </div>
 </div>
 
@@ -532,14 +599,44 @@
   </div>
 </div>
 
-<script src="/core.js"></script>
-<script src="/overview.js"></script>
-<script src="/nodes.js"></script>
-<script src="/pods.js"></script>
-<script src="/chat.js"></script>
-<script src="/resources.js"></script>
-<script src="/rbac.js"></script>
-<script src="/providers.js"></script>
-<script>initTabFromHash();</script>
+<!-- Command Palette (Ctrl+K) -->
+<div id="cmdPalette" class="cmd-palette-overlay" style="display:none;">
+  <div class="cmd-palette-box">
+    <input type="text" id="cmdInput" class="cmd-input" placeholder="Search pages, resources, actions... (Esc to close)" autocomplete="off">
+    <div id="cmdResults" class="cmd-results"></div>
+    <div class="cmd-footer"><span>↑↓ navigate</span> <span>↵ select</span> <span>esc close</span></div>
+  </div>
+</div>
+
+<!-- Keyboard Shortcuts Help -->
+<div id="kbdHelpOverlay" class="cmd-palette-overlay" style="display:none;">
+  <div class="kbd-help-box" onclick="event.stopPropagation()">
+    <div class="kbd-help-header">Keyboard Shortcuts <span style="float:right;cursor:pointer;font-size:14px;" onclick="document.getElementById('kbdHelpOverlay').style.display='none'">&times;</span></div>
+    <div class="kbd-help-body">
+      <div class="kbd-help-section">
+        <div class="kbd-help-title">Navigation</div>
+        <div class="kbd-help-row"><kbd>Ctrl</kbd>+<kbd>K</kbd> <span>Command Palette</span></div>
+        <div class="kbd-help-row"><kbd>g</kbd> then <kbd>o</kbd> <span>Go to Overview</span></div>
+        <div class="kbd-help-row"><kbd>g</kbd> then <kbd>n</kbd> <span>Go to Nodes</span></div>
+        <div class="kbd-help-row"><kbd>g</kbd> then <kbd>p</kbd> <span>Go to Pods</span></div>
+        <div class="kbd-help-row"><kbd>g</kbd> then <kbd>e</kbd> <span>Go to Events</span></div>
+        <div class="kbd-help-row"><kbd>g</kbd> then <kbd>a</kbd> <span>Go to Audit Log</span></div>
+        <div class="kbd-help-row"><kbd>g</kbd> then <kbd>d</kbd> <span>Go to Diagnostics</span></div>
+        <div class="kbd-help-row"><kbd>g</kbd> then <kbd>t</kbd> <span>Go to Cost</span></div>
+      </div>
+      <div class="kbd-help-section">
+        <div class="kbd-help-title">Actions</div>
+        <div class="kbd-help-row"><kbd>/</kbd> <span>Focus search filter</span></div>
+        <div class="kbd-help-row"><kbd>j</kbd> <span>Move down in table</span></div>
+        <div class="kbd-help-row"><kbd>k</kbd> <span>Move up in table</span></div>
+        <div class="kbd-help-row"><kbd>r</kbd> <span>Refresh current tab</span></div>
+        <div class="kbd-help-row"><kbd>?</kbd> <span>Show this help</span></div>
+        <div class="kbd-help-row"><kbd>Esc</kbd> <span>Close overlays</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/main.js"></script>
 </body>
 </html>

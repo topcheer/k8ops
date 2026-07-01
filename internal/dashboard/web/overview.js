@@ -1,16 +1,32 @@
 // --- Overview ---
-async function loadOverview() {
+import { escapeHtml, fetchJSON, isForbidden, renderForbidden, badge, timeAgo } from './modules/utils.js';
+
+const _sparklineHistory = { pods: [], warnings: [], events: [] };
+const MAX_SPARK_POINTS = 30;
+
+export async function loadOverview() {
   try {
-    const data = await fetchJSON('/api/cluster/overview');
+    const [data, nodesData] = await Promise.all([
+      fetchJSON('/api/cluster/overview'),
+      fetchJSON('/api/nodes').catch(() => ({ items: [] }))
+    ]);
     const cards = document.getElementById('overviewCards');
     const nodes = data.nodes || {};
     const diags = data.diagnostics || {};
     const rems = data.remediations || {};
+
+    // Track sparkline history
+    _sparklineHistory.pods.push(nodes.ready || 0);
+    _sparklineHistory.warnings.push(data.recentWarnings || 0);
+    if (_sparklineHistory.pods.length > MAX_SPARK_POINTS) _sparklineHistory.pods.shift();
+    if (_sparklineHistory.warnings.length > MAX_SPARK_POINTS) _sparklineHistory.warnings.shift();
+
     cards.innerHTML = `
       <div class="card ${nodes.notReady > 0 ? 'warn' : 'ok'}">
         <div class="label">Nodes</div>
         <div class="value">${nodes.ready || 0}<span style="font-size:16px;color:#8b949e;">/${nodes.total || 0}</span></div>
         <div class="sub">${nodes.notReady || 0} Not Ready</div>
+        ${sparklineSvg(_sparklineHistory.pods, '#3fb950')}
       </div>
       <div class="card info">
         <div class="label">Namespaces</div>
@@ -29,15 +45,55 @@ async function loadOverview() {
       <div class="card ${data.recentWarnings > 10 ? 'warn' : ''}">
         <div class="label">Recent Warnings</div>
         <div class="value">${data.recentWarnings || 0}</div>
+        ${sparklineSvg(_sparklineHistory.warnings, data.recentWarnings > 10 ? '#f85149' : '#d29922')}
       </div>
     `;
+
+    // Node resource utilization bars
+    const nodesHtml = (nodesData.items || []).map(n => {
+      const cpuPct = n.cpuRequestedPct || 0;
+      const memPct = n.memRequestedPct || 0;
+      const podPct = n.podCapacity > 0 ? (n.podCount / n.podCapacity * 100) : 0;
+      const cpuColor = cpuPct > 80 ? '#f85149' : cpuPct > 60 ? '#d29922' : '#3fb950';
+      const memColor = memPct > 80 ? '#f85149' : memPct > 60 ? '#d29922' : '#3fb950';
+      const podColor = podPct > 80 ? '#f85149' : podPct > 60 ? '#d29922' : '#3fb950';
+      return `<div class="node-resource-row">
+        <div class="node-resource-name">
+          <span class="status-dot ${n.status === 'Ready' ? 'dot-ok' : 'dot-err'}"></span>
+          ${escapeHtml(n.name)}
+          <span class="node-role-tag">${escapeHtml(n.role)}</span>
+        </div>
+        <div class="resource-bars">
+          <div class="resource-bar-group">
+            <span class="resource-label">CPU</span>
+            <div class="resource-bar-track"><div class="resource-bar-fill" style="width:${cpuPct}%;background:${cpuColor};"></div></div>
+            <span class="resource-value">${cpuPct.toFixed(0)}%</span>
+          </div>
+          <div class="resource-bar-group">
+            <span class="resource-label">MEM</span>
+            <div class="resource-bar-track"><div class="resource-bar-fill" style="width:${memPct}%;background:${memColor};"></div></div>
+            <span class="resource-value">${memPct.toFixed(0)}%</span>
+          </div>
+          <div class="resource-bar-group">
+            <span class="resource-label">POD</span>
+            <div class="resource-bar-track"><div class="resource-bar-fill" style="width:${podPct}%;background:${podColor};"></div></div>
+            <span class="resource-value">${n.podCount}/${n.podCapacity}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
     document.getElementById('overviewDetails').innerHTML = `
       <div class="detail-panel">
+        <h3>Node Resource Utilization</h3>
+        ${nodesHtml || '<div class="empty">No nodes data</div>'}
+      </div>
+      <div class="detail-panel" style="margin-top:16px;">
         <h3>Cluster Info</h3>
-        <div class="kv"><span class="k">Version</span><code>${data.clusterVersion || 'unknown'}</code></div>
+        <div class="kv"><span class="k">Version</span><code>${escapeHtml(data.clusterVersion || 'unknown')}</code></div>
         <div class="kv"><span class="k">Node Status</span>${nodes.ready || 0} Ready, ${nodes.notReady || 0} Not Ready</div>
-        <div class="kv"><span class="k">Diagnostics</span>${JSON.stringify(diags.byPhase || {})}</div>
-        <div class="kv"><span class="k">Remediations</span>${JSON.stringify(rems.byPhase || {})}</div>
+        <div class="kv"><span class="k">Diagnostics</span>${escapeHtml(JSON.stringify(diags.byPhase || {}))}</div>
+        <div class="kv"><span class="k">Remediations</span>${escapeHtml(JSON.stringify(rems.byPhase || {}))}</div>
       </div>
     `;
     document.getElementById('version').textContent = data.clusterVersion || 'k8ops Dashboard';
@@ -54,11 +110,28 @@ async function loadOverview() {
   loadCostOverview();
 }
 
+// Generate a lightweight SVG sparkline from an array of numbers
+export function sparklineSvg(data, color) {
+  if (!data || data.length < 2) return '';
+  const w = 100, h = 24;
+  const min = Math.min(...data), max = Math.max(...data);
+  const range = max - min || 1;
+  const step = w / (data.length - 1);
+  const points = data.map((v, i) => {
+    const x = i * step;
+    const y = h - ((v - min) / range) * (h - 4) - 2;
+    return x.toFixed(1) + ',' + y.toFixed(1);
+  }).join(' ');
+  return `<svg class="sparkline" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <polyline points="${points}" fill="none" stroke="${color}" stroke-width="1.5" />
+  </svg>`;
+}
+
 // --- Cost / FinOps ---
 // Implemented below: loadCostOverview, loadCost, loadCostSummary, loadCostRecommendations
 
 // --- Diagnostics History ---
-async function loadDiagnostics() {
+export async function loadDiagnostics() {
   const container = document.getElementById('diagnosticsTable');
   try {
     const statusFilter = document.getElementById('diagStatusFilter')?.value || '';
@@ -82,7 +155,7 @@ async function loadDiagnostics() {
   }
 }
 
-async function viewDiagnostic(ns, name) {
+export async function viewDiagnostic(ns, name) {
   const overlay = document.getElementById('diagDetailOverlay');
   const body = document.getElementById('diagDetailBody');
   document.getElementById('diagDetailTitle').textContent = name;
@@ -96,12 +169,12 @@ async function viewDiagnostic(ns, name) {
   }
 }
 
-function closeDiagDetail() {
+export function closeDiagDetail() {
   document.getElementById('diagDetailOverlay').classList.remove('active');
 }
 
 // --- Remediations ---
-async function loadRemediations() {
+export async function loadRemediations() {
   const container = document.getElementById('remediationsTable');
   try {
     const data = await fetchJSON('/api/remediations');
@@ -130,7 +203,7 @@ async function loadRemediations() {
 }
 
 // --- Optimizations ---
-async function loadOptimizations() {
+export async function loadOptimizations() {
   const container = document.getElementById('optimizationsTable');
   try {
     const data = await fetchJSON('/api/optimizations');
@@ -155,7 +228,7 @@ async function loadOptimizations() {
 }
 
 // --- Cost / FinOps ---
-async function loadCostOverview() {
+export async function loadCostOverview() {
   const panel = document.getElementById('costPanel');
   if (!panel) return;
   try {
@@ -181,13 +254,13 @@ async function loadCostOverview() {
   }
 }
 
-async function loadCost() {
+export async function loadCost() {
   try {
     await Promise.all([loadCostSummary(), loadCostRecommendations()]);
   } catch(e) { /* ignore */ }
 }
 
-async function loadCostSummary() {
+export async function loadCostSummary() {
   const cardsEl = document.getElementById('costSummaryCards');
   const nsEl = document.getElementById('costNamespaces');
   if (!cardsEl || !nsEl) return;
@@ -257,7 +330,7 @@ async function loadCostSummary() {
   }
 }
 
-async function loadCostRecommendations() {
+export async function loadCostRecommendations() {
   const recEl = document.getElementById('costRecommendations');
   if (!recEl) return;
 
@@ -297,7 +370,7 @@ async function loadCostRecommendations() {
 }
 
 // --- Remediation Approve/Reject ---
-async function approveRemediation(namespace, name) {
+export async function approveRemediation(namespace, name) {
   if (!confirm(`Approve remediation plan "${name}"?`)) return;
   try {
     const res = await fetchJSON(`/api/remediation/${namespace}/${name}/approve`, { method: 'POST' });
@@ -308,7 +381,7 @@ async function approveRemediation(namespace, name) {
   }
 }
 
-async function rejectRemediation(namespace, name) {
+export async function rejectRemediation(namespace, name) {
   if (!confirm(`Reject remediation plan "${name}"?`)) return;
   try {
     const res = await fetchJSON(`/api/remediation/${namespace}/${name}/reject`, { method: 'POST' });

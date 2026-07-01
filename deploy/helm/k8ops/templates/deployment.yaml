@@ -1,0 +1,124 @@
+# Common env vars shared by Deployment and DaemonSet
+{{- define "k8ops.env" -}}
+- name: AIOPS_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: k8ops-credentials
+      key: api-key
+      optional: true
+- name: AUTH_JWT_SECRET
+  valueFrom:
+    secretKeyRef:
+      name: k8ops-auth
+      key: jwt-secret
+      optional: true
+- name: CORS_ALLOWED_ORIGINS
+  valueFrom:
+    configMapRef:
+      name: k8ops-config
+      key: cors-allowed-origins
+      optional: true
+- name: SLACK_WEBHOOK_URL
+  valueFrom:
+    secretKeyRef:
+      name: k8ops-notifications
+      key: slack-webhook-url
+      optional: true
+{{- if .Values.dashboard.tls.enabled }}
+- name: DASHBOARD_TLS_CERT
+  value: {{ .Values.dashboard.tls.certPath | quote }}
+- name: DASHBOARD_TLS_KEY
+  value: {{ .Values.dashboard.tls.keyPath | quote }}
+{{- end }}
+- name: PROVIDER_RATE_LIMIT_RPM
+  valueFrom:
+    configMapRef:
+      name: k8ops-config
+      key: provider-rate-limit-rpm
+      optional: true
+- name: DEBUG
+  valueFrom:
+    configMapRef:
+      name: k8ops-config
+      key: debug
+      optional: true
+{{- end -}}
+
+{{- if eq .Values.mode "deployment" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8ops
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app.kubernetes.io/name: k8ops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: k8ops
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: k8ops
+    spec:
+      serviceAccountName: k8ops
+      containers:
+      - name: k8ops
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          {{- include "k8ops.env" . | nindent 8 }}
+        envFrom:
+        - configMapRef:
+            name: k8ops-config
+            optional: true
+        command:
+        - /manager
+        args:
+        - --metrics-bind-address={{ .Values.controller.metricsAddress }}
+        - --health-probe-bind-address={{ .Values.controller.healthProbeAddress }}
+        - --dashboard-address={{ .Values.dashboard.address }}
+        ports:
+        - name: dashboard
+          containerPort: 9090
+          protocol: TCP
+        - name: metrics
+          containerPort: 8080
+          protocol: TCP
+        - name: health
+          containerPort: 8081
+          protocol: TCP
+        resources:
+          {{- toYaml .Values.resources.deployment | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: health
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: health
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        {{- if .Values.dashboard.tls.enabled }}
+        - name: tls
+          mountPath: /data/tls
+          readOnly: true
+        {{- end }}
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: k8ops-data
+      {{- if .Values.dashboard.tls.enabled }}
+      - name: tls
+        secret:
+          secretName: {{ .Values.dashboard.tls.secretName }}
+          optional: true
+      {{- end }}
+{{- end }}

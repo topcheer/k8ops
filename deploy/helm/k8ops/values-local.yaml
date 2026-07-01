@@ -1,0 +1,60 @@
+# Local Network Helm Values
+# Override the Helm chart defaults with actual local environment values.
+#
+# Usage:
+#   helm install k8ops ./deploy/helm/k8ops -f deploy/helm/k8ops/values-local.yaml
+
+image:
+  repository: registry.iot2.win/k8ops
+  tag: latest
+  pullPolicy: Always
+
+mode: deployment
+
+namespace:
+  create: true
+  name: k8ops-system
+
+provider:
+  type: openai
+  model: gpt-4o
+  endpoint: "https://api.openai.com/v1"
+  apiKey: ""
+
+auth:
+  jwtSecret: ""
+  dbPath: /data/k8ops.db
+  dbDriver: sqlite
+  defaultRole: viewer
+
+dashboard:
+  address: ":9090"
+  debug: false
+  tls:
+    enabled: true
+    certPath: /data/tls/tls.crt
+    keyPath: /data/tls/tls.key
+    secretName: k8ops-dashboard-tls
+
+# Local CORS — allow the local dashboard domain
+cors:
+  allowedOrigins: "https://k8ops.iot2.win"
+
+controller:
+  metricsAddress: ":8080"
+  healthProbeAddress: ":8081"
+  leaderElection: false
+  disableEventCollector: false
+
+ingress:
+  enabled: true
+  className: traefik
+  host: k8ops.iot2.win
+  tls:
+    enabled: true
+    secretName: k8ops-dashboard-tls
+    issuer: letsencrypt
+
+storage:
+  size: 1Gi
+  storageClass: ""

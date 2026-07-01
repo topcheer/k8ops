@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: k8ops-config
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app.kubernetes.io/name: k8ops
+data:
+  PROVIDER_TYPE: {{ .Values.provider.type | quote }}
+  PROVIDER_MODEL: {{ .Values.provider.model | quote }}
+  PROVIDER_ENDPOINT: {{ .Values.provider.endpoint | quote }}
+  cors-allowed-origins: {{ .Values.cors.allowedOrigins | quote }}
+  provider-rate-limit-rpm: {{ .Values.rateLimit.providerRpm | quote }}
+  debug: {{ .Values.dashboard.debug | quote }}

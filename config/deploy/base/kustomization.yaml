@@ -15,7 +15,6 @@ resources:
 - serviceaccount.yaml
 - rbac-roles.yaml
 - rbac-impersonation.yaml
-- secret.yaml
 - deployment.yaml
 - service.yaml
 - ingress.yaml
@@ -30,6 +29,20 @@ configMapGenerator:
   - cors-allowed-origins=
   - provider-rate-limit-rpm=0
   - debug=false
+
+# Auto-generate secrets on apply — no manual kubectl create needed.
+# Override jwt-secret/api-key in overlay for production values.
+secretGenerator:
+- name: k8ops-auth
+  literals:
+  - jwt-secret=CHANGE_ME_in_overlay
+  options:
+    disableNameSuffixHash: true
+- name: k8ops-credentials
+  literals:
+  - api-key=CHANGE_ME_in_overlay
+  options:
+    disableNameSuffixHash: true
 
 # Shared labels
 commonLabels:

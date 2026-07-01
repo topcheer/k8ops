@@ -1,0 +1,596 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: k8ops-system
+  labels:
+    app.kubernetes.io/name: k8ops
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: k8ops
+  namespace: k8ops-system
+  labels:
+    app.kubernetes.io/name: k8ops
+---
+# k8ops custom ClusterRoles — vendor-independent, resource-level definitions
+# These replace all references to K8s built-in roles (cluster-admin, edit, view, admin)
+# Every role is explicitly defined at the apiGroups → resources → verbs level.
+
+# ============================================================
+# k8ops-role-admin: Full cluster access (replaces cluster-admin)
+# ============================================================
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: k8ops-role-admin
+  labels:
+    app.kubernetes.io/name: k8ops
+    k8ops.io/role-template: "true"
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+# ============================================================
+# k8ops-role-operator: Read/write most resources, no RBAC/secrets management
+# (replaces edit)
+# ============================================================
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: k8ops-role-operator
+  labels:
+    app.kubernetes.io/name: k8ops
+    k8ops.io/role-template: "true"
+rules:
+# Core resources — full CRUD
+- apiGroups: [""]
+  resources: ["pods", "pods/log", "pods/exec", "pods/portforward", "pods/attach",
+              "services", "endpoints", "configmaps", "events",
+              "persistentvolumeclaims", "replicationcontrollers",
+              "serviceaccounts", "resourcequotas", "limitranges"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+# Namespaces — read only
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list", "watch"]
+# Nodes — read only (infrastructure)
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get", "list", "watch"]
+# Apps
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets", "statefulsets", "daemonsets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+# Batch
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+# Networking
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses", "networkpolicies", "ingressclasses"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+- apiGroups: ["discovery.k8s.io"]
+  resources: ["endpointslices"]
+  verbs: ["get", "list", "watch"]
+# Storage
+- apiGroups: ["storage.k8s.io"]
+  resources: ["storageclasses", "volumeattachments", "csinodes", "csidrivers", "csistoragecapacities"]
+  verbs: ["get", "list", "watch"]
+# Autoscaling
+- apiGroups: ["autoscaling"]
+  resources: ["horizontalpodautoscalers"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+# Policy
+- apiGroups: ["policy"]
+  resources: ["poddisruptionbudgets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+# CRDs — read only (operators can view but not manage CRD definitions)
+- apiGroups: ["apiextensions.k8s.io"]
+  resources: ["customresourcedefinitions"]
+  verbs: ["get", "list", "watch"]
+# Secrets — limited (operator can create/update own secrets but not list all)
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+# PersistentVolumes — read only
+- apiGroups: [""]
+  resources: ["persistentvolumes"]
+  verbs: ["get", "list", "watch"]
+# All CRD-based resources — full CRUD (apps, operators, etc.)
+- apiGroups: ["aiops.ggai.dev", "cert-manager.io", "traefik.io", "helm.cattle.io",
+              "source.toolkit.fluxcd.io", "kustomize.toolkit.fluxcd.io",
+              "monitoring.coreos.com", "argoproj.io"]
+  resources: ["*"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+---
+# ============================================================
+# k8ops-role-viewer: Read-only cluster-wide (replaces view)
+# Enhanced: includes nodes, secrets(get only), CRDs
+# ============================================================
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: k8ops-role-viewer
+  labels:
+    app.kubernetes.io/name: k8ops
+    k8ops.io/role-template: "true"
+rules:
+# Core — read
+- apiGroups: [""]
+  resources: ["pods", "pods/log", "services", "endpoints", "configmaps",
+              "events", "namespaces", "nodes", "persistentvolumes", "persistentvolumeclaims",
+              "replicationcontrollers", "resourcequotas", "limitranges", "serviceaccounts"]
+  verbs: ["get", "list", "watch"]
+# Secrets — get only (sensitive)
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
+# Apps — read
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets", "statefulsets", "daemonsets"]
+  verbs: ["get", "list", "watch"]
+# Batch — read
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get", "list", "watch"]
+# Networking — read
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses", "networkpolicies", "ingressclasses"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["discovery.k8s.io"]
+  resources: ["endpointslices"]
+  verbs: ["get", "list", "watch"]
+# Storage — read
+- apiGroups: ["storage.k8s.io"]
+  resources: ["storageclasses", "volumeattachments", "csinodes", "csidrivers"]
+  verbs: ["get", "list", "watch"]
+# Autoscaling — read
+- apiGroups: ["autoscaling"]
+  resources: ["horizontalpodautoscalers"]
+  verbs: ["get", "list", "watch"]
+# Policy — read
+- apiGroups: ["policy"]
+  resources: ["poddisruptionbudgets"]
+  verbs: ["get", "list", "watch"]
+# CRDs — read
+- apiGroups: ["apiextensions.k8s.io"]
+  resources: ["customresourcedefinitions"]
+  verbs: ["get", "list", "watch"]
+# RBAC — read (viewer can see roles/bindings)
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
+  verbs: ["get", "list", "watch"]
+# CRD-based resources — read
+- apiGroups: ["aiops.ggai.dev", "cert-manager.io", "traefik.io", "helm.cattle.io",
+              "source.toolkit.fluxcd.io", "kustomize.toolkit.fluxcd.io",
+              "monitoring.coreos.com", "argoproj.io"]
+  resources: ["*"]
+  verbs: ["get", "list", "watch"]
+---
+# ============================================================
+# k8ops-role-ns-admin: Namespace-scoped admin (replaces built-in admin)
+# Bound via RoleBinding, only affects the target namespace
+# ============================================================
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: k8ops-role-ns-admin
+  labels:
+    app.kubernetes.io/name: k8ops
+    k8ops.io/role-template: "true"
+rules:
+# Core namespaced resources — full CRUD
+- apiGroups: [""]
+  resources: ["pods", "pods/log", "pods/exec", "pods/portforward", "pods/attach",
+              "services", "endpoints", "configmaps", "events",
+              "persistentvolumeclaims", "replicationcontrollers",
+              "resourcequotas", "limitranges"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+# ServiceAccounts — full CRUD within ns
+- apiGroups: [""]
+  resources: ["serviceaccounts"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+# Secrets — full CRUD within ns
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+# Apps — full CRUD
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets", "statefulsets", "daemonsets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+# Batch — full CRUD
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+# Networking — full CRUD
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses", "networkpolicies"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+# Autoscaling — full CRUD
+- apiGroups: ["autoscaling"]
+  resources: ["horizontalpodautoscalers"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+# Policy — full CRUD
+- apiGroups: ["policy"]
+  resources: ["poddisruptionbudgets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+# RBAC within ns — manage Roles and RoleBindings
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["roles", "rolebindings"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+# CRD-based resources — full CRUD within ns
+- apiGroups: ["aiops.ggai.dev", "cert-manager.io", "traefik.io",
+              "monitoring.coreos.com", "argoproj.io"]
+  resources: ["*"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+---
+# ============================================================
+# k8ops-role-ns-viewer: Namespace-scoped read-only (replaces built-in view)
+# ============================================================
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: k8ops-role-ns-viewer
+  labels:
+    app.kubernetes.io/name: k8ops
+    k8ops.io/role-template: "true"
+rules:
+# Core namespaced resources — read
+- apiGroups: [""]
+  resources: ["pods", "pods/log", "services", "endpoints", "configmaps",
+              "events", "persistentvolumeclaims", "replicationcontrollers",
+              "resourcequotas", "limitranges", "serviceaccounts"]
+  verbs: ["get", "list", "watch"]
+# Secrets — get only
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
+# Apps — read
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets", "statefulsets", "daemonsets"]
+  verbs: ["get", "list", "watch"]
+# Batch — read
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get", "list", "watch"]
+# Networking — read
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses", "networkpolicies"]
+  verbs: ["get", "list", "watch"]
+# Autoscaling — read
+- apiGroups: ["autoscaling"]
+  resources: ["horizontalpodautoscalers"]
+  verbs: ["get", "list", "watch"]
+# Policy — read
+- apiGroups: ["policy"]
+  resources: ["poddisruptionbudgets"]
+  verbs: ["get", "list", "watch"]
+# RBAC within ns — read
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["roles", "rolebindings"]
+  verbs: ["get", "list", "watch"]
+# CRD-based resources — read within ns
+- apiGroups: ["aiops.ggai.dev", "cert-manager.io", "traefik.io",
+              "monitoring.coreos.com", "argoproj.io"]
+  resources: ["*"]
+  verbs: ["get", "list", "watch"]
+---
+# ClusterRole: k8ops impersonator — allows SA to impersonate users/groups
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: k8ops-impersonator
+  labels:
+    app.kubernetes.io/name: k8ops
+rules:
+# Impersonate any user and group for RBAC enforcement
+- apiGroups: [""]
+  resources: ["users", "groups", "serviceaccounts"]
+  verbs: ["impersonate"]
+# Manage RoleBindings for namespace-scoped users
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["rolebindings"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+# Read namespaces to validate namespace-scoped users
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list", "watch"]
+---
+# ClusterRoleBinding: k8ops SA gets impersonator role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8ops-impersonator
+  labels:
+    app.kubernetes.io/name: k8ops
+subjects:
+- kind: ServiceAccount
+  name: k8ops
+  namespace: k8ops-system
+roleRef:
+  kind: ClusterRole
+  name: k8ops-impersonator
+  apiGroup: rbac.authorization.k8s.io
+---
+# ClusterRoleBinding: k8ops admin group → k8ops-role-admin (custom, vendor-independent)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8ops-group-admin
+  labels:
+    app.kubernetes.io/name: k8ops
+subjects:
+- kind: Group
+  name: k8ops:admin
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: k8ops-role-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+# ClusterRoleBinding: k8ops operator group → k8ops-role-operator (custom, vendor-independent)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8ops-group-operator
+  labels:
+    app.kubernetes.io/name: k8ops
+subjects:
+- kind: Group
+  name: k8ops:operator
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: k8ops-role-operator
+  apiGroup: rbac.authorization.k8s.io
+---
+# ClusterRoleBinding: k8ops viewer group → k8ops-role-viewer (custom, vendor-independent)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8ops-group-viewer
+  labels:
+    app.kubernetes.io/name: k8ops
+subjects:
+- kind: Group
+  name: k8ops:viewer
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: k8ops-role-viewer
+  apiGroup: rbac.authorization.k8s.io
+---
+# ClusterRole: k8ops controller — full access for autonomous operations
+# (diagnostics, remediations, optimizations run with SA permissions, not user-scoped)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8ops-controller
+  labels:
+    app.kubernetes.io/name: k8ops
+subjects:
+- kind: ServiceAccount
+  name: k8ops
+  namespace: k8ops-system
+roleRef:
+  kind: ClusterRole
+  name: k8ops-role-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+# k8ops DaemonSet deployment (parameterized)
+# Runs on every node with cluster-admin privileges to manage both
+# Kubernetes resources and the host node directly.
+#
+# Env vars are sourced from ConfigMap/Secret references (same as deployment.yaml).
+# Override defaults via the k8ops-config ConfigMap or k8s Secrets.
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: k8ops
+  namespace: k8ops-system
+  labels:
+    app.kubernetes.io/name: k8ops
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: k8ops
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: k8ops
+    spec:
+      serviceAccountName: k8ops
+      tolerations:
+      - operator: Exists  # Run on ALL nodes including tainted ones
+      containers:
+      - name: k8ops
+        image: registry.iot2.win/k8ops:v12.3
+        imagePullPolicy: Always
+        env:
+        - name: AIOPS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: k8ops-credentials
+              key: api-key
+              optional: true
+        - name: AUTH_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: k8ops-auth
+              key: jwt-secret
+              optional: true
+        # CORS: comma-separated list of allowed origins
+        - name: CORS_ALLOWED_ORIGINS
+          valueFrom:
+            configMapKeyRef:
+              name: k8ops-config
+              key: cors-allowed-origins
+              optional: true
+        # Slack notifications: incoming webhook URL for alerting
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: k8ops-notifications
+              key: slack-webhook-url
+              optional: true
+        # Dashboard TLS handled by Ingress (no in-pod TLS)
+        # AI provider rate limiting (requests per minute, 0 = unlimited)
+        - name: PROVIDER_RATE_LIMIT_RPM
+          valueFrom:
+            configMapKeyRef:
+              name: k8ops-config
+              key: provider-rate-limit-rpm
+              optional: true
+        # DEBUG: enable verbose logging ("true" / "false", default: false)
+        - name: DEBUG
+          valueFrom:
+            configMapKeyRef:
+              name: k8ops-config
+              key: debug
+              optional: true
+        # Auth database path (per-node SQLite via emptyDir)
+        - name: AUTH_DB_PATH
+          value: /data/k8ops.db
+        envFrom:
+        - configMapRef:
+            name: k8ops-config
+            optional: true
+        command:
+        - /manager
+        args:
+        - --metrics-bind-address=:8080
+        - --health-probe-bind-address=:8081
+        - --dashboard-address=:9090
+        # Ports: hostNetwork mode binds directly to host ports (no declaration needed)
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        securityContext:
+          privileged: true  # Required for host access via nsenter
+          readOnlyRootFilesystem: false
+        volumeMounts:
+        - name: host-root
+          mountPath: /host
+          readOnly: true
+        - name: var-run
+          mountPath: /var/run
+        - name: audit-log
+          mountPath: /var/log/k8ops
+        - name: data
+          mountPath: /data
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: host-root
+        hostPath:
+          path: /
+          type: Directory
+      - name: var-run
+        hostPath:
+          path: /var/run
+      - name: audit-log
+        hostPath:
+          path: /var/log/k8ops
+          type: DirectoryOrCreate
+      - name: data
+        hostPath:
+          path: /var/lib/k8ops
+          type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: k8ops-config
+  namespace: k8ops-system
+  labels:
+    app.kubernetes.io/name: k8ops
+data:
+  PROVIDER_TYPE: openai
+  PROVIDER_MODEL: gpt-4o
+  PROVIDER_ENDPOINT: https://api.openai.com/v1
+  cors-allowed-origins: https://k8ops.iot2.win
+  provider-rate-limit-rpm: "0"
+  debug: "false"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: k8ops-auth
+  namespace: k8ops-system
+  labels:
+    app.kubernetes.io/name: k8ops
+type: Opaque
+stringData:
+  jwt-secret: local-dev-jwt-secret-change-in-prod-8f4a2b9c
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: k8ops-credentials
+  namespace: k8ops-system
+  labels:
+    app.kubernetes.io/name: k8ops
+type: Opaque
+stringData:
+  api-key: dummy-key-for-local-testing
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k8ops-dashboard
+  namespace: k8ops-system
+  labels:
+    app.kubernetes.io/name: k8ops
+spec:
+  selector:
+    app.kubernetes.io/name: k8ops
+  ports:
+  - name: dashboard
+    port: 9090
+    targetPort: 9090
+  - name: metrics
+    port: 8080
+    targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: k8ops-dashboard
+  namespace: k8ops-system
+  labels:
+    app.kubernetes.io/name: k8ops
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  tls:
+  - hosts:
+    - k8ops.iot2.win
+    secretName: k8ops-dashboard-tls
+  rules:
+  - host: k8ops.iot2.win
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: k8ops-dashboard
+            port:
+              number: 9090
+

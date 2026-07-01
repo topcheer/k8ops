@@ -1,8 +1,10 @@
 // --- Chat ---
+import { escapeHtml } from './modules/utils.js';
+
 let currentConvId = null;
 let pendingToolCalls = ''; // accumulate tool calls before final answer
 
-function openChatOverlay() {
+export function openChatOverlay() {
   document.getElementById('chatOverlay').classList.add('active');
   if (!currentConvId) {
     document.getElementById('chatMessages').innerHTML =
@@ -11,7 +13,7 @@ function openChatOverlay() {
   document.getElementById('chatInput').focus();
 }
 
-function closeChatOverlay() {
+export function closeChatOverlay() {
   document.getElementById('chatOverlay').classList.remove('active');
 }
 
@@ -22,7 +24,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-async function loadConversations() {
+export async function loadConversations() {
   try {
     const data = await fetchJSON('/api/chat/conversations');
     const list = document.getElementById('convList');
@@ -42,12 +44,12 @@ async function loadConversations() {
   } catch(e) { /* ignore */ }
 }
 
-async function deleteConv(id) {
+export async function deleteConv(id) {
   await fetch('/api/chat/conversations?id=' + id, {method: 'DELETE'});
   loadConversations();
 }
 
-function newConversation() {
+export function newConversation() {
   currentConvId = null;
   pendingToolCalls = '';
   document.getElementById('chatMessages').innerHTML =
@@ -57,11 +59,12 @@ function newConversation() {
   document.getElementById('chatInput').focus();
 }
 
-async function sendChatMessage() {
+export async function sendChatMessage() {
   const input = document.getElementById('chatInput');
   const msg = input.value.trim();
   if (!msg) return;
   input.value = '';
+  input.style.height = 'auto';
   input.disabled = true;
   document.getElementById('chatSendBtn').disabled = true;
   document.getElementById('chatSendBtn').textContent = 'Thinking...';
@@ -161,10 +164,31 @@ async function sendChatMessage() {
             if (lastRunning) {
               lastRunning.classList.remove('running');
               const ok = event.data.success;
+              const toolName = lastRunning.dataset.toolName || '';
               lastRunning.classList.add(ok ? 'success' : 'failed');
-              lastRunning.querySelector('.chat-tool-icon').innerHTML = ok ? '✓' : '✕';
+              lastRunning.querySelector('.chat-tool-icon').innerHTML = ok ? '\u2713' : '\u2715';
               lastRunning.querySelector('.chat-tool-status').className = 'chat-tool-status ' + (ok ? 'success' : 'failed');
               lastRunning.querySelector('.chat-tool-status').textContent = ok ? 'ok' : 'failed';
+              // Add expandable visualization for tool results
+              if (ok && event.data.result) {
+                const vizHtml = renderToolResult(toolName, event.data.result);
+                if (vizHtml) {
+                  lastRunning.style.cursor = 'pointer';
+                  lastRunning.addEventListener('click', function() {
+                    let detail = lastRunning.nextElementSibling;
+                    if (!detail || !detail.classList.contains('tool-result-detail')) {
+                      detail = document.createElement('div');
+                      detail.className = 'tool-result-detail';
+                      detail.innerHTML = vizHtml;
+                      lastRunning.parentNode.insertBefore(detail, lastRunning.nextSibling);
+                      detail.style.display = 'block';
+                    } else {
+                      detail.style.display = detail.style.display === 'none' ? 'block' : 'none';
+                    }
+                  });
+                  lastRunning.querySelector('.chat-tool-status').textContent = 'ok \u00B7 click to view';
+                }
+              }
             }
             scrollChatBottom();
           } else if (event.type === 'memory') {
@@ -214,7 +238,7 @@ async function sendChatMessage() {
   input.focus();
 }
 
-function getToolsArea(div) {
+export function getToolsArea(div) {
   let area = div.querySelector('.chat-tools');
   if (!area) {
     area = document.createElement('div');
@@ -225,12 +249,12 @@ function getToolsArea(div) {
   return area;
 }
 
-function toggleThinking(header) {
+export function toggleThinking(header) {
   const thinking = header.parentElement;
   thinking.classList.toggle('expanded');
 }
 
-function appendAssistantContent(div, content) {
+export function appendAssistantContent(div, content) {
   // Put tool/thinking content in a collapsible area before final answer
   let toolsDiv = div.querySelector('.chat-tools');
   if (!toolsDiv) {
@@ -243,7 +267,7 @@ function appendAssistantContent(div, content) {
   scrollChatBottom();
 }
 
-function addChatMessage(role, content) {
+export function addChatMessage(role, content) {
   const container = document.getElementById('chatMessages');
   const div = document.createElement('div');
   div.className = 'chat-msg chat-msg-' + role;
@@ -263,26 +287,34 @@ function addChatMessage(role, content) {
   return div;
 }
 
-function scrollChatBottom() {
+export function scrollChatBottom() {
   const c = document.getElementById('chatMessages');
   c.scrollTo({ top: c.scrollHeight, behavior: 'smooth' });
 }
 
-function formatJSON(str) {
+export function formatJSON(str) {
   try { return JSON.stringify(JSON.parse(str), null, 2); } catch(e) { return str; }
 }
 
 // --- Lightweight Markdown Renderer ---
-function renderMarkdown(md) {
+export function renderMarkdown(md) {
   if (!md) return '';
-  // Step 1: escape HTML
+  // Step 1: escape HTML (prevents XSS from LLM output)
   let text = md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
   // Step 2: Extract code blocks first (to protect them from inline formatting)
   const codeBlocks = [];
   text = text.replace(/```(\w*)\n?([\s\S]*?)```/g, (m, lang, code) => {
     const idx = codeBlocks.length;
-    codeBlocks.push('<pre><code class="lang-' + lang + '">' + code.replace(/\n$/, '') + '</code></pre>');
+    const cleaned = code.replace(/\n$/, '');
+    const langLabel = lang ? lang.toUpperCase() : 'CODE';
+    codeBlocks.push('<div class="code-block-wrapper">'
+      + '<div class="code-block-header">'
+      + '<span class="code-block-lang">' + escapeHtml(langLabel) + '</span>'
+      + '<button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>'
+      + '</div>'
+      + '<pre><code class="lang-' + escapeHtml(lang) + '">' + cleaned + '</code></pre>'
+      + '</div>');
     return '\x00CODEBLOCK' + idx + '\x00';
   });
 
@@ -309,8 +341,16 @@ function renderMarkdown(md) {
   text = text.replace(/(?<!\w)\*([^*]+?)\*(?!\w)/g, '<em>$1</em>');
   text = text.replace(/~~(.+?)~~/g, '<del>$1</del>');
 
-  // Step 7: Links
-  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+  // Step 7: Links (sanitize URL to prevent javascript: and other dangerous protocols)
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, label, url) => {
+    const trimmedUrl = url.trim();
+    // Allow only http:, https:, mailto:, and relative URLs
+    if (/^(https?:|mailto:|#|\/)/i.test(trimmedUrl)) {
+      return '<a href="' + trimmedUrl + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
+    }
+    // Block javascript:, data:, vbscript: etc — show label as plain text
+    return label;
+  });
 
   // Step 8: Blockquotes
   text = text.replace(/^&gt;\s+(.+)$/gm, '<blockquote>$1</blockquote>');
@@ -343,10 +383,23 @@ function renderMarkdown(md) {
   text = text.replace(/\x00CODEBLOCK(\d+)\x00/g, (m, idx) => codeBlocks[parseInt(idx)]);
   text = text.replace(/\x00INLINE(\d+)\x00/g, (m, idx) => inlineCodes[parseInt(idx)]);
 
+  // Step 14: Enhance kubectl/shell code blocks with action cards
+  text = text.replace(/<div class="code-block-wrapper">([\s\S]*?)<pre><code[^>]*>([\s\S]*?)<\/code><\/pre>\s*<\/div>/g, (match, header, code) => {
+    const cmd = code.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').trim();
+    // Only add action buttons for shell/kubectl commands
+    if (/^(kubectl|helm|docker|crictl|ctr|k3s|istioctl)\s/.test(cmd) || /^\$\s/.test(cmd)) {
+      const cleanCmd = cmd.replace(/^\$\s*/, '');
+      const runBtn = '<button class="action-card-btn action-run-btn" onclick="runSuggestedCommand(this)" data-cmd="' + escapeHtml(cleanCmd) + '">&#9654; Run in Chat</button>';
+      const copyBtn = '<button class="action-card-btn action-copy-cmd" onclick="copyToClipboard(this)" data-cmd="' + escapeHtml(cleanCmd) + '">&#128203; Copy</button>';
+      return match + '<div class="action-card">' + runBtn + copyBtn + '</div>';
+    }
+    return match;
+  });
+
   return text;
 }
 
-function renderMarkdownTables(text) {
+export function renderMarkdownTables(text) {
   // Simple table: header row | header row\n---|---\n| cell | cell |
   const lines = text.split('\n');
   let result = [];
@@ -381,8 +434,209 @@ function renderMarkdownTables(text) {
   return result.join('\n');
 }
 
-function escapeHtml(s) {
-  if (!s) return '';
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+export function copyCodeBlock(btn) {
+  const wrapper = btn.closest('.code-block-wrapper');
+  if (!wrapper) return;
+  const codeEl = wrapper.querySelector('code');
+  if (!codeEl) return;
+  const text = codeEl.textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+    }).catch(function() {
+      fallbackCopy(text, btn);
+    });
+  } else {
+    fallbackCopy(text, btn);
+  }
+}
+
+export function fallbackCopy(text, btn) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); btn.textContent = 'Copied!'; setTimeout(function() { btn.textContent = 'Copy'; }, 2000); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+// ============================
+// AI Diagnostic Action Cards
+// ============================
+
+// Run a suggested kubectl command by placing it in the chat input
+export function runSuggestedCommand(btn) {
+  const cmd = btn.getAttribute('data-cmd');
+  if (!cmd) return;
+  const input = document.getElementById('chatInput');
+  if (input) {
+    input.value = cmd;
+    input.focus();
+    // Visual feedback
+    btn.style.background = '#3fb950';
+    btn.textContent = '✓ Loaded!';
+    setTimeout(function() {
+      btn.style.background = '';
+      btn.innerHTML = '&#9654; Run in Chat';
+    }, 1500);
+  }
+}
+
+// Copy suggested command to clipboard
+export function copyToClipboard(btn) {
+  const cmd = btn.getAttribute('data-cmd');
+  if (!cmd) return;
+  const ta = document.createElement('textarea');
+  ta.value = cmd;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    btn.textContent = '✓ Copied!';
+    setTimeout(function() { btn.innerHTML = '&#128203; Copy'; }, 2000);
+  } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+// ============================
+// Tool Result Visualization
+// ============================
+
+// Render AI tool results as formatted tables instead of raw JSON
+function renderToolResult(toolName, result) {
+  if (!result) return '';
+  let data;
+  try {
+    data = typeof result === 'string' ? JSON.parse(result) : result;
+  } catch(e) {
+    return '<pre class="tool-raw">' + escapeHtml(String(result).substring(0, 2000)) + '</pre>';
+  }
+
+  // Pod list visualization
+  if (data.items && Array.isArray(data.items) && data.items.length > 0) {
+    return renderItemsTable(data.items, toolName);
+  }
+
+  // Node list or single resource
+  if (data.nodes && Array.isArray(data.nodes)) {
+    return renderNodesTable(data.nodes);
+  }
+
+  // Single pod/resource detail
+  if (data.metadata && data.metadata.name) {
+    return renderResourceDetail(data);
+  }
+
+  // Generic key-value
+  if (typeof data === 'object' && Object.keys(data).length > 0) {
+    return renderKeyValue(data);
+  }
+
+  return '<pre class="tool-raw">' + escapeHtml(JSON.stringify(data, null, 2).substring(0, 2000)) + '</pre>';
+}
+
+function renderItemsTable(items, toolName) {
+  // Detect if items look like pods
+  const looksLikePods = items.some(function(i) { return i.phase || i.status || (i.metadata && i.metadata.name); });
+  if (looksLikePods && (toolName.includes('pod') || toolName.includes('Pod'))) {
+    return '<div class="tool-table-wrapper">' +
+      '<div class="tool-table-title">Pods (' + items.length + ')</div>' +
+      '<table class="tool-table">' +
+      '<thead><tr><th>Name</th><th>Namespace</th><th>Phase</th><th>Restarts</th><th>Node</th></tr></thead>' +
+      '<tbody>' + items.slice(0, 50).map(function(p) {
+        var name = p.name || (p.metadata && p.metadata.name) || '-';
+        var ns = p.namespace || (p.metadata && p.metadata.namespace) || '-';
+        var phase = p.phase || (p.status && p.status.phase) || '-';
+        var restarts = p.restarts !== undefined ? p.restarts : '-';
+        var node = p.node || (p.spec && p.spec.nodeName) || '-';
+        var phaseColor = phase === 'Running' ? '#3fb950' : phase === 'Pending' ? '#d29922' : phase === 'Failed' ? '#f85149' : '#8b949e';
+        return '<tr><td style="font-family:monospace;font-size:11px;">' + escapeHtml(String(name).substring(0, 40)) + '</td>' +
+          '<td style="font-size:11px;">' + escapeHtml(ns) + '</td>' +
+          '<td><span style="color:' + phaseColor + ';">' + escapeHtml(phase) + '</span></td>' +
+          '<td>' + (restarts > 3 ? '<span style="color:#f85149;">' + restarts + '</span>' : restarts) + '</td>' +
+          '<td style="font-size:11px;color:#8b949e;">' + escapeHtml(String(node).substring(0, 25)) + '</td></tr>';
+      }).join('') + '</tbody></table>' +
+      (items.length > 50 ? '<div class="tool-table-footer">Showing 50 of ' + items.length + '</div>' : '') +
+    '</div>';
+  }
+
+  // Generic items table
+  var keys = Object.keys(items[0] || {});
+  return '<div class="tool-table-wrapper">' +
+    '<div class="tool-table-title">Results (' + items.length + ')</div>' +
+    '<table class="tool-table"><thead><tr>' +
+    keys.slice(0, 6).map(function(k) { return '<th>' + escapeHtml(k) + '</th>'; }).join('') +
+    '</tr></thead><tbody>' +
+    items.slice(0, 30).map(function(item) {
+      return '<tr>' + keys.slice(0, 6).map(function(k) {
+        var v = item[k];
+        if (v == null) return '<td>-</td>';
+        if (typeof v === 'object') v = JSON.stringify(v);
+        return '<td style="font-size:11px;max-width:180px;overflow:hidden;text-overflow:ellipsis;">' + escapeHtml(String(v).substring(0, 60)) + '</td>';
+      }).join('') + '</tr>';
+    }).join('') +
+    '</tbody></table></div>';
+}
+
+function renderNodesTable(nodes) {
+  return '<div class="tool-table-wrapper">' +
+    '<div class="tool-table-title">Nodes (' + nodes.length + ')</div>' +
+    '<table class="tool-table">' +
+    '<thead><tr><th>Name</th><th>Status</th><th>CPU</th><th>Memory</th><th>Pods</th></tr></thead>' +
+    '<tbody>' + nodes.map(function(n) {
+      var name = n.name || n.Name || '-';
+      var status = n.status || n.Status || '-';
+      var cpu = n.cpuRequestedPct || n.CPU || '-';
+      var mem = n.memRequestedPct || n.Memory || '-';
+      var pods = n.podCount || n.Pods || '-';
+      var statusColor = status === 'Ready' ? '#3fb950' : '#f85149';
+      return '<tr><td style="font-family:monospace;font-size:11px;">' + escapeHtml(String(name).substring(0, 30)) + '</td>' +
+        '<td><span style="color:' + statusColor + ';">' + escapeHtml(status) + '</span></td>' +
+        '<td>' + (typeof cpu === 'number' ? cpu + '%' : cpu) + '</td>' +
+        '<td>' + (typeof mem === 'number' ? mem + '%' : mem) + '</td>' +
+        '<td>' + pods + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+
+function renderResourceDetail(data) {
+  var meta = data.metadata || {};
+  var rows = [
+    ['Name', meta.name],
+    ['Namespace', meta.namespace],
+    ['Kind', data.kind || data.Kind],
+    ['Created', meta.creationTimestamp],
+    ['API Version', data.apiVersion],
+  ];
+  if (data.spec) {
+    Object.keys(data.spec).slice(0, 5).forEach(function(k) {
+      var v = data.spec[k];
+      if (typeof v === 'string' || typeof v === 'number') rows.push([k, v]);
+    });
+  }
+  return '<div class="tool-table-wrapper">' +
+    '<div class="tool-table-title">' + escapeHtml(data.kind || 'Resource') + '/' + escapeHtml(meta.name || '') + '</div>' +
+    '<table class="tool-table"><tbody>' +
+    rows.filter(function(r) { return r[1] != null && r[1] !== ''; }).map(function(r) {
+      return '<tr><th style="width:120px;text-align:right;">' + escapeHtml(r[0]) + '</th><td>' + escapeHtml(String(r[1])) + '</td></tr>';
+    }).join('') +
+    '</tbody></table></div>';
+}
+
+function renderKeyValue(data) {
+  var keys = Object.keys(data).slice(0, 15);
+  return '<div class="tool-table-wrapper">' +
+    '<table class="tool-table"><tbody>' +
+    keys.map(function(k) {
+      var v = data[k];
+      if (v == null) v = '-';
+      if (typeof v === 'object') v = JSON.stringify(v).substring(0, 120);
+      return '<tr><th style="width:130px;text-align:right;">' + escapeHtml(k) + '</th><td>' + escapeHtml(String(v)) + '</td></tr>';
+    }).join('') +
+    '</tbody></table></div>';
 }
 

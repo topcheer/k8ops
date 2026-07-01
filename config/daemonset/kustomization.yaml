@@ -33,6 +33,4 @@ commonLabels:
   app.kubernetes.io/name: k8ops
   app.kubernetes.io/managed-by: kustomize
 
-images:
-- name: ghcr.io/ggai/k8ops
-  newTag: latest
+

@@ -4,6 +4,13 @@
 
 **A Kubernetes AIOps operator that diagnoses issues, auto-remediates, and optimizes your cluster using AI.**
 
+[![GitHub release](https://img.shields.io/github/v/release/topcheer/k8ops?style=flat-square)](https://github.com/topcheer/k8ops/releases)
+[![CI](https://img.shields.io/github/actions/workflow/status/topcheer/k8ops/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/topcheer/k8ops/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/topcheer/k8ops?style=flat-square)](LICENSE)
+[![Go](https://img.shields.io/badge/Go-1.26+-00ADD8?style=flat-square&logo=go)](https://go.dev)
+[![Docker](https://img.shields.io/badge/Docker-ghcr.io-2496ED?style=flat-square&logo=docker)](https://github.com/topcheer/k8ops/pkgs/container/k8ops)
+[![Built with ggcode](https://img.shields.io/badge/Built%20with-ggcode-6C43BC?style=flat-square)](https://github.com/nicepkg/ggcode)
+
 </div>
 
 ---
@@ -73,50 +80,68 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed component document
 ## Quick Start
 
 ### Prerequisites
-- Kubernetes 1.24+
+- Kubernetes 1.24+ (k3s / k8s / EKS / GKE / AKS)
 - kubectl configured
 - An LLM API key (OpenAI, DeepSeek, ZAI, or any OpenAI-compatible provider)
 
 ### 1. Deploy to Kubernetes
 
+**Option A: Deployment mode (recommended)**
+
 ```bash
-# Clone and enter the repo
-git clone https://github.com/ggai/k8ops.git
-cd k8ops
+# One command — includes namespace, RBAC, secrets, ingress, TLS
+kubectl apply -k config/deploy/overlays/local
 
-# Deploy with Kustomize
-kubectl apply -k config/deploy/base
-
-# Or with production overlay (custom domain + TLS)
-cp -r config/deploy/overlays/prod config/deploy/overlays/myorg
-# Edit myorg/kustomization.yaml with your domain + TLS
+# Or create your own overlay
+cp -r config/deploy/overlays/local config/deploy/overlays/myorg
+# Edit myorg/kustomization.yaml: set your domain, registry, CORS
 kubectl apply -k config/deploy/overlays/myorg
 ```
+
+**Option B: DaemonSet mode (per-node diagnostics)**
+
+```bash
+kubectl apply -f config/daemonset-local.yaml
+```
+
+**Option C: install.sh (interactive)**
+
+```bash
+./install.sh install    # deploy
+./install.sh status     # check status
+./install.sh uninstall  # remove
+```
+
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed deployment guide.
 
 ### 2. Configure LLM Provider
 
 ```bash
-# Set your LLM API key (required)
-kubectl set env deployment/k8ops-manager \
-  LLM_API_KEY=your-api-key \
-  LLM_BASE_URL=https://api.openai.com/v1 \
-  LLM_MODEL=gpt-4o \
-  -n k8ops
+# Via Dashboard: Settings tab → fill in provider type, API key, model
+# Or via environment variables in the overlay ConfigMap:
 
-# Or use DeepSeek / ZAI / any OpenAI-compatible provider
-kubectl set env deployment/k8ops-manager \
-  LLM_API_KEY=your-key \
-  LLM_BASE_URL=https://api.deepseek.com/v1 \
-  LLM_MODEL=deepseek-chat \
-  -n k8ops
+configMapGenerator:
+- name: k8ops-config
+  literals:
+  - PROVIDER_TYPE=openai
+  - PROVIDER_MODEL=gpt-4o
+  - PROVIDER_ENDPOINT=https://api.openai.com/v1
+
+# API key via Secret:
+secretGenerator:
+- name: k8ops-credentials
+  literals:
+  - api-key=sk-your-key-here
 ```
 
 ### 3. Access the Dashboard
 
 ```bash
-# Port-forward to access locally
-kubectl port-forward svc/k8ops-dashboard 9090:9090 -n k8ops
+# Via Ingress (if configured)
+# Open https://<your-domain>  (e.g. https://k8ops.iot2.win)
 
+# Or port-forward
+kubectl port-forward svc/k8ops-dashboard 9090:9090 -n k8ops-system
 # Open http://localhost:9090
 # Default login: admin / admin (will prompt password change)
 ```
@@ -137,24 +162,21 @@ go run ./cmd/k8ops diagnose --problem "pods in production keep CrashLoopBackOff"
 
 ## Configuration
 
-All configuration is via environment variables. See [config/deploy/values.example.yaml](config/deploy/values.example.yaml) for the full list.
+All configuration is via ConfigMap/Secret (managed by Kustomize overlays). See [config/deploy/overlays/local/kustomization.yaml](config/deploy/overlays/local/kustomization.yaml) for a working example.
 
 ### Core
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `PORT` | `9090` | Dashboard listen port |
-| `LLM_API_KEY` | (required) | LLM provider API key |
-| `LLM_BASE_URL` | `https://api.openai.com/v1` | LLM provider base URL |
-| `LLM_MODEL` | `gpt-4o` | Model name |
-| `LLM_SYSTEM_PROMPT` | (built-in) | Custom system prompt for AI agent |
+| `PROVIDER_TYPE` | `openai` | LLM provider type |
+| `PROVIDER_MODEL` | `gpt-4o` | Model name |
+| `PROVIDER_ENDPOINT` | `https://api.openai.com/v1` | LLM provider base URL |
+| `AIOPS_API_KEY` | (required) | LLM API key (from Secret) |
 
 ### Security
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `AUTH_JWT_SECRET` | (auto-generated) | JWT signing secret (persisted in K8s Secret) |
-| `CORS_ALLOWED_ORIGINS` | `http://localhost:9090` | Comma-separated allowed origins |
-| `DASHBOARD_TLS_CERT` | (empty) | TLS cert file path (enables HTTPS) |
-| `DASHBOARD_TLS_KEY` | (empty) | TLS key file path (enables HTTPS) |
+| `CORS_ALLOWED_ORIGINS` | (empty) | Comma-separated allowed origins |
 | `LDAP_SERVER` | (empty) | LDAP server URL |
 | `LDAP_SKIP_TLS_VERIFY` | `false` | Skip LDAP TLS certificate verification |
 | `OIDC_ISSUER` | (empty) | OIDC issuer URL |
@@ -232,7 +254,12 @@ k8ops/
 │   └── k8ops/              # CLI tool
 ├── config/
 │   ├── crd/                # CRD manifests
-│   └── deploy/             # Kustomize deployment
+│   ├── deploy/             # Kustomize deployment (base + overlays)
+│   │   ├── base/           # Namespace, SA, RBAC, Deployment, Service, Ingress
+│   │   └── overlays/
+│   │       ├── local/      # Local network overlay (registry, domain, CORS)
+│   │       └── prod/       # Production overlay template
+│   └── daemonset/          # DaemonSet manifests (per-node deployment)
 ├── internal/
 │   ├── agent/              # AI agent (reasoning + tool calling)
 │   ├── audit/              # Structured audit logging
@@ -249,10 +276,46 @@ k8ops/
 │   ├── resilience/         # Circuit breaker + rate limiter
 │   ├── safety/             # Safety checker (dry-run validation)
 │   └── tools/              # K8s and host tools (kubectl, exec, etc.)
+├── docs/                   # Architecture, API, Security, Deployment docs
+├── install.sh              # One-click install/uninstall script
+├── .env.example            # Environment variable reference
 └── examples/               # Example CRD manifests
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
+
+---
+
+## Local Development
+
+Run k8ops directly on your workstation without a Kubernetes deployment:
+
+```bash
+# Build
+go build -o k8ops-manager ./cmd/manager/
+
+# Run
+AIOPS_API_KEY=your-key ./k8ops-manager \
+  --leader-elect=false \
+  --dashboard-address=:9090 \
+  --auth-db-path=/tmp/k8ops.db
+```
+
+The binary automatically discovers your kubeconfig (`~/.kube/config`), so all K8s data comes from your connected cluster. See [docs/LOCAL_RUN.md](docs/LOCAL_RUN.md) for details.
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [docs/USER_GUIDE.md](docs/USER_GUIDE.md) | Comprehensive user manual (all 15 features) |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System architecture and component design |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Deployment guide (Deployment / DaemonSet / Helm) |
+| [docs/LOCAL_RUN.md](docs/LOCAL_RUN.md) | Running k8ops binary locally (no K8s deployment) |
+| [docs/API.md](docs/API.md) | REST API reference |
+| [docs/SECURITY.md](docs/SECURITY.md) | Security policy and RBAC model |
+| [CHANGELOG.md](CHANGELOG.md) | Release history (v0.1.0 → v14.1) |
 
 ---
 

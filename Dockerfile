@@ -15,16 +15,18 @@ COPY hack/ hack/
 
 # Build
 ARG VERSION=dev
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-X main.version=${VERSION}" -o manager ./cmd/manager
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-X main.version=${VERSION}" -o k8ops ./cmd/k8ops
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w -X main.version=${VERSION}" -o manager ./cmd/manager
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w -X main.version=${VERSION}" -o k8ops ./cmd/k8ops
 
-# Runtime — distroless for smallest image, ca-certs for TLS
-FROM gcr.io/distroless/static-debian12:nonroot
+# Runtime — alpine for ca-certificates support
+FROM alpine:3.21
+
+RUN apk add --no-cache ca-certificates
 
 WORKDIR /
 COPY --from=builder /workspace/manager /manager
 COPY --from=builder /workspace/k8ops /usr/local/bin/k8ops
 
-USER nonroot:nonroot
+USER 65532:65532
 
 ENTRYPOINT ["/manager"]

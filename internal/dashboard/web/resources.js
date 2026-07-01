@@ -1,5 +1,7 @@
 // --- Settings ---
-async function loadSettings() {
+import { escapeHtml, fetchJSON, isForbidden, renderForbidden, truncateText } from './modules/utils.js';
+
+export async function loadSettings() {
   try {
     const status = await fetchJSON('/api/provider/status');
     document.getElementById('providerStatus').innerHTML =
@@ -30,7 +32,7 @@ async function loadSettings() {
   loadConversations();
 }
 
-async function updateProvider() {
+export async function updateProvider() {
   const cfg = {
     type: document.getElementById('cfgType').value,
     model: document.getElementById('cfgModel').value,
@@ -58,7 +60,7 @@ async function updateProvider() {
 }
 
 // --- Resources Browser ---
-async function loadResources(forceRefresh) {
+export async function loadResources(forceRefresh) {
   const kind = document.getElementById('resKind').value;
   const container = document.getElementById('resourcesTable');
   container.innerHTML = '<div class="loading">Loading ' + kind + '...</div>';
@@ -110,7 +112,7 @@ async function loadResources(forceRefresh) {
 }
 
 // --- Namespace multi-select ---
-async function loadNamespaceList() {
+export async function loadNamespaceList() {
   try {
     const data = await fetchJSON('/api/resources?kind=namespaces');
     window._allNamespaces = (data.items || []).map(n => n.name).sort();
@@ -120,7 +122,7 @@ async function loadNamespaceList() {
   renderNsCheckboxes();
 }
 
-function renderNsCheckboxes(filter) {
+export function renderNsCheckboxes(filter) {
   const box = document.getElementById('nsCheckboxes');
   const nsList = window._allNamespaces || [];
   const filtered = filter ? nsList.filter(n => n.includes(filter)) : nsList;
@@ -133,25 +135,25 @@ function renderNsCheckboxes(filter) {
   }).join('') || '<div style="padding:12px;color:#8b949e;font-size:13px;">No namespaces found</div>';
 }
 
-function toggleNsDropdown() {
+export function toggleNsDropdown() {
   const list = document.getElementById('nsCheckboxList');
   list.style.display = list.style.display === 'none' ? 'block' : 'none';
   if (list.style.display === 'block') document.getElementById('nsSearch').focus();
 }
 
-function filterNsList() {
+export function filterNsList() {
   const q = document.getElementById('nsSearch').value.toLowerCase();
   renderNsCheckboxes(q);
 }
 
-function toggleNsSelection(ns, checked) {
+export function toggleNsSelection(ns, checked) {
   if (!window._selectedNs) window._selectedNs = new Set();
   if (checked) window._selectedNs.add(ns);
   else window._selectedNs.delete(ns);
   updateNsDisplay();
 }
 
-function selectAllNs(all) {
+export function selectAllNs(all) {
   if (all) {
     window._selectedNs = new Set();
   } else {
@@ -161,11 +163,11 @@ function selectAllNs(all) {
   updateNsDisplay();
 }
 
-function getSelectedNs() {
+export function getSelectedNs() {
   return window._selectedNs || new Set();
 }
 
-function updateNsDisplay() {
+export function updateNsDisplay() {
   const sel = getSelectedNs();
   const text = sel.size === 0 ? 'All Namespaces' :
     sel.size <= 2 ? Array.from(sel).join(', ') :
@@ -182,7 +184,7 @@ document.addEventListener('click', (e) => {
 });
 
 // --- CRD Browser ---
-async function loadCRDs(forceRefresh) {
+export async function loadCRDs(forceRefresh) {
   const container = document.getElementById('crdList');
   document.getElementById('crdDetail').style.display = 'none';
   container.style.display = 'block';
@@ -199,11 +201,11 @@ async function loadCRDs(forceRefresh) {
   } catch(e) { container.innerHTML = '<div style="color:#f85149;">Error: ' + escapeHtml(e.message) + '</div>'; }
 }
 
-function filterCRDs() {
+export function filterCRDs() {
   renderCRDTable();
 }
 
-function renderCRDTable() {
+export function renderCRDTable() {
   const container = document.getElementById('crdList');
   const q = (document.getElementById('crdFilter')?.value || '').toLowerCase();
   const all = window._allCRDs || [];
@@ -246,12 +248,12 @@ function renderCRDTable() {
     }).join('')}</tbody></table>`;
 }
 
-function showCRDList() {
+export function showCRDList() {
   document.getElementById('crdDetail').style.display = 'none';
   document.getElementById('crdList').style.display = 'block';
 }
 
-async function browseCRD(group, version, resource, kind) {
+export async function browseCRD(group, version, resource, kind) {
   document.getElementById('crdList').style.display = 'none';
   const detail = document.getElementById('crdDetail');
   detail.style.display = 'block';
@@ -280,11 +282,11 @@ async function browseCRD(group, version, resource, kind) {
 }
 
 // --- Node Pods Drill-down ---
-function closeNodePods() {
+export function closeNodePods() {
   document.getElementById('nodePodsOverlay').classList.remove('active');
 }
 
-async function viewNodePods(nodeName) {
+export async function viewNodePods(nodeName) {
   document.getElementById('nodePodsOverlay').classList.add('active');
   document.getElementById('nodePodsTitle').textContent = nodeName;
   const container = document.getElementById('nodePodsTable');
@@ -314,28 +316,28 @@ async function viewNodePods(nodeName) {
 }
 
 // --- Log Viewer ---
-let logEventSource = null;
+let logEventSource = null; // legacy compat, unused after v13.4 migration
 
-function closeLogViewer() {
+export function closeLogViewer() {
   document.getElementById('logOverlay').classList.remove('active');
-  if (logEventSource) { logEventSource.close(); logEventSource = null; }
+  if (logFetchController) { try { logFetchController.abort(); } catch(e) {} logFetchController = null; }
 }
 
-function clearLogs() {
-  document.getElementById('logOutput').textContent = '';
-}
+// (old clearLogs removed — newer definition below)
 
-async function openLogViewer(ns, name) {
+export async function openLogViewer(ns, name) {
   document.getElementById('logOverlay').classList.add('active');
   document.getElementById('logPodName').textContent = ns + '/' + name;
-  document.getElementById('logOutput').textContent = '';
+  document.getElementById('logOutput').innerHTML = '';
+  logLines = [];
+  document.getElementById('logSearch').value = '';
 
   // Load containers
   try {
     const data = await fetchJSON('/api/pods/' + ns + '/' + name + '/containers');
     const sel = document.getElementById('logContainer');
     sel.innerHTML = (data.containers || []).map((c, i) =>
-      `<option value="${c.name}" ${i===0?'selected':''}>${c.name} ${c.ready?'✓':'✕'}</option>`).join('');
+      `<option value="${c.name}" ${i===0?'selected':''}>${c.name} ${c.ready?'\u2713':'\u2715'}</option>`).join('');
   } catch(e) { /* single container */ }
 
   openLogViewer._ns = ns;
@@ -343,9 +345,25 @@ async function openLogViewer(ns, name) {
   restartLogs();
 }
 
-function restartLogs() {
-  if (logEventSource) { logEventSource.close(); logEventSource = null; }
-  document.getElementById('logOutput').textContent = '';
+// Log viewer state
+let logLines = []; // array of {text, level, matched}
+let logFetchController = null;
+
+export function classifyLogLevel(line) {
+  const upper = line.toUpperCase();
+  if (upper.includes('FATAL') || upper.includes('PANIC')) return 'fatal';
+  if (upper.includes('ERROR') || upper.includes('ERR ') || upper.includes('\u2715')) return 'error';
+  if (upper.includes('WARN') || upper.includes('WARNING')) return 'warn';
+  if (upper.includes('DEBUG') || upper.includes('TRACE')) return 'debug';
+  if (upper.includes('\u2713') || upper.includes('SUCCESS')) return 'success';
+  return 'info';
+}
+
+export function restartLogs() {
+  if (logFetchController) { logFetchController.abort(); logFetchController = null; }
+  logLines = [];
+  document.getElementById('logOutput').innerHTML = '';
+  updateLogStatus();
 
   const ns = openLogViewer._ns;
   const name = openLogViewer._name;
@@ -354,12 +372,11 @@ function restartLogs() {
   const url = '/api/pods/' + ns + '/' + name + '/logs?container=' + encodeURIComponent(container) +
               '&follow=' + follow + '&tailLines=500';
 
-  // Use fetch with streaming for SSE
-  fetch(url).then(resp => {
+  logFetchController = new AbortController();
+  fetch(url, { signal: logFetchController.signal }).then(resp => {
     const reader = resp.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
-    const output = document.getElementById('logOutput');
 
     function pump() {
       return reader.read().then(({done, value}) => {
@@ -372,10 +389,7 @@ function restartLogs() {
           try {
             const d = JSON.parse(line.substring(6));
             if (d.done) return;
-            if (d.line) {
-              output.textContent += d.line + '\n';
-              output.parentElement.scrollTop = output.parentElement.scrollHeight;
-            }
+            if (d.line) addLogLine(d.line);
           } catch(e) {}
         }
         return pump();
@@ -383,17 +397,165 @@ function restartLogs() {
     }
     return pump();
   }).catch(e => {
-    document.getElementById('logOutput').textContent += '\n[Error: ' + escapeHtml(e.message) + ']';
+    if (e.name !== 'AbortError') {
+      addLogLine('[Error: ' + e.message + ']');
+    }
   });
+}
+
+export function addLogLine(text) {
+  const level = classifyLogLevel(text);
+  logLines.push({ text, level, matched: true });
+  // Only append DOM if under 5000 lines (performance)
+  if (logLines.length <= 5000) {
+    appendLogLineDom(logLines[logLines.length - 1]);
+  }
+  updateLogStatus();
+}
+
+export function appendLogLineDom(entry) {
+  if (!entry.matched) return;
+  const filter = document.getElementById('logSearch').value.toLowerCase();
+  if (filter && !entry.text.toLowerCase().includes(filter)) return;
+  const output = document.getElementById('logOutput');
+  const div = document.createElement('div');
+  div.className = 'log-line log-' + entry.level;
+  div.textContent = entry.text;
+  output.appendChild(div);
+  if (document.getElementById('logAutoScroll').checked) {
+    const sc = document.getElementById('logScrollContainer');
+    sc.scrollTop = sc.scrollHeight;
+  }
+}
+
+export function filterLogs() {
+  const filter = document.getElementById('logSearch').value.toLowerCase();
+  const output = document.getElementById('logOutput');
+  output.innerHTML = '';
+  let shown = 0;
+  for (const entry of logLines) {
+    entry.matched = !filter || entry.text.toLowerCase().includes(filter);
+    if (entry.matched && shown < 5000) {
+      appendLogLineDom(entry);
+      shown++;
+    }
+  }
+  updateLogStatus();
+}
+
+export function updateLogStatus() {
+  const total = logLines.length;
+  const filter = document.getElementById('logSearch').value;
+  document.getElementById('logLineCount').textContent = total + ' lines';
+  const filteredEl = document.getElementById('logFilteredCount');
+  if (filter) {
+    const shown = document.querySelectorAll('.log-line').length;
+    filteredEl.textContent = '(' + shown + ' shown)';
+    filteredEl.style.display = 'inline';
+  } else {
+    filteredEl.style.display = 'none';
+  }
+}
+
+export function downloadLogs() {
+  const text = logLines.map(l => l.text).join('\n');
+  const blob = new Blob([text], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (openLogViewer._ns || 'pod') + '-' + (openLogViewer._name || 'log') + '-' + Date.now() + '.log';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+export function clearLogs() {
+  logLines = [];
+  document.getElementById('logOutput').innerHTML = '';
+  updateLogStatus();
 }
 
 // --- Terminal ---
 // --- YAML Viewer ---
-function closeYAMLViewer() {
+export function closeYAMLViewer() {
   document.getElementById('yamlOverlay').classList.remove('active');
+  // Reset to view mode
+  exitYAMLEdit();
 }
 
-function copyYAML() {
+export function toggleYAMLEdit() {
+  const pre = document.getElementById('yamlOutput');
+  const editor = document.getElementById('yamlEditor');
+  const editBtn = document.getElementById('yamlEditBtn');
+  const applyBtn = document.getElementById('yamlApplyBtn');
+  const indicator = document.getElementById('yamlEditIndicator');
+
+  if (editor.style.display === 'none') {
+    // Enter edit mode
+    editor.value = pre.textContent;
+    pre.style.display = 'none';
+    editor.style.display = 'block';
+    editor.focus();
+    editBtn.textContent = 'Cancel';
+    applyBtn.style.display = 'inline-block';
+    indicator.style.display = 'inline-block';
+  } else {
+    // Exit edit mode
+    exitYAMLEdit();
+  }
+}
+
+export function exitYAMLEdit() {
+  const pre = document.getElementById('yamlOutput');
+  const editor = document.getElementById('yamlEditor');
+  const editBtn = document.getElementById('yamlEditBtn');
+  const applyBtn = document.getElementById('yamlApplyBtn');
+  const indicator = document.getElementById('yamlEditIndicator');
+  pre.style.display = 'block';
+  editor.style.display = 'none';
+  editBtn.textContent = 'Edit';
+  applyBtn.style.display = 'none';
+  indicator.style.display = 'none';
+  const result = document.getElementById('yamlApplyResult');
+  if (result) result.style.display = 'none';
+}
+
+export async function applyYAML() {
+  const editor = document.getElementById('yamlEditor');
+  const yaml = editor.value;
+  if (!yaml.trim()) return;
+
+  const applyBtn = document.getElementById('yamlApplyBtn');
+  applyBtn.textContent = 'Applying...';
+  applyBtn.disabled = true;
+
+  try {
+    const resp = await fetch('/api/yaml/apply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ yaml: yaml, dryRun: false })
+    });
+    const data = await resp.json();
+    if (!resp.ok) {
+      throw new Error(data.error || data.message || 'Apply failed');
+    }
+    // Success
+    const result = document.getElementById('yamlApplyResult');
+    result.style.display = 'block';
+    result.innerHTML = '<div style="padding:12px 16px;margin:8px;background:#0d2818;border:1px solid #3fb950;border-radius:6px;color:#3fb950;font-size:13px;">' + escapeHtml(data.message || 'Applied successfully') + '</div>';
+    applyBtn.textContent = 'Apply';
+    applyBtn.disabled = false;
+    // Update the view mode with new YAML
+    document.getElementById('yamlOutput').textContent = yaml;
+    setTimeout(exitYAMLEdit, 1500);
+  } catch(e) {
+    const result = document.getElementById('yamlApplyResult');
+    result.style.display = 'block';
+    result.innerHTML = '<div style="padding:12px 16px;margin:8px;background:#2d0d0d;border:1px solid #f85149;border-radius:6px;color:#f85149;font-size:13px;">' + escapeHtml(e.message) + '</div>';
+    applyBtn.textContent = 'Apply';
+    applyBtn.disabled = false;
+  }
+}
+
+export function copyYAML() {
   const text = document.getElementById('yamlOutput').textContent;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('yamlCopyBtn');
@@ -402,7 +564,7 @@ function copyYAML() {
   });
 }
 
-async function viewYAML(kind, ns, name, group, version, resource) {
+export async function viewYAML(kind, ns, name, group, version, resource) {
   document.getElementById('yamlOverlay').classList.add('active');
   document.getElementById('yamlTitle').textContent = ns ? ns + '/' + name : name;
   const output = document.getElementById('yamlOutput');
@@ -425,13 +587,13 @@ async function viewYAML(kind, ns, name, group, version, resource) {
 
 let termNs = '', termName = '';
 
-function closeTerminal() {
+export function closeTerminal() {
   document.getElementById('termOverlay').classList.remove('active');
   document.getElementById('termInput').value = '';
   document.getElementById('termOutput').innerHTML = '';
 }
 
-async function openTerminal(ns, name) {
+export async function openTerminal(ns, name) {
   document.getElementById('termOverlay').classList.add('active');
   document.getElementById('termPodName').textContent = ns + '/' + name;
   termNs = ns; termName = name;
@@ -452,7 +614,7 @@ async function openTerminal(ns, name) {
   };
 }
 
-async function runCommand(cmd) {
+export async function runCommand(cmd) {
   const output = document.getElementById('termOutput');
   output.innerHTML += '<div style="color:#58a6ff;margin-top:8px;">$ ' + escapeHtml(cmd) + '</div>';
 

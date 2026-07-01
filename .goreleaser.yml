@@ -1,0 +1,154 @@
+version: 2
+
+project_name: k8ops
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: manager
+    main: ./cmd/manager
+    binary: manager
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/ggai/k8ops/internal/dashboard.Version={{.Version}}
+      - -X github.com/ggai/k8ops/internal/dashboard.GitCommit={{.ShortCommit}}
+      - -X github.com/ggai/k8ops/internal/dashboard.BuildDate={{.Date}}
+
+  - id: k8ops-cli
+    main: ./cmd/k8ops
+    binary: k8ops
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w
+      - -X github.com/ggai/k8ops/internal/dashboard.Version={{.Version}}
+
+archives:
+  - id: default
+    builds:
+      - manager
+      - k8ops-cli
+    name_template: >-
+      {{ .ProjectName }}_
+      {{ .Version }}_
+      {{ .Os }}_
+      {{ .Arch }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - LICENSE
+      - config/deploy/**/*
+      - config/daemonset-local.yaml
+      - install.sh
+      - docs/*.md
+
+docker:
+  - id: k8ops-linux-amd64
+    goarch: amd64
+    ids:
+      - manager
+    image_templates:
+      - "ghcr.io/topcheer/k8ops:{{ .Version }}-amd64"
+      - "ghcr.io/topcheer/k8ops:latest-amd64"
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.title={{.ProjectName}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --build-arg=VERSION={{.Version}}
+
+  - id: k8ops-linux-arm64
+    goarch: arm64
+    ids:
+      - manager
+    image_templates:
+      - "ghcr.io/topcheer/k8ops:{{ .Version }}-arm64"
+      - "ghcr.io/topcheer/k8ops:latest-arm64"
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - --platform=linux/arm64
+      - --label=org.opencontainers.image.title={{.ProjectName}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --build-arg=VERSION={{.Version}}
+
+docker_manifests:
+  - name_template: "ghcr.io/topcheer/k8ops:{{ .Version }}"
+    image_templates:
+      - "ghcr.io/topcheer/k8ops:{{ .Version }}-amd64"
+      - "ghcr.io/topcheer/k8ops:{{ .Version }}-arm64"
+  - name_template: "ghcr.io/topcheer/k8ops:latest"
+    image_templates:
+      - "ghcr.io/topcheer/k8ops:latest-amd64"
+      - "ghcr.io/topcheer/k8ops:latest-arm64"
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - "Merge pull request"
+      - "Merge branch"
+
+release:
+  github:
+    owner: topcheer
+    name: k8ops
+  draft: true
+  prerelease: auto
+  name_template: "{{ .TagName }}"
+  header: |
+    ## k8ops {{ .Version }}
+
+    ### Installation
+
+    ```bash
+    # Download the archive for your platform from the assets below
+    # Or use the CLI installer:
+    curl -sSL https://github.com/topcheer/k8ops/releases/download/{{ .Version }}/install.sh | bash
+    ```
+
+    ### Docker
+    ```bash
+    docker pull ghcr.io/topcheer/k8ops:{{ .Version }}
+    ```
+
+sboms:
+  - id: default
+    cmd: syft
+    args: ["$artifact", "--output", "spdx-json={{ document }}"]
+    documents:
+      - "{{ .ArtifactName }}.sbom.json"

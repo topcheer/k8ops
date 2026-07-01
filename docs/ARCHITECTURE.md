@@ -152,6 +152,60 @@ graph TB
     └─────────┘         └─────────┘
 ```
 
+## Deployment Modes
+
+### Deployment Mode (Default)
+
+单 Pod 运行，通过 PVC 持久化数据。适合大多数场景。
+
+```
+┌──────────────────────────────────────────┐
+│           k8ops Pod (1 replica)           │
+│                                           │
+│  ┌─────────────┐  ┌──────────────────┐   │
+│  │  Manager     │  │  Dashboard       │   │
+│  │  (controller)│  │  (web :9090)     │   │
+│  └──────┬───────┘  └────────┬─────────┘   │
+│         │                   │              │
+│  ┌──────┴───────────────────┴─────────┐   │
+│  │         SQLite (/data/k8ops.db)    │   │
+│  └────────────────────────────────────┘   │
+│                                           │
+│  ┌────────────────────────────────────┐   │
+│  │  PVC (k8ops-data, 1Gi)             │   │
+│  │  mounted at: /data                 │   │
+│  └────────────────────────────────────┘   │
+└──────────────────────────────────────────┘
+         │                    │
+    ┌────┴────┐         ┌────┴────┐
+    │ K8s API │         │ LLM API │
+    └─────────┘         └─────────┘
+```
+
+### DaemonSet Mode (Per-Node)
+
+每个节点运行一个 Pod，支持节点级诊断。数据存储在 hostPath（每节点独立）。
+
+```
+┌─────────── Node 1 ───────────┐  ┌─────────── Node 2 ───────────┐
+│  k8ops Pod (hostPath data)    │  │  k8ops Pod (hostPath data)    │
+│  ├── Manager + Dashboard      │  │  ├── Manager + Dashboard      │
+│  ├── SQLite (/var/lib/k8ops)  │  │  ├── SQLite (/var/lib/k8ops)  │
+│  └── Host mount (/host ro)    │  │  └── Host mount (/host ro)    │
+└───────────────────────────────┘  └───────────────────────────────┘
+         │                    │
+    ┌────┴────┐         ┌────┴────┐
+    │ K8s API │         │ LLM API │
+    └─────────┘         └─────────┘
+```
+
+DaemonSet 模式特点：
+- `tolerations: Exists` — 在所有节点运行（包括 tainted 节点）
+- `hostPath: /var/lib/k8ops` — 每节点独立 SQLite 数据
+- `hostPath: /` (readOnly) — 只读访问主机文件系统用于诊断
+- `hostPath: /var/run` — 访问容器运行时 socket
+- Service 通过 label selector 自动发现各节点 Pod
+
 ### Data Storage
 
 | Store | Location | Purpose |

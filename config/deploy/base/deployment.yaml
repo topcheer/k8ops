@@ -19,7 +19,7 @@ spec:
       containers:
       - name: k8ops
         image: ghcr.io/ggai/k8ops:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         env:
         - name: AIOPS_API_KEY
           valueFrom:
@@ -38,7 +38,7 @@ spec:
         # When unset, the dashboard is same-origin only (secure default)
         - name: CORS_ALLOWED_ORIGINS
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: k8ops-config
               key: cors-allowed-origins
               optional: true
@@ -49,22 +49,22 @@ spec:
               name: k8ops-notifications
               key: slack-webhook-url
               optional: true
-        # Dashboard TLS: paths to cert/key files for HTTPS (mounted via secret)
+        # Dashboard TLS: leave empty to serve plain HTTP (Ingress handles TLS termination)
         - name: DASHBOARD_TLS_CERT
-          value: /data/tls/tls.crt
+          value: ""
         - name: DASHBOARD_TLS_KEY
-          value: /data/tls/tls.key
+          value: ""
         # AI provider rate limiting (requests per minute, 0 = unlimited)
         - name: PROVIDER_RATE_LIMIT_RPM
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: k8ops-config
               key: provider-rate-limit-rpm
               optional: true
         # DEBUG: enable verbose logging ("true" / "false", default: false)
         - name: DEBUG
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: k8ops-config
               key: debug
               optional: true
