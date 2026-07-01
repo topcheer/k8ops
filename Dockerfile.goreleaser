@@ -6,7 +6,6 @@ RUN apk add --no-cache ca-certificates
 
 WORKDIR /
 COPY manager /manager
-COPY k8ops /usr/local/bin/k8ops
 
 USER 65532:65532
 
