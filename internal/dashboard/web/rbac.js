@@ -379,13 +379,13 @@ export async function loadClusterRoles() {
       </tr></thead>
       <tbody>
         ${roles.map(r => `<tr style="border-bottom:1px solid #21262d;">
-          <td style="padding:8px;font-weight:600;">${r.name}</td>
+          <td style="padding:8px;font-weight:600;">${escapeHtml(r.name)}</td>
           <td style="padding:8px;font-size:12px;color:#8b949e;">${r.ruleCount} rule(s)</td>
-          <td style="padding:8px;">${(r.bindings || []).map(b => `<span style="background:#21262d;border:1px solid #30363d;padding:2px 8px;border-radius:12px;font-size:12px;margin:2px;display:inline-block;">${b}</span>`).join('') || '<span style="color:#8b949e;">-</span>'}</td>
+          <td style="padding:8px;">${(r.bindings || []).map(b => `<span style="background:#21262d;border:1px solid #30363d;padding:2px 8px;border-radius:12px;font-size:12px;margin:2px;display:inline-block;">${escapeHtml(b)}</span>`).join('') || '<span style="color:#8b949e;">-</span>'}</td>
           <td style="padding:8px;white-space:nowrap;">
-            <button onclick="editRoleRules('${r.name}')" class="btn-secondary" style="padding:4px 10px;font-size:12px;">Edit Rules</button>
-            <button onclick="viewRoleYAML('${r.name}')" class="btn-secondary" style="padding:4px 10px;font-size:12px;">YAML</button>
-            ${r.name.startsWith('k8ops-role-') ? '<span style="color:#8b949e;font-size:11px;margin-left:4px;">system</span>' : `<button onclick="deleteClusterRole('${r.name}')" class="btn-secondary" style="padding:4px 10px;font-size:12px;color:#f85149;">Delete</button>`}
+            <button onclick="editRoleRules('${escapeHtml(r.name)}')" class="btn-secondary" style="padding:4px 10px;font-size:12px;">Edit Rules</button>
+            <button onclick="viewRoleYAML('${escapeHtml(r.name)}')" class="btn-secondary" style="padding:4px 10px;font-size:12px;">YAML</button>
+            ${r.name.startsWith('k8ops-role-') ? '<span style="color:#8b949e;font-size:11px;margin-left:4px;">system</span>' : `<button onclick="deleteClusterRole('${escapeHtml(r.name)}')" class="btn-secondary" style="padding:4px 10px;font-size:12px;color:#f85149;">Delete</button>`}
           </td>
         </tr>`).join('')}
       </tbody>
