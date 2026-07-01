@@ -64,7 +64,7 @@ archives:
       - install.sh
       - docs/*.md
 
-docker:
+dockers:
   - id: k8ops-linux-amd64
     goarch: amd64
     ids:
@@ -145,10 +145,3 @@ release:
     ```bash
     docker pull ghcr.io/topcheer/k8ops:{{ .Version }}
     ```
-
-sboms:
-  - id: default
-    cmd: syft
-    args: ["$artifact", "--output", "spdx-json={{ document }}"]
-    documents:
-      - "{{ .ArtifactName }}.sbom.json"
