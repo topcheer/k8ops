@@ -138,6 +138,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/crd-resources", s.cacheMiddleware(60*time.Second, s.handleCRDResources)) // 1min cache
 	mux.HandleFunc("/api/yaml", s.handleYAML)                  // view YAML of any resource
 	mux.HandleFunc("/api/yaml/apply", s.handleYAMLApply)        // apply YAML (kubectl apply)
+	mux.HandleFunc("/api/scale", s.handleScale)                 // scale deployment/statefulset
 
 	// Cost / FinOps
 	mux.HandleFunc("/api/cost/summary", s.cacheMiddleware(60*time.Second, s.handleCostSummary))                       // 1min cache

@@ -102,7 +102,10 @@ export async function loadResources(forceRefresh) {
         <td>${r.type || ''}</td>
         <td style="font-size:13px;">${detail}</td>
         <td>${r.age}</td>
-        <td><button onclick="viewYAML('${escapeHtml(kind)}','${escapeHtml(r.namespace)}','${escapeHtml(r.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">YAML</button></td>
+        <td>
+          <button onclick="viewYAML('${escapeHtml(kind)}','${escapeHtml(r.namespace)}','${escapeHtml(r.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">YAML</button>
+          ${(kind==='deployments'||kind==='statefulsets') ? `<button onclick="scaleWorkload('${escapeHtml(kind).replace(/s$/,'')}','${escapeHtml(r.namespace)}','${escapeHtml(r.name)}',${(r.ready||'0/0').split('/')[1]})" class="btn-secondary" style="font-size:12px;padding:4px 10px;color:#58a6ff;">Scale</button>` : ''}
+        </td>
       </tr>`;
     }).join('')}</tbody></table>`;
   } catch(e) {
@@ -457,9 +460,39 @@ export function updateLogStatus() {
   }
 }
 
+export async function scaleWorkload(kind, ns, name, currentReplicas) {
+  const input = prompt(`Scale ${kind} "${name}" in "${ns}"\nCurrent replicas: ${currentReplicas}\nEnter new replica count (0-1000):`, currentReplicas);
+  if (input === null) return;
+  const replicas = parseInt(input, 10);
+  if (isNaN(replicas) || replicas < 0 || replicas > 1000) {
+    showToast('Invalid replica count', 'error');
+    return;
+  }
+  if (replicas === currentReplicas) {
+    showToast('Replica count unchanged', 'info');
+    return;
+  }
+  try {
+    const resp = await fetch('/api/scale', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({namespace: ns, kind: kind, name: name, replicas: replicas}),
+    });
+    const data = await resp.json();
+    if (data.error) {
+      showToast('Scale failed: ' + data.error, 'error');
+    } else {
+      showToast(`${kind} "${name}" scaled to ${replicas} replicas`, 'success');
+      // Reload the resource list
+      loadResources();
+    }
+  } catch(e) {
+    showToast('Scale failed: ' + e.message, 'error');
+  }
+}
+
 export function downloadLogs() {
-  const text = logLines.map(l => l.text).join('\n');
-  const blob = new Blob([text], { type: 'text/plain' });
+  const text = logLines.map(l => l.text).join('\n');  const blob = new Blob([text], { type: 'text/plain' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = (openLogViewer._ns || 'pod') + '-' + (openLogViewer._name || 'log') + '-' + Date.now() + '.log';
@@ -598,7 +631,7 @@ export async function openTerminal(ns, name) {
   document.getElementById('termPodName').textContent = ns + '/' + name;
   termNs = ns; termName = name;
   const output = document.getElementById('termOutput');
-  output.innerHTML = '<div style="color:#8b949e;">Connected to ' + ns + '/' + name + '. Type a command and press Enter.</div>';
+  output.innerHTML = '<div style="color:#8b949e;">Connected to ' + escapeHtml(ns) + '/' + escapeHtml(name) + '. Type a command and press Enter.</div>';
 
   // Run initial command
   await runCommand('hostname && whoami && pwd');
