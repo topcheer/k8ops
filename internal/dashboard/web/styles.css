@@ -1224,3 +1224,15 @@ tbody tr.kbd-selected {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ===== Security Audit Page ===== */
+.sec-score-good { background: rgba(63,185,80,0.1); color: #3fb950; border: 1px solid rgba(63,185,80,0.3); }
+.sec-score-warn { background: rgba(210,153,34,0.1); color: #d29922; border: 1px solid rgba(210,153,34,0.3); }
+.sec-score-bad  { background: rgba(248,81,73,0.1); color: #f85149; border: 1px solid rgba(248,81,73,0.3); }
+.stat-muted { opacity: 0.45; }
+.sec-row { transition: background 0.15s; }
+.sec-row:hover { background: rgba(88,166,255,0.05); }
+
+[data-theme="light"] .sec-score-good { background: rgba(26,127,55,0.08); color: #1a7f37; border-color: rgba(26,127,55,0.2); }
+[data-theme="light"] .sec-score-warn { background: rgba(154,103,0,0.08); color: #9a6700; border-color: rgba(154,103,0,0.2); }
+[data-theme="light"] .sec-score-bad  { background: rgba(207,34,46,0.08); color: #cf222e; border-color: rgba(207,34,46,0.2); }

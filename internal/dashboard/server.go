@@ -144,6 +144,10 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/node/cordon", s.handleNodeCordon)        // cordon/uncordon node
 	mux.HandleFunc("/api/resource/data", s.handleResourceData)    // configmap/secret data viewer
 
+	// Security audit
+	mux.HandleFunc("/api/security/audit", s.handleSecurityAudit)     // cluster-wide security scan
+	mux.HandleFunc("/api/security/health", s.handleSecurityHealth)   // platform security health check
+
 	// Cost / FinOps
 	mux.HandleFunc("/api/cost/summary", s.cacheMiddleware(60*time.Second, s.handleCostSummary))                       // 1min cache
 	mux.HandleFunc("/api/cost/recommendations", s.cacheMiddleware(60*time.Second, s.handleCostRecommendations))       // 1min cache
