@@ -141,6 +141,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scale", s.handleScale)                 // scale deployment/statefulset
 	mux.HandleFunc("/api/pod/delete", s.handlePodDelete)         // delete a single pod
 	mux.HandleFunc("/api/rollout/restart", s.handleRolloutRestart) // restart deployment/daemonset/statefulset
+	mux.HandleFunc("/api/node/cordon", s.handleNodeCordon)        // cordon/uncordon node
 
 	// Cost / FinOps
 	mux.HandleFunc("/api/cost/summary", s.cacheMiddleware(60*time.Second, s.handleCostSummary))                       // 1min cache
@@ -559,7 +560,8 @@ func (s *Server) handleNodes(w http.ResponseWriter, r *http.Request) {
 		Memory     string            `json:"memory"`
 		OS         string            `json:"os"`
 		Arch       string            `json:"arch"`
-		Conditions map[string]string `json:"conditions"`
+		Conditions   map[string]string `json:"conditions"`
+		Unschedulable bool              `json:"unschedulable"`
 		// Utilization (requested / allocatable as percentage)
 		CPURequested    float64 `json:"cpuRequestedPct"`
 		MemRequested    float64 `json:"memRequestedPct"`
@@ -581,6 +583,7 @@ func (s *Server) handleNodes(w http.ResponseWriter, r *http.Request) {
 			Memory:  n.Status.Allocatable.Memory().String(),
 			Conditions: make(map[string]string),
 			PodCapacity: int(n.Status.Allocatable.Pods().Value()),
+			Unschedulable: n.Spec.Unschedulable,
 		}
 		for _, c := range n.Status.Conditions {
 			info.Conditions[string(c.Type)] = string(c.Status)

@@ -7,16 +7,20 @@ export async function loadNodes(forceRefresh) {
     const data = await fetchJSON('/api/nodes' + (forceRefresh ? '?refresh=true' : ''));
     if (!data.items?.length) { container.innerHTML = '<div class="empty">No nodes found</div>'; return; }
     container.innerHTML = `<table>
-      <thead><tr><th>Name</th><th>Status</th><th>Role</th><th>Version</th><th>CPU</th><th>Memory</th><th>OS/Arch</th><th>Conditions</th><th></th></tr></thead>
-      <tbody>${data.items.map(n => `<tr>
+      <thead><tr><th>Name</th><th>Status</th><th>Role</th><th>Version</th><th>CPU</th><th>Memory</th><th>OS/Arch</th><th>Conditions</th><th>Sched</th><th></th></tr></thead>
+      <tbody>${data.items.map(n => `<tr${n.unschedulable ? ' style="opacity:0.7;"' : ''}>
         <td style="cursor:pointer;color:#58a6ff;" onclick="viewNodePods('${escapeHtml(n.name)}')">${escapeHtml(n.name)}</td>
-        <td>${badge(n.status)}</td>
+        <td>${badge(n.status)}${n.unschedulable ? ' <span style="color:#d29922;font-size:11px;">SchedulingDisabled</span>' : ''}</td>
         <td>${escapeHtml(n.role)}</td>
         <td><code>${escapeHtml(n.version)}</code></td>
         <td>${escapeHtml(n.cpu)}</td>
         <td>${escapeHtml(n.memory)}</td>
         <td>${escapeHtml(n.os)}/${escapeHtml(n.arch)}</td>
         <td style="font-size:12px;color:#8b949e;">${Object.entries(n.conditions).map(([k,v])=>escapeHtml(k)+':'+escapeHtml(v)).join(', ')}</td>
+        <td>${n.unschedulable
+          ? `<button onclick="toggleCordon('${escapeHtml(n.name)}', false)" class="btn-secondary" style="font-size:11px;padding:3px 8px;color:#3fb950;">Uncordon</button>`
+          : `<button onclick="toggleCordon('${escapeHtml(n.name)}', true)" class="btn-secondary" style="font-size:11px;padding:3px 8px;color:#d29922;">Cordon</button>`
+        }</td>
         <td><button onclick="viewNodePods('${escapeHtml(n.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">Pods &rarr;</button></td>
       </tr>`).join('')}</tbody>
     </table>`;
@@ -127,5 +131,26 @@ function prependLiveEvent(d) {
 export function clearLiveEvents() {
   const feed = document.getElementById('liveEventsFeed');
   if (feed) feed.innerHTML = '';
+}
+
+export async function toggleCordon(nodeName, cordon) {
+  const action = cordon ? 'Cordon' : 'Uncordon';
+  if (!confirm(`${action} node "${nodeName}"?\n${cordon ? 'No new pods will be scheduled on this node.' : 'Node will accept new pod scheduling.'}`)) return;
+  try {
+    const resp = await fetch('/api/node/cordon', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name: nodeName, unschedulable: cordon}),
+    });
+    const data = await resp.json();
+    if (data.error) {
+      showToast(`${action} failed: ` + data.error, 'error');
+    } else {
+      showToast(`Node "${nodeName}" ${cordon ? 'cordoned' : 'uncordoned'}`, 'success');
+      loadNodes(true);
+    }
+  } catch(e) {
+    showToast(`${action} failed: ` + e.message, 'error');
+  }
 }
 
