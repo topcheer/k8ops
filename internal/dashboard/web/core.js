@@ -26,6 +26,7 @@ export function showTab(name, btn) {
   if (name === 'settings') window.loadSettings();
   if (name === 'rbac') window.loadRBAC();
   if (name === 'security') window.loadSecurityAudit();
+  if (name === 'api') window.loadAPIDocs();
   if (name === 'cost') window.loadCost();
 }
 

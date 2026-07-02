@@ -1236,3 +1236,24 @@ tbody tr.kbd-selected {
 [data-theme="light"] .sec-score-good { background: rgba(26,127,55,0.08); color: #1a7f37; border-color: rgba(26,127,55,0.2); }
 [data-theme="light"] .sec-score-warn { background: rgba(154,103,0,0.08); color: #9a6700; border-color: rgba(154,103,0,0.2); }
 [data-theme="light"] .sec-score-bad  { background: rgba(207,34,46,0.08); color: #cf222e; border-color: rgba(207,34,46,0.2); }
+
+/* ===== API Explorer Page ===== */
+.api-tag-group { margin-bottom: 8px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+.api-tag-header { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: var(--bg-tertiary); cursor: pointer; user-select: none; font-weight: 600; font-size: 14px; }
+.api-tag-header:hover { background: rgba(88,166,255,0.08); }
+.api-tag-name { text-transform: capitalize; }
+.api-tag-count { background: rgba(139,148,158,0.2); color: #8b949e; padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 400; }
+.api-toggle-icon { margin-left: auto; color: #8b949e; font-size: 10px; }
+.api-tag-body { padding: 4px 0; }
+.api-endpoint { border-top: 1px solid rgba(48,54,61,0.5); }
+.api-endpoint-header { display: flex; align-items: center; gap: 10px; padding: 8px 16px; cursor: pointer; }
+.api-endpoint-header:hover { background: rgba(88,166,255,0.05); }
+.api-method-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; min-width: 50px; text-align: center; font-family: monospace; }
+.api-path { font-size: 13px; color: #c9d1d9; }
+.api-summary { font-size: 12px; color: #8b949e; }
+.api-endpoint-detail { padding: 8px 16px 12px; border-top: 1px solid rgba(48,54,61,0.3); }
+.api-actions { display: flex; gap: 8px; margin-top: 8px; }
+.btn-try { background: rgba(63,185,80,0.15); color: #3fb950; border: 1px solid rgba(63,185,80,0.3); border-radius: 6px; padding: 4px 14px; font-size: 12px; cursor: pointer; }
+.btn-try:hover { background: rgba(63,185,80,0.25); }
+.btn-copy { background: rgba(88,166,255,0.1); color: #58a6ff; border: 1px solid rgba(88,166,255,0.2); border-radius: 6px; padding: 4px 14px; font-size: 12px; cursor: pointer; }
+.btn-copy:hover { background: rgba(88,166,255,0.2); }

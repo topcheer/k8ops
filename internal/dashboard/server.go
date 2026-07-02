@@ -148,6 +148,10 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/audit", s.handleSecurityAudit)     // cluster-wide security scan
 	mux.HandleFunc("/api/security/health", s.handleSecurityHealth)   // platform security health check
 
+	// OpenAPI documentation
+	mux.HandleFunc("/api/openapi.json", s.handleOpenAPISpec)  // OpenAPI 3.0 spec
+	mux.HandleFunc("/api/docs", s.handleAPIDocs)             // API documentation (JSON + metadata)
+
 	// Cost / FinOps
 	mux.HandleFunc("/api/cost/summary", s.cacheMiddleware(60*time.Second, s.handleCostSummary))                       // 1min cache
 	mux.HandleFunc("/api/cost/recommendations", s.cacheMiddleware(60*time.Second, s.handleCostRecommendations))       // 1min cache

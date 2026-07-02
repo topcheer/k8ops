@@ -31,6 +31,7 @@
     <button onclick="showTab('security', this)"><span class="nav-icon">&#128737;</span><span>Security</span></button>
     <button onclick="showTab('audit', this)"><span class="nav-icon">&#9776;</span><span>Audit</span></button>
     <button onclick="showTab('rbac', this)" id="rbacTabBtn" style="display:none;"><span class="nav-icon">&#128274;</span><span>Access Control</span></button>
+    <button onclick="showTab('api', this)"><span class="nav-icon">&#128279;</span><span>API Docs</span></button>
     <button onclick="showTab('settings', this)"><span class="nav-icon">&#9881;</span><span>Settings</span></button>
   </div>
   <div class="sidebar-footer">
@@ -268,6 +269,15 @@
     </div>
     <div id="auditStats" style="margin-bottom:16px;"></div>
     <div id="auditTable"><div class="loading">Loading...</div></div>
+  </div>
+
+  <!-- API Docs -->
+  <div id="tab-api" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">API Explorer</div>
+      <button onclick="loadAPIDocs()">Reload</button>
+    </div>
+    <div id="apiExplorerContent"><div class="loading">Loading API documentation...</div></div>
   </div>
 
   <!-- Security Audit -->

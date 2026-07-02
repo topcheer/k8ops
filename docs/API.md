@@ -5,6 +5,26 @@ All endpoints are served on the dashboard port (default `:9090`).
 **Authentication:** JWT cookie (`k8ops_token`) or `Authorization: Bearer <token>` header.
 **Content-Type:** `application/json` for all POST/PUT requests.
 
+## OpenAPI 3.0 Spec
+
+k8ops 自动生成 OpenAPI 3.0 规范，可用于自动生成 SDK、集成 API 网关或在 Swagger UI 中浏览。
+
+| 端点 | 说明 |
+|------|------|
+| `GET /api/openapi.json` | 返回完整的 OpenAPI 3.0 JSON 规范 |
+| `GET /api/docs` | 返回按标签分组的 API 文档元数据（包含 spec + tagGroups） |
+
+**获取规范：**
+```bash
+curl -sk https://k8ops.iot2.win/api/openapi.json -o k8ops-openapi.json
+```
+
+**导入 Swagger Editor：**
+1. 打开 https://editor.swagger.io
+2. 文件 → 导入文件 → 选择 `k8ops-openapi.json`
+
+**在 Dashboard 中浏览：** 侧边栏 → API Docs 页面提供交互式 API 浏览器，支持搜索、过滤、在线试调。
+
 ---
 
 ## Health & System
@@ -178,6 +198,54 @@ Sets `k8ops_token` cookie (HttpOnly, SameSite=Lax, 24h).
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/api/config` | Required | k8ops controller configuration (provider type/model, features) |
+
+## Security Audit
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/api/security/audit` | Required | 集群安全扫描 — 检查 Pod Security Standards、RBAC、网络策略覆盖率、密钥安全 |
+| GET | `/api/security/health` | Required | 平台安全健康检查 — 认证/TLS/K8s API 连接性 |
+
+### GET /api/security/audit
+
+扫描全集群，返回安全发现列表，按严重程度排序（critical > high > medium > low > info）。
+
+**检查项：**
+- **Pod Security:** 特权容器、root 运行、权限提升、危险 capabilities、hostPath/hostNetwork
+- **RBAC:** cluster-admin 绑定、默认 SA 使用
+- **Network:** 缺少 NetworkPolicy 的命名空间
+- **Secrets:** Docker registry 密钥轮换建议
+- **Resources:** 缺少 resource limits 的容器
+
+**响应示例：**
+```json
+{
+  "summary": {"critical": 0, "high": 2, "medium": 5, "low": 8, "info": 3, "total": 18},
+  "findings": [
+    {
+      "severity": "high",
+      "category": "Pod Security",
+      "resource": "default/pod/nginx/container/app",
+      "namespace": "default",
+      "detail": "Container \"app\" allows privilege escalation",
+      "fix": "Set allowPrivilegeEscalation: false in securityContext"
+    }
+  ],
+  "scannedAt": "2025-01-15T10:30:00Z"
+}
+```
+
+## Write Operations
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| POST | `/api/scale` | Required | 扩缩容 deployment/statefulset |
+| POST | `/api/pod/delete` | Required | 删除单个 Pod |
+| POST | `/api/rollout/restart` | Required | 滚动重启 deployment/daemonset/statefulset |
+| POST | `/api/node/cordon` | Required | 隔离/恢复节点 |
+| POST | `/api/yaml/apply` | Required | 应用 YAML (kubectl apply) |
+
+所有写操作均记录到审计日志。
 
 ---
 
