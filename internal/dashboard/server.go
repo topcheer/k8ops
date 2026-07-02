@@ -117,6 +117,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/system/log/rotate", s.adminOnlyMiddleware(s.handleLogRotate))
 	mux.HandleFunc("/api/system/log/cleanup", s.adminOnlyMiddleware(s.handleLogCleanup))
 	mux.HandleFunc("/api/system/performance", s.cacheMiddleware(15*time.Second, s.handleAPIPerformance))
+
+	// Backup management
+	mux.HandleFunc("/api/system/backup", s.handleBackupDispatch)
 	mux.HandleFunc("/api/exec", s.handleQuickExec) // NL-to-kubectl quick command execution
 	mux.HandleFunc("/api/cluster/overview", s.cacheMiddleware(30*time.Second, s.handleClusterOverview))
 	mux.HandleFunc("/api/diagnostics", s.handleDiagnostics)
