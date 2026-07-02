@@ -102,8 +102,36 @@ export async function loadOverview() {
     document.getElementById('overviewCards').innerHTML = `<div class="card err"><div class="label">Error</div><div class="value" style="font-size:14px;">${escapeHtml(e.message)}</div></div>`;
   }
 
+  // Load recent events feed
+  loadRecentEvents();
   // Load cost overview panel
   loadCostOverview();
+}
+
+async function loadRecentEvents() {
+  const container = document.getElementById('recentEventsPanel');
+  if (!container) return;
+  try {
+    const data = await fetchJSON('/api/events?limit=10');
+    if (!data.items || !data.items.length) {
+      container.innerHTML = '<div class="empty" style="padding:16px;">No recent events</div>';
+      return;
+    }
+    container.innerHTML = '<div class="events-feed">' + data.items.slice(0, 10).map(function(e) {
+      var sev = (e.type || '').toLowerCase();
+      var dotColor = sev === 'warning' ? 'var(--accent-red)' : 'var(--accent-green)';
+      var bgClass = sev === 'warning' ? 'event-row-warn' : 'event-row-norm';
+      return '<div class="event-row ' + bgClass + '">' +
+        '<span class="event-dot" style="background:' + dotColor + ';"></span>' +
+        '<span class="event-type">' + escapeHtml(e.type || '') + '</span>' +
+        '<span class="event-reason">' + escapeHtml(e.reason || '') + '</span>' +
+        '<span class="event-msg" title="' + escapeHtml(e.message || '') + '">' + escapeHtml((e.message || '').substring(0, 80)) + (e.message && e.message.length > 80 ? '...' : '') + '</span>' +
+        '<span class="event-time">' + escapeHtml(e.lastTimestamp || e.firstTimestamp || '') + '</span>' +
+      '</div>';
+    }).join('') + '</div>';
+  } catch(e) {
+    container.innerHTML = '<div class="empty">Failed to load events</div>';
+  }
 }
 
 function renderPhaseBadges(byPhase) {
