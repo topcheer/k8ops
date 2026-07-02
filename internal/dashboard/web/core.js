@@ -29,6 +29,7 @@ export function showTab(name, btn) {
   if (name === 'api') window.loadAPIDocs();
   if (name === 'namespaces') window.loadNamespaceRanking();
   if (name === 'capacity') window.loadCapacity();
+  if (name === 'compliance') window.loadCompliance();
   if (name === 'cost') window.loadCost();
 }
 

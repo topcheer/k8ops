@@ -30,6 +30,7 @@
     <button onclick="showTab('crds', this)"><span class="nav-icon">&#9881;</span><span>CRDs</span></button>
     <button onclick="showTab('capacity', this)"><span class="nav-icon">&#128203;</span><span>Capacity</span></button>
     <button onclick="showTab('namespaces', this)"><span class="nav-icon">&#128202;</span><span>Namespaces</span></button>
+    <button onclick="showTab('compliance', this)"><span class="nav-icon">&#128737;</span><span>Compliance</span></button>
     <button onclick="showTab('security', this)"><span class="nav-icon">&#128737;</span><span>Security</span></button>
     <button onclick="showTab('audit', this)"><span class="nav-icon">&#9776;</span><span>Audit</span></button>
     <button onclick="showTab('rbac', this)" id="rbacTabBtn" style="display:none;"><span class="nav-icon">&#128274;</span><span>Access Control</span></button>
@@ -298,6 +299,15 @@
       <button onclick="loadAPIDocs()">Reload</button>
     </div>
     <div id="apiExplorerContent"><div class="loading">Loading API documentation...</div></div>
+  </div>
+
+  <!-- Compliance Scan -->
+  <div id="tab-compliance" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">CIS Benchmark Compliance</div>
+      <button onclick="loadCompliance()">Re-scan</button>
+    </div>
+    <div id="complianceContent"><div class="loading">Loading...</div></div>
   </div>
 
   <!-- Security Audit -->
