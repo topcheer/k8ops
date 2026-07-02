@@ -28,6 +28,7 @@
     <button onclick="showTab('pods', this)"><span class="nav-icon">&#9635;</span><span>Pods</span></button>
     <button onclick="showTab('resources', this)"><span class="nav-icon">&#10010;</span><span>Resources</span></button>
     <button onclick="showTab('crds', this)"><span class="nav-icon">&#9881;</span><span>CRDs</span></button>
+    <button onclick="showTab('capacity', this)"><span class="nav-icon">&#128203;</span><span>Capacity</span></button>
     <button onclick="showTab('namespaces', this)"><span class="nav-icon">&#128202;</span><span>Namespaces</span></button>
     <button onclick="showTab('security', this)"><span class="nav-icon">&#128737;</span><span>Security</span></button>
     <button onclick="showTab('audit', this)"><span class="nav-icon">&#9776;</span><span>Audit</span></button>
@@ -270,6 +271,15 @@
     </div>
     <div id="auditStats" style="margin-bottom:16px;"></div>
     <div id="auditTable"><div class="loading">Loading...</div></div>
+  </div>
+
+  <!-- Capacity Planning -->
+  <div id="tab-capacity" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">Storage &amp; Capacity Planning</div>
+      <button onclick="loadCapacity()">Refresh</button>
+    </div>
+    <div id="capacityContent"><div class="loading">Loading...</div></div>
   </div>
 
   <!-- Namespace Ranking -->
