@@ -142,6 +142,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/pod/delete", s.handlePodDelete)         // delete a single pod
 	mux.HandleFunc("/api/rollout/restart", s.handleRolloutRestart) // restart deployment/daemonset/statefulset
 	mux.HandleFunc("/api/node/cordon", s.handleNodeCordon)        // cordon/uncordon node
+	mux.HandleFunc("/api/resource/data", s.handleResourceData)    // configmap/secret data viewer
 
 	// Cost / FinOps
 	mux.HandleFunc("/api/cost/summary", s.cacheMiddleware(60*time.Second, s.handleCostSummary))                       // 1min cache

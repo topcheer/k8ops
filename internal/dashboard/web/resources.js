@@ -104,6 +104,7 @@ export async function loadResources(forceRefresh) {
         <td>${r.age}</td>
         <td>
           <button onclick="viewYAML('${escapeHtml(kind)}','${escapeHtml(r.namespace)}','${escapeHtml(r.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">YAML</button>
+          ${(kind==='configmaps'||kind==='secrets') ? `<button onclick="viewResourceData('${escapeHtml(kind).replace(/s$/,'')}','${escapeHtml(r.namespace)}','${escapeHtml(r.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;color:#58a6ff;">Data</button>` : ''}
           ${(kind==='deployments'||kind==='statefulsets') ? `<button onclick="scaleWorkload('${escapeHtml(kind).replace(/s$/,'')}','${escapeHtml(r.namespace)}','${escapeHtml(r.name)}',${(r.ready||'0/0').split('/')[1]})" class="btn-secondary" style="font-size:12px;padding:4px 10px;color:#58a6ff;">Scale</button>` : ''}
           ${(kind==='deployments'||kind==='statefulsets'||kind==='daemonsets') ? `<button onclick="rolloutRestart('${escapeHtml(kind).replace(/s$/,'')}','${escapeHtml(r.namespace)}','${escapeHtml(r.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;color:#d29922;">Restart</button>` : ''}
         </td>
@@ -461,8 +462,42 @@ export function updateLogStatus() {
   }
 }
 
-export async function rolloutRestart(kind, ns, name) {
-  if (!confirm(`Rollout restart ${kind} "${name}" in "${ns}"?`)) return;
+export async function viewResourceData(kind, ns, name) {
+  const overlay = document.getElementById('yamlOverlay');
+  const title = document.getElementById('yamlTitle');
+  const content = document.getElementById('yamlContent');
+  if (!overlay || !content) return;
+  if (title) title.textContent = `${kind}: ${ns}/${name} — Data`;
+  content.innerHTML = '<div style="padding:20px;color:#8b949e;">Loading...</div>';
+  overlay.classList.add('active');
+  try {
+    const data = await fetchJSON(`/api/resource/data?kind=${encodeURIComponent(kind)}&namespace=${encodeURIComponent(ns)}&name=${encodeURIComponent(name)}`);
+    if (!data.items || data.items.length === 0) {
+      content.innerHTML = '<div style="padding:20px;color:#8b949e;">No data keys found.</div>';
+      return;
+    }
+    let html = '<div style="padding:16px;">';
+    html += `<div style="margin-bottom:12px;color:#8b949e;font-size:13px;">${data.count} key(s) — values ${kind === 'secret' ? '(base64-decoded)' : ''}</div>`;
+    for (const item of data.items) {
+      const val = item.value || '';
+      const isLong = val.length > 200;
+      const displayVal = isLong ? val.substring(0, 500) + '\n... (truncated, ' + val.length + ' chars total)' : val;
+      const escaped = escapeHtml(displayVal);
+      html += `<div style="margin-bottom:16px;border:1px solid #30363d;border-radius:8px;overflow:hidden;">`;
+      html += `<div style="padding:8px 12px;background:#161b22;font-weight:600;color:#58a6ff;font-family:monospace;font-size:13px;border-bottom:1px solid #30363d;">`;
+      html += `<span style="cursor:pointer;" onclick="this.parentElement.nextElementSibling.style.display=this.parentElement.nextElementSibling.style.display==='none'?'block':'none'">${escapeHtml(item.key)}</span>`;
+      html += ` <span style="font-size:11px;color:#8b949e;font-weight:normal;">(${val.length} chars)</span></div>`;
+      html += `<pre style="margin:0;padding:12px;font-family:monospace;font-size:12px;color:#c9d1d9;background:#0d1117;white-space:pre-wrap;word-break:break-all;max-height:400px;overflow-y:auto;">${escaped}</pre>`;
+      html += `</div>`;
+    }
+    html += '</div>';
+    content.innerHTML = html;
+  } catch(e) {
+    content.innerHTML = `<div style="padding:20px;color:#f85149;">Error: ${escapeHtml(e.message)}</div>`;
+  }
+}
+
+export async function rolloutRestart(kind, ns, name) {  if (!confirm(`Rollout restart ${kind} "${name}" in "${ns}"?`)) return;
   try {
     const resp = await fetch('/api/rollout/restart', {
       method: 'POST',
