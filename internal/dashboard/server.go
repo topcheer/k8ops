@@ -56,6 +56,7 @@ type Server struct {
 	corsAllowedOrigins []string
 	tlsCert            string
 	tlsKey             string
+	startTime          *time.Time
 }
 
 // New creates a new dashboard server.
@@ -75,6 +76,7 @@ func New(k8sClient client.Client, config *rest.Config, scheme *runtime.Scheme, a
 		log.Info("CORS: no allowed origins configured (same-origin only)")
 	}
 
+	now := time.Now()
 	return &Server{
 		k8sClient:          k8sClient,
 		clientset:          clientset,
@@ -85,6 +87,7 @@ func New(k8sClient client.Client, config *rest.Config, scheme *runtime.Scheme, a
 		cache:              newResponseCache(10 * time.Minute),
 		log:                log,
 		corsAllowedOrigins: allowedOrigins,
+		startTime:          &now,
 	}, nil
 }
 
@@ -106,6 +109,11 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/healthz", s.handleHealthz) // K8s liveness probe
 	mux.HandleFunc("/readyz", s.handleReadyz)   // K8s readiness probe
 	mux.HandleFunc("/api/version", s.handleVersion)
+
+	// System & log management
+	mux.HandleFunc("/api/system/info", s.handleSystemInfo)
+	mux.HandleFunc("/api/system/log/rotate", s.adminOnlyMiddleware(s.handleLogRotate))
+	mux.HandleFunc("/api/system/log/cleanup", s.adminOnlyMiddleware(s.handleLogCleanup))
 	mux.HandleFunc("/api/exec", s.handleQuickExec) // NL-to-kubectl quick command execution
 	mux.HandleFunc("/api/cluster/overview", s.cacheMiddleware(30*time.Second, s.handleClusterOverview))
 	mux.HandleFunc("/api/diagnostics", s.handleDiagnostics)

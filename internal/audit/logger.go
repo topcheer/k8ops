@@ -20,13 +20,13 @@ import (
 type EventType string
 
 const (
-	EventTypeToolCall     EventType = "tool_call"
-	EventTypeLLMCall      EventType = "llm_call"
-	EventTypeRemediation  EventType = "remediation"
-	EventTypeSafetyBlock  EventType = "safety_block"
-	EventTypeDiagnostic   EventType = "diagnostic"
-	EventTypeRollback     EventType = "rollback"
-	EventTypeUserAction   EventType = "user_action" // user-initiated operations via dashboard
+	EventTypeToolCall    EventType = "tool_call"
+	EventTypeLLMCall     EventType = "llm_call"
+	EventTypeRemediation EventType = "remediation"
+	EventTypeSafetyBlock EventType = "safety_block"
+	EventTypeDiagnostic  EventType = "diagnostic"
+	EventTypeRollback    EventType = "rollback"
+	EventTypeUserAction  EventType = "user_action" // user-initiated operations via dashboard
 )
 
 // Severity levels for audit events.
@@ -40,57 +40,200 @@ const (
 
 // Event represents a single audit event.
 type Event struct {
-	ID        string                 `json:"id"`
-	Timestamp string                 `json:"timestamp"`
-	Type      EventType              `json:"type"`
-	Severity  Severity               `json:"severity"`
-	Actor     string                 `json:"actor"`       // "ai-agent" or "controller"
-	Action    string                 `json:"action"`      // tool name or operation type
-	Target    string                 `json:"target"`      // resource being acted on
-	Namespace string                 `json:"namespace,omitempty"`
-	Success   bool                   `json:"success"`
-	Detail    map[string]any         `json:"detail,omitempty"`
-	Duration  string                 `json:"duration,omitempty"`
-	Error     string                 `json:"error,omitempty"`
-	Source    string                 `json:"source,omitempty"` // which controller/trigger
+	ID        string         `json:"id"`
+	Timestamp string         `json:"timestamp"`
+	Type      EventType      `json:"type"`
+	Severity  Severity       `json:"severity"`
+	Actor     string         `json:"actor"`  // "ai-agent" or "controller"
+	Action    string         `json:"action"` // tool name or operation type
+	Target    string         `json:"target"` // resource being acted on
+	Namespace string         `json:"namespace,omitempty"`
+	Success   bool           `json:"success"`
+	Detail    map[string]any `json:"detail,omitempty"`
+	Duration  string         `json:"duration,omitempty"`
+	Error     string         `json:"error,omitempty"`
+	Source    string         `json:"source,omitempty"` // which controller/trigger
 }
 
 // Logger is the audit logger. It writes structured events to both a JSON file
 // and the standard logger, and keeps an in-memory ring buffer for the dashboard.
 type Logger struct {
-	mu       sync.Mutex
-	log      *slog.Logger
-	file     *os.File
-	filePath string
-	encoder  *json.Encoder
-	ring     []*Event
-	ringSize int
-	rptr     int
+	mu         sync.Mutex
+	log        *slog.Logger
+	file       *os.File
+	filePath   string
+	encoder    *json.Encoder
+	ring       []*Event
+	ringSize   int
+	rptr       int
+	maxSize    int64 // max file size in bytes before rotation
+	maxAgeDays int   // max age in days for rotated files
 }
 
 // NewLogger creates a new audit logger.
 // If logPath is empty, file logging is skipped (memory + slog only).
 func NewLogger(logPath string, log *slog.Logger) (*Logger, error) {
 	l := &Logger{
-		log:      log,
-		filePath: logPath,
-		ringSize: 500,
-		ring:     make([]*Event, 500),
+		log:        log,
+		filePath:   logPath,
+		ringSize:   500,
+		ring:       make([]*Event, 500),
+		maxSize:    100 * 1024 * 1024, // 100MB default
+		maxAgeDays: 30,                // 30 days default
 	}
 
 	if logPath != "" {
 		if err := os.MkdirAll(filepath.Dir(logPath), 0755); err != nil {
 			return nil, fmt.Errorf("failed to create audit log dir: %w", err)
 		}
-		f, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
-		if err != nil {
-			return nil, fmt.Errorf("failed to open audit log file: %w", err)
+		if err := l.openFile(); err != nil {
+			return nil, err
 		}
-		l.file = f
-		l.encoder = json.NewEncoder(f)
 	}
 
 	return l, nil
+}
+
+// openFile opens (or reopens) the audit log file for appending.
+func (l *Logger) openFile() error {
+	f, err := os.OpenFile(l.filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err != nil {
+		return fmt.Errorf("failed to open audit log file: %w", err)
+	}
+	l.file = f
+	l.encoder = json.NewEncoder(f)
+	return nil
+}
+
+// SetMaxSize sets the maximum file size in bytes before rotation.
+func (l *Logger) SetMaxSize(bytes int64) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.maxSize = bytes
+}
+
+// SetMaxAge sets the maximum age in days for rotated log files.
+func (l *Logger) SetMaxAge(days int) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.maxAgeDays = days
+}
+
+// Rotate performs manual log rotation: closes current file, renames it
+// with a timestamp suffix, and opens a fresh file.
+func (l *Logger) Rotate() error {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	if l.file == nil {
+		return nil
+	}
+
+	// Close current file
+	oldPath := l.filePath
+	_ = l.file.Close()
+	l.file = nil
+	l.encoder = nil
+
+	// Rename to rotated file
+	rotatedPath := oldPath + "." + time.Now().UTC().Format("20060102-150405")
+	if err := os.Rename(oldPath, rotatedPath); err != nil {
+		// Reopen original even if rename failed
+		_ = l.openFile()
+		return fmt.Errorf("failed to rotate audit log: %w", err)
+	}
+
+	// Open fresh file
+	if err := l.openFile(); err != nil {
+		return err
+	}
+
+	l.log.Info("audit log rotated", "old", rotatedPath, "new", l.filePath)
+	return nil
+}
+
+// Cleanup removes rotated log files older than maxAgeDays.
+func (l *Logger) Cleanup() (int, error) {
+	l.mu.Lock()
+	maxAge := l.maxAgeDays
+	dir := filepath.Dir(l.filePath)
+	base := filepath.Base(l.filePath)
+	l.mu.Unlock()
+
+	if dir == "" || base == "" {
+		return 0, nil
+	}
+
+	cutoff := time.Now().AddDate(0, 0, -maxAge)
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return 0, fmt.Errorf("failed to read audit log dir: %w", err)
+	}
+
+	removed := 0
+	for _, entry := range entries {
+		name := entry.Name()
+		// Only match rotated files: base.timestamp
+		if len(name) <= len(base) || name[:len(base)] != base {
+			continue
+		}
+		info, err := entry.Info()
+		if err != nil {
+			continue
+		}
+		if info.ModTime().Before(cutoff) {
+			if err := os.Remove(filepath.Join(dir, name)); err == nil {
+				removed++
+			}
+		}
+	}
+
+	if removed > 0 {
+		l.log.Info("audit log cleanup", "removed", removed, "older_than_days", maxAge)
+	}
+	return removed, nil
+}
+
+// FileSize returns the current audit log file size in bytes.
+func (l *Logger) FileSize() (int64, error) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	if l.filePath == "" {
+		return 0, nil
+	}
+	info, err := os.Stat(l.filePath)
+	if err != nil {
+		return 0, err
+	}
+	return info.Size(), nil
+}
+
+// maybeRotate checks if the file exceeds maxSize and rotates if needed.
+// Must be called with mu held.
+func (l *Logger) maybeRotate() {
+	if l.file == nil || l.maxSize <= 0 {
+		return
+	}
+
+	info, err := l.file.Stat()
+	if err != nil {
+		return
+	}
+
+	if info.Size() >= l.maxSize {
+		oldPath := l.filePath
+		_ = l.file.Close()
+		l.file = nil
+		l.encoder = nil
+
+		rotatedPath := oldPath + "." + time.Now().UTC().Format("20060102-150405")
+		if err := os.Rename(oldPath, rotatedPath); err == nil {
+			_ = l.openFile()
+		} else {
+			_ = l.openFile()
+		}
+	}
 }
 
 // Close flushes and closes the audit log file.
@@ -112,6 +255,7 @@ func (l *Logger) Log(ctx context.Context, event Event) {
 
 	// Write to file
 	l.mu.Lock()
+	l.maybeRotate()
 	if l.encoder != nil {
 		_ = l.encoder.Encode(event)
 	}
@@ -188,11 +332,11 @@ func (l *Logger) Stats() map[string]any {
 	all := l.Recent(l.ringSize)
 
 	stats := map[string]any{
-		"total":  len(all),
-		"byType": map[string]int{},
-		"bySeverity": map[string]int{},
-		"successCount":  0,
-		"failureCount":  0,
+		"total":        len(all),
+		"byType":       map[string]int{},
+		"bySeverity":   map[string]int{},
+		"successCount": 0,
+		"failureCount": 0,
 	}
 
 	for _, e := range all {
