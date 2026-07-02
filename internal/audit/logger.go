@@ -26,6 +26,7 @@ const (
 	EventTypeSafetyBlock  EventType = "safety_block"
 	EventTypeDiagnostic   EventType = "diagnostic"
 	EventTypeRollback     EventType = "rollback"
+	EventTypeUserAction   EventType = "user_action" // user-initiated operations via dashboard
 )
 
 // Severity levels for audit events.

@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/ggai/k8ops/internal/audit"
 )
 
 // handleScale scales a deployment or statefulset to the requested replica count.
@@ -80,6 +82,9 @@ func (s *Server) handleScale(w http.ResponseWriter, r *http.Request) {
 			newReplicas = *updated.Spec.Replicas
 		}
 		s.log.Info("scaled deployment", "namespace", req.Namespace, "name", req.Name, "old", oldReplicas, "new", newReplicas)
+	if s.auditLog != nil {
+		s.auditLog.Log(r.Context(), audit.Event{Type: audit.EventTypeUserAction, Severity: audit.SeverityWarning, Actor: "dashboard-user", Action: "scale", Target: req.Kind + "/" + req.Namespace + "/" + req.Name, Namespace: req.Namespace, Success: true, Detail: map[string]any{"oldReplicas": oldReplicas, "newReplicas": newReplicas}})
+	}
 
 	case "statefulset":
 		sts, err := rc.clientset.AppsV1().StatefulSets(req.Namespace).Get(r.Context(), req.Name, metav1.GetOptions{})
@@ -102,6 +107,9 @@ func (s *Server) handleScale(w http.ResponseWriter, r *http.Request) {
 			newReplicas = *updated.Spec.Replicas
 		}
 		s.log.Info("scaled statefulset", "namespace", req.Namespace, "name", req.Name, "old", oldReplicas, "new", newReplicas)
+	if s.auditLog != nil {
+		s.auditLog.Log(r.Context(), audit.Event{Type: audit.EventTypeUserAction, Severity: audit.SeverityWarning, Actor: "dashboard-user", Action: "scale", Target: req.Kind + "/" + req.Namespace + "/" + req.Name, Namespace: req.Namespace, Success: true, Detail: map[string]any{"oldReplicas": oldReplicas, "newReplicas": newReplicas}})
+	}
 	}
 
 	w.Header().Set("Content-Type", "application/json")

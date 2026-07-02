@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/ggai/k8ops/internal/audit"
 )
 
 // handleNodeCordon cordons or uncordons a node.
@@ -59,6 +61,13 @@ func (s *Server) handleNodeCordon(w http.ResponseWriter, r *http.Request) {
 		action = "cordoned"
 	}
 	s.log.Info("node "+action, "node", req.Name)
+	if s.auditLog != nil {
+		sev := audit.SeverityWarning
+		if !*req.Unschedulable {
+			sev = audit.SeverityInfo
+		}
+		s.auditLog.Log(r.Context(), audit.Event{Type: audit.EventTypeUserAction, Severity: sev, Actor: "dashboard-user", Action: action, Target: "node/" + req.Name, Success: true, Detail: map[string]any{"unschedulable": *req.Unschedulable}})
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{

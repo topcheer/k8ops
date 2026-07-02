@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/ggai/k8ops/internal/audit"
 )
 
 // handlePodDelete deletes a single pod. Useful for forcing recreation of crash-looping pods.
@@ -46,6 +48,9 @@ func (s *Server) handlePodDelete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.log.Info("deleted pod", "namespace", req.Namespace, "name", req.Name)
+	if s.auditLog != nil {
+		s.auditLog.Log(r.Context(), audit.Event{Type: audit.EventTypeUserAction, Severity: audit.SeverityCritical, Actor: "dashboard-user", Action: "pod_delete", Target: "pod/" + req.Namespace + "/" + req.Name, Namespace: req.Namespace, Success: true})
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
@@ -121,6 +126,9 @@ func (s *Server) handleRolloutRestart(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		s.log.Info("rollout restart deployment", "namespace", req.Namespace, "name", req.Name)
+		if s.auditLog != nil {
+			s.auditLog.Log(r.Context(), audit.Event{Type: audit.EventTypeUserAction, Severity: audit.SeverityWarning, Actor: "dashboard-user", Action: "rollout_restart", Target: "deployment/" + req.Namespace + "/" + req.Name, Namespace: req.Namespace, Success: true})
+		}
 
 	case "statefulset":
 		sts, err := rc.clientset.AppsV1().StatefulSets(req.Namespace).Get(r.Context(), req.Name, metav1.GetOptions{})
@@ -139,6 +147,9 @@ func (s *Server) handleRolloutRestart(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		s.log.Info("rollout restart statefulset", "namespace", req.Namespace, "name", req.Name)
+		if s.auditLog != nil {
+			s.auditLog.Log(r.Context(), audit.Event{Type: audit.EventTypeUserAction, Severity: audit.SeverityWarning, Actor: "dashboard-user", Action: "rollout_restart", Target: "statefulset/" + req.Namespace + "/" + req.Name, Namespace: req.Namespace, Success: true})
+		}
 
 	case "daemonset":
 		ds, err := rc.clientset.AppsV1().DaemonSets(req.Namespace).Get(r.Context(), req.Name, metav1.GetOptions{})
@@ -157,6 +168,9 @@ func (s *Server) handleRolloutRestart(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		s.log.Info("rollout restart daemonset", "namespace", req.Namespace, "name", req.Name)
+		if s.auditLog != nil {
+			s.auditLog.Log(r.Context(), audit.Event{Type: audit.EventTypeUserAction, Severity: audit.SeverityWarning, Actor: "dashboard-user", Action: "rollout_restart", Target: "daemonset/" + req.Namespace + "/" + req.Name, Namespace: req.Namespace, Success: true})
+		}
 	}
 
 	w.Header().Set("Content-Type", "application/json")
