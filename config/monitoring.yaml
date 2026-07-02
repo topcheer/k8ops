@@ -5,7 +5,7 @@ metadata:
   namespace: k8ops-system
   labels:
     app.kubernetes.io/name: k8ops
-    release: prometheus  # 匹配 Prometheus Operator 的 serviceMonitorSelector
+    release: prometheus
 spec:
   selector:
     matchLabels:
@@ -17,75 +17,3 @@ spec:
     scrapeTimeout: 10s
     honorLabels: true
   jobLabel: app.kubernetes.io/name
----
-# PrometheusRule — k8ops 告警规则 (Prometheus Operator CRD)
-apiVersion: monitoring.coreos.com/v1
-kind: PrometheusRule
-metadata:
-  name: k8ops-alerts
-  namespace: k8ops-system
-  labels:
-    app.kubernetes.io/name: k8ops
-    release: prometheus
-spec:
-  groups:
-  - name: k8ops
-    rules:
-    # 服务可用性
-    - alert: K8opsDown
-      expr: up{job="k8ops"} == 0
-      for: 2m
-      labels:
-        severity: critical
-      annotations:
-        summary: "k8ops 服务不可用"
-        description: "k8ops 实例 {{ $labels.instance }} 已离线超过 2 分钟。"
-
-    # 集群健康分
-    - alert: K8opsClusterHealthLow
-      expr: k8ops_cluster_health_score < 60
-      for: 5m
-      labels:
-        severity: warning
-      annotations:
-        summary: "集群健康分偏低 ({{ $value }})"
-        description: "集群健康分低于 60，请检查节点和 Pod 状态。"
-
-    - alert: K8opsClusterHealthCritical
-      expr: k8ops_cluster_health_score < 30
-      for: 2m
-      labels:
-        severity: critical
-      annotations:
-        summary: "集群健康分危险 ({{ $value }})"
-        description: "集群健康分低于 30，存在严重问题！"
-
-    # LLM 调用延迟
-    - alert: K8opsLLMHighLatency
-      expr: histogram_quantile(0.99, rate(k8ops_llm_call_duration_seconds_bucket[5m])) > 60
-      for: 10m
-      labels:
-        severity: warning
-      annotations:
-        summary: "LLM 调用 P99 延迟过高"
-        description: "Provider {{ $labels.provider }} 的 P99 延迟 {{ $value }}s 超过 60s。"
-
-    # 安全拦截
-    - alert: K8opsSafetyBlocks
-      expr: rate(k8ops_safety_blocks_total[5m]) > 0.1
-      for: 5m
-      labels:
-        severity: warning
-      annotations:
-        summary: "安全拦截频繁"
-        description: "原因: {{ $labels.reason }}，可能有异常操作。"
-
-    # 诊断积压
-    - alert: K8opsDiagnosticsBacklog
-      expr: k8ops_active_diagnostics > 10
-      for: 10m
-      labels:
-        severity: warning
-      annotations:
-        summary: "诊断任务积压 ({{ $value }})"
-        description: "当前活跃诊断数超过 10，可能影响系统响应。"

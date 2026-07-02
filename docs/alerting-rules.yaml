@@ -1,11 +1,10 @@
-# Prometheus 告警规则 — k8ops
-# 将此文件应用到 Prometheus 或 Prometheus Operator 中
-# kubectl apply -f alerting-rules.yaml (需要 monitoring.googleapis.com/v1 或 monitoring.coreos.com/v1)
+# Prometheus rule file for k8ops (standalone, non-Operator)
+# Use with: prometheus --rules-file=docs/alerting-rules.yaml
+# For Prometheus Operator, use config/alerting-rules.yaml instead.
 
 groups:
 - name: k8ops-alerts
   rules:
-  # === 服务可用性 ===
   - alert: K8opsDown
     expr: up{job="k8ops"} == 0
     for: 2m
@@ -13,8 +12,8 @@ groups:
       severity: critical
       team: ops
     annotations:
-      summary: "k8ops 服务不可用"
-      description: "k8ops 实例 {{ $labels.instance }} 已离线超过 2 分钟。"
+      summary: "k8ops service unavailable"
+      description: "k8ops instance {{ $labels.instance }} has been offline for over 2 minutes."
 
   - alert: K8opsPodCrashLooping
     expr: rate(kube_pod_container_status_restarts_total{namespace="k8ops-system"}[15m]) > 0
@@ -23,10 +22,9 @@ groups:
       severity: critical
       team: ops
     annotations:
-      summary: "k8ops Pod 反复重启"
-      description: "k8ops-system 命名空间的 Pod 在 15 分钟内持续重启。"
+      summary: "k8ops Pod crash-looping"
+      description: "Pod in k8ops-system namespace restarting continuously for 15 minutes."
 
-  # === 集群健康 ===
   - alert: K8opsClusterHealthLow
     expr: k8ops_cluster_health_score < 60
     for: 5m
@@ -34,8 +32,8 @@ groups:
       severity: warning
       team: ops
     annotations:
-      summary: "集群健康分偏低"
-      description: "当前健康分 {{ $value }}（阈值 60），请检查节点和 Pod 状态。"
+      summary: "Cluster health score low"
+      description: "Current health score {{ $value }} (threshold 60)."
 
   - alert: K8opsClusterHealthCritical
     expr: k8ops_cluster_health_score < 30
@@ -44,10 +42,9 @@ groups:
       severity: critical
       team: ops
     annotations:
-      summary: "集群健康分危险"
-      description: "当前健康分 {{ $value }}（阈值 30），集群存在严重问题！"
+      summary: "Cluster health score critical"
+      description: "Current health score {{ $value }} (threshold 30)."
 
-  # === LLM 调用 ===
   - alert: K8opsLLMHighLatency
     expr: histogram_quantile(0.99, rate(k8ops_llm_call_duration_seconds_bucket[5m])) > 60
     for: 10m
@@ -55,8 +52,8 @@ groups:
       severity: warning
       team: ops
     annotations:
-      summary: "LLM 调用延迟过高"
-      description: "Provider {{ $labels.provider }} / Model {{ $labels.model }} 的 P99 延迟 {{ $value }}s 超过 60s。"
+      summary: "LLM call latency too high"
+      description: "Provider {{ $labels.provider }} P99 latency {{ $value }}s exceeds 60s."
 
   - alert: K8opsLLMCallFailures
     expr: rate(k8ops_llm_call_duration_seconds_count{status!="success"}[5m]) > 0.5
@@ -65,10 +62,9 @@ groups:
       severity: warning
       team: ops
     annotations:
-      summary: "LLM 调用失败率过高"
-      description: "Provider {{ $labels.provider }} 的 LLM 调用失败率超过 0.5/s。"
+      summary: "LLM call failure rate too high"
+      description: "Provider {{ $labels.provider }} failure rate exceeds 0.5/s."
 
-  # === Token 消耗 ===
   - alert: K8opsTokenUsageSpike
     expr: rate(k8ops_llm_tokens_total[1h]) > 100000
     for: 15m
@@ -76,10 +72,9 @@ groups:
       severity: warning
       team: ops
     annotations:
-      summary: "Token 消耗异常增长"
-      description: "Token 消耗速率 {{ $value }}/s，过去 1 小时内可能已超过 36 万 tokens。"
+      summary: "Token usage spike"
+      description: "Token consumption rate {{ $value }}/s."
 
-  # === 安全 ===
   - alert: K8opsSafetyBlocks
     expr: rate(k8ops_safety_blocks_total[5m]) > 0.1
     for: 5m
@@ -87,10 +82,9 @@ groups:
       severity: warning
       team: security
     annotations:
-      summary: "安全拦截频繁"
-      description: "安全拦截原因 {{ $labels.reason }} 的速率 {{ $value }}/s，可能有异常操作。"
+      summary: "Safety blocks frequent"
+      description: "Reason: {{ $labels.reason }}."
 
-  # === 诊断积压 ===
   - alert: K8opsDiagnosticsBacklog
     expr: k8ops_active_diagnostics > 10
     for: 10m
@@ -98,10 +92,9 @@ groups:
       severity: warning
       team: ops
     annotations:
-      summary: "诊断任务积压"
-      description: "当前有 {{ $value }} 个诊断任务在运行，可能影响系统响应速度。"
+      summary: "Diagnostics backlog"
+      description: "{{ $value }} active diagnostics running."
 
-  # === API 响应 ===
   - alert: K8opsToolCallSlow
     expr: histogram_quantile(0.95, rate(k8ops_tool_call_duration_seconds_bucket[5m])) > 10
     for: 10m
@@ -109,5 +102,5 @@ groups:
       severity: warning
       team: ops
     annotations:
-      summary: "工具调用响应慢"
-      description: "工具 {{ $labels.tool }} 的 P95 响应时间 {{ $value }}s 超过 10s。"
+      summary: "Tool call response slow"
+      description: "Tool {{ $labels.tool }} P95 response time {{ $value }}s exceeds 10s."
