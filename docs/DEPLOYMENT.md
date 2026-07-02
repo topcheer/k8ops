@@ -405,3 +405,75 @@ spec:
 | 中型 | 20-100 | 2 pods, 1 CPU / 1Gi each | MySQL |
 | 大型 | 100+ | 3+ pods, 2 CPU / 2Gi each | MySQL + 读写分离 |
 
+---
+
+## CI/CD 流程与发布管理
+
+### 一键部署脚本
+
+k8ops 提供自动化部署脚本，包含预检、构建、发布、健康检查和自动回滚：
+
+```bash
+# 部署新版本（自动预检 + 构建 + 发布 + 健康检查）
+./scripts/deploy.sh v14.36
+
+# 部署流程：
+# 1. 预检：go build + go vet + go test + gofmt
+# 2. 构建：Docker buildx + push 到 registry
+# 3. 发布：kubectl set image + change-cause 注解
+# 4. 验证：Pod Ready + HTTP 200（120s 超时）
+# 5. 回滚：健康检查失败时自动回滚到上一版本
+```
+
+### 快速回滚
+
+```bash
+# 回滚到上一版本
+./scripts/rollback.sh
+
+# 回滚到指定 revision
+./scripts/rollback.sh 58
+
+# 回滚到指定版本号
+./scripts/rollback.sh v14.30
+```
+
+### 发布历史追踪
+
+每次部署自动记录 change-cause 注解：
+
+```bash
+# 查看发布历史
+kubectl rollout history daemonset/k8ops -n k8ops-system
+
+# 查看特定 revision 详情
+kubectl rollout history daemonset/k8ops -n k8ops-system --revision=55
+```
+
+### CI 流程 (GitHub Actions)
+
+| 工作流 | 触发条件 | 内容 |
+|--------|----------|------|
+| `ci.yml` — push/PR to main | 代码提交 | test + vet + lint + govulncheck + Docker build |
+| `release.yml` — tag v* | 版本标签 | 全量测试 + GoReleaser + Docker multi-arch + 自动 Release Notes |
+
+### 镜像管理
+
+| 标签 | 说明 |
+|------|------|
+| `registry.iot2.win/k8ops:v14.XX` | 特定版本 |
+| `registry.iot2.win/k8ops:latest` | 最新稳定版 |
+| `ghcr.io/<org>/k8ops:v14.XX` | GHCR 镜像（CI 发布） |
+
+### 镜像优化
+
+- 基础镜像：`gcr.io/distroless/static-debian12:nonroot`（无 shell、无包管理器）
+- 多阶段构建：Go builder + distroless runtime
+- BuildKit 缓存：`--mount=type=cache` 加速 CI 构建
+- 二进制优化：`-trimpath -ldflags="-s -w"` 减小体积
+
+| 版本 | 镜像大小 |
+|------|----------|
+| v14.30 (alpine) | 31.8 MB |
+| v14.35 (distroless) | 28.6 MB |
+
