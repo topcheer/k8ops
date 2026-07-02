@@ -17,7 +17,7 @@ import (
 
 // SlackWebhookPayload is the JSON body accepted by POST /api/webhooks/slack.
 type SlackWebhookPayload struct {
-	Type    string `json:"type"`    // diagnostic_complete, remediation_executed, anomaly_event
+	Type    string `json:"type"` // diagnostic_complete, remediation_executed, anomaly_event
 	Message string `json:"message"`
 	Details any    `json:"details,omitempty"`
 }

@@ -16,9 +16,9 @@ import (
 
 // SecurityFinding represents a single security issue found during audit.
 type SecurityFinding struct {
-	Severity  string `json:"severity"`            // critical, high, medium, low, info
-	Category  string `json:"category"`             // e.g. "Pod Security", "RBAC", "Network"
-	Resource  string `json:"resource"`             // "namespace/kind/name"
+	Severity  string `json:"severity"` // critical, high, medium, low, info
+	Category  string `json:"category"` // e.g. "Pod Security", "RBAC", "Network"
+	Resource  string `json:"resource"` // "namespace/kind/name"
 	Namespace string `json:"namespace"`
 	Detail    string `json:"detail"`
 	Fix       string `json:"fix"`
@@ -84,8 +84,8 @@ func (s *Server) handleSecurityAudit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeJSON(w, map[string]any{
-		"summary":  summary,
-		"findings": findings,
+		"summary":   summary,
+		"findings":  findings,
 		"scannedAt": time.Now().Format(time.RFC3339),
 	})
 }

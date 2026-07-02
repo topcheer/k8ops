@@ -68,4 +68,3 @@ func countReadyContainers(statuses []corev1.ContainerStatus) int {
 	}
 	return ready
 }
-

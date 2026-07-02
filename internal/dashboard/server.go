@@ -38,24 +38,24 @@ var webFS embed.FS
 
 // Server is the dashboard HTTP server.
 type Server struct {
-	k8sClient     client.Client
-	clientset     *kubernetes.Clientset
-	restConfig    *rest.Config
-	scheme        *runtime.Scheme
-	auditLog      *audit.Logger
-	chatEngine    *chat.Engine
-	providerMgr   *providermanager.Manager
-	k8sClientTool *k8s.KubeClient
-	cache         *responseCache
-	chatLimiter   *userRateLimiter // per-user rate limiter for LLM calls
-	auth              *auth.Authenticator
-	authRequired      bool   // true if auth was requested but failed to init (fail-closed)
-	authFailedMsg     string // error message when auth init failed
-	log               *slog.Logger
-	server            *http.Server
+	k8sClient          client.Client
+	clientset          *kubernetes.Clientset
+	restConfig         *rest.Config
+	scheme             *runtime.Scheme
+	auditLog           *audit.Logger
+	chatEngine         *chat.Engine
+	providerMgr        *providermanager.Manager
+	k8sClientTool      *k8s.KubeClient
+	cache              *responseCache
+	chatLimiter        *userRateLimiter // per-user rate limiter for LLM calls
+	auth               *auth.Authenticator
+	authRequired       bool   // true if auth was requested but failed to init (fail-closed)
+	authFailedMsg      string // error message when auth init failed
+	log                *slog.Logger
+	server             *http.Server
 	corsAllowedOrigins []string
-	tlsCert           string
-	tlsKey            string
+	tlsCert            string
+	tlsKey             string
 }
 
 // New creates a new dashboard server.
@@ -103,10 +103,10 @@ func (s *Server) Start(addr string) error {
 
 	// API routes
 	mux.HandleFunc("/api/health", s.handleHealth)
-	mux.HandleFunc("/healthz", s.handleHealthz)   // K8s liveness probe
-	mux.HandleFunc("/readyz", s.handleReadyz)     // K8s readiness probe
+	mux.HandleFunc("/healthz", s.handleHealthz) // K8s liveness probe
+	mux.HandleFunc("/readyz", s.handleReadyz)   // K8s readiness probe
 	mux.HandleFunc("/api/version", s.handleVersion)
-	mux.HandleFunc("/api/exec", s.handleQuickExec)           // NL-to-kubectl quick command execution
+	mux.HandleFunc("/api/exec", s.handleQuickExec) // NL-to-kubectl quick command execution
 	mux.HandleFunc("/api/cluster/overview", s.cacheMiddleware(30*time.Second, s.handleClusterOverview))
 	mux.HandleFunc("/api/diagnostics", s.handleDiagnostics)
 	mux.HandleFunc("/api/diagnostics/history", s.handleDiagnosticsHistory) // must be before catch-all
@@ -131,34 +131,34 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/tools", s.handleToolList)
 
 	// Resource browser + drill-down
-	mux.HandleFunc("/api/nodes/", s.handleNodePods)           // /api/nodes/{node}/pods
-	mux.HandleFunc("/api/pods/", s.handlePodActions)          // /api/pods/{ns}/{name}/logs|exec|containers
+	mux.HandleFunc("/api/nodes/", s.handleNodePods)                                               // /api/nodes/{node}/pods
+	mux.HandleFunc("/api/pods/", s.handlePodActions)                                              // /api/pods/{ns}/{name}/logs|exec|containers
 	mux.HandleFunc("/api/resources", s.cacheMiddleware(60*time.Second, s.handleResources))        // 1min cache
 	mux.HandleFunc("/api/crds", s.cacheMiddleware(10*time.Minute, s.handleCRDs))                  // 10min cache (expensive with_counts)
 	mux.HandleFunc("/api/crd-resources", s.cacheMiddleware(60*time.Second, s.handleCRDResources)) // 1min cache
-	mux.HandleFunc("/api/yaml", s.handleYAML)                  // view YAML of any resource
-	mux.HandleFunc("/api/yaml/apply", s.handleYAMLApply)        // apply YAML (kubectl apply)
-	mux.HandleFunc("/api/scale", s.handleScale)                 // scale deployment/statefulset
-	mux.HandleFunc("/api/pod/delete", s.handlePodDelete)         // delete a single pod
-	mux.HandleFunc("/api/rollout/restart", s.handleRolloutRestart) // restart deployment/daemonset/statefulset
-	mux.HandleFunc("/api/node/cordon", s.handleNodeCordon)        // cordon/uncordon node
-	mux.HandleFunc("/api/resource/data", s.handleResourceData)    // configmap/secret data viewer
+	mux.HandleFunc("/api/yaml", s.handleYAML)                                                     // view YAML of any resource
+	mux.HandleFunc("/api/yaml/apply", s.handleYAMLApply)                                          // apply YAML (kubectl apply)
+	mux.HandleFunc("/api/scale", s.handleScale)                                                   // scale deployment/statefulset
+	mux.HandleFunc("/api/pod/delete", s.handlePodDelete)                                          // delete a single pod
+	mux.HandleFunc("/api/rollout/restart", s.handleRolloutRestart)                                // restart deployment/daemonset/statefulset
+	mux.HandleFunc("/api/node/cordon", s.handleNodeCordon)                                        // cordon/uncordon node
+	mux.HandleFunc("/api/resource/data", s.handleResourceData)                                    // configmap/secret data viewer
 
 	// Security audit
-	mux.HandleFunc("/api/security/audit", s.handleSecurityAudit)     // cluster-wide security scan
-	mux.HandleFunc("/api/security/health", s.handleSecurityHealth)   // platform security health check
+	mux.HandleFunc("/api/security/audit", s.handleSecurityAudit)   // cluster-wide security scan
+	mux.HandleFunc("/api/security/health", s.handleSecurityHealth) // platform security health check
 
 	// OpenAPI documentation
-	mux.HandleFunc("/api/openapi.json", s.handleOpenAPISpec)  // OpenAPI 3.0 spec
+	mux.HandleFunc("/api/openapi.json", s.handleOpenAPISpec) // OpenAPI 3.0 spec
 	mux.HandleFunc("/api/docs", s.handleAPIDocs)             // API documentation (JSON + metadata)
 
 	// Cost / FinOps
-	mux.HandleFunc("/api/cost/summary", s.cacheMiddleware(60*time.Second, s.handleCostSummary))                       // 1min cache
-	mux.HandleFunc("/api/cost/recommendations", s.cacheMiddleware(60*time.Second, s.handleCostRecommendations))       // 1min cache
+	mux.HandleFunc("/api/cost/summary", s.cacheMiddleware(60*time.Second, s.handleCostSummary))                 // 1min cache
+	mux.HandleFunc("/api/cost/recommendations", s.cacheMiddleware(60*time.Second, s.handleCostRecommendations)) // 1min cache
 
 	// Namespace resource ranking
-	mux.HandleFunc("/api/namespaces/ranking", s.cacheMiddleware(60*time.Second, s.handleNamespaceRanking))   // 1min cache
-	mux.HandleFunc("/api/namespaces/", s.handleNamespaceDetail)                                              // /api/namespaces/{name}/detail
+	mux.HandleFunc("/api/namespaces/ranking", s.cacheMiddleware(60*time.Second, s.handleNamespaceRanking)) // 1min cache
+	mux.HandleFunc("/api/namespaces/", s.handleNamespaceDetail)                                            // /api/namespaces/{name}/detail
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))
@@ -306,7 +306,7 @@ func (s *Server) corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Only set CORS headers when the request Origin matches the allowlist.
 		// When no origins are configured (default), no CORS headers are emitted,
-	// meaning the dashboard is same-origin only — the secure default.
+		// meaning the dashboard is same-origin only — the secure default.
 		origin := r.Header.Get("Origin")
 		if origin != "" && s.isOriginAllowed(origin) {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
@@ -521,13 +521,13 @@ func (s *Server) handleConfig(w http.ResponseWriter, r *http.Request) {
 	}
 	cfg := list.Items[0]
 	writeJSON(w, map[string]any{
-		"configured":         true,
-		"name":               cfg.Name,
-		"provider":           cfg.Spec.Provider.Type,
-		"model":              cfg.Spec.Provider.Model,
-		"autoRemediation":    cfg.Spec.AutoRemediation.Enabled,
-		"maxRiskLevel":       cfg.Spec.AutoRemediation.MaxRiskLevel,
-		"dryRun":             cfg.Spec.AutoRemediation.DryRun,
+		"configured":      true,
+		"name":            cfg.Name,
+		"provider":        cfg.Spec.Provider.Type,
+		"model":           cfg.Spec.Provider.Model,
+		"autoRemediation": cfg.Spec.AutoRemediation.Enabled,
+		"maxRiskLevel":    cfg.Spec.AutoRemediation.MaxRiskLevel,
+		"dryRun":          cfg.Spec.AutoRemediation.DryRun,
 	})
 }
 
@@ -565,37 +565,37 @@ func (s *Server) handleNodes(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type nodeInfo struct {
-		Name       string            `json:"name"`
-		Status     string            `json:"status"`
-		Role       string            `json:"role"`
-		Version    string            `json:"version"`
-		CPU        string            `json:"cpu"`
-		Memory     string            `json:"memory"`
-		OS         string            `json:"os"`
-		Arch       string            `json:"arch"`
-		Conditions   map[string]string `json:"conditions"`
+		Name          string            `json:"name"`
+		Status        string            `json:"status"`
+		Role          string            `json:"role"`
+		Version       string            `json:"version"`
+		CPU           string            `json:"cpu"`
+		Memory        string            `json:"memory"`
+		OS            string            `json:"os"`
+		Arch          string            `json:"arch"`
+		Conditions    map[string]string `json:"conditions"`
 		Unschedulable bool              `json:"unschedulable"`
 		// Utilization (requested / allocatable as percentage)
-		CPURequested    float64 `json:"cpuRequestedPct"`
-		MemRequested    float64 `json:"memRequestedPct"`
-		CPURequests     string  `json:"cpuRequests"`
-		MemRequests     string  `json:"memRequests"`
-		PodCount        int     `json:"podCount"`
-		PodCapacity     int     `json:"podCapacity"`
+		CPURequested float64 `json:"cpuRequestedPct"`
+		MemRequested float64 `json:"memRequestedPct"`
+		CPURequests  string  `json:"cpuRequests"`
+		MemRequests  string  `json:"memRequests"`
+		PodCount     int     `json:"podCount"`
+		PodCapacity  int     `json:"podCapacity"`
 	}
 
 	results := make([]nodeInfo, 0, len(nodes.Items))
 	for _, n := range nodes.Items {
 		info := nodeInfo{
-			Name:    n.Name,
-			Status:  "Ready",
-			Version: n.Status.NodeInfo.KubeletVersion,
-			OS:      n.Status.NodeInfo.OperatingSystem,
-			Arch:    n.Status.NodeInfo.Architecture,
-			CPU:     n.Status.Allocatable.Cpu().String(),
-			Memory:  n.Status.Allocatable.Memory().String(),
-			Conditions: make(map[string]string),
-			PodCapacity: int(n.Status.Allocatable.Pods().Value()),
+			Name:          n.Name,
+			Status:        "Ready",
+			Version:       n.Status.NodeInfo.KubeletVersion,
+			OS:            n.Status.NodeInfo.OperatingSystem,
+			Arch:          n.Status.NodeInfo.Architecture,
+			CPU:           n.Status.Allocatable.Cpu().String(),
+			Memory:        n.Status.Allocatable.Memory().String(),
+			Conditions:    make(map[string]string),
+			PodCapacity:   int(n.Status.Allocatable.Pods().Value()),
 			Unschedulable: n.Spec.Unschedulable,
 		}
 		for _, c := range n.Status.Conditions {
@@ -740,12 +740,12 @@ func (s *Server) handlePods(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type podInfo struct {
-		Name       string `json:"name"`
-		Namespace  string `json:"namespace"`
-		Phase      string `json:"phase"`
-		Node       string `json:"node"`
-		Restarts   int32  `json:"restarts"`
-		Age        string `json:"age"`
+		Name      string `json:"name"`
+		Namespace string `json:"namespace"`
+		Phase     string `json:"phase"`
+		Node      string `json:"node"`
+		Restarts  int32  `json:"restarts"`
+		Age       string `json:"age"`
 	}
 
 	results := make([]podInfo, 0, len(pods.Items))
@@ -784,4 +784,3 @@ func formatDuration(d time.Duration) string {
 }
 
 // Slack webhook handler moved to handlers_slack.go
-

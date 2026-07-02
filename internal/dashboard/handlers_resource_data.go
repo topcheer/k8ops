@@ -38,11 +38,11 @@ func (s *Server) handleResourceData(w http.ResponseWriter, r *http.Request) {
 		Value string `json:"value"`
 	}
 	type resourceData struct {
-		Kind      string    `json:"kind"`
-		Namespace string    `json:"namespace"`
-		Name      string    `json:"name"`
+		Kind      string     `json:"kind"`
+		Namespace string     `json:"namespace"`
+		Name      string     `json:"name"`
 		Items     []dataItem `json:"items"`
-		Count     int       `json:"count"`
+		Count     int        `json:"count"`
 	}
 
 	result := resourceData{Kind: kind, Namespace: ns, Name: name}

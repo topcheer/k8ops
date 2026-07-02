@@ -12,16 +12,16 @@ import (
 
 // NamespaceRanking represents resource consumption for a single namespace.
 type NamespaceRanking struct {
-	Name         string  `json:"name"`
-	PodCount     int     `json:"podCount"`
-	CPURequest   int64   `json:"cpuRequestMcores"`   // milli-cores
-	CPULimit     int64   `json:"cpuLimitMcores"`     // milli-cores
-	MemRequest   int64   `json:"memRequestMB"`       // MB
-	MemLimit     int64   `json:"memLimitMB"`          // MB
-	CPURequestPct float64 `json:"cpuRequestPct"`      // % of cluster allocatable
-	MemRequestPct float64 `json:"memRequestPct"`      // % of cluster allocatable
-	PVCCount     int     `json:"pvcCount"`
-	PVCStorageGB float64 `json:"pvcStorageGB"`
+	Name          string  `json:"name"`
+	PodCount      int     `json:"podCount"`
+	CPURequest    int64   `json:"cpuRequestMcores"` // milli-cores
+	CPULimit      int64   `json:"cpuLimitMcores"`   // milli-cores
+	MemRequest    int64   `json:"memRequestMB"`     // MB
+	MemLimit      int64   `json:"memLimitMB"`       // MB
+	CPURequestPct float64 `json:"cpuRequestPct"`    // % of cluster allocatable
+	MemRequestPct float64 `json:"memRequestPct"`    // % of cluster allocatable
+	PVCCount      int     `json:"pvcCount"`
+	PVCStorageGB  float64 `json:"pvcStorageGB"`
 }
 
 // handleNamespaceRanking returns resource consumption ranked by namespace.
@@ -143,11 +143,11 @@ func (s *Server) handleNamespaceRanking(w http.ResponseWriter, r *http.Request) 
 	writeJSON(w, map[string]any{
 		"count": len(rankings),
 		"summary": map[string]any{
-			"totalNamespaces":   len(rankings),
-			"totalPods":         totalPods,
-			"totalCPURequestM":  totalCPUReq,
-			"totalMemRequestMB": totalMemReq,
-			"clusterAllocatableCPU": totalAllocatableCPU,
+			"totalNamespaces":         len(rankings),
+			"totalPods":               totalPods,
+			"totalCPURequestM":        totalCPUReq,
+			"totalMemRequestMB":       totalMemReq,
+			"clusterAllocatableCPU":   totalAllocatableCPU,
 			"clusterAllocatableMemMB": totalAllocatableMem / 1024 / 1024,
 		},
 		"items": rankings,
@@ -229,18 +229,18 @@ func (s *Server) handleNamespaceDetail(w http.ResponseWriter, r *http.Request) {
 	eventList := make([]map[string]any, 0)
 	for _, e := range events.Items {
 		eventList = append(eventList, map[string]any{
-			"reason":    e.Reason,
-			"message":   truncate(e.Message, 200),
-			"object":    fmt.Sprintf("%s/%s", e.InvolvedObject.Kind, e.InvolvedObject.Name),
-			"count":     e.Count,
-			"lastTime":  e.LastTimestamp.Format("2006-01-02T15:04:05Z"),
+			"reason":   e.Reason,
+			"message":  truncate(e.Message, 200),
+			"object":   fmt.Sprintf("%s/%s", e.InvolvedObject.Kind, e.InvolvedObject.Name),
+			"count":    e.Count,
+			"lastTime": e.LastTimestamp.Format("2006-01-02T15:04:05Z"),
 		})
 	}
 
 	writeJSON(w, map[string]any{
-		"namespace":    nsName,
-		"quotas":       quotaList,
-		"limitRanges":  lrList,
+		"namespace":      nsName,
+		"quotas":         quotaList,
+		"limitRanges":    lrList,
 		"recentWarnings": eventList,
 	})
 }

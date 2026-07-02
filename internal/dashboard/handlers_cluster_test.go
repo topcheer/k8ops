@@ -286,22 +286,22 @@ func TestHandleNodes_WithRole(t *testing.T) {
 func TestHandleEvents_Basic(t *testing.T) {
 	cs := k8sfake.NewSimpleClientset(
 		&corev1.Event{
-			ObjectMeta:  metav1.ObjectMeta{Name: "ev-1", Namespace: "default"},
-			Type:        "Normal",
-			Reason:      "Scheduled",
-			Message:     "Successfully assigned default/pod-1 to node-1",
+			ObjectMeta:     metav1.ObjectMeta{Name: "ev-1", Namespace: "default"},
+			Type:           "Normal",
+			Reason:         "Scheduled",
+			Message:        "Successfully assigned default/pod-1 to node-1",
 			InvolvedObject: corev1.ObjectReference{Kind: "Pod", Name: "pod-1", Namespace: "default"},
-			Count:       1,
-			LastTimestamp: metav1.Now(),
+			Count:          1,
+			LastTimestamp:  metav1.Now(),
 		},
 		&corev1.Event{
-			ObjectMeta:  metav1.ObjectMeta{Name: "ev-2", Namespace: "default"},
-			Type:        "Warning",
-			Reason:      "FailedScheduling",
-			Message:     "0/3 nodes are available",
+			ObjectMeta:     metav1.ObjectMeta{Name: "ev-2", Namespace: "default"},
+			Type:           "Warning",
+			Reason:         "FailedScheduling",
+			Message:        "0/3 nodes are available",
 			InvolvedObject: corev1.ObjectReference{Kind: "Pod", Name: "pod-2", Namespace: "default"},
-			Count:       3,
-			LastTimestamp: metav1.Now(),
+			Count:          3,
+			LastTimestamp:  metav1.Now(),
 		},
 	)
 	s := &Server{log: testLogger()}
@@ -695,9 +695,9 @@ func TestWriteJSON(t *testing.T) {
 
 func TestWriteK8sError_TableDriven(t *testing.T) {
 	tests := []struct {
-		name      string
-		err       error
-		wantCode  int
+		name     string
+		err      error
+		wantCode int
 	}{
 		{"forbidden", fmt.Errorf("pods is forbidden: User cannot list"), 403},
 		{"unauthorized", fmt.Errorf("token unauthorized"), 401},

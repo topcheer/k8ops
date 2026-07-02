@@ -191,4 +191,3 @@ func (s *Server) handleContainers(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, map[string]any{"containers": containers})
 }
-

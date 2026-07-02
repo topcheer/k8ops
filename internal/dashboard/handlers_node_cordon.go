@@ -71,9 +71,9 @@ func (s *Server) handleNodeCordon(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"success":      true,
-		"name":         req.Name,
+		"success":       true,
+		"name":          req.Name,
 		"unschedulable": *req.Unschedulable,
-		"message":      fmt.Sprintf("node %s %s", req.Name, action),
+		"message":       fmt.Sprintf("node %s %s", req.Name, action),
 	})
 }

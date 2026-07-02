@@ -22,10 +22,10 @@ const clientsKey contextKey = "requestClients"
 // requestClients holds the per-request Kubernetes clients that respect
 // the authenticated user's RBAC permissions via impersonation.
 type requestClients struct {
-	clientset  kubernetes.Interface   // for core K8s resources (nodes, pods, events)
-	ctrlClient client.Client          // for CRD resources (diagnostics, remediations)
-	restConfig *rest.Config           // for specialized operations (exec, logs streaming)
-	user       *auth.User             // the authenticated user, for audit/conditional logic
+	clientset  kubernetes.Interface // for core K8s resources (nodes, pods, events)
+	ctrlClient client.Client        // for CRD resources (diagnostics, remediations)
+	restConfig *rest.Config         // for specialized operations (exec, logs streaming)
+	user       *auth.User           // the authenticated user, for audit/conditional logic
 }
 
 // RoleToGroups maps a k8ops role to the Kubernetes impersonation group(s).

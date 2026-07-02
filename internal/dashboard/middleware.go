@@ -89,7 +89,7 @@ func (s *Server) gzipMiddleware(next http.Handler) http.Handler {
 
 		gzw := &gzipResponseWriter{
 			ResponseWriter: w,
-			gz:            gz,
+			gz:             gz,
 		}
 		next.ServeHTTP(gzw, r)
 	})

@@ -43,8 +43,8 @@ func (s *Server) handleResources(w http.ResponseWriter, r *http.Request) {
 			}
 			items = append(items, resItem{
 				Name: d.Name, Namespace: d.Namespace,
-				Ready: fmt.Sprintf("%d/%d", d.Status.ReadyReplicas, ptrInt32(d.Spec.Replicas)),
-				Age:   ageTime(d.CreationTimestamp.Time),
+				Ready:  fmt.Sprintf("%d/%d", d.Status.ReadyReplicas, ptrInt32(d.Spec.Replicas)),
+				Age:    ageTime(d.CreationTimestamp.Time),
 				Detail: map[string]string{"image": img},
 			})
 		}
@@ -89,7 +89,7 @@ func (s *Server) handleResources(w http.ResponseWriter, r *http.Request) {
 			}
 			items = append(items, resItem{
 				Name: ing.Name, Namespace: ing.Namespace,
-				Age: ageTime(ing.CreationTimestamp.Time),
+				Age:    ageTime(ing.CreationTimestamp.Time),
 				Detail: map[string]string{"hosts": strings.Join(hosts, ", "), "class": cls},
 			})
 		}
@@ -463,4 +463,3 @@ func ptrInt32(p *int32) int32 {
 	}
 	return *p
 }
-

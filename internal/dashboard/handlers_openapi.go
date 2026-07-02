@@ -21,38 +21,38 @@ type OpenAPIServer struct {
 
 // OpenAPIParam describes a single parameter.
 type OpenAPIParam struct {
-	Name        string `json:"name"`
-	In          string `json:"in"`
-	Description string `json:"description"`
-	Required    bool   `json:"required"`
+	Name        string                 `json:"name"`
+	In          string                 `json:"in"`
+	Description string                 `json:"description"`
+	Required    bool                   `json:"required"`
 	Schema      map[string]interface{} `json:"schema"`
 }
 
 // OpenAPIResponse describes an HTTP response.
 type OpenAPIResponse struct {
-	Description string `json:"description"`
+	Description string                 `json:"description"`
 	Content     map[string]interface{} `json:"content,omitempty"`
 }
 
 // OpenAPIOperation describes a single API operation.
 type OpenAPIOperation struct {
-	Summary     string                      `json:"summary"`
-	Description string                      `json:"description,omitempty"`
-	OperationID string                      `json:"operationId"`
-	Tags        []string                    `json:"tags"`
-	Parameters  []OpenAPIParam              `json:"parameters,omitempty"`
-	RequestBody map[string]interface{}      `json:"requestBody,omitempty"`
-	Responses   map[string]OpenAPIResponse  `json:"responses"`
-	Security    []map[string][]string       `json:"security,omitempty"`
+	Summary     string                     `json:"summary"`
+	Description string                     `json:"description,omitempty"`
+	OperationID string                     `json:"operationId"`
+	Tags        []string                   `json:"tags"`
+	Parameters  []OpenAPIParam             `json:"parameters,omitempty"`
+	RequestBody map[string]interface{}     `json:"requestBody,omitempty"`
+	Responses   map[string]OpenAPIResponse `json:"responses"`
+	Security    []map[string][]string      `json:"security,omitempty"`
 }
 
 // OpenAPISpec is the top-level OpenAPI 3.0 document.
 type OpenAPISpec struct {
-	OpenAPI    string                              `json:"openapi"`
-	Info       OpenAPIInfo                         `json:"info"`
-	Servers    []OpenAPIServer                     `json:"servers"`
+	OpenAPI    string                                 `json:"openapi"`
+	Info       OpenAPIInfo                            `json:"info"`
+	Servers    []OpenAPIServer                        `json:"servers"`
 	Paths      map[string]map[string]OpenAPIOperation `json:"paths"`
-	Components map[string]interface{}              `json:"components,omitempty"`
+	Components map[string]interface{}                 `json:"components,omitempty"`
 }
 
 // handleOpenAPISpec serves the OpenAPI 3.0 specification as JSON.
@@ -67,7 +67,7 @@ func jsonContent(example interface{}) map[string]interface{} {
 	return map[string]interface{}{
 		"application/json": map[string]interface{}{
 			"schema": map[string]interface{}{
-				"type":   "object",
+				"type":    "object",
 				"example": example,
 			},
 		},
@@ -314,7 +314,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Scans the cluster for Pod Security Standards violations, RBAC issues, network policy gaps, and other security concerns.",
 		Responses: map[string]OpenAPIResponse{
 			"200": okResponse("Security findings", map[string]interface{}{
-				"summary": map[string]int{"critical": 0, "high": 2, "total": 5},
+				"summary":  map[string]int{"critical": 0, "high": 2, "total": 5},
 				"findings": []interface{}{},
 			}),
 		},
@@ -382,7 +382,7 @@ func buildOpenAPISpec() OpenAPISpec {
 	add("/api/provider/update", "post", OpenAPIOperation{
 		Summary: "Update AI provider config", OperationID: "providerUpdate", Tags: []string{"Settings"},
 		RequestBody: bodyParam("Provider update", map[string]string{"provider": "openai", "apiKey": "..."}),
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Updated", map[string]bool{"success": true})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Updated", map[string]bool{"success": true})},
 	})
 
 	// --- CRDs ---
@@ -393,7 +393,7 @@ func buildOpenAPISpec() OpenAPISpec {
 	add("/api/crd-resources", "get", OpenAPIOperation{
 		Summary: "List CR instances", OperationID: "listCRDResources", Tags: []string{"CRDs"},
 		Parameters: []OpenAPIParam{queryParam("crd", "CRD name")},
-		Responses: map[string]OpenAPIResponse{"200": okResponse("CR instances", map[string]interface{}{})},
+		Responses:  map[string]OpenAPIResponse{"200": okResponse("CR instances", map[string]interface{}{})},
 	})
 
 	// --- RBAC ---
@@ -459,9 +459,9 @@ func (s *Server) handleAPIDocs(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	writeJSON(w, map[string]interface{}{
-		"spec":       spec,
-		"tagGroups":  tagGroups,
-		"tagOrder":   tags,
+		"spec":          spec,
+		"tagGroups":     tagGroups,
+		"tagOrder":      tags,
 		"endpointCount": len(spec.Paths),
 	})
 }
