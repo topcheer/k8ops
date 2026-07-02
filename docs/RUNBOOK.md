@@ -484,6 +484,46 @@ histogram_quantile(0.99,
 kubectl logs -n k8ops-system -l app.kubernetes.io/name=k8ops | grep "a1b2c3d4e5f6"
 ```
 
+### 8.6 日志级别配置
+
+k8ops 使用结构化 JSON 日志 (slog)，支持通过环境变量 `LOG_LEVEL` 或命令行 `--log-level` 配置级别：
+
+| 级别 | 用途 | 说明 |
+|------|------|------|
+| `debug` | 排查问题 | 包含 source file:line，极详细日志（生产环境不建议） |
+| `info` | 默认 | 正常操作日志（推荐生产使用） |
+| `warn` | 仅警告 | 慢请求、配置问题、接近阈值 |
+| `error` | 仅错误 | 仅记录操作失败 |
+
+配置方式：
+```bash
+# 通过环境变量（推荐）
+kubectl set env daemonset/k8ops -n k8ops-system LOG_LEVEL=debug
+
+# 通过 ConfigMap
+kubectl patch configmap k8ops-config -n k8ops-system \
+  --type='json' -p='[{"op":"add","path":"/data/log-level","value":"debug"}]'
+
+# 通过命令行参数（仅适用于 Deployment 模式）
+# args:
+# - --log-level=debug
+```
+
+切换级别后重启 Pod：
+```bash
+kubectl rollout restart daemonset/k8ops -n k8ops-system
+```
+
+### 8.7 日志轮转
+
+审计日志文件 (`/data/k8ops-audit.jsonl`) 自动轮转：
+- **自动轮转**：文件超过 100MB 时自动分割
+- **手动轮转**：`POST /api/system/log/rotate`（admin 权限）
+- **清理旧文件**：`POST /api/system/log/cleanup`（删除 >30 天的轮转文件）
+
+容器 stdout 日志由 Kubelet 管理，默认每个容器 10MB x 3 文件 = 30MB 上限。
+在 k3s 中可通过 `--container-log-max-size` 和 `--container-log-max-files` 调整。
+
 ---
 
 *最后更新: 2026-07-02*

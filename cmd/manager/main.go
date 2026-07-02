@@ -24,6 +24,7 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -37,21 +38,21 @@ import (
 	"github.com/ggai/k8ops/internal/auth"
 	"github.com/ggai/k8ops/internal/chat"
 	"github.com/ggai/k8ops/internal/collector"
+	"github.com/ggai/k8ops/internal/controller/diagnostic"
+	"github.com/ggai/k8ops/internal/controller/optimization"
+	"github.com/ggai/k8ops/internal/controller/remediation"
 	"github.com/ggai/k8ops/internal/dashboard"
 	"github.com/ggai/k8ops/internal/provider"
 	"github.com/ggai/k8ops/internal/providermanager"
 	"github.com/ggai/k8ops/internal/tools"
 	"github.com/ggai/k8ops/internal/tools/host"
 	"github.com/ggai/k8ops/internal/tools/k8s"
-	"github.com/ggai/k8ops/internal/controller/diagnostic"
-	"github.com/ggai/k8ops/internal/controller/optimization"
-	"github.com/ggai/k8ops/internal/controller/remediation"
 
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
-	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/kubernetes"
+	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
@@ -68,19 +69,19 @@ func init() {
 
 func main() {
 	var (
-		metricsAddr          string
-		probeAddr            string
-		enableLeaderElection bool
-		providerType         string
-		providerModel        string
-		providerEndpoint     string
-		providerAPIKey       string
+		metricsAddr           string
+		probeAddr             string
+		enableLeaderElection  bool
+		providerType          string
+		providerModel         string
+		providerEndpoint      string
+		providerAPIKey        string
 		disableEventCollector bool
-		dashboardAddr        string
-		authDBPath           string
-		authDBDriver         string
-		authDBDSN            string
-		authJWTSecret        string
+		dashboardAddr         string
+		authDBPath            string
+		authDBDriver          string
+		authDBDSN             string
+		authJWTSecret         string
 	)
 
 	const chatSystemPrompt = `You are k8ops AI, a Kubernetes AIOps assistant integrated into a dashboard.
@@ -114,16 +115,45 @@ func main() {
 	flag.BoolVar(&disableEventCollector, "disable-event-collector", false, "Disable automatic event-triggered diagnostics")
 	flag.StringVar(&dashboardAddr, "dashboard-address", ":9090", "Address for the dashboard web UI")
 	flag.StringVar(&authDBPath, "auth-db-path", os.Getenv("AUTH_DB_PATH"), "Path to auth database (default: /data/k8ops.db)")
-	flag.StringVar(&authDBDriver, "auth-db-driver", func() string { d := os.Getenv("AUTH_DB_DRIVER"); if d == "" { return "sqlite" }; return d }(), "Database driver: sqlite (default), mysql, postgres")
+	flag.StringVar(&authDBDriver, "auth-db-driver", func() string {
+		d := os.Getenv("AUTH_DB_DRIVER")
+		if d == "" {
+			return "sqlite"
+		}
+		return d
+	}(), "Database driver: sqlite (default), mysql, postgres")
 	flag.StringVar(&authDBDSN, "auth-db-dsn", os.Getenv("AUTH_DB_DSN"), "Database DSN for mysql/postgres (e.g. 'user:pass@tcp(host:3306)/dbname' or 'host=localhost user=postgres dbname=k8ops')")
 	flag.StringVar(&authJWTSecret, "auth-jwt-secret", os.Getenv("AUTH_JWT_SECRET"), "JWT signing secret for auth")
+	logLevel := flag.String("log-level", func() string {
+		l := os.Getenv("LOG_LEVEL")
+		if l == "" {
+			return "info"
+		}
+		return l
+	}(), "Log level: debug, info, warn, error")
 	flag.Parse()
 
 	opts := zap.Options{
 		Development: false,
 	}
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
+	// Parse log level from flag/env (debug, info, warn, error)
+	var level slog.Level
+	switch strings.ToLower(*logLevel) {
+	case "debug":
+		level = slog.LevelDebug
+	case "warn", "warning":
+		level = slog.LevelWarn
+	case "error":
+		level = slog.LevelError
+	default:
+		level = slog.LevelInfo
+	}
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level:     level,
+		AddSource: level == slog.LevelDebug, // include source file:line in debug mode
+	}))
+	slog.SetDefault(logger)
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		Scheme:                 scheme,
@@ -147,11 +177,11 @@ func main() {
 
 	// Setup controllers
 	if err := (&diagnostic.DiagnosticReconciler{
-		Client:       mgr.GetClient(),
-		Scheme:       scheme,
-		Config:       mgr.GetConfig(),
-		Log:          logger,
-		ProviderCfg:  providerCfg,
+		Client:      mgr.GetClient(),
+		Scheme:      scheme,
+		Config:      mgr.GetConfig(),
+		Log:         logger,
+		ProviderCfg: providerCfg,
 	}).SetupWithManager(mgr); err != nil {
 		logger.Error("unable to create diagnostic controller", "error", err)
 		os.Exit(1)
@@ -350,7 +380,13 @@ func main() {
 					authn.SetRBACSyncer(auth.NewRBACSyncer(kubeClientset))
 				}
 				logger.Info("auth initialized",
-					"driver", func() string { d := authCfg.DBDriver; if d == "" { return "sqlite" }; return d }())
+					"driver", func() string {
+						d := authCfg.DBDriver
+						if d == "" {
+							return "sqlite"
+						}
+						return d
+					}())
 			}
 
 			go func() {

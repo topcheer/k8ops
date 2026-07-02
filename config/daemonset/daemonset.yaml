@@ -78,6 +78,14 @@ spec:
               name: k8ops-config
               key: debug
               optional: true
+        # Log level: debug, info, warn, error (default: info)
+        # Set LOG_LEVEL=debug for verbose logging with source file:line
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: k8ops-config
+              key: log-level
+              optional: true
         # Auth database path (per-node SQLite via emptyDir)
         - name: AUTH_DB_PATH
           value: /data/k8ops.db
