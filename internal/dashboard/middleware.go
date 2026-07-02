@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os/exec"
 	"strings"
@@ -196,4 +197,33 @@ func (s *Server) handleQuickExec(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(map[string]string{
 		"output": stdout.String(),
 	})
+}
+
+// --- Request Timing Middleware ---
+
+// statusCapture wraps http.ResponseWriter to capture the status code.
+type statusCapture struct {
+	http.ResponseWriter
+	status int
+}
+
+func (sc *statusCapture) WriteHeader(code int) {
+	sc.status = code
+	sc.ResponseWriter.WriteHeader(code)
+}
+
+// timingMiddleware logs request duration and adds X-Response-Time header.
+func (s *Server) timingMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		sc := &statusCapture{ResponseWriter: w, status: 200}
+		next(sc, r)
+		elapsed := time.Since(start)
+		w.Header().Set("X-Response-Time", fmt.Sprintf("%.3fs", elapsed.Seconds()))
+		if elapsed > 500*time.Millisecond {
+			s.log.Warn("slow request",
+				"method", r.Method, "path", r.URL.Path,
+				"duration", elapsed.String(), "status", sc.status)
+		}
+	}
 }

@@ -395,9 +395,44 @@ func (s *Server) handleResources(w http.ResponseWriter, r *http.Request) {
 			})
 		}
 
+	case "resourcequotas", "resourcequota", "quota":
+		list, err := rc.clientset.CoreV1().ResourceQuotas(ns).List(r.Context(), metav1.ListOptions{Limit: 500})
+		if err != nil {
+			writeK8sError(w, err)
+			return
+		}
+		for _, rq := range list.Items {
+			used := []string{}
+			for k, v := range rq.Status.Used {
+				hard := rq.Status.Hard[k]
+				used = append(used, fmt.Sprintf("%s: %s/%s", k, v.String(), hard.String()))
+			}
+			items = append(items, resItem{
+				Name: rq.Name, Namespace: rq.Namespace, Age: ageTime(rq.CreationTimestamp.Time),
+				Detail: map[string]string{
+					"usage": truncate(strings.Join(used, ", "), 200),
+				},
+			})
+		}
+
+	case "limitranges", "limitrange", "limits":
+		list, err := rc.clientset.CoreV1().LimitRanges(ns).List(r.Context(), metav1.ListOptions{Limit: 500})
+		if err != nil {
+			writeK8sError(w, err)
+			return
+		}
+		for _, lr := range list.Items {
+			items = append(items, resItem{
+				Name: lr.Name, Namespace: lr.Namespace, Age: ageTime(lr.CreationTimestamp.Time),
+				Detail: map[string]string{
+					"limits": fmt.Sprintf("%d items", len(lr.Spec.Limits)),
+				},
+			})
+		}
+
 	default:
 		writeError(w, 400, "unsupported kind: "+kind+
-			". Supported: deployments, services, ingresses, configmaps, secrets, statefulsets, daemonsets, pods, pvc, pv, storageclasses, serviceaccounts, jobs, cronjobs, roles, rolebindings, clusterrolebindings, networkpolicies, hpa, namespaces")
+			". Supported: deployments, services, ingresses, configmaps, secrets, statefulsets, daemonsets, pods, pvc, pv, storageclasses, serviceaccounts, jobs, cronjobs, roles, rolebindings, clusterrolebindings, networkpolicies, hpa, resourcequotas, limitranges, namespaces")
 		return
 	}
 
