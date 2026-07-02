@@ -79,16 +79,28 @@ export async function loadResources(forceRefresh) {
 
     // Apply namespace filter
     const selectedNs = getSelectedNs();
-    const filtered = selectedNs.size === 0 ? data.items :
+    const nsFiltered = selectedNs.size === 0 ? data.items :
       data.items.filter(r => selectedNs.has(r.namespace));
 
-    if (filtered.length === 0) {
+    if (nsFiltered.length === 0) {
       container.innerHTML = '<div class="empty">No ' + kind + ' in selected namespace(s)</div>';
       return;
     }
 
+    // Apply search filter
+    const searchTerm = (document.getElementById('resourceSearch')?.value || '').toLowerCase();
+    const filtered = searchTerm ? nsFiltered.filter(r =>
+      (r.name || '').toLowerCase().includes(searchTerm) ||
+      (r.namespace || '').toLowerCase().includes(searchTerm)
+    ) : nsFiltered;
+
+    if (filtered.length === 0) {
+      container.innerHTML = '<div class="empty">No matches for "' + escapeHtml(searchTerm) + '"</div>';
+      return;
+    }
+
     const detailKey = filtered[0].detail ? Object.keys(filtered[0].detail)[0] : null;
-    container.innerHTML = `<p style="margin-bottom:8px;color:#8b949e;font-size:13px;">Showing ${filtered.length} of ${data.items.length} ${escapeHtml(kind)}</p>
+    container.innerHTML = `<p style="margin-bottom:8px;color:#8b949e;font-size:13px;">Showing ${filtered.length} of ${data.items.length} ${escapeHtml(kind)}${searchTerm ? ' (filtered)' : ''}</p>
       <table><thead><tr>
       <th>Name</th><th>Namespace</th><th>Ready</th><th>Type</th>
       <th>${detailKey || 'Detail'}</th><th>Age</th><th>Actions</th>
@@ -114,6 +126,15 @@ export async function loadResources(forceRefresh) {
     if (isForbidden(e)) renderForbidden(container);
     else container.innerHTML = '<div class="error">Error: ' + escapeHtml(e.message) + '</div>';
   }
+}
+
+// --- Resource search filter (client-side re-render) ---
+export function filterResourcesTable() {
+  // Debounce: wait 200ms after last keystroke
+  clearTimeout(window._resourceFilterTimer);
+  window._resourceFilterTimer = setTimeout(function() {
+    loadResources(true); // forceRefresh=true to use cached data
+  }, 200);
 }
 
 // --- Namespace multi-select ---
