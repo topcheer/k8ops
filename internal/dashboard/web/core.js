@@ -31,6 +31,7 @@ export function showTab(name, btn) {
   if (name === 'capacity') window.loadCapacity();
   if (name === 'compliance') window.loadCompliance();
   if (name === 'hpa') window.loadHPA();
+  if (name === 'images') window.loadImages();
   if (name === 'cost') window.loadCost();
 }
 
