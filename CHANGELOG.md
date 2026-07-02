@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v14.41] — 2026-07-03
+
+### Security
+- Exec command hardening — 7-layer defense: body size limit, command length limit, shell metacharacter blocking (11 patterns), verb whitelist, sensitive resource blocking (7 types), execution timeout
+- 11 new security tests for injection prevention
+
+## [v14.40] — 2026-07-03
+
+### Added
+- API performance tracking — per-endpoint p50/p95/p99 latency percentiles, in-memory ring buffer (5000 samples)
+- GET /api/system/performance — latency stats with error rate and cluster-wide p95
+
+## [v14.39] — 2026-07-03
+
+### Added
+- HPA (Horizontal Pod Autoscaler) visualization — replica scale bars, per-metric utilization, scaling status badges
+- GET /api/hpa — detailed HPA data with all metric types (Resource, Pods, External, ContainerResource)
+
+## [v14.38] — 2026-07-03
+
+### Added
+- Audit log rotation — auto-rotation at 100MB, manual rotation + cleanup via API
+- GET /api/system/info — version, Go runtime, memory stats, uptime, audit log size
+- POST /api/system/log/rotate — manual audit log rotation (admin-only)
+- POST /api/system/log/cleanup — remove old rotated files (admin-only)
+
+## [v14.37] — 2026-07-03
+
+### Documentation
+- docs/TROUBLESHOOTING.md — 382-line guide covering 8 issue categories
+- CHANGELOG.md updated with v14.31-v14.36 entries
+- docs/ARCHITECTURE.md — request tracing and HTTP metrics design decisions
+
 ## [v14.36] — 2026-07-03
 
 ### Added

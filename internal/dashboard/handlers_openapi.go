@@ -426,6 +426,120 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Namespace Ranking (v14.33+) ---
+	add("/api/namespaces/ranking", "get", OpenAPIOperation{
+		Summary: "Namespace resource ranking", OperationID: "namespaceRanking", Tags: []string{"Cost", "Capacity"},
+		Description: "Per-namespace CPU/memory requests, limits, pod counts, and PVC storage, sorted by CPU consumption.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Namespace ranking with summary", map[string]interface{}{
+				"count":   10,
+				"summary": map[string]interface{}{"totalNamespaces": 10, "totalPods": 50},
+				"items":   []interface{}{},
+			}),
+		},
+	})
+	add("/api/namespaces/{name}/detail", "get", OpenAPIOperation{
+		Summary: "Namespace detail", OperationID: "namespaceDetail", Tags: []string{"Capacity"},
+		Parameters: []OpenAPIParam{
+			{Name: "name", In: "path", Required: true, Description: "Namespace name",
+				Schema: map[string]interface{}{"type": "string"}},
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("ResourceQuota usage, LimitRanges, recent warnings", map[string]interface{}{}),
+		},
+	})
+
+	// --- Storage & Capacity (v14.34+) ---
+	add("/api/storage/capacity", "get", OpenAPIOperation{
+		Summary: "Storage capacity (PVCs)", OperationID: "storageCapacity", Tags: []string{"Capacity", "Storage"},
+		Description: "PVC overview with capacity, status, storage class, and requested size.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("PVC capacity data", map[string]interface{}{
+				"summary": map[string]interface{}{"totalPVCs": 5, "bound": 4, "totalCapacityGB": 100.0},
+				"items":   []interface{}{},
+			}),
+		},
+	})
+	add("/api/capacity/planning", "get", OpenAPIOperation{
+		Summary: "Capacity planning", OperationID: "capacityPlanning", Tags: []string{"Capacity"},
+		Description: "Node capacity vs requested resources with per-node utilization percentages and expansion recommendations.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Capacity planning with recommendations", map[string]interface{}{
+				"summary":         map[string]interface{}{"clusterCPUUtilPct": 45.2, "nodeCount": 3},
+				"recommendations": []string{},
+				"nodes":           []interface{}{},
+			}),
+		},
+	})
+
+	// --- HPA Visualization (v14.39+) ---
+	add("/api/hpa", "get", OpenAPIOperation{
+		Summary: "List HPAs with metrics", OperationID: "listHPA", Tags: []string{"HPA", "Autoscaling"},
+		Description: "Detailed HPA data with scaling metrics (CPU/memory utilization, pods, external), replica status, and scaling state.",
+		Parameters:  []OpenAPIParam{queryParam("namespace", "Filter by namespace")},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("HPA list with metrics", map[string]interface{}{
+				"summary": map[string]interface{}{"totalHPAs": 3, "scalingActive": 1},
+				"items":   []interface{}{},
+			}),
+		},
+	})
+
+	// --- Compliance (v14.35+) ---
+	add("/api/security/compliance", "get", OpenAPIOperation{
+		Summary: "CIS compliance scan", OperationID: "complianceScan", Tags: []string{"Security", "Compliance"},
+		Description: "Runs CIS Kubernetes Benchmark checks (RBAC, Pod Security, Network, Secrets) and returns pass/warn/fail status per control.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Compliance scan results", map[string]interface{}{
+				"score": 85, "summary": map[string]int{"pass": 8, "warn": 2, "fail": 0, "total": 10},
+			}),
+		},
+	})
+	add("/api/security/compliance/report", "get", OpenAPIOperation{
+		Summary: "Download compliance report", OperationID: "complianceReport", Tags: []string{"Security", "Compliance"},
+		Description: "Downloads a text compliance report with scores, per-check results, and remediation guidance.",
+		Responses: map[string]OpenAPIResponse{
+			"200": {Description: "Text report (text/plain, attachment)"},
+		},
+	})
+
+	// --- System & Operations (v14.38+) ---
+	add("/api/system/info", "get", OpenAPIOperation{
+		Summary: "System info", OperationID: "systemInfo", Tags: []string{"System", "Operations"},
+		Description: "Version, Go runtime, memory stats, goroutine count, uptime, and audit log size.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("System info", map[string]interface{}{
+				"version": "v14.41", "goVersion": "go1.26", "uptime": "5h30m",
+			}),
+		},
+	})
+	add("/api/system/performance", "get", OpenAPIOperation{
+		Summary: "API performance stats", OperationID: "apiPerformance", Tags: []string{"System", "Performance"},
+		Description: "Per-endpoint latency percentiles (p50, p95, p99), average, max, and error rate from in-memory tracking.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Performance stats", map[string]interface{}{
+				"summary":   map[string]interface{}{"totalRequests": 1000, "errorRate": 0.5},
+				"endpoints": []interface{}{},
+			}),
+		},
+	})
+	add("/api/system/log/rotate", "post", OpenAPIOperation{
+		Summary: "Rotate audit log", OperationID: "logRotate", Tags: []string{"System", "Operations"},
+		Description: "Manually triggers audit log rotation. Admin only.",
+		RequestBody: bodyParam("Empty body", map[string]interface{}{}),
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Rotation successful", map[string]bool{"success": true}),
+		},
+	})
+	add("/api/system/log/cleanup", "post", OpenAPIOperation{
+		Summary: "Cleanup old audit logs", OperationID: "logCleanup", Tags: []string{"System", "Operations"},
+		Description: "Removes rotated audit log files older than 30 days. Admin only.",
+		RequestBody: bodyParam("Empty body", map[string]interface{}{}),
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Cleanup completed", map[string]interface{}{"removed": 3}),
+		},
+	})
+
 	return spec
 }
 
