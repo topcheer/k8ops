@@ -1,0 +1,177 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {"type": "grafana", "uid": "-- Prometheus --"},
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "k8ops AIOps Platform - 集群监控仪表盘",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "title": "集群健康分",
+      "type": "gauge",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 6, "w": 4, "x": 0, "y": 0},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "thresholds": {
+            "steps": [
+              {"color": "red", "value": null},
+              {"color": "yellow", "value": 60},
+              {"color": "green", "value": 80}
+            ]
+          },
+          "min": 0,
+          "max": 100,
+          "unit": "none"
+        }
+      },
+      "targets": [
+        {
+          "expr": "k8ops_cluster_health_score",
+          "legendFormat": "Health Score",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "活跃诊断 & 修复",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 6, "w": 4, "x": 4, "y": 0},
+      "fieldConfig": {
+        "defaults": {"color": {"mode": "thresholds"}, "thresholds": {"steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 5}, {"color": "red", "value": 10}]}}
+      },
+      "targets": [
+        {"expr": "k8ops_active_diagnostics", "legendFormat": "Diagnostics", "refId": "A"},
+        {"expr": "k8ops_active_remediations", "legendFormat": "Remediations", "refId": "B"}
+      ]
+    },
+    {
+      "title": "活跃对话数",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 6, "w": 4, "x": 8, "y": 0},
+      "fieldConfig": {
+        "defaults": {"color": {"mode": "thresholds"}, "thresholds": {"steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 20}, {"color": "red", "value": 50}]}}
+      },
+      "targets": [
+        {"expr": "k8ops_conversation_count", "legendFormat": "Conversations", "refId": "A"}
+      ]
+    },
+    {
+      "title": "安全拦截 (累计)",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 6, "w": 4, "x": 12, "y": 0},
+      "fieldConfig": {
+        "defaults": {"color": {"fixed": {"mode": "palette-classic"}}, "thresholds": {"steps": [{"color": "green", "value": null}]}}
+      },
+      "targets": [
+        {"expr": "sum(k8ops_safety_blocks_total)", "legendFormat": "Total Blocks", "refId": "A"}
+      ]
+    },
+    {
+      "title": "Token 消耗速率 (per min)",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 6, "w": 4, "x": 16, "y": 0},
+      "fieldConfig": {
+        "defaults": {"unit": "short", "color": {"mode": "thresholds"}, "thresholds": {"steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 10000}, {"color": "red", "value": 50000}]}}
+      },
+      "targets": [
+        {"expr": "sum(rate(k8ops_llm_tokens_total[1m])) * 60", "legendFormat": "Tokens/min", "refId": "A"}
+      ]
+    },
+    {
+      "title": "LLM 调用延迟 (P50/P95/P99)",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6},
+      "fieldConfig": {
+        "defaults": {"unit": "s", "custom": {"drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 10}}
+      },
+      "targets": [
+        {"expr": "histogram_quantile(0.50, sum(rate(k8ops_llm_call_duration_seconds_bucket[5m])) by (le))", "legendFormat": "P50", "refId": "A"},
+        {"expr": "histogram_quantile(0.95, sum(rate(k8ops_llm_call_duration_seconds_bucket[5m])) by (le))", "legendFormat": "P95", "refId": "B"},
+        {"expr": "histogram_quantile(0.99, sum(rate(k8ops_llm_call_duration_seconds_bucket[5m])) by (le))", "legendFormat": "P99", "refId": "C"}
+      ]
+    },
+    {
+      "title": "工具调用延迟 (P95) by Tool",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6},
+      "fieldConfig": {
+        "defaults": {"unit": "s", "custom": {"drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 10}}
+      },
+      "targets": [
+        {"expr": "histogram_quantile(0.95, sum(rate(k8ops_tool_call_duration_seconds_bucket[5m])) by (le, tool))", "legendFormat": "{{tool}}", "refId": "A"}
+      ]
+    },
+    {
+      "title": "诊断报告 (by Phase)",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 14},
+      "fieldConfig": {
+        "defaults": {"custom": {"drawStyle": "bars", "fillOpacity": 50, "stacking": {"mode": "normal"}}}
+      },
+      "targets": [
+        {"expr": "sum(rate(k8ops_diagnostics_total[5m])) by (phase)", "legendFormat": "{{phase}}", "refId": "A"}
+      ]
+    },
+    {
+      "title": "Token 消耗 (by Provider)",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 14},
+      "fieldConfig": {
+        "defaults": {"custom": {"drawStyle": "line", "fillOpacity": 20, "stacking": {"mode": "normal"}}}
+      },
+      "targets": [
+        {"expr": "sum(rate(k8ops_llm_tokens_total[5m]) * 60) by (provider)", "legendFormat": "{{provider}}", "refId": "A"}
+      ]
+    },
+    {
+      "title": "审计事件 (by Severity)",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 22},
+      "fieldConfig": {
+        "defaults": {"custom": {"drawStyle": "bars", "fillOpacity": 50, "stacking": {"mode": "normal"}}}
+      },
+      "targets": [
+        {"expr": "sum(rate(k8ops_audit_events_total[5m]) * 60) by (severity)", "legendFormat": "{{severity}}", "refId": "A"}
+      ]
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["k8ops", "kubernetes", "aiops"],
+  "templating": {
+    "list": []
+  },
+  "time": {"from": "now-6h", "to": "now"},
+  "timepicker": {},
+  "timezone": "",
+  "title": "k8ops AIOps Dashboard",
+  "uid": "k8ops-overview",
+  "version": 1,
+  "weekStart": ""
+}
