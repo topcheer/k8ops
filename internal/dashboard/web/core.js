@@ -30,6 +30,7 @@ export function showTab(name, btn) {
   if (name === 'namespaces') window.loadNamespaceRanking();
   if (name === 'capacity') window.loadCapacity();
   if (name === 'compliance') window.loadCompliance();
+  if (name === 'hpa') window.loadHPA();
   if (name === 'cost') window.loadCost();
 }
 

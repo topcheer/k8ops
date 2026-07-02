@@ -17,11 +17,12 @@ import * as apiExplorer from './api-explorer.js';
 import * as namespaces from './namespaces.js';
 import * as capacity from './capacity.js';
 import * as compliance from './compliance.js';
+import * as hpa from './hpa.js';
 
 // Bridge all exports to window so inline onclick="fn()" handlers continue working.
 // This is a transitional measure — future versions will replace inline handlers
 // with addEventListener and progressively remove window exposure.
-const allModules = [utils, core, overview, nodes, pods, chat, resources, topology, rbac, providers, security, apiExplorer, namespaces, capacity, compliance];
+const allModules = [utils, core, overview, nodes, pods, chat, resources, topology, rbac, providers, security, apiExplorer, namespaces, capacity, compliance, hpa];
 for (const mod of allModules) {
   for (const key of Object.keys(mod)) {
     window[key] = mod[key];
