@@ -224,6 +224,9 @@ DaemonSet 模式特点：
 5. **Tool registry** — thread-safe (`sync.RWMutex`), tools registered at startup, extensible
 6. **Provider abstraction** — `provider.Provider` interface supports OpenAI, Anthropic, Gemini, custom endpoints
 7. **Impersonation** — API calls to K8s use user-specific identity for RBAC enforcement
+8. **Request tracing** — every request gets an `X-Request-ID` (auto-generated or propagated), enabling log correlation
+9. **HTTP metrics** — Prometheus tracks request count, latency histogram, in-flight gauge, and error rate per endpoint
+10. **Path normalization** — `/api/pods/{ns}/{name}/logs` template reduces metric cardinality
 
 ## Building & Running
 

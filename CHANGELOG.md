@@ -7,6 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v14.36] — 2026-07-03
+
+### Added
+- Deployment automation — one-command deploy with auto-rollback (`scripts/deploy.sh`)
+- Quick rollback script (`scripts/rollback.sh`) — by revision, version, or previous
+- Release workflow with pre-release test gate and auto-generated release notes
+- CI/CD documentation in `docs/DEPLOYMENT.md`
+
+## [v14.35] — 2026-07-03
+
+### Added
+- CIS Benchmark compliance scanner — 10 CIS-style checks (RBAC, Pod Security, Network, Secrets)
+- Downloadable compliance report (`GET /api/security/compliance/report`)
+- Compliance score gauge and per-check status badges
+
+## [v14.34] — 2026-07-03
+
+### Added
+- Storage capacity monitoring — PVC overview with capacity, status, storage class
+- Node capacity planning — per-node CPU/memory/pod utilization with expansion recommendations
+
+## [v14.33] — 2026-07-02
+
+### Added
+- Namespace resource ranking — per-namespace CPU/memory/pod/PVC aggregation, sorted by consumption
+- Namespace detail drill-down — ResourceQuota usage, LimitRanges, recent warnings
+
+## [v14.32] — 2026-07-02
+
+### Added
+- Request ID middleware — `X-Request-ID` header for every request (log correlation)
+- HTTP metrics — request count, latency histogram, in-flight gauge, error counter (4 new Prometheus metrics)
+- SLO/SLA definitions in Runbook — targets, error budgets, PromQL queries, degradation strategy
+
+## [v14.31] — 2026-07-02
+
+### Changed
+- Distroless image base (alpine → gcr.io/distroless/static-debian12) — 31.8MB → 28.6MB
+- BuildKit cache mounts for faster CI builds
+- CI: added govulncheck security scan, coverage threshold, job dependencies
+
+### Added
+- Pre-deploy validation script (`scripts/pre-deploy-check.sh`) — 5-step gate
+- Changelog auto-generation script (`scripts/generate-changelog.sh`)
+- `.dockerignore` to exclude docs/scripts from build context
+
 ## [v14.30] — 2026-07-02
 
 ### Added
