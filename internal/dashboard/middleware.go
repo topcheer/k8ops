@@ -14,6 +14,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ggai/k8ops/internal/audit"
 	"github.com/ggai/k8ops/internal/metrics"
 )
 
@@ -132,12 +133,21 @@ func (s *Server) handleVersion(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleQuickExec executes a safe kubectl get/describe/explain command from the NL-to-kubectl feature.
-// Only read-only verbs are allowed: get, describe, explain, logs (with limits).
+// Only read-only verbs are allowed: get, describe, explain.
+// Security layers:
+//  1. Command length limit (500 chars)
+//  2. Shell metacharacter rejection (pipes, redirects, backticks, $(), ;, &&, ||)
+//  3. Verb whitelist (get, describe, explain only)
+//  4. Sensitive resource type blocking (secrets, configmaps with data, tokens)
+//  5. Execution timeout (15s)
 func (s *Server) handleQuickExec(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
 		return
 	}
+
+	// Limit request body size to prevent abuse (4KB max)
+	r.Body = http.MaxBytesReader(w, r.Body, 4096)
 
 	var req struct {
 		Command string `json:"command"`
@@ -148,6 +158,13 @@ func (s *Server) handleQuickExec(w http.ResponseWriter, r *http.Request) {
 	}
 
 	cmd := strings.TrimSpace(req.Command)
+
+	// Security: command length limit
+	if len(cmd) > 500 {
+		writeError(w, http.StatusBadRequest, "command too long (max 500 chars)")
+		return
+	}
+
 	if cmd == "" {
 		writeError(w, http.StatusBadRequest, "command is required")
 		return
@@ -157,6 +174,19 @@ func (s *Server) handleQuickExec(w http.ResponseWriter, r *http.Request) {
 	if !strings.HasPrefix(cmd, "kubectl ") {
 		writeError(w, http.StatusForbidden, "only kubectl commands are allowed")
 		return
+	}
+
+	// Security: reject shell metacharacters to prevent injection
+	dangerousPatterns := []string{
+		"|", ">", "<", "`", "$(", "${", ";", "&&", "||",
+		"&", "\n", "\r", "\\x", "\\u", "\\0",
+	}
+	for _, pattern := range dangerousPatterns {
+		if strings.Contains(cmd, pattern) {
+			writeError(w, http.StatusForbidden,
+				"command contains forbidden character: "+pattern)
+			return
+		}
 	}
 
 	// Security: whitelist verbs
@@ -169,8 +199,27 @@ func (s *Server) handleQuickExec(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if !matched {
-		writeError(w, http.StatusForbidden, "only read-only kubectl commands (get, describe, explain) are allowed")
+		writeError(w, http.StatusForbidden,
+			"only read-only kubectl commands (get, describe, explain) are allowed")
 		return
+	}
+
+	// Security: block sensitive resource types
+	sensitiveResources := []string{
+		" secrets", " secret ", " configmaps", " configmap ",
+		" serviceaccounts", " pods/exec", " token", " rolebinding",
+	}
+	cmdLower := strings.ToLower(cmd)
+	for _, res := range sensitiveResources {
+		if strings.Contains(cmdLower, res) {
+			if s.log != nil {
+				s.log.Warn("blocked sensitive kubectl command",
+					"command", cmd, "resource", strings.TrimSpace(res))
+			}
+			writeError(w, http.StatusForbidden,
+				"access to sensitive resources is blocked")
+			return
+		}
 	}
 
 	// Execute via nsenter on host kubectl
@@ -188,6 +237,11 @@ func (s *Server) handleQuickExec(w http.ResponseWriter, r *http.Request) {
 	execCmd.Stderr = &stderr
 
 	if err := execCmd.Run(); err != nil {
+		// Log exec failures for audit trail
+		if s.log != nil {
+			s.log.Warn("exec command failed",
+				"command", cmd, "error", err.Error())
+		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK) // return 200 with error field for frontend convenience
 		_ = json.NewEncoder(w).Encode(map[string]string{
@@ -195,6 +249,18 @@ func (s *Server) handleQuickExec(w http.ResponseWriter, r *http.Request) {
 			"error":  err.Error() + ": " + stderr.String(),
 		})
 		return
+	}
+
+	// Log successful exec for audit trail
+	if s.auditLog != nil {
+		s.auditLog.Log(r.Context(), audit.Event{
+			Timestamp: time.Now().Format(time.RFC3339),
+			Severity:  audit.SeverityInfo,
+			Action:    "exec.kubectl",
+			Target:    cmd,
+			Success:   true,
+			Detail:    map[string]any{"verb": "read-only"},
+		})
 	}
 
 	w.Header().Set("Content-Type", "application/json")
