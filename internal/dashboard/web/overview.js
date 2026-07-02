@@ -43,6 +43,11 @@ export async function loadOverview() {
         <div class="sub">${nodes.notReady || 0} Not Ready</div>
         ${sparklineSvg(_sparklineHistory.pods, '#3fb950')}
       </div>
+      <div class="card ${(data.pods?.failed || 0) > 0 ? 'warn' : 'ok'}">
+        <div class="label">Pods</div>
+        <div class="value">${data.pods?.running || 0}<span style="font-size:16px;color:var(--text-muted);">/${data.pods?.total || 0}</span></div>
+        <div class="sub">${data.pods?.failed || 0} Failed, ${data.pods?.pending || 0} Pending</div>
+      </div>
       <div class="card info">
         <div class="label">Namespaces</div>
         <div class="value">${data.namespaces || 0}</div>

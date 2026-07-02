@@ -158,7 +158,8 @@
   <div id="tab-events" class="hidden">
     <div class="refresh-bar">
       <div class="section-title">Recent Events</div>
-      <div style="display:flex;gap:8px;align-items:center;">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <input type="text" id="eventSearch" class="search-input" placeholder="Filter events..." oninput="filterTable('eventsTable','eventSearch')" style="width:200px;">
         <label class="log-toggle"><input type="checkbox" id="warningOnly" onchange="loadEvents()"> Warnings only</label>
         <label class="log-toggle"><input type="checkbox" id="liveEvents" onchange="toggleLiveEvents()" checked> Live</label>
         <button onclick="loadEvents()">Refresh</button>
