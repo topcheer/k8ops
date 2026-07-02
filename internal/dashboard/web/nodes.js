@@ -7,22 +7,51 @@ export async function loadNodes(forceRefresh) {
     const data = await fetchJSON('/api/nodes' + (forceRefresh ? '?refresh=true' : ''));
     if (!data.items?.length) { container.innerHTML = '<div class="empty">No nodes found</div>'; return; }
     container.innerHTML = `<table>
-      <thead><tr><th>Name</th><th>Status</th><th>Role</th><th>Version</th><th>CPU</th><th>Memory</th><th>OS/Arch</th><th>Conditions</th><th>Sched</th><th></th></tr></thead>
-      <tbody>${data.items.map(n => `<tr${n.unschedulable ? ' style="opacity:0.7;"' : ''}>
+      <thead><tr><th>Name</th><th>Status</th><th>Role</th><th>Version</th><th>CPU</th><th>Memory</th><th>Pods</th><th>Conditions</th><th>Sched</th><th></th></tr></thead>
+      <tbody>${data.items.map(n => {
+        const cpuPct = Math.min(100, Math.round(n.cpuRequestedPct || 0));
+        const memPct = Math.min(100, Math.round(n.memRequestedPct || 0));
+        const podPct = n.podCapacity > 0 ? Math.min(100, Math.round(n.podCount / n.podCapacity * 100)) : 0;
+        const cpuColor = cpuPct > 85 ? '#f85149' : cpuPct > 70 ? '#d29922' : '#3fb950';
+        const memColor = memPct > 85 ? '#f85149' : memPct > 70 ? '#d29922' : '#3fb950';
+        const podColor = podPct > 85 ? '#f85149' : podPct > 70 ? '#d29922' : '#3fb950';
+        return `<tr${n.unschedulable ? ' style="opacity:0.7;"' : ''}>
         <td style="cursor:pointer;color:#58a6ff;" onclick="viewNodePods('${escapeHtml(n.name)}')">${escapeHtml(n.name)}</td>
         <td>${badge(n.status)}${n.unschedulable ? ' <span style="color:#d29922;font-size:11px;">SchedulingDisabled</span>' : ''}</td>
         <td>${escapeHtml(n.role)}</td>
         <td><code>${escapeHtml(n.version)}</code></td>
-        <td>${escapeHtml(n.cpu)}</td>
-        <td>${escapeHtml(n.memory)}</td>
-        <td>${escapeHtml(n.os)}/${escapeHtml(n.arch)}</td>
+        <td style="min-width:140px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="flex:1;height:8px;background:#21262d;border-radius:4px;overflow:hidden;">
+              <div style="width:${cpuPct}%;height:100%;background:${cpuColor};border-radius:4px;transition:width 0.3s;"></div>
+            </div>
+            <span style="font-size:11px;color:#8b949e;white-space:nowrap;">${escapeHtml(n.cpuRequests || n.cpu)}</span>
+          </div>
+        </td>
+        <td style="min-width:140px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="flex:1;height:8px;background:#21262d;border-radius:4px;overflow:hidden;">
+              <div style="width:${memPct}%;height:100%;background:${memColor};border-radius:4px;transition:width 0.3s;"></div>
+            </div>
+            <span style="font-size:11px;color:#8b949e;white-space:nowrap;">${escapeHtml(n.memRequests || n.memory)}</span>
+          </div>
+        </td>
+        <td style="min-width:100px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="flex:1;height:8px;background:#21262d;border-radius:4px;overflow:hidden;">
+              <div style="width:${podPct}%;height:100%;background:${podColor};border-radius:4px;transition:width 0.3s;"></div>
+            </div>
+            <span style="font-size:11px;color:#8b949e;white-space:nowrap;">${n.podCount}/${n.podCapacity}</span>
+          </div>
+        </td>
         <td style="font-size:12px;color:#8b949e;">${Object.entries(n.conditions).map(([k,v])=>escapeHtml(k)+':'+escapeHtml(v)).join(', ')}</td>
         <td>${n.unschedulable
           ? `<button onclick="toggleCordon('${escapeHtml(n.name)}', false)" class="btn-secondary" style="font-size:11px;padding:3px 8px;color:#3fb950;">Uncordon</button>`
           : `<button onclick="toggleCordon('${escapeHtml(n.name)}', true)" class="btn-secondary" style="font-size:11px;padding:3px 8px;color:#d29922;">Cordon</button>`
         }</td>
         <td><button onclick="viewNodePods('${escapeHtml(n.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">Pods &rarr;</button></td>
-      </tr>`).join('')}</tbody>
+      </tr>`;
+      }).join('')}</tbody>
     </table>`;
   } catch(e) { container.innerHTML = `<div class="empty">Error: ${escapeHtml(e.message)}</div>`; }
 }
