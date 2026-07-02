@@ -135,6 +135,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/audit", s.handleAudit)
 	mux.HandleFunc("/api/audit/stats", s.handleAuditStats)
 	mux.HandleFunc("/api/audit/events", s.handleAuditEvents)
+	mux.HandleFunc("/api/audit/export", s.handleAuditExport)
 	mux.HandleFunc("/api/audit/events/", s.handleAuditEventDetail)
 	mux.HandleFunc("/api/pods", s.cacheMiddleware(30*time.Second, s.handlePods))
 	mux.HandleFunc("/api/chat", s.handleChat)
