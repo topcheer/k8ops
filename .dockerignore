@@ -1,0 +1,37 @@
+# Git
+.git
+.gitignore
+
+# CI
+.github/
+
+# Documentation
+docs/
+*.md
+
+# Scripts (not needed at runtime)
+scripts/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test artifacts
+coverage.out
+test-results/
+
+# Local config
+config/
+secrets/
+release-notes/
+
+# Docker files themselves
+Dockerfile
+.dockerignore
+docker-compose*

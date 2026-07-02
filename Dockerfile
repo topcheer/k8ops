@@ -3,9 +3,9 @@ FROM golang:1.26 AS builder
 
 WORKDIR /workspace
 
-# Copy go mod files
+# Copy go mod files first (cache layer)
 COPY go.mod go.sum ./
-RUN go mod download
+RUN --mount=type=cache,target=/go/pkg/mod go mod download
 
 # Copy source
 COPY api/ api/
@@ -13,23 +13,23 @@ COPY cmd/ cmd/
 COPY internal/ internal/
 COPY hack/ hack/
 
-# Build
+# Build with cache mounts for faster CI builds
 ARG VERSION=dev
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w -X main.version=${VERSION}" -o manager ./cmd/manager
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w -X main.version=${VERSION}" -o k8ops ./cmd/k8ops
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w -X main.version=${VERSION}" -o manager ./cmd/manager
 
-# Runtime — alpine for ca-certificates support
-FROM alpine:3.21
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w -X main.version=${VERSION}" -o k8ops ./cmd/k8ops
 
-RUN apk add --no-cache ca-certificates
+# Runtime — distroless static (no shell, no package manager, ~2MB base)
+# Contains only CA certs + timezone data + minimal runtime files
+FROM gcr.io/distroless/static-debian12:nonroot
 
 WORKDIR /
 COPY --from=builder /workspace/manager /manager
 COPY --from=builder /workspace/k8ops /usr/local/bin/k8ops
 
-# Create /data directory with correct ownership for SQLite
-RUN mkdir -p /data && chown 65532:65532 /data
-
-USER 65532:65532
-
+# /data is writable by nonroot (UID 65532) in distroless
 ENTRYPOINT ["/manager"]

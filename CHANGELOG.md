@@ -7,6 +7,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v14.30] — 2026-07-02
+
+### Added
+- OpenAPI 3.0 spec — auto-generated spec for 40+ endpoints (`GET /api/openapi.json`)
+- Interactive API Explorer — search, filter, try-it-now, download spec from dashboard
+- Security audit scanner — cluster-wide Pod Security Standards check (`GET /api/security/audit`)
+- Platform security health check (`GET /api/security/health`)
+
+### Documentation
+- docs/API.md — OpenAPI section, Security Audit docs, Write Ops section
+
+## [v14.28] — 2026-07-02
+
+### Added
+- Scalability improvements — ResourceQuota/LimitRange browser, API timing middleware, backup/restore scripts
+- Events search — instant search filter on Events page
+- Connection status indicator + loading skeletons
+
+## [v14.27] — 2026-07-02
+
+### Added
+- Recent events feed on overview — compact K8s event timeline
+- Resource search filter — instant name/namespace filtering on Resources page
+- ConfigMap/Secret data viewer — inline key-value display
+
+## [v14.25] — 2026-07-02
+
+### Added
+- Node resource utilization bars — visual CPU/Memory/Pod capacity
+- Node cordon/uncordon — schedule management from UI
+- Pod delete + rollout restart for deployments/statefulsets/daemonsets
+- Workload scale — deployment & statefulset scaling from UI
+
+## [v14.20] — 2026-07-02
+
+### Added
+- Audit logging for all user-initiated write operations
+- Global Chat entry — sidebar highlight + top-bar button
+- Chat quick actions + improved welcome screen
+- Notification center — live alert polling + bell badge
+
+### Security
+- XSS prevention round 4 — providers.js preset cards
+- XSS prevention round 3 — rbac.js complete coverage
+- XSS prevention round 2 — rbac.js, providers.js, resources.js
+- XSS prevention — escapeHtml on all K8s data in template literals
+- Sanitize href URLs in renderMarkdown to prevent attribute injection
+- 13 security tests for scale/pod-delete/rollout-restart handlers
+- 5 tests for gzip middleware + security headers
+- 6 security tests for /api/exec endpoint
+
+## [v14.10] — 2026-07-02
+
+### Added
+- NL-to-kubectl — natural language command shortcuts in chat
+- Comprehensive mobile responsive + UX polish
+- Enterprise Runbook (`docs/RUNBOOK.md`) — 400+ 行运行手册
+- Grafana dashboard JSON (`docs/grafana-dashboard.json`) — 10-panel dashboard
+- Prometheus alerting rules (`docs/alerting-rules.yaml`) — 9 alert rules
+
+### Changed
+- Clean dead CSS + improve overview phase display
+- Remove dead NL-to-kubectl code from chat.js
+
+### Fixed
+- Root package stub for `go build .` compatibility
+- YAML validation — single-document format for monitoring configs
+- Chat overlay URL hash persistence + Traefik upload timeout fix
+
 ## [v14.1] — 2026-07-01
 
 ### Added
