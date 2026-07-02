@@ -513,3 +513,55 @@ async function pollNotifAlerts() {
     }
   } catch(e) { /* silently ignore */ }
 }
+
+// ============================
+// Connection Status Monitor
+// ============================
+var _connOnline = true;
+var _connCheckTimer = null;
+
+export function setConnStatus(state) {
+  var el = document.getElementById('connStatus');
+  if (!el) return;
+  var dot = el.querySelector('.conn-dot');
+  var label = el.querySelector('.conn-label');
+  el.className = 'conn-status';
+  if (state === 'online') {
+    el.classList.add('conn-online');
+    if (label) label.textContent = 'Online';
+    if (!_connOnline) {
+      showToast('Connection restored', 'success', 3000);
+    }
+    _connOnline = true;
+  } else if (state === 'offline') {
+    el.classList.add('conn-offline');
+    if (label) label.textContent = 'Offline';
+    if (_connOnline) {
+      showToast('Connection lost. Retrying...', 'error', 5000);
+    }
+    _connOnline = false;
+  } else if (state === 'reconnecting') {
+    el.classList.add('conn-reconnecting');
+    if (label) label.textContent = 'Connecting';
+    _connOnline = false;
+  }
+}
+
+// Periodic health check
+export function startConnMonitor() {
+  if (_connCheckTimer) clearInterval(_connCheckTimer);
+  _connCheckTimer = setInterval(function() {
+    fetch('/api/version', { signal: AbortSignal.timeout ? AbortSignal.timeout(5000) : undefined })
+      .then(function(r) {
+        if (r.ok) setConnStatus('online');
+        else setConnStatus('reconnecting');
+      })
+      .catch(function() {
+        setConnStatus('offline');
+      });
+  }, 15000); // check every 15s
+}
+
+// Also monitor window online/offline events
+window.addEventListener('online', function() { setConnStatus('reconnecting'); });
+window.addEventListener('offline', function() { setConnStatus('offline'); });

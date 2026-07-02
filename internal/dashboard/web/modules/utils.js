@@ -180,3 +180,21 @@ export function hideLoading() {
     setTimeout(() => { if (_loadingCount === 0) bar.style.display = 'none'; }, 300);
   }
 }
+
+export async function fetchJSON(url, opts) {
+  showLoading();
+  try {
+    const resp = await fetch(url, opts);
+    if (!resp.ok) {
+      // Update connection status on server errors
+      if (resp.status >= 500 && typeof window.setConnStatus === 'function') {
+        window.setConnStatus('reconnecting');
+      }
+      const body = await resp.json().catch(() => ({}));
+      throw new Error(body.error || resp.statusText);
+    }
+    return await resp.json();
+  } finally {
+    hideLoading();
+  }
+}

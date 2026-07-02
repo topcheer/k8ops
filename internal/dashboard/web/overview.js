@@ -5,6 +5,21 @@ const _sparklineHistory = { pods: [], warnings: [], events: [] };
 const MAX_SPARK_POINTS = 30;
 
 export async function loadOverview() {
+  // Show loading skeletons immediately
+  const cardsEl = document.getElementById('overviewCards');
+  const detailsEl = document.getElementById('overviewDetails');
+  if (cardsEl && !cardsEl.innerHTML.trim()) {
+    cardsEl.innerHTML = '<div class="cards">' +
+      Array(5).fill('<div class="skeleton skeleton-card"></div>').join('') +
+      '</div>';
+  }
+  if (detailsEl && !detailsEl.innerHTML.trim()) {
+    detailsEl.innerHTML = '<div class="detail-panel">' +
+      '<h3>Node Resource Utilization</h3>' +
+      Array(3).fill('<div class="skeleton skeleton-row"></div>').join('') +
+      '</div>';
+  }
+
   try {
     const [data, nodesData] = await Promise.all([
       fetchJSON('/api/cluster/overview'),

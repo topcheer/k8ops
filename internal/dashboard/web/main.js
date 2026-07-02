@@ -39,6 +39,10 @@ document.addEventListener('DOMContentLoaded', function() {
   if (typeof core.startNotifPolling === 'function') {
     core.startNotifPolling();
   }
+  // Start connection status monitor
+  if (typeof core.startConnMonitor === 'function') {
+    core.startConnMonitor();
+  }
 });
 
 // Check if AI provider is configured, show banner if not
