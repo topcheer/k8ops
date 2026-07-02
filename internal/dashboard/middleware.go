@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -11,6 +13,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/ggai/k8ops/internal/metrics"
 )
 
 // --- Gzip Compression Middleware ---
@@ -223,7 +227,121 @@ func (s *Server) timingMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		if elapsed > 500*time.Millisecond {
 			s.log.Warn("slow request",
 				"method", r.Method, "path", r.URL.Path,
-				"duration", elapsed.String(), "status", sc.status)
+				"duration", elapsed.String(), "status", sc.status,
+				"requestId", requestIDFromCtx(r.Context()))
 		}
 	}
+}
+
+// --- Request ID Middleware ---
+
+// requestIDKey is the context key for request IDs.
+type requestIDKey struct{}
+
+// generateRequestID creates a short random hex string.
+func generateRequestID() string {
+	b := make([]byte, 8)
+	_, _ = rand.Read(b)
+	return hex.EncodeToString(b)
+}
+
+// requestIDFromCtx extracts the request ID from context, or returns "unknown".
+func requestIDFromCtx(ctx context.Context) string {
+	if v, ok := ctx.Value(requestIDKey{}).(string); ok {
+		return v
+	}
+	return "unknown"
+}
+
+// requestIDMiddleware injects a unique request ID into the context and response header.
+func (s *Server) requestIDMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		reqID := r.Header.Get("X-Request-ID")
+		if reqID == "" {
+			reqID = generateRequestID()
+		}
+		w.Header().Set("X-Request-ID", reqID)
+		r = r.WithContext(context.WithValue(r.Context(), requestIDKey{}, reqID))
+		next.ServeHTTP(w, r)
+	})
+}
+
+// --- HTTP Metrics Middleware ---
+
+// metricsStatusCapture wraps ResponseWriter to capture status code for metrics.
+type metricsStatusCapture struct {
+	http.ResponseWriter
+	status int
+}
+
+func (m *metricsStatusCapture) WriteHeader(code int) {
+	m.status = code
+	m.ResponseWriter.WriteHeader(code)
+}
+
+// normalizePath converts a URL path to a template for metrics labels.
+// e.g. /api/pods/default/nginx-abc/logs -> /api/pods/{ns}/{name}/logs
+func normalizePath(path string) string {
+	// Remove query string
+	if idx := strings.IndexByte(path, '?'); idx >= 0 {
+		path = path[:idx]
+	}
+	parts := strings.Split(path, "/")
+	if len(parts) <= 3 {
+		return path
+	}
+	// /api/pods/{ns}/{name}/... -> normalize namespace/name segments
+	if len(parts) >= 2 && parts[1] == "api" {
+		if len(parts) >= 5 && parts[2] == "pods" {
+			// /api/pods/{ns}/{name}/action
+			parts[3] = "{ns}"
+			parts[4] = "{name}"
+			return strings.Join(parts, "/")
+		}
+		if len(parts) >= 4 && parts[2] == "nodes" {
+			// /api/nodes/{node}/pods
+			parts[3] = "{node}"
+			return strings.Join(parts, "/")
+		}
+		if len(parts) >= 4 && (parts[2] == "diagnostics" || parts[2] == "remediation") {
+			// /api/diagnostics/{name} or /api/remediation/{name}
+			parts[3] = "{name}"
+			return strings.Join(parts, "/")
+		}
+		if len(parts) >= 4 && parts[2] == "audit" && parts[3] == "events" {
+			return path
+		}
+	}
+	return path
+}
+
+// httpMetricsMiddleware records Prometheus metrics for each HTTP request.
+func (s *Server) httpMetricsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Skip static assets and SSE streams
+		path := r.URL.Path
+		if !strings.HasPrefix(path, "/api/") && path != "/healthz" && path != "/readyz" {
+			next.ServeHTTP(w, r)
+			return
+		}
+		normPath := normalizePath(path)
+
+		start := time.Now()
+		metrics.HTTPRequestsInFlight.Inc()
+		defer metrics.HTTPRequestsInFlight.Dec()
+
+		sc := &metricsStatusCapture{ResponseWriter: w, status: 200}
+		next.ServeHTTP(sc, r)
+
+		elapsed := time.Since(start).Seconds()
+		statusStr := fmt.Sprintf("%d", sc.status)
+
+		metrics.HTTPRequestsTotal.WithLabelValues(r.Method, normPath, statusStr).Inc()
+		metrics.HTTPRequestDuration.WithLabelValues(r.Method, normPath).Observe(elapsed)
+
+		// Track API errors (4xx + 5xx)
+		if sc.status >= 400 {
+			metrics.APIErrorsTotal.WithLabelValues(r.Method, normPath, statusStr).Inc()
+		}
+	})
 }

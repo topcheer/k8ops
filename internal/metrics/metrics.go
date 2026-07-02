@@ -87,4 +87,31 @@ var (
 		Name: "k8ops_tool_executions_total",
 		Help: "Total tool executions",
 	}, []string{"tool", "success"})
+
+	// --- HTTP / API Metrics ---
+
+	// HTTPRequestsTotal counts HTTP requests by method, path, and status.
+	HTTPRequestsTotal = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "k8ops_http_requests_total",
+		Help: "Total HTTP requests processed",
+	}, []string{"method", "path", "status"})
+
+	// HTTPRequestDuration tracks HTTP request latency.
+	HTTPRequestDuration = promauto.NewHistogramVec(prometheus.HistogramOpts{
+		Name:    "k8ops_http_request_duration_seconds",
+		Help:    "HTTP request duration in seconds",
+		Buckets: []float64{0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10},
+	}, []string{"method", "path"})
+
+	// HTTPRequestsInFlight tracks concurrent requests being processed.
+	HTTPRequestsInFlight = promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "k8ops_http_requests_in_flight",
+		Help: "Number of HTTP requests currently being processed",
+	})
+
+	// APIErrorsTotal counts API errors (4xx/5xx) by path.
+	APIErrorsTotal = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "k8ops_api_errors_total",
+		Help: "Total API error responses (4xx + 5xx)",
+	}, []string{"method", "path", "status"})
 )

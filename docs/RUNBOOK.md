@@ -13,6 +13,7 @@
 5. [备份与恢复](#5-备份与恢复)
 6. [性能调优](#6-性能调优)
 7. [紧急联系人](#7-紧急联系人)
+8. [SLO/SLA 定义](#8-slosla-定义)
 
 ---
 
@@ -412,6 +413,76 @@ k8ops 暴露以下自定义指标（`/metrics` 端点）：
 | `k8ops_cluster_health_score` | Gauge | - | 集群健康分 (0-100) |
 | `k8ops_conversation_count` | Gauge | - | 活跃对话数 |
 | `k8ops_tool_executions_total` | Counter | tool, success | 工具执行总数 |
+| `k8ops_http_requests_total` | Counter | method, path, status | HTTP 请求总数 |
+| `k8ops_http_request_duration_seconds` | Histogram | method, path | HTTP 请求延迟 |
+| `k8ops_http_requests_in_flight` | Gauge | - | 当前处理中的请求数 |
+| `k8ops_api_errors_total` | Counter | method, path, status | API 错误数 (4xx+5xx) |
+
+---
+
+## 8. SLO/SLA 定义
+
+### 8.1 服务等级目标 (SLO)
+
+| 指标 | 目标 | 测量窗口 | 错误预算 |
+|------|------|----------|----------|
+| Dashboard 可用性 | 99.9% | 30天滚动 | 43.2 分钟/月 |
+| API 成功率 (非429) | 99.5% | 30天滚动 | 3.6 小时/月 |
+| API P99 延迟 | < 2s | 实时 | - |
+| AI Chat 响应时间 | < 30s (首token) | 实时 | - |
+| 安全审计扫描完成 | < 60s | 实时 | - |
+
+### 8.2 错误预算管理
+
+每月可用性目标 99.9% = **43.2 分钟错误预算**:
+
+- **预算内 (<30min)**: 正常发布节奏，无需额外审批
+- **预算警告 (30-43min)**: 冻结非紧急变更，优先修复可靠性问题
+- **预算耗尽 (>43min)**: 全面冻结发布，进行事后复盘 (post-mortem)
+
+### 8.3 SLO 监控查询 (Prometheus PromQL)
+
+**API 错误率 (5分钟):**
+```promql
+sum(rate(k8ops_api_errors_total{status=~"5.."}[5m])) by (path)
+/ sum(rate(k8ops_http_requests_total[5m])) by (path)
+```
+
+**API P99 延迟:**
+```promql
+histogram_quantile(0.99,
+  sum(rate(k8ops_http_request_duration_seconds_bucket[5m])) by (le, path)
+)
+```
+
+**错误预算消耗率:**
+```promql
+1 - (
+  sum(rate(k8ops_http_requests_total{status!~"5.."}[30d]))
+  / sum(rate(k8ops_http_requests_total[30d]))
+)
+```
+
+### 8.4 降级策略
+
+当 SLO 即将被打破时，按优先级降级：
+
+1. **禁用 AI Chat** — 最高资源消耗功能，降级后不影响核心 K8s 管理
+2. **增加缓存 TTL** — 将 overview/nodes/pods 缓存从 30s 提升到 120s
+3. **限制并发诊断** — 降低 `k8ops_active_diagnostics` 上限
+4. **关闭事件收集器** — `--disable-event-collector` 标志
+
+### 8.5 请求追踪
+
+所有 HTTP 响应包含 `X-Request-ID` 头，用于：
+- 日志关联 — 同一请求的所有日志行共享 request_id
+- 审计追踪 — 审计日志中的 request_id 可关联到具体 HTTP 请求
+- 故障排查 — 用户报告问题时提供 request_id 可快速定位日志
+
+日志查询示例:
+```bash
+kubectl logs -n k8ops-system -l app.kubernetes.io/name=k8ops | grep "a1b2c3d4e5f6"
+```
 
 ---
 

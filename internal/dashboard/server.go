@@ -183,7 +183,7 @@ func (s *Server) Start(addr string) error {
 
 	s.server = &http.Server{
 		Addr:         addr,
-		Handler:      s.gzipMiddleware(s.securityHeadersMiddleware(s.corsMiddleware(handler))),
+		Handler:      s.requestIDMiddleware(s.httpMetricsMiddleware(s.gzipMiddleware(s.securityHeadersMiddleware(s.corsMiddleware(handler))))),
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 0, // no WriteTimeout: SSE streaming can take arbitrarily long
 		IdleTimeout:  120 * time.Second,
