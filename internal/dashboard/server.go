@@ -57,6 +57,7 @@ type Server struct {
 	tlsCert            string
 	tlsKey             string
 	startTime          *time.Time
+	perfTracker        *apiPerformanceTracker
 }
 
 // New creates a new dashboard server.
@@ -88,6 +89,7 @@ func New(k8sClient client.Client, config *rest.Config, scheme *runtime.Scheme, a
 		log:                log,
 		corsAllowedOrigins: allowedOrigins,
 		startTime:          &now,
+		perfTracker:        newAPIPerformanceTracker(5000),
 	}, nil
 }
 
@@ -114,6 +116,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/system/info", s.handleSystemInfo)
 	mux.HandleFunc("/api/system/log/rotate", s.adminOnlyMiddleware(s.handleLogRotate))
 	mux.HandleFunc("/api/system/log/cleanup", s.adminOnlyMiddleware(s.handleLogCleanup))
+	mux.HandleFunc("/api/system/performance", s.cacheMiddleware(15*time.Second, s.handleAPIPerformance))
 	mux.HandleFunc("/api/exec", s.handleQuickExec) // NL-to-kubectl quick command execution
 	mux.HandleFunc("/api/cluster/overview", s.cacheMiddleware(30*time.Second, s.handleClusterOverview))
 	mux.HandleFunc("/api/diagnostics", s.handleDiagnostics)

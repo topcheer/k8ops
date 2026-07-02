@@ -343,5 +343,15 @@ func (s *Server) httpMetricsMiddleware(next http.Handler) http.Handler {
 		if sc.status >= 400 {
 			metrics.APIErrorsTotal.WithLabelValues(r.Method, normPath, statusStr).Inc()
 		}
+
+		// Record in performance tracker for percentile computation
+		if s.perfTracker != nil {
+			s.perfTracker.Record(APISample{
+				Method:   r.Method,
+				Path:     normPath,
+				Duration: time.Since(start),
+				Status:   sc.status,
+			})
+		}
 	})
 }
