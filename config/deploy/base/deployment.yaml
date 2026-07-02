@@ -7,6 +7,12 @@ metadata:
     app.kubernetes.io/name: k8ops
 spec:
   replicas: 1
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: k8ops
@@ -16,6 +22,8 @@ spec:
         app.kubernetes.io/name: k8ops
     spec:
       serviceAccountName: k8ops
+      priorityClassName: system-cluster-critical
+      terminationGracePeriodSeconds: 30
       containers:
       - name: k8ops
         image: ghcr.io/ggai/k8ops:latest

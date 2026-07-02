@@ -477,3 +477,48 @@ kubectl rollout history daemonset/k8ops -n k8ops-system --revision=55
 | v14.30 (alpine) | 31.8 MB |
 | v14.35 (distroless) | 28.6 MB |
 
+### 高可用配置
+
+#### PodDisruptionBudget (PDB)
+
+确保节点维护期间至少 1 个 Pod 可用：
+
+```yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: k8ops-pdb
+  namespace: k8ops-system
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: k8ops
+```
+
+#### NetworkPolicy
+
+限制 Dashboard 仅接受来自 Ingress Controller 的流量：
+
+- Ingress: 仅 kube-system namespace 可访问 9090 (dashboard)
+- Ingress: 仅 monitoring namespace 可访问 8080 (metrics)
+- Egress: 允许 DNS (53)、HTTPS (443)、K8s API (6443)
+
+#### PriorityClass
+
+k8ops 使用 `system-cluster-critical` 优先级，确保在资源压力下不被驱逐。
+
+#### 滚动更新策略
+
+| 模式 | maxUnavailable | maxSurge | 说明 |
+|------|---------------|----------|------|
+| DaemonSet | 1 | - | 每次更新 1 个节点 |
+| Deployment | 0 | 1 | 先启新 Pod 再删旧 Pod |
+
+#### 资源配额
+
+| 模式 | CPU Request | CPU Limit | Mem Request | Mem Limit |
+|------|-------------|-----------|-------------|-----------|
+| DaemonSet | 100m | 1 | 128Mi | 1Gi |
+| Deployment | 500m | 2 | 512Mi | 2Gi |
+

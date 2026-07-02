@@ -1,0 +1,84 @@
+# PodDisruptionBudget for k8ops — ensures availability during voluntary disruptions
+# (node drains, cluster autoscaler, planned maintenance).
+# In DaemonSet mode, this guarantees at least 1 pod stays available per node.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: k8ops-pdb
+  namespace: k8ops-system
+  labels:
+    app.kubernetes.io/name: k8ops
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: k8ops
+---
+# NetworkPolicy for k8ops — restricts ingress to dashboard port (9090)
+# and metrics port (8080) to only within the cluster.
+# This prevents external access to the dashboard bypassing Ingress/TLS.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: k8ops-netpol
+  namespace: k8ops-system
+  labels:
+    app.kubernetes.io/name: k8ops
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: k8ops
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow dashboard access from Traefik/Ingress namespace
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    ports:
+    - protocol: TCP
+      port: 9090
+  # Allow metrics scraping from monitoring namespace
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: monitoring
+    ports:
+    - protocol: TCP
+      port: 8080
+  # Allow health probe from within same namespace
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: k8ops-system
+    ports:
+    - protocol: TCP
+      port: 8081
+  egress:
+  # Allow DNS
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  # Allow HTTPS to AI providers
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 443
+  # Allow Kubernetes API server
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 6443
+  # Allow localhost (health checks, metrics)
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: k8ops
