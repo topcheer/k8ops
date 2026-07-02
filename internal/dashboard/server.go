@@ -139,6 +139,8 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/yaml", s.handleYAML)                  // view YAML of any resource
 	mux.HandleFunc("/api/yaml/apply", s.handleYAMLApply)        // apply YAML (kubectl apply)
 	mux.HandleFunc("/api/scale", s.handleScale)                 // scale deployment/statefulset
+	mux.HandleFunc("/api/pod/delete", s.handlePodDelete)         // delete a single pod
+	mux.HandleFunc("/api/rollout/restart", s.handleRolloutRestart) // restart deployment/daemonset/statefulset
 
 	// Cost / FinOps
 	mux.HandleFunc("/api/cost/summary", s.cacheMiddleware(60*time.Second, s.handleCostSummary))                       // 1min cache

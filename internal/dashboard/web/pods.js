@@ -59,10 +59,31 @@ export async function loadPods(forceRefresh) {
           <button onclick="openLogViewer('${escapeHtml(p.namespace)}','${escapeHtml(p.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">Logs</button>
           <button onclick="openTerminal('${escapeHtml(p.namespace)}','${escapeHtml(p.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">Terminal</button>
           <button onclick="viewYAML('pods','${escapeHtml(p.namespace)}','${escapeHtml(p.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">YAML</button>
+          <button onclick="deletePod('${escapeHtml(p.namespace)}','${escapeHtml(p.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;color:#f85149;">Delete</button>
         </td>
       </tr>`).join('')}</tbody>
     </table>`;
   } catch(e) { container.innerHTML = `<div class="empty">Error: ${escapeHtml(e.message)}</div>`; }
+}
+
+export async function deletePod(ns, name) {
+  if (!confirm(`Delete pod "${name}" in "${ns}"?\nThe controller will recreate it if managed.`)) return;
+  try {
+    const resp = await fetch('/api/pod/delete', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({namespace: ns, name: name}),
+    });
+    const data = await resp.json();
+    if (data.error) {
+      showToast('Delete failed: ' + data.error, 'error');
+    } else {
+      showToast(`Pod "${name}" deleted`, 'success');
+      loadPods();
+    }
+  } catch(e) {
+    showToast('Delete failed: ' + e.message, 'error');
+  }
 }
 
 // --- Audit ---

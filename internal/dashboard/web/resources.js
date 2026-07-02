@@ -105,6 +105,7 @@ export async function loadResources(forceRefresh) {
         <td>
           <button onclick="viewYAML('${escapeHtml(kind)}','${escapeHtml(r.namespace)}','${escapeHtml(r.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;">YAML</button>
           ${(kind==='deployments'||kind==='statefulsets') ? `<button onclick="scaleWorkload('${escapeHtml(kind).replace(/s$/,'')}','${escapeHtml(r.namespace)}','${escapeHtml(r.name)}',${(r.ready||'0/0').split('/')[1]})" class="btn-secondary" style="font-size:12px;padding:4px 10px;color:#58a6ff;">Scale</button>` : ''}
+          ${(kind==='deployments'||kind==='statefulsets'||kind==='daemonsets') ? `<button onclick="rolloutRestart('${escapeHtml(kind).replace(/s$/,'')}','${escapeHtml(r.namespace)}','${escapeHtml(r.name)}')" class="btn-secondary" style="font-size:12px;padding:4px 10px;color:#d29922;">Restart</button>` : ''}
         </td>
       </tr>`;
     }).join('')}</tbody></table>`;
@@ -460,8 +461,27 @@ export function updateLogStatus() {
   }
 }
 
-export async function scaleWorkload(kind, ns, name, currentReplicas) {
-  const input = prompt(`Scale ${kind} "${name}" in "${ns}"\nCurrent replicas: ${currentReplicas}\nEnter new replica count (0-1000):`, currentReplicas);
+export async function rolloutRestart(kind, ns, name) {
+  if (!confirm(`Rollout restart ${kind} "${name}" in "${ns}"?`)) return;
+  try {
+    const resp = await fetch('/api/rollout/restart', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({namespace: ns, kind: kind, name: name}),
+    });
+    const data = await resp.json();
+    if (data.error) {
+      showToast('Restart failed: ' + data.error, 'error');
+    } else {
+      showToast(`${kind} "${name}" rollout restart triggered`, 'success');
+      setTimeout(() => loadResources(), 2000);
+    }
+  } catch(e) {
+    showToast('Restart failed: ' + e.message, 'error');
+  }
+}
+
+export async function scaleWorkload(kind, ns, name, currentReplicas) {  const input = prompt(`Scale ${kind} "${name}" in "${ns}"\nCurrent replicas: ${currentReplicas}\nEnter new replica count (0-1000):`, currentReplicas);
   if (input === null) return;
   const replicas = parseInt(input, 10);
   if (isNaN(replicas) || replicas < 0 || replicas > 1000) {
