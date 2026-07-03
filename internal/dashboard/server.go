@@ -195,6 +195,7 @@ func (s *Server) Start(addr string) error {
 	// Storage & Capacity Planning
 	mux.HandleFunc("/api/storage/capacity", s.cacheMiddleware(60*time.Second, s.handleStorageCapacity)) // 1min cache
 	mux.HandleFunc("/api/capacity/planning", s.cacheMiddleware(60*time.Second, s.handleCapacityPlanning))
+	mux.HandleFunc("/api/capacity/forecast", s.cacheMiddleware(120*time.Second, s.handleCapacityForecast)) // 2min cache
 
 	// Cluster efficiency analysis
 	mux.HandleFunc("/api/efficiency", s.cacheMiddleware(60*time.Second, s.handleEfficiency))
