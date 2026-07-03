@@ -275,3 +275,75 @@ All errors return JSON:
 | `viewer` | Read-only dashboard + chat |
 | `ns-admin` | Admin within assigned namespaces only |
 | `ns-viewer` | Viewer within assigned namespaces only |
+
+## 新增端点 (v14.48-v14.53)
+
+以下端点在 v14.48 至 v14.53 期间新增，已纳入 OpenAPI 3.0 规范。
+
+### 容器镜像清单
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/images` | 集群中所有容器镜像清单，含资源限制审计和 `:latest` 标签检测 |
+
+**响应摘要字段：** `totalImages`, `withoutLimits`, `withoutRequests`, `usingLatestTag`, `uniqueRegistries`
+
+### 警告事件汇总
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/events/summary` | 按 Reason 聚合所有 Warning 事件，含严重级别分类和受影响命名空间统计 |
+
+### 集群效率分析
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/efficiency` | 集群资源效率分析：无限制 Pod、过度配置容器、未充分利用节点，效率评分 0-100 |
+
+### 安全：Secret 暴露扫描
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/security/secrets` | 检测硬编码凭据、Secret 轮换跟踪（90天）、未使用 Secret、敏感键名 |
+
+### 审计搜索与导出
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/audit/events` | 审计事件搜索：支持 `actor`、`action`、`q`（全文搜索）、`severity`、日期范围过滤 |
+| GET | `/api/audit/export` | 导出审计事件为 CSV 格式（可导入 SIEM 系统） |
+
+### 备份管理
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/system/backup` | 列出所有备份文件（大小、年龄、类型） |
+| POST | `/api/system/backup` | 创建数据库备份（时间戳命名） |
+| DELETE | `/api/system/backup?name=X` | 删除指定备份（防路径遍历） |
+| POST | `/api/system/backup/restore?name=X` | 从备份恢复数据库 |
+
+### Alertmanager Webhook
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/webhooks/alertmanager` | 接收 Prometheus Alertmanager v4 告警，自动生成调查建议 |
+| POST | `/api/webhooks/alertmanager/test` | 发送测试告警验证接收器 |
+
+**Alertmanager 配置示例：**
+```yaml
+receivers:
+  - name: k8ops
+    webhook_configs:
+      - url: http://k8ops.k8ops-system.svc:9090/api/webhooks/alertmanager
+        send_resolved: true
+```
+
+### 变更日志
+
+| 版本 | 端点 | 维度 |
+|------|------|------|
+| v14.49 | `GET /api/events/summary` | Product |
+| v14.50 | 启动探针 + preStop | Deployment |
+| v14.51 | `POST /api/webhooks/alertmanager` | Operations |
+| v14.52 | `GET /api/efficiency` | Scalability |
+| v14.53 | `GET /api/security/secrets` | Security |

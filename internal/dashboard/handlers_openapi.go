@@ -540,6 +540,113 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// Images
+	add("/api/images", "get", OpenAPIOperation{
+		Summary: "Container image inventory", OperationID: "getImages", Tags: []string{"Images"},
+		Description: "Lists all container images in the cluster with usage, resource limit auditing, and :latest tag detection.",
+		Parameters:  []OpenAPIParam{},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Image list", map[string]interface{}{
+				"count": 15, "items": []interface{}{}, "summary": map[string]interface{}{},
+			}),
+		},
+	})
+
+	// Events summary
+	add("/api/events/summary", "get", OpenAPIOperation{
+		Summary: "Warning event summary by reason", OperationID: "getEventSummary", Tags: []string{"Events"},
+		Description: "Aggregates all cluster Warning events by reason, with severity classification (critical/warning) and affected namespace tracking.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Event summary", map[string]interface{}{
+				"summary": map[string]interface{}{"totalReasons": 5, "totalWarnings": 42, "criticalCount": 2},
+				"items":   []interface{}{},
+			}),
+		},
+	})
+
+	// Efficiency
+	add("/api/efficiency", "get", OpenAPIOperation{
+		Summary: "Cluster efficiency analysis", OperationID: "getEfficiency", Tags: []string{"Scalability"},
+		Description: "Analyzes cluster for resource waste: pods without limits, over-provisioned containers (limit/request >10x), underutilized nodes (<20%). Returns efficiency score (0-100) and recommendations.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Efficiency report", map[string]interface{}{
+				"score": 85.0, "recommendations": []interface{}{}, "stats": map[string]interface{}{},
+			}),
+		},
+	})
+
+	// Security: Secret exposure
+	add("/api/security/secrets", "get", OpenAPIOperation{
+		Summary: "Secret exposure scanner", OperationID: "getSecretExposure", Tags: []string{"Security", "Secrets"},
+		Description: "Scans for hardcoded credentials in pod env vars, tracks secret rotation (90d), detects unused secrets, and identifies sensitive key names in Opaque secrets.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Secret exposure report", map[string]interface{}{
+				"summary": map[string]interface{}{"totalSecrets": 8, "exposedEnvVars": 2, "unusedSecrets": 1},
+			}),
+		},
+	})
+
+	// Backup management
+	add("/api/system/backup", "get", OpenAPIOperation{
+		Summary: "List database backups", OperationID: "listBackups", Tags: []string{"System", "Backup"},
+		Description: "Lists available database backup files with size, age, and type information.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Backup list", map[string]interface{}{
+				"backups": []interface{}{}, "summary": map[string]interface{}{"count": 3},
+			}),
+		},
+	})
+	add("/api/system/backup", "post", OpenAPIOperation{
+		Summary: "Create database backup", OperationID: "createBackup", Tags: []string{"System", "Backup"},
+		Description: "Creates a timestamped database backup by copying the SQLite DB to /data/backups/.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Backup created", map[string]interface{}{"success": true}),
+		},
+	})
+
+	// Alertmanager webhook
+	add("/api/webhooks/alertmanager", "post", OpenAPIOperation{
+		Summary: "Receive Prometheus Alertmanager alerts", OperationID: "receiveAlerts", Tags: []string{"Alerts", "Operations"},
+		Description: "Receives Alertmanager v4 webhook payloads. Parses alerts, generates investigation hints based on alert type, and logs to audit trail. Configure in Alertmanager: webhook_configs url: http://k8ops.k8ops-system.svc:9090/api/webhooks/alertmanager",
+		RequestBody: bodyParam("Alertmanager webhook payload", map[string]interface{}{
+			"status": "firing", "alerts": []interface{}{},
+		}),
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Alerts received", map[string]interface{}{
+				"received": true, "firing": 1, "resolved": 0,
+			}),
+		},
+	})
+
+	// Audit search and export
+	add("/api/audit/events", "get", OpenAPIOperation{
+		Summary: "Search audit events", OperationID: "searchAuditEvents", Tags: []string{"Audit", "Security"},
+		Description: "Searches audit events with filters: severity, actor, action, full-text search (q), date range (from/to), pagination.",
+		Parameters: []OpenAPIParam{
+			{Name: "page", In: "query", Required: false, Schema: map[string]interface{}{"type": "integer"}, Description: "Page number (default: 1)"},
+			{Name: "limit", In: "query", Required: false, Schema: map[string]interface{}{"type": "integer"}, Description: "Items per page (default: 50, max: 500)"},
+			{Name: "severity", In: "query", Required: false, Schema: map[string]interface{}{"type": "string"}, Description: "Filter by severity: critical, warning, info"},
+			{Name: "actor", In: "query", Required: false, Schema: map[string]interface{}{"type": "string"}, Description: "Filter by actor (username)"},
+			{Name: "action", In: "query", Required: false, Schema: map[string]interface{}{"type": "string"}, Description: "Filter by action type (e.g. delete, scale, exec)"},
+			{Name: "q", In: "query", Required: false, Schema: map[string]interface{}{"type": "string"}, Description: "Full-text search across all fields"},
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Audit events", map[string]interface{}{"items": []interface{}{}, "total": 100}),
+		},
+	})
+	add("/api/audit/export", "get", OpenAPIOperation{
+		Summary: "Export audit events as CSV", OperationID: "exportAuditEvents", Tags: []string{"Audit", "Security"},
+		Description: "Exports filtered audit events as CSV for SIEM/compliance. Columns: ID, Timestamp, Severity, Actor, Action, Target, Success, Detail.",
+		Parameters: []OpenAPIParam{
+			{Name: "severity", In: "query", Required: false, Schema: map[string]interface{}{"type": "string"}, Description: "Filter by severity"},
+			{Name: "from", In: "query", Required: false, Schema: map[string]interface{}{"type": "string"}, Description: "Start date (RFC3339)"},
+			{Name: "to", In: "query", Required: false, Schema: map[string]interface{}{"type": "string"}, Description: "End date (RFC3339)"},
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": {Description: "CSV file"},
+		},
+	})
+
 	return spec
 }
 
