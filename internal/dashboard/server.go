@@ -130,6 +130,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/exec", s.handleQuickExec) // NL-to-kubectl quick command execution
 	mux.HandleFunc("/api/cluster/overview", s.cacheMiddleware(30*time.Second, s.handleClusterOverview))
 	mux.HandleFunc("/api/diagnostics", s.handleDiagnostics)
+	mux.HandleFunc("/api/diagnostics/restarts", s.cacheMiddleware(30*time.Second, s.handleRestartDiagnosis)) // pod restart diagnosis
 	mux.HandleFunc("/api/diagnostics/history", s.handleDiagnosticsHistory) // must be before catch-all
 	mux.HandleFunc("/api/diagnostics/", s.handleDiagnosticDetail)
 	mux.HandleFunc("/api/remediations", s.handleRemediations)
