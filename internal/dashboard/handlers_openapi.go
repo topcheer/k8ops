@@ -839,6 +839,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- PV/PVC Storage Health Monitor (v14.70+) ---
+	add("/api/storage/health", "get", OpenAPIOperation{
+		Summary: "PV/PVC storage health monitor", OperationID: "storageHealth", Tags: []string{"Storage", "Scalability"},
+		Description: "Scans all PersistentVolumeClaims and PersistentVolumes for storage health issues. Detects: PVCs stuck in Pending (provisioning failures, missing storage class, WaitForFirstConsumer), orphaned PVCs (bound but not mounted by any pod), lost PVCs, released/failed PVs needing manual cleanup, stale Available PVs wasting storage capacity. Provides storage class distribution with default class detection, reclaim policy analysis, and volume expansion capability reporting.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Storage health report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPVCs":    25,
+					"pvcByStatus":  map[string]int{"bound": 20, "pending": 2, "orphaned": 3},
+					"pendingPVCs":  2,
+					"orphanedPVCs": 3,
+					"totalPVs":     28,
+					"releasedPVs":  1,
+				},
+				"pvcs":           []interface{}{},
+				"orphanedPVs":    []interface{}{},
+				"storageClasses": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
