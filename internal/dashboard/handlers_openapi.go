@@ -783,6 +783,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- RBAC Permission Risk Analyzer (v14.67+) ---
+	add("/api/security/rbac-risk", "get", OpenAPIOperation{
+		Summary: "RBAC permission risk analyzer", OperationID: "rbacRiskScan", Tags: []string{"Security"},
+		Description: "Comprehensive RBAC analysis: maps all subjects (users/groups/service accounts) to effective permissions, identifies over-privileged accounts, detects privilege escalation paths (can modify RBAC bindings), wildcard access, sensitive resource access (secrets, exec), and unused bindings to non-existent SAs. Risk scoring 0-100 per subject.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("RBAC risk report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalSubjects": 25, "clusterScoped": 8,
+					"privilegeEscalation": 2, "wildcardAccess": 3,
+					"byRiskLevel": map[string]int{"critical": 1, "high": 3, "medium": 8, "low": 13},
+				},
+				"subjects": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
