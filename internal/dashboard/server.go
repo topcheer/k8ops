@@ -193,6 +193,8 @@ func (s *Server) Start(addr string) error {
 
 	// Slack webhook — admin-only endpoint
 	mux.Handle("/api/webhooks/slack", s.adminOnlyMiddleware(s.handleSlackWebhook))
+	mux.HandleFunc("/api/webhooks/alertmanager", s.handleAlertmanagerWebhook) // Prometheus Alertmanager
+	mux.HandleFunc("/api/webhooks/alertmanager/test", s.handleAlertTest)      // Test endpoint
 
 	// Auth routes
 	if s.auth != nil {
