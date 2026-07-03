@@ -909,6 +909,29 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Resource Quota & Limit Range Monitor (v14.74+) ---
+	add("/api/resources/quota", "get", OpenAPIOperation{
+		Summary: "ResourceQuota & LimitRange monitor", OperationID: "quotaMonitor", Tags: []string{"Product", "Resources"},
+		Description: "Scans all namespaces for ResourceQuota utilization and LimitRange defaults. Tracks CPU/memory/pod/configmap/secret/storage quotas per namespace with 4 usage levels: ok (<70%), warning (70-85%), critical (85-100%), exceeded (>100%). Identifies namespaces without quota protection. Provides top offenders ranking and LimitRange default/min/max constraint analysis.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Quota utilization report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNamespaces":   25,
+					"withQuota":         15,
+					"withoutQuota":      10,
+					"exceededResources": 3,
+					"criticalResources": 5,
+					"byStatus":          map[string]int{"ok": 40, "warning": 5, "critical": 5, "exceeded": 3},
+				},
+				"namespaces":   []interface{}{},
+				"topOffenders": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 

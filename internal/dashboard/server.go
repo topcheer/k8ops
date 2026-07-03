@@ -210,6 +210,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/addons/health", s.cacheMiddleware(120*time.Second, s.handleAddonScan))                 // 2min cache
 	mux.HandleFunc("/api/deployments/rollout", s.cacheMiddleware(30*time.Second, s.handleRolloutStatus))        // deployment rollout health
 	mux.HandleFunc("/api/resources/waste", s.cacheMiddleware(60*time.Second, s.handleWasteDetection))           // resource waste detection
+	mux.HandleFunc("/api/resources/quota", s.cacheMiddleware(60*time.Second, s.handleQuotaMonitor))             // ResourceQuota & LimitRange monitor
 	mux.HandleFunc("/api/scaling/bottlenecks", s.cacheMiddleware(60*time.Second, s.handleScalingBottlenecks))   // scaling bottleneck detection
 	mux.HandleFunc("/api/security/rbac-risk", s.cacheMiddleware(120*time.Second, s.handleRBACRiskScan))         // RBAC permission risk analysis
 	mux.HandleFunc("/api/security/service-accounts", s.cacheMiddleware(120*time.Second, s.handleSAAudit))       // ServiceAccount security audit
