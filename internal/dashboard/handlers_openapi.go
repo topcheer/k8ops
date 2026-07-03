@@ -886,6 +886,29 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- SLO/SLA Error Budget Tracker (v14.73+) ---
+	add("/api/operations/slo", "get", OpenAPIOperation{
+		Summary: "SLO/SLA error budget tracker", OperationID: "sloReport", Tags: []string{"Operations", "SRE"},
+		Description: "Computes SLO/SLA compliance from API metrics. Tracks availability against configurable targets (99.9%/99.5%/99.0%/95.0%), error budget consumption, multi-window analysis (5m/1h/6h/24h), burn rate (SRE 14.4x alert threshold), per-endpoint error rates, and latency SLO (p99 < 500ms). Provides overall verdict: healthy/warning/at-risk/violated.",
+		Parameters: []OpenAPIParam{
+			queryParam("target", "SLO target: 99.9, 99.5, 99.0, or 95.0 (default: 99.9)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("SLO compliance report", map[string]interface{}{
+				"target":        "99.9%",
+				"availability":  99.95,
+				"totalRequests": 10000,
+				"errorRequests": 5,
+				"errorRate":     0.05,
+				"verdict":       "warning",
+				"windows":       []interface{}{},
+				"byEndpoint":    []interface{}{},
+				"latencySLO":    map[string]interface{}{"target": "p99 < 500ms", "p99Ms": 45.3},
+				"burnRate":      map[string]interface{}{"budgetMinutesPerMonth": 43.2, "consumedPercent": 50.0},
+			}),
+		},
+	})
+
 	return spec
 }
 
