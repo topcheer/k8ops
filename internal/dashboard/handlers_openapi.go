@@ -863,6 +863,29 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- ServiceAccount Security Audit (v14.72+) ---
+	add("/api/security/service-accounts", "get", OpenAPIOperation{
+		Summary: "ServiceAccount security audit", OperationID: "serviceAccountAudit", Tags: []string{"Security"},
+		Description: "Comprehensive ServiceAccount security audit. Detects: unused SAs (>7 days, attack surface reduction), default SA used by pods (least-privilege violation), unnecessary token automounting, SAs bound to cluster-admin (critical), SAs with cluster-wide permissions, stale SAs with active permissions but no pod usage (>30 days), legacy long-lived token secrets (K8s <1.24). Provides risk score (0-100) and 5 severity levels per SA.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("ServiceAccount audit report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalServiceAccounts":    25,
+					"unusedServiceAccounts":   5,
+					"defaultSAUsedByPods":     3,
+					"tokenAutoMountEnabled":   20,
+					"highRiskServiceAccounts": 2,
+					"bySeverity":              map[string]int{"critical": 1, "high": 1, "medium": 3, "low": 5, "info": 15},
+				},
+				"serviceAccounts": []interface{}{},
+				"issues":          []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
