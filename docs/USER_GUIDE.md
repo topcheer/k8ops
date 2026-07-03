@@ -27,6 +27,7 @@
 19. [命名空间资源排行](#19-命名空间资源排行)
 20. [安全合规](#20-安全合规)
 21. [系统管理](#21-系统管理)
+22. [运维诊断 API](#22-运维诊断-apiv1461)
 
 ---
 
@@ -635,3 +636,51 @@ kubectl rollout restart daemonset/k8ops -n k8ops-system
 - **p50/p95/p99** 百分位延迟
 - 平均和最大延迟
 - 错误率和请求总数
+
+---
+
+## 22. 运维诊断 API（v14.61+）
+
+### Network Policy 审计
+
+`GET /api/security/network-policies` 审计集群的 NetworkPolicy 覆盖情况：
+
+- 检测无 NetworkPolicy 的命名空间（默认全开放）
+- 识别宽松策略（0.0.0.0/0 入站/出站）
+- 按严重级别分类：critical / warning / info
+- 每个发现包含详细描述和修复建议
+
+### Pod 重启诊断
+
+`GET /api/diagnostics/restarts` 诊断 Pod 重启模式和根因：
+
+- 分类重启模式：crash-loop / occasional / post-deploy
+- 提取终止原因：OOMKilled / Error / 退出码
+- 识别等待状态：CrashLoopBackOff / ImagePullBackOff
+- 每个容器独立的诊断信息
+
+### 部署 Rollout 状态
+
+`GET /api/deployments/rollout` 追踪所有工作负载的 rollout 健康状态：
+
+- 覆盖 Deployment / StatefulSet / DaemonSet
+- 7 种状态：complete / in-progress / stalled / degraded / paused / failed / scaled-to-zero
+- 检测 ProgressDeadlineExceeded 和 ReplicaFailure
+- 支持按状态过滤：`?status=failed`
+
+### 资源浪费检测
+
+`GET /api/resources/waste` 扫描浪费和孤立资源以降低成本：
+
+- 6 类浪费：死服务、未用 PVC、孤立 ConfigMap/Secret、空命名空间、未绑定 PV
+- 成本风险评估：low / moderate / high
+- 每项包含严重度、年龄、清理建议
+- 智能过滤系统资源（kube-system、SA token、Helm release）
+
+### 扩展瓶颈检测
+
+`GET /api/scaling/bottlenecks` 识别限制水平扩展的因素：
+
+- 7 类瓶颈：节点调度、节点压力、配额限制、HPA 卡住、PDB 阻塞、存储耗尽
+- 集群容量摘要：节点数、CPU/内存、Pod 容量、扩展余量
+- 每项包含影响级别和修复建议

@@ -354,6 +354,11 @@ receivers:
 | v14.58 | `GET /api/addons/health` | Product |
 | v14.59 | `GET /api/capacity/forecast` | Scalability |
 | v14.60 | OpenAPI spec 补全 + API.md 更新 | Documentation |
+| v14.61 | `GET /api/security/network-policies` | Security |
+| v14.62 | `GET /api/diagnostics/restarts` | Operations |
+| v14.63 | `GET /api/deployments/rollout` | Deployment |
+| v14.64 | `GET /api/resources/waste` | Product |
+| v14.65 | `GET /api/scaling/bottlenecks` | Scalability |
 
 ### Pod Disruption Budget 状态 (v14.55+)
 
@@ -390,3 +395,99 @@ receivers:
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/api/capacity/forecast` | 预测 CPU/内存/Pod/存储 容量何时耗尽，基于增长率估算提供 days-to-exhaustion 和中文扩容建议 |
+
+### Network Policy 审计扫描 (v14.61+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/security/network-policies` | 审计 NetworkPolicy 覆盖率：检测无 NetworkPolicy 的命名空间、宽松策略（0.0.0.0/0 入/出站）、部分覆盖，按严重级别分类（critical/warning/info） |
+
+**查询参数：** `namespace`（可选，过滤命名空间）
+
+**返回示例：**
+```json
+{
+  "summary": {
+    "totalNamespaces": 27,
+    "withoutNetPol": 25,
+    "findings": 18,
+    "critical": 10,
+    "warning": 8
+  },
+  "namespaces": [...]
+}
+```
+
+### Pod 重启诊断 (v14.62+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/diagnostics/restarts` | 诊断 Pod 重启模式和根因：分类重启行为（crash-loop/occasional/post-deploy），提取终止原因（OOMKilled/Error/退出码）、等待状态（CrashLoopBackOff/ImagePullBackOff） |
+
+**查询参数：** `namespace`（可选）
+
+**诊断模式：**
+- **crash-loop**: 短时间内大量重启
+- **occasional**: 长时间少量重启
+- **post-deploy**: 部署后立即重启
+
+### 部署 Rollout 状态追踪 (v14.63+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/deployments/rollout` | 扫描所有 Deployment/StatefulSet/DaemonSet 的 rollout 健康状态：7 种状态（complete/in-progress/stalled/degraded/paused/failed/scaled-to-zero），检测 ProgressDeadlineExceeded、ReplicaFailure、generation mismatch |
+
+**查询参数：**
+- `namespace`（可选）— 过滤命名空间
+- `status`（可选）— 过滤 rollout 状态：`failed`、`degraded`、`stalled`、`in-progress`、`paused`、`scaled-to-zero`、`complete`
+
+**状态说明：**
+| 状态 | 含义 |
+|------|------|
+| `complete` | 所有副本已更新且就绪 |
+| `in-progress` | 正在进行滚动更新 |
+| `stalled` | 控制器未观察到最新 spec（generation 不匹配） |
+| `degraded` | 部分副本不可用 |
+| `paused` | Deployment 被显式暂停 |
+| `failed` | ProgressDeadlineExceeded，部署超时失败 |
+| `scaled-to-zero` | 副本数为 0 |
+
+### 资源浪费检测 (v14.64+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/resources/waste` | 扫描集群中的浪费和孤立资源以降低成本：6 类浪费（dead-service/unused-pvc/orphaned-configmap/orphaned-secret/empty-namespace/unattached-pv），4 级严重度（critical/high/medium/low），成本风险评估 |
+
+**查询参数：** `namespace`（可选）
+
+**浪费类型：**
+| 类别 | 检测内容 | 默认严重度 |
+|------|---------|-----------|
+| `dead-service` | 无后端 endpoint 的 Service（LoadBalancer 为 critical） | medium/critical |
+| `unused-pvc` | 未被任何 Pod 挂载的 PVC | high |
+| `orphaned-configmap` | 未被任何 Pod 引用的 ConfigMap | low/medium |
+| `orphaned-secret` | 未被任何 Pod 引用的 Secret（安全风险） | high |
+| `empty-namespace` | 无运行 Pod 的命名空间 | medium |
+| `unattached-pv` | Available 状态的 PV（未绑定任何 PVC） | critical |
+
+**智能过滤：** 自动跳过 kube-system 命名空间、ServiceAccount token Secret、Helm release Secret、自动生成的 ConfigMap
+
+### 扩展瓶颈检测 (v14.65+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/scaling/bottlenecks` | 扫描限制水平扩展的因素：7 类瓶颈（node-schedulable/node-pressure/resource-quota/hpa-stuck/pdb-blocking/storage-exhaust/image-pull-limit），4 级影响（critical/high/moderate/low），集群容量摘要 |
+
+**查询参数：** `namespace`（可选）
+
+**瓶颈类型：**
+| 类别 | 检测内容 |
+|------|---------|
+| `node-schedulable` | 被隔离的节点、集群 Pod 容量超限（>75% 警告 / >90% 严重） |
+| `node-pressure` | 内存、磁盘、PID 压力状态 |
+| `resource-quota` | 命名空间配额超 75%/90% |
+| `hpa-stuck` | HPA 达到最大副本数或缺失指标 |
+| `pdb-blocking` | PDB 允许 0 次自愿中断 |
+| `storage-exhaust` | 命名空间 PVC 请求超 500Gi |
+
+**集群容量摘要：** 提供节点数、CPU/内存容量与可分配量、Pod 容量与已分配量、扩展余量
