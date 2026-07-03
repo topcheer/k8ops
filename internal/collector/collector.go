@@ -159,13 +159,13 @@ func (c *EventCollector) doWatch(ctx context.Context) error {
 					GenerateName: fmt.Sprintf("auto-%s-%s-", strings.ToLower(obj.InvolvedObject.Kind), strings.ToLower(obj.Reason)),
 					Namespace:    obj.InvolvedObject.Namespace,
 					Labels: map[string]string{
-						"aiops.ggai.dev/auto":    "true",
-						"aiops.ggai.dev/reason":  obj.Reason,
+						"aiops.ggai.dev/auto":   "true",
+						"aiops.ggai.dev/reason": obj.Reason,
 					},
 				},
 				Spec: aiv1alpha1.DiagnosticReportSpec{
 					Trigger: aiv1alpha1.DiagnosticTrigger{
-						Type:        aiv1alpha1.TriggerEvent,
+						Type:         aiv1alpha1.TriggerEvent,
 						EventMessage: obj.Message,
 						Reason:       obj.Reason,
 						ResourceRef: &aiv1alpha1.ResourceRef{
@@ -189,7 +189,7 @@ func (c *EventCollector) doWatch(ctx context.Context) error {
 				"report", report.Name,
 				"reason", obj.Reason,
 				"resource", fmt.Sprintf("%s/%s/%s", obj.InvolvedObject.Kind, obj.InvolvedObject.Namespace, obj.InvolvedObject.Name),
-				)
+			)
 		}
 	}
 }

@@ -133,7 +133,7 @@ func TestSummary_TopWorkloadsLimitedTo5(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		pods = append(pods, &corev1.Pod{
 			ObjectMeta: metav1.ObjectMeta{
-				Name:   "pod-" + string(rune('a'+i)),
+				Name:      "pod-" + string(rune('a'+i)),
 				Namespace: "ns",
 				OwnerReferences: []metav1.OwnerReference{
 					{Kind: "Deployment", Name: "dep-" + string(rune('a'+i))},
@@ -316,9 +316,9 @@ func TestResourceToFloat_PresentKey(t *testing.T) {
 
 func TestRoundTo(t *testing.T) {
 	tests := []struct {
-		val     float64
+		val      float64
 		decimals int
-		want    float64
+		want     float64
 	}{
 		{0.0, 2, 0.0},
 		{1.2345, 2, 1.23},

@@ -179,8 +179,8 @@ func (t *HostProcessTool) Description() string {
 }
 func (t *HostProcessTool) Parameters() map[string]any {
 	return tools.Schema(map[string]tools.Property{
-		"sortBy":  {Type: "string", Description: "Sort by", Enum: []string{"cpu", "memory"}, Default: "cpu"},
-		"limit":   {Type: "integer", Description: "Number of processes to show", Default: 20},
+		"sortBy": {Type: "string", Description: "Sort by", Enum: []string{"cpu", "memory"}, Default: "cpu"},
+		"limit":  {Type: "integer", Description: "Number of processes to show", Default: 20},
 	}, []string{})
 }
 func (t *HostProcessTool) Execute(ctx context.Context, args map[string]any) (*tools.ToolResult, error) {
@@ -249,10 +249,10 @@ func (t *HostInfoTool) Execute(ctx context.Context, args map[string]any) (*tools
 	hostname, _ := os.Hostname()
 
 	info := map[string]any{
-		"hostname":    hostname,
-		"goOS":        runtime.GOOS,
-		"goArch":      runtime.GOARCH,
-		"numCPU":      runtime.NumCPU(),
+		"hostname": hostname,
+		"goOS":     runtime.GOOS,
+		"goArch":   runtime.GOARCH,
+		"numCPU":   runtime.NumCPU(),
 	}
 
 	// Get uptime

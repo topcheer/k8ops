@@ -27,9 +27,9 @@ func TestOpenAIProvider_SimpleCompletion(t *testing.T) {
 		}
 
 		resp := map[string]any{
-			"id":      "test-id",
-			"object":  "chat.completion",
-			"model":   "gpt-4o",
+			"id":     "test-id",
+			"object": "chat.completion",
+			"model":  "gpt-4o",
 			"choices": []map[string]any{
 				{
 					"index": 0,
@@ -122,7 +122,7 @@ func TestOpenAIProvider_ToolCall(t *testing.T) {
 		},
 		Tools: []provider.ToolDefinition{
 			{Type: "function", Function: provider.ToolFunctionSchema{
-				Name: "k8s_get_resource",
+				Name:       "k8s_get_resource",
 				Parameters: map[string]any{"type": "object"},
 			}},
 		},

@@ -62,7 +62,7 @@ func (s *RBACSyncer) SyncUserRBAC(ctx context.Context, user *User) error {
 				Name:      rbName,
 				Namespace: ns,
 				Labels: map[string]string{
-					"app.kubernetes.io/name":  "k8ops",
+					"app.kubernetes.io/name": "k8ops",
 					"k8ops.io/managed-by":    "rbac-sync",
 					"k8ops.io/user":          user.Username,
 				},

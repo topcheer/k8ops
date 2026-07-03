@@ -24,23 +24,23 @@ import (
 type EventType string
 
 const (
-	EventThinking     EventType = "thinking"
+	EventThinking      EventType = "thinking"
 	EventThinkingDelta EventType = "thinking_delta"
-	EventAnswerDelta  EventType = "answer_delta"
-	EventToolCall     EventType = "tool_call"
-	EventToolResult   EventType = "tool_result"
-	EventAnswer       EventType = "answer"
-	EventError        EventType = "error"
-	EventDone         EventType = "done"
-	EventMemory       EventType = "memory"
-	EventPing         EventType = "ping"
+	EventAnswerDelta   EventType = "answer_delta"
+	EventToolCall      EventType = "tool_call"
+	EventToolResult    EventType = "tool_result"
+	EventAnswer        EventType = "answer"
+	EventError         EventType = "error"
+	EventDone          EventType = "done"
+	EventMemory        EventType = "memory"
+	EventPing          EventType = "ping"
 )
 
 // StreamEvent is a single SSE event sent to the client.
 type StreamEvent struct {
-	Type      EventType   `json:"type"`
-	Data      any         `json:"data"`
-	Timestamp string      `json:"timestamp"`
+	Type      EventType `json:"type"`
+	Data      any       `json:"data"`
+	Timestamp string    `json:"timestamp"`
 }
 
 // ToolCallData for tool_call events.
@@ -61,11 +61,11 @@ type ToolResultData struct {
 
 // AnswerData for answer events.
 type AnswerData struct {
-	Content      string `json:"content"`
-	PromptTokens int    `json:"promptTokens"`
-	CompletionTokens int `json:"completionTokens"`
-	TotalTokens  int    `json:"totalTokens"`
-	Steps        int    `json:"steps"`
+	Content          string `json:"content"`
+	PromptTokens     int    `json:"promptTokens"`
+	CompletionTokens int    `json:"completionTokens"`
+	TotalTokens      int    `json:"totalTokens"`
+	Steps            int    `json:"steps"`
 }
 
 const (
@@ -474,8 +474,8 @@ func (e *Engine) RunStreamWithRegistry(
 
 		// Add assistant message with tool calls to conversation
 		conv.AddAssistantMessage(provider.Message{
-			Role: provider.RoleAssistant,
-			Content: resp.Content,
+			Role:      provider.RoleAssistant,
+			Content:   resp.Content,
 			ToolCalls: resp.ToolCalls,
 		})
 
@@ -569,11 +569,11 @@ func (e *Engine) RunStreamWithRegistry(
 	onEvent(StreamEvent{
 		Type: EventAnswer,
 		Data: AnswerData{
-			Content:      finalAnswer,
+			Content:          finalAnswer,
 			PromptTokens:     totalPrompt,
 			CompletionTokens: totalCompletion,
-			TotalTokens:  totalPrompt + totalCompletion,
-			Steps:        stepCount,
+			TotalTokens:      totalPrompt + totalCompletion,
+			Steps:            stepCount,
 		},
 		Timestamp: time.Now().Format(time.RFC3339),
 	})

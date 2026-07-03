@@ -21,8 +21,8 @@ limitations under the License.
 package v1alpha1
 
 import (
-	runtime "k8s.io/apimachinery/pkg/runtime"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
 // --- DiagnosticReport ---
@@ -36,14 +36,18 @@ func (in *DiagnosticReport) DeepCopyInto(out *DiagnosticReport) {
 }
 
 func (in *DiagnosticReport) DeepCopy() *DiagnosticReport {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(DiagnosticReport)
 	in.DeepCopyInto(out)
 	return out
 }
 
 func (in *DiagnosticReport) DeepCopyObject() runtime.Object {
-	if c := in.DeepCopy(); c != nil { return c }
+	if c := in.DeepCopy(); c != nil {
+		return c
+	}
 	return nil
 }
 
@@ -54,19 +58,25 @@ func (in *DiagnosticReportList) DeepCopyInto(out *DiagnosticReportList) {
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
 		*out = make([]DiagnosticReport, len(*in))
-		for i := range *in { (*in)[i].DeepCopyInto(&(*out)[i]) }
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 }
 
 func (in *DiagnosticReportList) DeepCopy() *DiagnosticReportList {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(DiagnosticReportList)
 	in.DeepCopyInto(out)
 	return out
 }
 
 func (in *DiagnosticReportList) DeepCopyObject() runtime.Object {
-	if c := in.DeepCopy(); c != nil { return c }
+	if c := in.DeepCopy(); c != nil {
+		return c
+	}
 	return nil
 }
 
@@ -86,7 +96,9 @@ func (in *DiagnosticReportSpec) DeepCopyInto(out *DiagnosticReportSpec) {
 }
 
 func (in *DiagnosticReportSpec) DeepCopy() *DiagnosticReportSpec {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(DiagnosticReportSpec)
 	in.DeepCopyInto(out)
 	return out
@@ -97,7 +109,9 @@ func (in *DiagnosticReportStatus) DeepCopyInto(out *DiagnosticReportStatus) {
 	if in.Findings != nil {
 		in, out := &in.Findings, &out.Findings
 		*out = make([]Finding, len(*in))
-		for i := range *in { (*in)[i].DeepCopyInto(&(*out)[i]) }
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 	in.AnalyzedAt.DeepCopyInto(&out.AnalyzedAt)
 	if in.AgentTrace != nil {
@@ -108,7 +122,9 @@ func (in *DiagnosticReportStatus) DeepCopyInto(out *DiagnosticReportStatus) {
 }
 
 func (in *DiagnosticReportStatus) DeepCopy() *DiagnosticReportStatus {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(DiagnosticReportStatus)
 	in.DeepCopyInto(out)
 	return out
@@ -124,7 +140,9 @@ func (in *DiagnosticTrigger) DeepCopyInto(out *DiagnosticTrigger) {
 }
 
 func (in *DiagnosticTrigger) DeepCopy() *DiagnosticTrigger {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(DiagnosticTrigger)
 	in.DeepCopyInto(out)
 	return out
@@ -135,17 +153,23 @@ func (in *Finding) DeepCopyInto(out *Finding) {
 	if in.Evidence != nil {
 		in, out := &in.Evidence, &out.Evidence
 		*out = make([]Evidence, len(*in))
-		for i := range *in { (*in)[i].DeepCopyInto(&(*out)[i]) }
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 	if in.SuggestedActions != nil {
 		in, out := &in.SuggestedActions, &out.SuggestedActions
 		*out = make([]SuggestedAction, len(*in))
-		for i := range *in { (*in)[i].DeepCopyInto(&(*out)[i]) }
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 }
 
 func (in *Finding) DeepCopy() *Finding {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(Finding)
 	in.DeepCopyInto(out)
 	return out
@@ -157,7 +181,9 @@ func (in *Evidence) DeepCopyInto(out *Evidence) {
 }
 
 func (in *Evidence) DeepCopy() *Evidence {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(Evidence)
 	in.DeepCopyInto(out)
 	return out
@@ -173,7 +199,9 @@ func (in *SuggestedAction) DeepCopyInto(out *SuggestedAction) {
 }
 
 func (in *SuggestedAction) DeepCopy() *SuggestedAction {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(SuggestedAction)
 	in.DeepCopyInto(out)
 	return out
@@ -184,7 +212,9 @@ func (in *AgentStep) DeepCopyInto(out *AgentStep) {
 }
 
 func (in *AgentStep) DeepCopy() *AgentStep {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(AgentStep)
 	in.DeepCopyInto(out)
 	return out
@@ -201,14 +231,18 @@ func (in *K8opsConfig) DeepCopyInto(out *K8opsConfig) {
 }
 
 func (in *K8opsConfig) DeepCopy() *K8opsConfig {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(K8opsConfig)
 	in.DeepCopyInto(out)
 	return out
 }
 
 func (in *K8opsConfig) DeepCopyObject() runtime.Object {
-	if c := in.DeepCopy(); c != nil { return c }
+	if c := in.DeepCopy(); c != nil {
+		return c
+	}
 	return nil
 }
 
@@ -219,19 +253,25 @@ func (in *K8opsConfigList) DeepCopyInto(out *K8opsConfigList) {
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
 		*out = make([]K8opsConfig, len(*in))
-		for i := range *in { (*in)[i].DeepCopyInto(&(*out)[i]) }
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 }
 
 func (in *K8opsConfigList) DeepCopy() *K8opsConfigList {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(K8opsConfigList)
 	in.DeepCopyInto(out)
 	return out
 }
 
 func (in *K8opsConfigList) DeepCopyObject() runtime.Object {
-	if c := in.DeepCopy(); c != nil { return c }
+	if c := in.DeepCopy(); c != nil {
+		return c
+	}
 	return nil
 }
 
@@ -245,7 +285,9 @@ func (in *K8opsConfigSpec) DeepCopyInto(out *K8opsConfigSpec) {
 }
 
 func (in *K8opsConfigSpec) DeepCopy() *K8opsConfigSpec {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(K8opsConfigSpec)
 	in.DeepCopyInto(out)
 	return out
@@ -257,7 +299,9 @@ func (in *K8opsConfigStatus) DeepCopyInto(out *K8opsConfigStatus) {
 }
 
 func (in *K8opsConfigStatus) DeepCopy() *K8opsConfigStatus {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(K8opsConfigStatus)
 	in.DeepCopyInto(out)
 	return out
@@ -273,7 +317,9 @@ func (in *ProviderSpec) DeepCopyInto(out *ProviderSpec) {
 }
 
 func (in *ProviderSpec) DeepCopy() *ProviderSpec {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(ProviderSpec)
 	in.DeepCopyInto(out)
 	return out
@@ -284,7 +330,9 @@ func (in *SecretKeySelector) DeepCopyInto(out *SecretKeySelector) {
 }
 
 func (in *SecretKeySelector) DeepCopy() *SecretKeySelector {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(SecretKeySelector)
 	in.DeepCopyInto(out)
 	return out
@@ -305,7 +353,9 @@ func (in *AutoRemediationSpec) DeepCopyInto(out *AutoRemediationSpec) {
 }
 
 func (in *AutoRemediationSpec) DeepCopy() *AutoRemediationSpec {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(AutoRemediationSpec)
 	in.DeepCopyInto(out)
 	return out
@@ -321,7 +371,9 @@ func (in *NotificationSpec) DeepCopyInto(out *NotificationSpec) {
 }
 
 func (in *NotificationSpec) DeepCopy() *NotificationSpec {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(NotificationSpec)
 	in.DeepCopyInto(out)
 	return out
@@ -337,7 +389,9 @@ func (in *SlackNotification) DeepCopyInto(out *SlackNotification) {
 }
 
 func (in *SlackNotification) DeepCopy() *SlackNotification {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(SlackNotification)
 	in.DeepCopyInto(out)
 	return out
@@ -348,7 +402,9 @@ func (in *AnalysisSpec) DeepCopyInto(out *AnalysisSpec) {
 }
 
 func (in *AnalysisSpec) DeepCopy() *AnalysisSpec {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(AnalysisSpec)
 	in.DeepCopyInto(out)
 	return out
@@ -374,7 +430,9 @@ func (in *SafetySpec) DeepCopyInto(out *SafetySpec) {
 }
 
 func (in *SafetySpec) DeepCopy() *SafetySpec {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(SafetySpec)
 	in.DeepCopyInto(out)
 	return out
@@ -385,7 +443,9 @@ func (in *ResourceRef) DeepCopyInto(out *ResourceRef) {
 }
 
 func (in *ResourceRef) DeepCopy() *ResourceRef {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(ResourceRef)
 	in.DeepCopyInto(out)
 	return out
@@ -402,14 +462,18 @@ func (in *RemediationPlan) DeepCopyInto(out *RemediationPlan) {
 }
 
 func (in *RemediationPlan) DeepCopy() *RemediationPlan {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(RemediationPlan)
 	in.DeepCopyInto(out)
 	return out
 }
 
 func (in *RemediationPlan) DeepCopyObject() runtime.Object {
-	if c := in.DeepCopy(); c != nil { return c }
+	if c := in.DeepCopy(); c != nil {
+		return c
+	}
 	return nil
 }
 
@@ -420,19 +484,25 @@ func (in *RemediationPlanList) DeepCopyInto(out *RemediationPlanList) {
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
 		*out = make([]RemediationPlan, len(*in))
-		for i := range *in { (*in)[i].DeepCopyInto(&(*out)[i]) }
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 }
 
 func (in *RemediationPlanList) DeepCopy() *RemediationPlanList {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(RemediationPlanList)
 	in.DeepCopyInto(out)
 	return out
 }
 
 func (in *RemediationPlanList) DeepCopyObject() runtime.Object {
-	if c := in.DeepCopy(); c != nil { return c }
+	if c := in.DeepCopy(); c != nil {
+		return c
+	}
 	return nil
 }
 
@@ -441,12 +511,16 @@ func (in *RemediationPlanSpec) DeepCopyInto(out *RemediationPlanSpec) {
 	if in.Actions != nil {
 		in, out := &in.Actions, &out.Actions
 		*out = make([]RemediationAction, len(*in))
-		for i := range *in { (*in)[i].DeepCopyInto(&(*out)[i]) }
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 }
 
 func (in *RemediationPlanSpec) DeepCopy() *RemediationPlanSpec {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(RemediationPlanSpec)
 	in.DeepCopyInto(out)
 	return out
@@ -457,14 +531,18 @@ func (in *RemediationPlanStatus) DeepCopyInto(out *RemediationPlanStatus) {
 	if in.Results != nil {
 		in, out := &in.Results, &out.Results
 		*out = make([]ActionResult, len(*in))
-		for i := range *in { (*in)[i].DeepCopyInto(&(*out)[i]) }
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 	in.StartedAt.DeepCopyInto(&out.StartedAt)
 	in.CompletedAt.DeepCopyInto(&out.CompletedAt)
 }
 
 func (in *RemediationPlanStatus) DeepCopy() *RemediationPlanStatus {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(RemediationPlanStatus)
 	in.DeepCopyInto(out)
 	return out
@@ -485,7 +563,9 @@ func (in *RemediationAction) DeepCopyInto(out *RemediationAction) {
 }
 
 func (in *RemediationAction) DeepCopy() *RemediationAction {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(RemediationAction)
 	in.DeepCopyInto(out)
 	return out
@@ -497,7 +577,9 @@ func (in *ActionResult) DeepCopyInto(out *ActionResult) {
 }
 
 func (in *ActionResult) DeepCopy() *ActionResult {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(ActionResult)
 	in.DeepCopyInto(out)
 	return out
@@ -514,14 +596,18 @@ func (in *OptimizationSuggestion) DeepCopyInto(out *OptimizationSuggestion) {
 }
 
 func (in *OptimizationSuggestion) DeepCopy() *OptimizationSuggestion {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(OptimizationSuggestion)
 	in.DeepCopyInto(out)
 	return out
 }
 
 func (in *OptimizationSuggestion) DeepCopyObject() runtime.Object {
-	if c := in.DeepCopy(); c != nil { return c }
+	if c := in.DeepCopy(); c != nil {
+		return c
+	}
 	return nil
 }
 
@@ -532,19 +618,25 @@ func (in *OptimizationSuggestionList) DeepCopyInto(out *OptimizationSuggestionLi
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
 		*out = make([]OptimizationSuggestion, len(*in))
-		for i := range *in { (*in)[i].DeepCopyInto(&(*out)[i]) }
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 }
 
 func (in *OptimizationSuggestionList) DeepCopy() *OptimizationSuggestionList {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(OptimizationSuggestionList)
 	in.DeepCopyInto(out)
 	return out
 }
 
 func (in *OptimizationSuggestionList) DeepCopyObject() runtime.Object {
-	if c := in.DeepCopy(); c != nil { return c }
+	if c := in.DeepCopy(); c != nil {
+		return c
+	}
 	return nil
 }
 
@@ -559,7 +651,9 @@ func (in *OptimizationSuggestionSpec) DeepCopyInto(out *OptimizationSuggestionSp
 }
 
 func (in *OptimizationSuggestionSpec) DeepCopy() *OptimizationSuggestionSpec {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(OptimizationSuggestionSpec)
 	in.DeepCopyInto(out)
 	return out
@@ -570,13 +664,17 @@ func (in *OptimizationSuggestionStatus) DeepCopyInto(out *OptimizationSuggestion
 	if in.Suggestions != nil {
 		in, out := &in.Suggestions, &out.Suggestions
 		*out = make([]Suggestion, len(*in))
-		for i := range *in { (*in)[i].DeepCopyInto(&(*out)[i]) }
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 	in.AnalyzedAt.DeepCopyInto(&out.AnalyzedAt)
 }
 
 func (in *OptimizationSuggestionStatus) DeepCopy() *OptimizationSuggestionStatus {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(OptimizationSuggestionStatus)
 	in.DeepCopyInto(out)
 	return out
@@ -587,7 +685,9 @@ func (in *OptimizationScope) DeepCopyInto(out *OptimizationScope) {
 }
 
 func (in *OptimizationScope) DeepCopy() *OptimizationScope {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(OptimizationScope)
 	in.DeepCopyInto(out)
 	return out
@@ -603,17 +703,23 @@ func (in *Suggestion) DeepCopyInto(out *Suggestion) {
 	if in.Current != nil {
 		in, out := &in.Current, &out.Current
 		*out = make(map[string]string, len(*in))
-		for key, val := range *in { (*out)[key] = val }
+		for key, val := range *in {
+			(*out)[key] = val
+		}
 	}
 	if in.Recommended != nil {
 		in, out := &in.Recommended, &out.Recommended
 		*out = make(map[string]string, len(*in))
-		for key, val := range *in { (*out)[key] = val }
+		for key, val := range *in {
+			(*out)[key] = val
+		}
 	}
 }
 
 func (in *Suggestion) DeepCopy() *Suggestion {
-	if in == nil { return nil }
+	if in == nil {
+		return nil
+	}
 	out := new(Suggestion)
 	in.DeepCopyInto(out)
 	return out

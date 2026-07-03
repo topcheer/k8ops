@@ -151,11 +151,11 @@ func (a *Authenticator) handleStatus(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeAuthJSON(w, http.StatusOK, map[string]any{
-		"auth_enabled":    true,
-		"ldap_enabled":    ldapEnabled,
-		"oidc_enabled":    len(oidcProviders) > 0,
-		"oidc_providers":  oidcProviders,
-		"user_count":      count,
+		"auth_enabled":   true,
+		"ldap_enabled":   ldapEnabled,
+		"oidc_enabled":   len(oidcProviders) > 0,
+		"oidc_providers": oidcProviders,
+		"user_count":     count,
 	})
 }
 
@@ -313,12 +313,12 @@ func (a *Authenticator) handleUsers(w http.ResponseWriter, r *http.Request) {
 
 	case http.MethodPost:
 		var req struct {
-			Username           string `json:"username"`
-			Password           string `json:"password"`
-			Email              string `json:"email"`
-			DisplayName        string `json:"display_name"`
-			Role               string `json:"role"`
-			AllowedNamespaces  string `json:"allowed_namespaces"`
+			Username          string `json:"username"`
+			Password          string `json:"password"`
+			Email             string `json:"email"`
+			DisplayName       string `json:"display_name"`
+			Role              string `json:"role"`
+			AllowedNamespaces string `json:"allowed_namespaces"`
 		}
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			writeAuthJSON(w, http.StatusBadRequest, map[string]any{"error": "invalid request"})
@@ -447,15 +447,15 @@ func (a *Authenticator) handleUserByID(w http.ResponseWriter, r *http.Request) {
 
 func sanitizeUser(u *User) map[string]any {
 	return map[string]any{
-		"id":                u.ID,
-		"username":          u.Username,
-		"email":             u.Email,
-		"display_name":      u.DisplayName,
-		"role":              u.Role,
-		"provider":          u.Provider,
-		"must_change_pwd":   u.MustChangePwd,
+		"id":                 u.ID,
+		"username":           u.Username,
+		"email":              u.Email,
+		"display_name":       u.DisplayName,
+		"role":               u.Role,
+		"provider":           u.Provider,
+		"must_change_pwd":    u.MustChangePwd,
 		"allowed_namespaces": u.AllowedNamespaces,
-		"created_at":        u.CreatedAt,
+		"created_at":         u.CreatedAt,
 	}
 }
 

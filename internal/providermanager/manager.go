@@ -21,13 +21,13 @@ import (
 
 // Manager holds the currently active provider, swappable at runtime.
 type Manager struct {
-	mu          sync.RWMutex
-	provider    provider.Provider
-	config      provider.ProviderConfig
-	k8sClient   client.Client
-	log         *slog.Logger
-	lastReload  time.Time
-	namespace   string
+	mu         sync.RWMutex
+	provider   provider.Provider
+	config     provider.ProviderConfig
+	k8sClient  client.Client
+	log        *slog.Logger
+	lastReload time.Time
+	namespace  string
 }
 
 const (
@@ -291,12 +291,12 @@ func (m *Manager) resolveSecretKey(ctx context.Context, namespace string, ref *a
 
 // Status returns the current status for dashboard display.
 type Status struct {
-	Type       string    `json:"type"`
-	Model      string    `json:"model"`
-	Endpoint   string    `json:"endpoint,omitempty"`
-	HasAPIKey  bool      `json:"hasApiKey"`
-	LastReload string    `json:"lastReload"`
-	Active     bool      `json:"active"`
+	Type       string `json:"type"`
+	Model      string `json:"model"`
+	Endpoint   string `json:"endpoint,omitempty"`
+	HasAPIKey  bool   `json:"hasApiKey"`
+	LastReload string `json:"lastReload"`
+	Active     bool   `json:"active"`
 }
 
 // Status returns the current provider status.

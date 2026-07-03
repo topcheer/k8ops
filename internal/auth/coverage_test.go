@@ -185,9 +185,9 @@ func TestUpsertOIDCUser_UsernameCollision(t *testing.T) {
 
 func TestProviderToAPI_TableDriven(t *testing.T) {
 	tests := []struct {
-		name         string
-		provider     *AuthProvider
-		wantType     string
+		name          string
+		provider      *AuthProvider
+		wantType      string
 		wantHasConfig bool
 	}{
 		{
@@ -240,10 +240,10 @@ func TestProviderToAPI_TableDriven(t *testing.T) {
 
 func TestMergeLDAPConfig_TableDriven(t *testing.T) {
 	tests := []struct {
-		name   string
-		dst    *LDAPConfig
-		src    *LDAPConfig
-		check  func(*testing.T, *LDAPConfig)
+		name  string
+		dst   *LDAPConfig
+		src   *LDAPConfig
+		check func(*testing.T, *LDAPConfig)
 	}{
 		{
 			"merge server",
@@ -255,7 +255,9 @@ func TestMergeLDAPConfig_TableDriven(t *testing.T) {
 			"skip masked bindPW",
 			&LDAPConfig{BindPW: "real-secret"},
 			&LDAPConfig{BindPW: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"},
-			func(t *testing.T, r *LDAPConfig) { assert.Equal(t, "real-secret", r.BindPW, "should not overwrite with masked value") },
+			func(t *testing.T, r *LDAPConfig) {
+				assert.Equal(t, "real-secret", r.BindPW, "should not overwrite with masked value")
+			},
 		},
 		{
 			"merge new bindPW",
@@ -410,7 +412,7 @@ func TestIsPublicRoute_TableDriven(t *testing.T) {
 		{"/api/auth/login", true},
 		{"/api/auth/logout", true},
 		{"/api/auth/status", true},
-		{"/api/auth/me", false},  // requires authentication
+		{"/api/auth/me", false}, // requires authentication
 		{"/login.html", true},
 		{"/api/admin/users", false},
 		{"/api/pods", false},

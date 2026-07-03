@@ -236,7 +236,7 @@ func TestDiagnoseRestarts_MixedPods(t *testing.T) {
 
 func TestDiagnoseRestarts_SortOrder(t *testing.T) {
 	pods := []corev1.Pod{
-		makeRestartPod("low-risk", "default", 1, "", "", 48*time.Hour),   // occasional, low
+		makeRestartPod("low-risk", "default", 1, "", "", 48*time.Hour), // occasional, low
 		makeRestartPod("critical", "default", 10, "Error", "CrashLoopBackOff", 30*time.Minute),
 		makeRestartPod("medium", "default", 3, "Error", "", 72*time.Hour), // occasional, medium
 	}

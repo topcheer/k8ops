@@ -17,8 +17,8 @@ var (
 
 // Config holds all auth configuration.
 type Config struct {
-	JWTSecret  string
-	JWTExpiry  time.Duration // default: 24h
+	JWTSecret string
+	JWTExpiry time.Duration // default: 24h
 
 	// Database
 	DBDriver string // "sqlite" (default), "mysql", "postgres"
@@ -26,15 +26,15 @@ type Config struct {
 	DBPath   string // legacy: sqlite file path (used when DBDriver is empty/sqlite and DBDSN is empty)
 
 	// Default role for auto-provisioned LDAP/OIDC users
-	DefaultRole             string // default: "viewer"
+	DefaultRole              string // default: "viewer"
 	DefaultAllowedNamespaces string // default: "" (cluster-wide for the role)
 }
 
 // Authenticator manages all authentication operations.
 type Authenticator struct {
-	store       *Store
-	cfg         *Config
-	rbacSyncer  *RBACSyncer
+	store        *Store
+	cfg          *Config
+	rbacSyncer   *RBACSyncer
 	loginLimiter *ipRateLimiter
 }
 
@@ -162,6 +162,7 @@ func (a *Authenticator) LoginLocal(username, password string) (*User, string, er
 
 	return user, token, nil
 }
+
 // VerifyToken parses and validates a JWT, returning the claims.
 func (a *Authenticator) VerifyToken(tokenStr string) (*UserClaims, error) {
 	claims := &UserClaims{}
@@ -299,7 +300,7 @@ func (a *Authenticator) AdminResetPassword(userID uint, newPassword string) erro
 		return err
 	}
 	return a.store.db.Model(&User{}).Where("id = ?", userID).Updates(map[string]any{
-		"password_hash":    hash,
-		"must_change_pwd":  true,
+		"password_hash":   hash,
+		"must_change_pwd": true,
 	}).Error
 }

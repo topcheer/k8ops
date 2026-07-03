@@ -179,14 +179,14 @@ func TestHandleStatus(t *testing.T) {
 
 func TestSanitizeUser(t *testing.T) {
 	u := &User{
-		ID:              42,
-		Username:        "testuser",
-		Email:           "test@example.com",
-		DisplayName:     "Test User",
-		PasswordHash:    "$2a$12$someverylongbcrypt hash value here",
-		Role:            "viewer",
-		Provider:        "local",
-		MustChangePwd:   false,
+		ID:                42,
+		Username:          "testuser",
+		Email:             "test@example.com",
+		DisplayName:       "Test User",
+		PasswordHash:      "$2a$12$someverylongbcrypt hash value here",
+		Role:              "viewer",
+		Provider:          "local",
+		MustChangePwd:     false,
 		AllowedNamespaces: "default,kube-system",
 	}
 

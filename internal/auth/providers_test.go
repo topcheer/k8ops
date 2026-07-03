@@ -302,9 +302,9 @@ func TestProviderConfig_SetAndParse(t *testing.T) {
 			"both LDAP and OIDC",
 			ProviderConfig{
 				LDAP: &LDAPConfig{
-					Server:   "ldap://host:389",
-					BindDN:   "cn=admin",
-					BindPW:   "ldap-secret",
+					Server: "ldap://host:389",
+					BindDN: "cn=admin",
+					BindPW: "ldap-secret",
 				},
 				OIDC: &OIDCConfig{
 					Issuer:       "https://issuer.example.com",
@@ -349,8 +349,8 @@ func TestProviderConfig_SetAndParse(t *testing.T) {
 
 func TestToAPIConfig_MasksSecrets_TableDriven(t *testing.T) {
 	tests := []struct {
-		name          string
-		pc            ProviderConfig
+		name           string
+		pc             ProviderConfig
 		wantLDAPBindPW string
 		wantOIDCSecret string
 	}{

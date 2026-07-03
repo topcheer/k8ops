@@ -11,7 +11,7 @@ type RoleDef struct {
 	Name        string    `gorm:"uniqueIndex;size:64;not null" json:"name"` // e.g. "devops", "readonly-dev"
 	DisplayName string    `gorm:"size:255" json:"display_name"`
 	Description string    `gorm:"size:512" json:"description"`
-	Group       string    `gorm:"size:128;not null" json:"group"` // K8s impersonation group, e.g. "k8ops:devops"
+	Group       string    `gorm:"size:128;not null" json:"group"`         // K8s impersonation group, e.g. "k8ops:devops"
 	Scope       string    `gorm:"size:16;default:'cluster'" json:"scope"` // "cluster" or "namespace"
 	Builtin     bool      `gorm:"default:false" json:"builtin"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -24,12 +24,12 @@ func (RoleDef) TableName() string { return "role_defs" }
 // RoleBinding represents a binding from a k8ops role to a K8s ClusterRole or Role.
 // A role can have multiple bindings — the effective permissions are the union (K8s RBAC additive model).
 type RoleBindingDef struct {
-	ID           uint      `gorm:"primaryKey" json:"id"`
-	RoleName     string    `gorm:"index;size:64;not null" json:"role_name"`       // references RoleDef.Name
-	K8sRoleKind  string    `gorm:"size:16;not null" json:"k8s_role_kind"`         // "ClusterRole" or "Role"
-	K8sRoleName  string    `gorm:"size:255;not null" json:"k8s_role_name"`        // K8s role name
-	Namespace    string    `gorm:"size:128" json:"namespace"`                     // for namespace-scoped K8s Role
-	CreatedAt    time.Time `json:"created_at"`
+	ID          uint      `gorm:"primaryKey" json:"id"`
+	RoleName    string    `gorm:"index;size:64;not null" json:"role_name"` // references RoleDef.Name
+	K8sRoleKind string    `gorm:"size:16;not null" json:"k8s_role_kind"`   // "ClusterRole" or "Role"
+	K8sRoleName string    `gorm:"size:255;not null" json:"k8s_role_name"`  // K8s role name
+	Namespace   string    `gorm:"size:128" json:"namespace"`               // for namespace-scoped K8s Role
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 // TableName overrides the table name.

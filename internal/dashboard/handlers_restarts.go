@@ -23,19 +23,19 @@ const (
 
 // ContainerRestartInfo holds restart diagnosis for a single container.
 type ContainerRestartInfo struct {
-	Name            string         `json:"name"`
-	Image           string         `json:"image"`
-	RestartCount    int32          `json:"restartCount"`
-	LastState       string         `json:"lastState"`       // running, waiting, terminated
+	Name            string             `json:"name"`
+	Image           string             `json:"image"`
+	RestartCount    int32              `json:"restartCount"`
+	LastState       string             `json:"lastState"` // running, waiting, terminated
 	LastTermination *TerminationDetail `json:"lastTermination,omitempty"`
-	CurrentWaiting  *WaitingDetail `json:"currentWaiting,omitempty"`
-	Pattern         RestartPattern `json:"pattern"`
-	RiskLevel       string         `json:"riskLevel"` // healthy, low, medium, high, critical
+	CurrentWaiting  *WaitingDetail     `json:"currentWaiting,omitempty"`
+	Pattern         RestartPattern     `json:"pattern"`
+	RiskLevel       string             `json:"riskLevel"` // healthy, low, medium, high, critical
 }
 
 // TerminationDetail describes the last termination of a container.
 type TerminationDetail struct {
-	Reason     string `json:"reason"`     // OOMKilled, Error, Completed, etc.
+	Reason     string `json:"reason"` // OOMKilled, Error, Completed, etc.
 	ExitCode   int32  `json:"exitCode"`
 	Message    string `json:"message,omitempty"`
 	Signal     int32  `json:"signal,omitempty"`
@@ -45,29 +45,29 @@ type TerminationDetail struct {
 
 // WaitingDetail describes why a container is currently waiting.
 type WaitingDetail struct {
-	Reason  string `json:"reason"`  // CrashLoopBackOff, ImagePullBackOff, ErrImagePull, etc.
+	Reason  string `json:"reason"` // CrashLoopBackOff, ImagePullBackOff, ErrImagePull, etc.
 	Message string `json:"message,omitempty"`
 }
 
 // PodRestartInfo is the restart diagnosis for a single pod.
 type PodRestartInfo struct {
-	Name            string                `json:"name"`
-	Namespace       string                `json:"namespace"`
-	Node            string                `json:"node"`
-	Phase           string                `json:"phase"`
-	CreatedAt       string                `json:"createdAt"`
-	AgeHours        float64               `json:"ageHours"`
-	TotalRestarts   int                   `json:"totalRestarts"`
-	OverallPattern  RestartPattern        `json:"overallPattern"`
-	OverallRisk     string                `json:"overallRisk"`
-	Containers      []ContainerRestartInfo `json:"containers"`
+	Name           string                 `json:"name"`
+	Namespace      string                 `json:"namespace"`
+	Node           string                 `json:"node"`
+	Phase          string                 `json:"phase"`
+	CreatedAt      string                 `json:"createdAt"`
+	AgeHours       float64                `json:"ageHours"`
+	TotalRestarts  int                    `json:"totalRestarts"`
+	OverallPattern RestartPattern         `json:"overallPattern"`
+	OverallRisk    string                 `json:"overallRisk"`
+	Containers     []ContainerRestartInfo `json:"containers"`
 }
 
 // RestartDiagnosisResult is the full scan output.
 type RestartDiagnosisResult struct {
-	ScannedAt time.Time         `json:"scannedAt"`
-	Summary   RestartSummary    `json:"summary"`
-	Pods      []PodRestartInfo  `json:"pods"`
+	ScannedAt time.Time        `json:"scannedAt"`
+	Summary   RestartSummary   `json:"summary"`
+	Pods      []PodRestartInfo `json:"pods"`
 }
 
 // RestartSummary aggregates restart statistics.
@@ -201,7 +201,7 @@ func buildContainerRestartInfo(cs *corev1.ContainerStatus, pod *corev1.Pod) Cont
 		RiskLevel:    "healthy",
 	}
 
-	// Extract last termination details (independent of current state — 
+	// Extract last termination details (independent of current state —
 	// a container can have both a last termination AND be currently waiting)
 	if cs.LastTerminationState.Terminated != nil {
 		term := cs.LastTerminationState.Terminated

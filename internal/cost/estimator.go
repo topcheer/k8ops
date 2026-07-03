@@ -56,10 +56,10 @@ type Recommendation struct {
 // RecommendationSummary is the response for /api/cost/recommendations.
 type RecommendationSummary struct {
 	TotalPotentialSavings float64          `json:"totalPotentialSavingsUSD"`
-	Count                int              `json:"count"`
-	Recommendations      []Recommendation `json:"recommendations"`
-	Pricing              Pricing          `json:"pricing"`
-	GeneratedAt          time.Time        `json:"generatedAt"`
+	Count                 int              `json:"count"`
+	Recommendations       []Recommendation `json:"recommendations"`
+	Pricing               Pricing          `json:"pricing"`
+	GeneratedAt           time.Time        `json:"generatedAt"`
 }
 
 // Estimator calculates cluster resource costs and right-sizing recommendations.
@@ -248,16 +248,16 @@ func (e *Estimator) Recommendations(ctx context.Context) (*RecommendationSummary
 			totalSavings += savings
 
 			recs = append(recs, Recommendation{
-				Workload:        fmt.Sprintf("%s/%s", ns, pod.Name),
-				Kind:            "Pod",
-				Namespace:       ns,
-				ContainerName:   c.Name,
-				Current:         Resources{CPUCores: roundTo(reqCPU, 3), RAMGB: roundTo(reqRAM, 3)},
-				Limit:           Resources{CPUCores: roundTo(limCPU, 3), RAMGB: roundTo(limRAM, 3)},
-				Recommended:     Resources{CPUCores: roundTo(recCPU, 3), RAMGB: roundTo(recRAM, 3)},
-				MonthlySavings:  roundTo(savings, 2),
-				SavingsPct:      roundTo(savingsPct, 1),
-				Reason:          reason,
+				Workload:       fmt.Sprintf("%s/%s", ns, pod.Name),
+				Kind:           "Pod",
+				Namespace:      ns,
+				ContainerName:  c.Name,
+				Current:        Resources{CPUCores: roundTo(reqCPU, 3), RAMGB: roundTo(reqRAM, 3)},
+				Limit:          Resources{CPUCores: roundTo(limCPU, 3), RAMGB: roundTo(limRAM, 3)},
+				Recommended:    Resources{CPUCores: roundTo(recCPU, 3), RAMGB: roundTo(recRAM, 3)},
+				MonthlySavings: roundTo(savings, 2),
+				SavingsPct:     roundTo(savingsPct, 1),
+				Reason:         reason,
 			})
 		}
 	}

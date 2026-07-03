@@ -27,11 +27,11 @@ type ClusterCompat struct {
 
 // NodeSummary is a high-level summary of node-level observations.
 type NodeSummary struct {
-	TotalNodes      int `json:"totalNodes"`
-	ControlPlane    int `json:"controlPlane"`
-	Worker          int `json:"worker"`
-	BareMetalNodes  int `json:"bareMetalNodes"`
-	VirtualNodes    int `json:"virtualNodes"`
+	TotalNodes     int `json:"totalNodes"`
+	ControlPlane   int `json:"controlPlane"`
+	Worker         int `json:"worker"`
+	BareMetalNodes int `json:"bareMetalNodes"`
+	VirtualNodes   int `json:"virtualNodes"`
 }
 
 // detectCloudProvider identifies the cloud or infrastructure provider

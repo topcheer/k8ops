@@ -47,10 +47,10 @@ func TestLogger_WithFile(t *testing.T) {
 	}
 
 	l.Log(context.Background(), Event{
-		Type:    EventTypeRemediation,
-		Action:  "scale_deployment",
-		Target:  "Deployment/app",
-		Success: true,
+		Type:     EventTypeRemediation,
+		Action:   "scale_deployment",
+		Target:   "Deployment/app",
+		Success:  true,
 		Severity: SeverityWarning,
 	})
 	l.Close()
@@ -70,7 +70,7 @@ func TestLogger_RingBuffer(t *testing.T) {
 
 	for i := 0; i < 10; i++ {
 		l.Log(context.Background(), Event{
-			Action: "action_" + string(rune('A'+i)),
+			Action:  "action_" + string(rune('A'+i)),
 			Success: true,
 		})
 	}

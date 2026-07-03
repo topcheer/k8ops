@@ -20,7 +20,7 @@ func (t *HostDmesgTool) Description() string {
 }
 func (t *HostDmesgTool) Parameters() map[string]any {
 	return tools.Schema(map[string]tools.Property{
-		"lines": {Type: "integer", Description: "Last N lines", Default: 100},
+		"lines":  {Type: "integer", Description: "Last N lines", Default: 100},
 		"filter": {Type: "string", Description: "Grep filter (e.g. 'oom', 'error')", Default: ""},
 	}, []string{})
 }
@@ -127,9 +127,9 @@ func (t *HostIPTablesTool) Description() string {
 }
 func (t *HostIPTablesTool) Parameters() map[string]any {
 	return tools.Schema(map[string]tools.Property{
-		"table":   {Type: "string", Description: "Table name", Enum: []string{"nat", "filter", "mangle", "all"}, Default: "nat"},
-		"chain":   {Type: "string", Description: "Chain name (e.g. 'KUBE-SERVICES')", Default: ""},
-		"ipvs":    {Type: "boolean", Description: "Show IPVS rules instead", Default: false},
+		"table": {Type: "string", Description: "Table name", Enum: []string{"nat", "filter", "mangle", "all"}, Default: "nat"},
+		"chain": {Type: "string", Description: "Chain name (e.g. 'KUBE-SERVICES')", Default: ""},
+		"ipvs":  {Type: "boolean", Description: "Show IPVS rules instead", Default: false},
 	}, []string{})
 }
 func (t *HostIPTablesTool) Execute(ctx context.Context, args map[string]any) (*tools.ToolResult, error) {

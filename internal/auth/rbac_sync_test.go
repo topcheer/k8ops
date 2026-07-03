@@ -204,7 +204,7 @@ func TestSyncUserRBAC_NamespaceCleanup_RemovesUndesired(t *testing.T) {
 
 func TestSyncUserRBAC_NonExistentNamespace_SkipsSilently(t *testing.T) {
 	cs := fake.NewSimpleClientset(
-		// No namespace created
+	// No namespace created
 	)
 	s := NewRBACSyncer(cs)
 

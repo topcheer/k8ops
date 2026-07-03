@@ -50,8 +50,8 @@ type mockTool struct {
 	execute func(ctx context.Context, args map[string]any) (*tools.ToolResult, error)
 }
 
-func (t *mockTool) Name() string { return t.name }
-func (t *mockTool) Description() string { return "mock tool for testing" }
+func (t *mockTool) Name() string               { return t.name }
+func (t *mockTool) Description() string        { return "mock tool for testing" }
 func (t *mockTool) Parameters() map[string]any { return map[string]any{} }
 func (t *mockTool) Execute(ctx context.Context, args map[string]any) (*tools.ToolResult, error) {
 	if t.execute != nil {
@@ -101,8 +101,8 @@ func TestNew_CustomConfig(t *testing.T) {
 
 func TestRun_ImmediateAnswer(t *testing.T) {
 	mp := newMockProvider(provider.CompletionResponse{
-		Content:    "Everything is fine",
-		ToolCalls:  nil,
+		Content:   "Everything is fine",
+		ToolCalls: nil,
 	})
 	reg := tools.NewRegistry()
 	agent := New(AgentConfig{
@@ -153,8 +153,8 @@ func TestRun_ToolCallSuccess(t *testing.T) {
 	reg.Register(newMockTool("mock_tool"))
 
 	agent := New(AgentConfig{
-		Provider:    mp,
-		Registry:    reg,
+		Provider:     mp,
+		Registry:     reg,
 		SystemPrompt: "test prompt",
 	}, quietLogger())
 
@@ -408,9 +408,9 @@ func TestRun_ContextCancellation(t *testing.T) {
 	mp := &blockingProvider{}
 	reg := tools.NewRegistry()
 	agent := New(AgentConfig{
-		Provider:    mp,
-		Registry:    reg,
-		Timeout:     100 * time.Millisecond,
+		Provider: mp,
+		Registry: reg,
+		Timeout:  100 * time.Millisecond,
 	}, quietLogger())
 
 	_, err := agent.Run(context.Background(), "test")

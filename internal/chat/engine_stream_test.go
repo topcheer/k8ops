@@ -80,15 +80,15 @@ func (t *mockTool) Execute(_ context.Context, _ map[string]any) (*tools.ToolResu
 // using a minimal retry config (1 attempt, no delay) for fast tests.
 func newStreamTestEngine(p provider.Provider, reg *tools.Registry) *Engine {
 	return &Engine{
-		conversations:   make(map[string]*memory.Conversation),
-		provider:        func() provider.Provider { return p },
-		systemPrompt:    "test",
-		maxSteps:        10,
-		timeout:         10 * time.Second,
-		log:             slog.New(slog.NewTextHandler(io.Discard, nil)),
-		retryCfg:        resilience.RetryConfig{MaxAttempts: 1, InitialDelay: 1 * time.Millisecond, MaxDelay: 1 * time.Millisecond, Multiplier: 1},
-		circuitBreaker:  resilience.NewCircuitBreaker(100, 60*time.Second),
-		registry:        reg,
+		conversations:  make(map[string]*memory.Conversation),
+		provider:       func() provider.Provider { return p },
+		systemPrompt:   "test",
+		maxSteps:       10,
+		timeout:        10 * time.Second,
+		log:            slog.New(slog.NewTextHandler(io.Discard, nil)),
+		retryCfg:       resilience.RetryConfig{MaxAttempts: 1, InitialDelay: 1 * time.Millisecond, MaxDelay: 1 * time.Millisecond, Multiplier: 1},
+		circuitBreaker: resilience.NewCircuitBreaker(100, 60*time.Second),
+		registry:       reg,
 	}
 }
 
@@ -406,15 +406,15 @@ func TestRunStream_NonRetryableError(t *testing.T) {
 
 func TestRunStream_NoProvider(t *testing.T) {
 	e := &Engine{
-		conversations:   make(map[string]*memory.Conversation),
-		provider:        func() provider.Provider { return nil },
-		systemPrompt:    "test",
-		maxSteps:        5,
-		timeout:         10 * time.Second,
-		log:             slog.New(slog.NewTextHandler(io.Discard, nil)),
-		retryCfg:        resilience.RetryConfig{MaxAttempts: 1, InitialDelay: 1 * time.Millisecond, MaxDelay: 1 * time.Millisecond, Multiplier: 1},
-		circuitBreaker:  resilience.NewCircuitBreaker(100, 60*time.Second),
-		registry:        tools.NewRegistry(),
+		conversations:  make(map[string]*memory.Conversation),
+		provider:       func() provider.Provider { return nil },
+		systemPrompt:   "test",
+		maxSteps:       5,
+		timeout:        10 * time.Second,
+		log:            slog.New(slog.NewTextHandler(io.Discard, nil)),
+		retryCfg:       resilience.RetryConfig{MaxAttempts: 1, InitialDelay: 1 * time.Millisecond, MaxDelay: 1 * time.Millisecond, Multiplier: 1},
+		circuitBreaker: resilience.NewCircuitBreaker(100, 60*time.Second),
+		registry:       tools.NewRegistry(),
 	}
 
 	var events []StreamEvent

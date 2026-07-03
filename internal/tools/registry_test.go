@@ -203,8 +203,8 @@ type mockTool struct {
 	desc string
 }
 
-func (m *mockTool) Name() string                 { return m.name }
-func (m *mockTool) Description() string           { return m.desc }
+func (m *mockTool) Name() string        { return m.name }
+func (m *mockTool) Description() string { return m.desc }
 func (m *mockTool) Parameters() map[string]any {
 	return Schema(map[string]Property{}, nil)
 }

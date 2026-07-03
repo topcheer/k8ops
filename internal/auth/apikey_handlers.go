@@ -77,13 +77,13 @@ func (a *Authenticator) handleCreateAPIKey(w http.ResponseWriter, r *http.Reques
 
 	// Return the plaintext key ONCE — the user must save it now.
 	writeAuthJSON(w, http.StatusCreated, map[string]any{
-		"id":           apiKey.ID,
-		"name":         apiKey.Name,
-		"key":          plaintext, // only returned once
-		"key_prefix":   prefix,
-		"expires_at":   apiKey.ExpiresAt,
-		"created_at":   apiKey.CreatedAt,
-		"message":      "Save this key securely. It will not be shown again.",
+		"id":         apiKey.ID,
+		"name":       apiKey.Name,
+		"key":        plaintext, // only returned once
+		"key_prefix": prefix,
+		"expires_at": apiKey.ExpiresAt,
+		"created_at": apiKey.CreatedAt,
+		"message":    "Save this key securely. It will not be shown again.",
 	})
 }
 

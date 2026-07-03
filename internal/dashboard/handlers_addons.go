@@ -16,8 +16,8 @@ import (
 type AddonStatus string
 
 const (
-	AddonHealthy     AddonStatus = "healthy"
-	AddonDegraded    AddonStatus = "degraded"
+	AddonHealthy      AddonStatus = "healthy"
+	AddonDegraded     AddonStatus = "degraded"
 	AddonNotInstalled AddonStatus = "not-installed"
 )
 
@@ -36,8 +36,8 @@ type AddonInfo struct {
 
 // AddonPods is a summary of add-on pod health.
 type AddonPods struct {
-	Ready   int `json:"ready"`
-	Total   int `json:"total"`
+	Ready    int `json:"ready"`
+	Total    int `json:"total"`
 	Restarts int `json:"restarts"`
 }
 
@@ -50,9 +50,9 @@ type AddonCounts struct {
 
 // AddonScanResult is the full scan output.
 type AddonScanResult struct {
-	ScannedAt time.Time          `json:"scannedAt"`
+	ScannedAt  time.Time                 `json:"scannedAt"`
 	Categories map[string]CategoryAddons `json:"categories"`
-	Summary   AddonScanSummary   `json:"summary"`
+	Summary    AddonScanSummary          `json:"summary"`
 }
 
 // CategoryAddons holds add-ons within a single category.
@@ -124,73 +124,73 @@ func scanAllAddons(sctx *addonScanContext) AddonScanResult {
 	// CNI
 	categories["cni"] = CategoryAddons{
 		DisplayName: "容器网络 (CNI)",
-		Addons: scanCNI(sctx),
+		Addons:      scanCNI(sctx),
 	}
 
 	// DNS
 	categories["dns"] = CategoryAddons{
 		DisplayName: "DNS 解析",
-		Addons: scanDNS(sctx),
+		Addons:      scanDNS(sctx),
 	}
 
 	// Ingress Controller
 	categories["ingress"] = CategoryAddons{
 		DisplayName: "Ingress 控制器",
-		Addons: scanIngress(sctx),
+		Addons:      scanIngress(sctx),
 	}
 
 	// Cert Manager
 	categories["certManager"] = CategoryAddons{
 		DisplayName: "证书管理",
-		Addons: scanCertManager(sctx),
+		Addons:      scanCertManager(sctx),
 	}
 
 	// Load Balancer
 	categories["loadBalancer"] = CategoryAddons{
 		DisplayName: "负载均衡器",
-		Addons: scanLoadBalancer(sctx),
+		Addons:      scanLoadBalancer(sctx),
 	}
 
 	// Service Mesh
 	categories["serviceMesh"] = CategoryAddons{
 		DisplayName: "服务网格",
-		Addons: scanServiceMesh(sctx),
+		Addons:      scanServiceMesh(sctx),
 	}
 
 	// Backup & Restore
 	categories["backup"] = CategoryAddons{
 		DisplayName: "备份恢复",
-		Addons: scanBackup(sctx),
+		Addons:      scanBackup(sctx),
 	}
 
 	// Monitoring
 	categories["monitoring"] = CategoryAddons{
 		DisplayName: "监控告警",
-		Addons: scanMonitoring(sctx),
+		Addons:      scanMonitoring(sctx),
 	}
 
 	// Policy & Security
 	categories["policy"] = CategoryAddons{
 		DisplayName: "策略与安全",
-		Addons: scanPolicy(sctx),
+		Addons:      scanPolicy(sctx),
 	}
 
 	// Storage
 	categories["storage"] = CategoryAddons{
 		DisplayName: "分布式存储",
-		Addons: scanStorage(sctx),
+		Addons:      scanStorage(sctx),
 	}
 
 	// GitOps
 	categories["gitops"] = CategoryAddons{
 		DisplayName: "GitOps",
-		Addons: scanGitOps(sctx),
+		Addons:      scanGitOps(sctx),
 	}
 
 	// Virtual Machine
 	categories["virtualMachine"] = CategoryAddons{
 		DisplayName: "虚拟机",
-		Addons: scanVirtualMachine(sctx),
+		Addons:      scanVirtualMachine(sctx),
 	}
 
 	// Build summary

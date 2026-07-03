@@ -26,13 +26,13 @@ func TestAnthropicProvider_SimpleCompletion(t *testing.T) {
 		}
 
 		resp := map[string]any{
-			"id":      "msg_test",
-			"type":    "message",
-			"role":    "assistant",
+			"id":   "msg_test",
+			"type": "message",
+			"role": "assistant",
 			"content": []map[string]any{
 				{"type": "text", "text": "Diagnosis: pod is OOMKilled"},
 			},
-			"model":   "claude-3-5-sonnet-20241022",
+			"model": "claude-3-5-sonnet-20241022",
 			"usage": map[string]any{
 				"input_tokens":  80,
 				"output_tokens": 15,

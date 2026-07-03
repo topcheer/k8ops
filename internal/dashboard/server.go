@@ -131,7 +131,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/cluster/overview", s.cacheMiddleware(30*time.Second, s.handleClusterOverview))
 	mux.HandleFunc("/api/diagnostics", s.handleDiagnostics)
 	mux.HandleFunc("/api/diagnostics/restarts", s.cacheMiddleware(30*time.Second, s.handleRestartDiagnosis)) // pod restart diagnosis
-	mux.HandleFunc("/api/diagnostics/history", s.handleDiagnosticsHistory) // must be before catch-all
+	mux.HandleFunc("/api/diagnostics/history", s.handleDiagnosticsHistory)                                   // must be before catch-all
 	mux.HandleFunc("/api/diagnostics/", s.handleDiagnosticDetail)
 	mux.HandleFunc("/api/remediations", s.handleRemediations)
 	mux.HandleFunc("/api/remediation/", s.handleRemediationAction)
@@ -170,11 +170,11 @@ func (s *Server) Start(addr string) error {
 
 	// Security audit
 	mux.HandleFunc("/api/security/audit", s.handleSecurityAudit)
-	mux.HandleFunc("/api/security/secrets", s.cacheMiddleware(60*time.Second, s.handleSecretExposure)) // 1min cache                // cluster-wide security scan
+	mux.HandleFunc("/api/security/secrets", s.cacheMiddleware(60*time.Second, s.handleSecretExposure))       // 1min cache                // cluster-wide security scan
 	mux.HandleFunc("/api/security/network-policies", s.cacheMiddleware(60*time.Second, s.handleNetPolAudit)) // NetworkPolicy audit
-	mux.HandleFunc("/api/security/health", s.handleSecurityHealth)                                     // platform security health check
-	mux.HandleFunc("/api/security/compliance", s.handleComplianceScan)                                 // CIS benchmark compliance scan
-	mux.HandleFunc("/api/security/compliance/report", s.handleComplianceReport)                        // downloadable compliance report
+	mux.HandleFunc("/api/security/health", s.handleSecurityHealth)                                           // platform security health check
+	mux.HandleFunc("/api/security/compliance", s.handleComplianceScan)                                       // CIS benchmark compliance scan
+	mux.HandleFunc("/api/security/compliance/report", s.handleComplianceReport)                              // downloadable compliance report
 
 	// OpenAPI documentation
 	mux.HandleFunc("/api/openapi.json", s.handleOpenAPISpec) // OpenAPI 3.0 spec
@@ -203,13 +203,13 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/efficiency", s.cacheMiddleware(60*time.Second, s.handleEfficiency))
 
 	// Pod Disruption Budgets
-	mux.HandleFunc("/api/pdbs", s.cacheMiddleware(30*time.Second, s.handlePDBList)) // 1min cache
-	mux.HandleFunc("/api/compatibility", s.cacheMiddleware(60*time.Second, s.handleCompatibility)) // 1min cache
-	mux.HandleFunc("/api/certificates/expiry", s.cacheMiddleware(120*time.Second, s.handleCertExpiryScan)) // 2min cache
-	mux.HandleFunc("/api/system/drain-status", s.handleDrainStatus) // server draining/shutdown observability
-	mux.HandleFunc("/api/addons/health", s.cacheMiddleware(120*time.Second, s.handleAddonScan)) // 2min cache
-	mux.HandleFunc("/api/deployments/rollout", s.cacheMiddleware(30*time.Second, s.handleRolloutStatus)) // deployment rollout health
-	mux.HandleFunc("/api/resources/waste", s.cacheMiddleware(60*time.Second, s.handleWasteDetection)) // resource waste detection
+	mux.HandleFunc("/api/pdbs", s.cacheMiddleware(30*time.Second, s.handlePDBList))                           // 1min cache
+	mux.HandleFunc("/api/compatibility", s.cacheMiddleware(60*time.Second, s.handleCompatibility))            // 1min cache
+	mux.HandleFunc("/api/certificates/expiry", s.cacheMiddleware(120*time.Second, s.handleCertExpiryScan))    // 2min cache
+	mux.HandleFunc("/api/system/drain-status", s.handleDrainStatus)                                           // server draining/shutdown observability
+	mux.HandleFunc("/api/addons/health", s.cacheMiddleware(120*time.Second, s.handleAddonScan))               // 2min cache
+	mux.HandleFunc("/api/deployments/rollout", s.cacheMiddleware(30*time.Second, s.handleRolloutStatus))      // deployment rollout health
+	mux.HandleFunc("/api/resources/waste", s.cacheMiddleware(60*time.Second, s.handleWasteDetection))         // resource waste detection
 	mux.HandleFunc("/api/scaling/bottlenecks", s.cacheMiddleware(60*time.Second, s.handleScalingBottlenecks)) // scaling bottleneck detection
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
@@ -393,10 +393,10 @@ func (s *Server) connStateTracker(conn net.Conn, state http.ConnState) {
 // DrainStatus returns the current draining state and active connection count.
 // Used by /api/system/drain-status for observability.
 type DrainStatus struct {
-	Draining          bool   `json:"draining"`
-	ShutdownInitiated bool   `json:"shutdownInitiated"`
-	ActiveConnections int64  `json:"activeConnections"`
-	UptimeSeconds     int64  `json:"uptimeSeconds"`
+	Draining          bool  `json:"draining"`
+	ShutdownInitiated bool  `json:"shutdownInitiated"`
+	ActiveConnections int64 `json:"activeConnections"`
+	UptimeSeconds     int64 `json:"uptimeSeconds"`
 }
 
 // handleDrainStatus reports the server's draining/shutdown state.

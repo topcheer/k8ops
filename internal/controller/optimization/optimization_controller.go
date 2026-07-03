@@ -14,10 +14,10 @@ import (
 	"github.com/ggai/k8ops/internal/tools/k8s"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // OptimizationReconciler reconciles an OptimizationSuggestion object.
@@ -115,9 +115,9 @@ func (r *OptimizationReconciler) Reconcile(ctx context.Context, req ctrl.Request
 
 	// Parse structured response
 	var structured struct {
-		Summary               string                    `json:"summary"`
-		Suggestions           []aiv1alpha1.Suggestion   `json:"suggestions"`
-		TotalEstimatedSavings string                    `json:"totalEstimatedSavings"`
+		Summary               string                  `json:"summary"`
+		Suggestions           []aiv1alpha1.Suggestion `json:"suggestions"`
+		TotalEstimatedSavings string                  `json:"totalEstimatedSavings"`
 	}
 	if err := json.Unmarshal([]byte(result.Answer), &structured); err == nil {
 		opt.Status.Summary = structured.Summary

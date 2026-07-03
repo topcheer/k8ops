@@ -23,9 +23,9 @@ import (
 
 // KubeClient wraps Kubernetes client connections.
 type KubeClient struct {
-	config     *rest.Config
-	dynamic    dynamic.Interface
-	decoder    runtime.Decoder
+	config  *rest.Config
+	dynamic dynamic.Interface
+	decoder runtime.Decoder
 }
 
 // NewKubeClient creates a new Kubernetes client from in-cluster or kubeconfig.
@@ -156,12 +156,12 @@ func (t *ListResourcesTool) Description() string {
 }
 func (t *ListResourcesTool) Parameters() map[string]any {
 	return tools.Schema(map[string]tools.Property{
-		"apiVersion":     {Type: "string", Description: "API version"},
-		"kind":           {Type: "string", Description: "Resource kind"},
-		"namespace":      {Type: "string", Description: "Namespace (empty for all namespaces)", Default: ""},
-		"labelSelector":  {Type: "string", Description: "Label selector (e.g. 'app=nginx')", Default: ""},
-		"fieldSelector":  {Type: "string", Description: "Field selector (e.g. 'status.phase=Running')", Default: ""},
-		"limit":          {Type: "integer", Description: "Max items to return", Default: 100},
+		"apiVersion":    {Type: "string", Description: "API version"},
+		"kind":          {Type: "string", Description: "Resource kind"},
+		"namespace":     {Type: "string", Description: "Namespace (empty for all namespaces)", Default: ""},
+		"labelSelector": {Type: "string", Description: "Label selector (e.g. 'app=nginx')", Default: ""},
+		"fieldSelector": {Type: "string", Description: "Field selector (e.g. 'status.phase=Running')", Default: ""},
+		"limit":         {Type: "integer", Description: "Max items to return", Default: 100},
 	}, []string{"apiVersion", "kind"})
 }
 func (t *ListResourcesTool) Execute(ctx context.Context, args map[string]any) (*tools.ToolResult, error) {
@@ -196,10 +196,10 @@ func (t *ListResourcesTool) Execute(ctx context.Context, args map[string]any) (*
 
 	// Build summary
 	type itemSummary struct {
-		Name       string `json:"name"`
-		Namespace  string `json:"namespace,omitempty"`
-		Status     string `json:"status,omitempty"`
-		Created    string `json:"created,omitempty"`
+		Name      string `json:"name"`
+		Namespace string `json:"namespace,omitempty"`
+		Status    string `json:"status,omitempty"`
+		Created   string `json:"created,omitempty"`
 	}
 	summaries := make([]itemSummary, 0, len(list.Items))
 	for _, item := range list.Items {
@@ -279,7 +279,7 @@ func (t *DescribeResourceTool) Execute(ctx context.Context, args map[string]any)
 				data, _ := e.MarshalJSON()
 				if err := json.Unmarshal(data, &event); err == nil {
 					events = append(events, event)
-			}
+				}
 			}
 		}
 	}
@@ -432,14 +432,14 @@ func (t *GetNodesTool) Execute(ctx context.Context, args map[string]any) (*tools
 	}
 
 	type nodeSummary struct {
-		Name       string `json:"name"`
-		Status     string `json:"status"`
-		Role       string `json:"role"`
-		Version    string `json:"version"`
-		OS         string `json:"os"`
-		Arch       string `json:"arch"`
-		CPU        string `json:"cpu"`
-		Memory     string `json:"memory"`
+		Name       string            `json:"name"`
+		Status     string            `json:"status"`
+		Role       string            `json:"role"`
+		Version    string            `json:"version"`
+		OS         string            `json:"os"`
+		Arch       string            `json:"arch"`
+		CPU        string            `json:"cpu"`
+		Memory     string            `json:"memory"`
 		Conditions map[string]string `json:"conditions"`
 	}
 

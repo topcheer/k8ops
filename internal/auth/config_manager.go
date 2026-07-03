@@ -17,7 +17,7 @@ type ConfigManager struct {
 type configResponse struct {
 	JWTExpiry string `json:"jwt_expiry"`
 
-	DefaultRole             string `json:"default_role"`
+	DefaultRole              string `json:"default_role"`
 	DefaultAllowedNamespaces string `json:"default_allowed_namespaces"`
 }
 
@@ -25,7 +25,7 @@ type configResponse struct {
 type configRequest struct {
 	JWTExpiry string `json:"jwt_expiry"`
 
-	DefaultRole             string `json:"default_role"`
+	DefaultRole              string `json:"default_role"`
 	DefaultAllowedNamespaces string `json:"default_allowed_namespaces"`
 }
 
@@ -33,8 +33,8 @@ type configRequest struct {
 func (a *Authenticator) GetConfigResponse() configResponse {
 	c := a.cfg
 	return configResponse{
-		JWTExpiry:               c.JWTExpiry.String(),
-		DefaultRole:             c.DefaultRole,
+		JWTExpiry:                c.JWTExpiry.String(),
+		DefaultRole:              c.DefaultRole,
 		DefaultAllowedNamespaces: c.DefaultAllowedNamespaces,
 	}
 }

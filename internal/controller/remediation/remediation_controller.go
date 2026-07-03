@@ -11,12 +11,12 @@ import (
 	"github.com/ggai/k8ops/internal/tools/host"
 	remediationtools "github.com/ggai/k8ops/internal/tools/remediation"
 	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/rest"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 const finalizerName = "aiops.ggai.dev/remediation-finalizer"

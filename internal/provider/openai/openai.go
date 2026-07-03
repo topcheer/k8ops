@@ -66,10 +66,10 @@ func (p *OpenAIProvider) Name() string { return "openai" }
 
 // request/response types matching OpenAI API spec
 type oaiMessage struct {
-	Role       string         `json:"role"`
-	Content    string         `json:"content,omitempty"`
-	ToolCallID string         `json:"tool_call_id,omitempty"`
-	ToolCalls  []oaiToolCall  `json:"tool_calls,omitempty"`
+	Role       string        `json:"role"`
+	Content    string        `json:"content,omitempty"`
+	ToolCallID string        `json:"tool_call_id,omitempty"`
+	ToolCalls  []oaiToolCall `json:"tool_calls,omitempty"`
 }
 
 type oaiToolCall struct {
@@ -82,8 +82,8 @@ type oaiToolCall struct {
 }
 
 type oaiTool struct {
-	Type     string         `json:"type"`
-	Function oaiToolSchema  `json:"function"`
+	Type     string        `json:"type"`
+	Function oaiToolSchema `json:"function"`
 }
 
 type oaiToolSchema struct {
@@ -101,7 +101,7 @@ type oaiRequest struct {
 }
 
 type oaiChoice struct {
-	Index int `json:"index"`
+	Index   int `json:"index"`
 	Message struct {
 		Role      string        `json:"role"`
 		Content   string        `json:"content"`

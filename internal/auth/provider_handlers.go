@@ -178,14 +178,14 @@ func (a *Authenticator) handleProviderByID(w http.ResponseWriter, r *http.Reques
 // --- types ---
 
 type createProviderReq struct {
-	Name        string           `json:"name"`
-	Type        string           `json:"type"`
-	DisplayName string           `json:"display_name"`
-	Icon        string           `json:"icon"`
-	Enabled     bool             `json:"enabled"`
-	Priority    int              `json:"priority"`
-	LDAP        *LDAPConfig      `json:"ldap,omitempty"`
-	OIDC        *OIDCConfig      `json:"oidc,omitempty"`
+	Name        string      `json:"name"`
+	Type        string      `json:"type"`
+	DisplayName string      `json:"display_name"`
+	Icon        string      `json:"icon"`
+	Enabled     bool        `json:"enabled"`
+	Priority    int         `json:"priority"`
+	LDAP        *LDAPConfig `json:"ldap,omitempty"`
+	OIDC        *OIDCConfig `json:"oidc,omitempty"`
 }
 
 type updateProviderReq struct {

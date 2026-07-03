@@ -31,23 +31,23 @@ type ResourceForecast struct {
 
 // CapacityForecast is the full forecasting result.
 type CapacityForecast struct {
-	ScannedAt      time.Time            `json:"scannedAt"`
-	NodeCount      int                  `json:"nodeCount"`
-	PodCount       int                  `json:"podCount"`
-	Forecasts      []ResourceForecast   `json:"forecasts"`
-	OverallRisk    string               `json:"overallRisk"`
+	ScannedAt      time.Time              `json:"scannedAt"`
+	NodeCount      int                    `json:"nodeCount"`
+	PodCount       int                    `json:"podCount"`
+	Forecasts      []ResourceForecast     `json:"forecasts"`
+	OverallRisk    string                 `json:"overallRisk"`
 	ClusterSummary ClusterCapacitySummary `json:"clusterSummary"`
 }
 
 // ClusterCapacitySummary is a high-level view of current capacity.
 type ClusterCapacitySummary struct {
-	TotalCPU     int64   `json:"totalCPU"`     // milli cores
-	TotalMemory  int64   `json:"totalMemory"`  // bytes
-	TotalPodsCap int64   `json:"totalPodsCap"`
-	TotalStorage int64   `json:"totalStorage"` // bytes from PVCs
-	UsedCPU      int64   `json:"usedCPU"`
-	UsedMemory   int64   `json:"usedMemory"`
-	UsedPods     int64   `json:"usedPods"`
+	TotalCPU     int64 `json:"totalCPU"`    // milli cores
+	TotalMemory  int64 `json:"totalMemory"` // bytes
+	TotalPodsCap int64 `json:"totalPodsCap"`
+	TotalStorage int64 `json:"totalStorage"` // bytes from PVCs
+	UsedCPU      int64 `json:"usedCPU"`
+	UsedMemory   int64 `json:"usedMemory"`
+	UsedPods     int64 `json:"usedPods"`
 }
 
 // handleCapacityForecast predicts when cluster resources will be exhausted.
@@ -182,10 +182,10 @@ func computeForecast(nodes []corev1.Node, pods []corev1.Pod, pvcs []corev1.Persi
 
 // growthRateEstimate holds estimated daily growth for each resource.
 type growthRateEstimate struct {
-	CPUPerDay      float64 // milli cores per day
-	MemPerDay      float64 // bytes per day
-	PodsPerDay     float64 // pods per day
-	StoragePerDay  float64 // bytes per day
+	CPUPerDay     float64 // milli cores per day
+	MemPerDay     float64 // bytes per day
+	PodsPerDay    float64 // pods per day
+	StoragePerDay float64 // bytes per day
 }
 
 // estimateGrowthRate uses pod creation timestamps to estimate the rate of
@@ -195,7 +195,7 @@ func estimateGrowthRate(creationTimes []time.Time) growthRateEstimate {
 	if len(creationTimes) < 10 {
 		// Not enough data — return conservative defaults based on small growth
 		return growthRateEstimate{
-			PodsPerDay:    0.5, // assume 0.5 new pods/day
+			PodsPerDay:    0.5,               // assume 0.5 new pods/day
 			StoragePerDay: 100 * 1024 * 1024, // 100 MB/day
 		}
 	}
@@ -225,7 +225,7 @@ func estimateGrowthRate(creationTimes []time.Time) growthRateEstimate {
 
 	// Estimate CPU and memory growth proportional to pod growth
 	// Assume average pod requests: 500m CPU, 512Mi memory
-	avgCPUPerPod := 500.0   // milli cores
+	avgCPUPerPod := 500.0               // milli cores
 	avgMemPerPod := 512.0 * 1024 * 1024 // bytes
 
 	return growthRateEstimate{
@@ -244,11 +244,11 @@ func buildResourceForecast(resource string, used, capacity, totalCapacity int64,
 	}
 
 	f := ResourceForecast{
-		Resource:       resource,
-		TotalCapacity:  totalCapacity,
-		Allocated:      used,
-		AllocatedPct:   roundTo2(pct),
-		TrendPerDay:    roundTo2(growthPerDay),
+		Resource:      resource,
+		TotalCapacity: totalCapacity,
+		Allocated:     used,
+		AllocatedPct:  roundTo2(pct),
+		TrendPerDay:   roundTo2(growthPerDay),
 	}
 
 	// Determine risk level based on current utilization

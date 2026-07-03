@@ -101,7 +101,7 @@ func (t *GetStorageTool) Execute(ctx context.Context, args map[string]any) (*too
 				pvs = append(pvs, pvInfo{
 					Name: p.Name, Status: phase,
 					Capacity: capStr,
-					Claim: claim, Reason: p.Status.Reason,
+					Claim:    claim, Reason: p.Status.Reason,
 				})
 			}
 			result["pvs"] = pvs

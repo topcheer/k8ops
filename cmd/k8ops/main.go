@@ -16,9 +16,10 @@ limitations under the License.
 
 // Package main implements the k8ops CLI tool.
 // Usage:
-//   k8ops diagnose --resource pod/my-pod --namespace default
-//   k8ops optimize --scope namespace --namespace production
-//   k8ops version
+//
+//	k8ops diagnose --resource pod/my-pod --namespace default
+//	k8ops optimize --scope namespace --namespace production
+//	k8ops version
 package main
 
 import (
@@ -227,9 +228,9 @@ func optimizeCmd(args []string) {
 	registry.Register(&k8s.GetNodesTool{Client: kubeClient})
 
 	prov, err := provider.New(provider.ProviderConfig{
-		Type:   *providerType,
-		Model:  *model,
-		APIKey: *apiKey,
+		Type:     *providerType,
+		Model:    *model,
+		APIKey:   *apiKey,
 		Endpoint: *endpoint,
 	})
 	if err != nil {

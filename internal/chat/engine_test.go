@@ -40,7 +40,7 @@ func TestEvictIdle_RemovesExpiredConversations(t *testing.T) {
 	if conv == nil {
 		t.Fatal("failed to create conversation")
 	}
-	setLastActivityForTest(e, "old-session", time.Now().Add(-1 * time.Hour))
+	setLastActivityForTest(e, "old-session", time.Now().Add(-1*time.Hour))
 
 	fresh := e.GetOrCreateConversation("fresh-session")
 	if fresh == nil {
@@ -69,7 +69,7 @@ func TestEvictIdle_KeepsRecentConversations(t *testing.T) {
 	e := newTestEngine()
 
 	e.GetOrCreateConversation("recent")
-	setLastActivityForTest(e, "recent", time.Now().Add(-5 * time.Minute))
+	setLastActivityForTest(e, "recent", time.Now().Add(-5*time.Minute))
 
 	evicted := e.evictIdle()
 	if evicted != 0 {
@@ -81,7 +81,7 @@ func TestEvictIdle_BoundaryJustOver30Min(t *testing.T) {
 	e := newTestEngine()
 
 	e.GetOrCreateConversation("boundary")
-	setLastActivityForTest(e, "boundary", time.Now().Add(-31 * time.Minute))
+	setLastActivityForTest(e, "boundary", time.Now().Add(-31*time.Minute))
 
 	evicted := e.evictIdle()
 	if evicted != 1 {
@@ -95,12 +95,12 @@ func TestEvictIdle_MultipleExpired(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		id := "expired-" + string(rune('a'+i))
 		e.GetOrCreateConversation(id)
-		setLastActivityForTest(e, id, time.Now().Add(-2 * time.Hour))
+		setLastActivityForTest(e, id, time.Now().Add(-2*time.Hour))
 	}
 	for i := 0; i < 3; i++ {
 		id := "fresh-" + string(rune('a'+i))
 		e.GetOrCreateConversation(id)
-		setLastActivityForTest(e, id, time.Now().Add(-1 * time.Minute))
+		setLastActivityForTest(e, id, time.Now().Add(-1*time.Minute))
 	}
 
 	evicted := e.evictIdle()
@@ -126,9 +126,9 @@ func TestEvictOldest_RemovesOldest(t *testing.T) {
 	e.GetOrCreateConversation("middle")
 	e.GetOrCreateConversation("newest")
 
-	setLastActivityForTest(e, "oldest", time.Now().Add(-10 * time.Minute))
-	setLastActivityForTest(e, "middle", time.Now().Add(-5 * time.Minute))
-	setLastActivityForTest(e, "newest", time.Now().Add(-1 * time.Minute))
+	setLastActivityForTest(e, "oldest", time.Now().Add(-10*time.Minute))
+	setLastActivityForTest(e, "middle", time.Now().Add(-5*time.Minute))
+	setLastActivityForTest(e, "newest", time.Now().Add(-1*time.Minute))
 
 	e.mu.Lock()
 	e.evictOldestLocked()

@@ -10,7 +10,6 @@ import (
 	"github.com/ggai/k8ops/internal/tools"
 	corev1 "k8s.io/api/core/v1"
 
-	"sigs.k8s.io/yaml"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -18,6 +17,7 @@ import (
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	"sigs.k8s.io/yaml"
 )
 
 type Remediator struct {
@@ -224,7 +224,7 @@ func (t *CordonNodeTool) Description() string {
 }
 func (t *CordonNodeTool) Parameters() map[string]any {
 	return tools.Schema(map[string]tools.Property{
-		"node":    {Type: "string", Description: "Node name"},
+		"node":     {Type: "string", Description: "Node name"},
 		"uncordon": {Type: "boolean", Description: "If true, uncordon instead", Default: false},
 	}, []string{"node"})
 }
@@ -323,7 +323,7 @@ func (t *ApplyManifestTool) Description() string {
 }
 func (t *ApplyManifestTool) Parameters() map[string]any {
 	return tools.Schema(map[string]tools.Property{
-		"manifest": {Type: "string", Description: "YAML or JSON manifest"},
+		"manifest":  {Type: "string", Description: "YAML or JSON manifest"},
 		"namespace": {Type: "string", Description: "Namespace (overrides manifest)", Default: ""},
 	}, []string{"manifest"})
 }

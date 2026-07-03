@@ -124,15 +124,15 @@ func TestCheckAction_ProtectedResource(t *testing.T) {
 
 func TestCheckAction_NamespaceAllowList(t *testing.T) {
 	checker := NewChecker(nil, &aiv1alpha1.AutoRemediationSpec{
-		Enabled:           true,
-		MaxRiskLevel:      "high",
+		Enabled:            true,
+		MaxRiskLevel:       "high",
 		NamespaceAllowList: []string{"default", "dev"},
 	})
 
 	// Action in allowed namespace - should pass
 	action1 := aiv1alpha1.RemediationAction{
-		Type: "patchResource",
-		Risk: "low",
+		Type:   "patchResource",
+		Risk:   "low",
 		Target: &aiv1alpha1.ResourceRef{Namespace: "default"},
 	}
 	if !checker.CheckAction(action1).Allowed {
@@ -141,8 +141,8 @@ func TestCheckAction_NamespaceAllowList(t *testing.T) {
 
 	// Action in non-allowed namespace - should be blocked
 	action2 := aiv1alpha1.RemediationAction{
-		Type: "patchResource",
-		Risk: "low",
+		Type:   "patchResource",
+		Risk:   "low",
 		Target: &aiv1alpha1.ResourceRef{Namespace: "staging"},
 	}
 	if checker.CheckAction(action2).Allowed {

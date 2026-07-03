@@ -14,16 +14,16 @@ const APIKeyPrefix = "k8ops_"
 // APIKey represents an API key for programmatic access (CLI/CI integrations).
 // The key itself is never stored — only its SHA-256 hash.
 type APIKey struct {
-	ID          uint       `gorm:"primaryKey" json:"id"`
-	UserID      uint       `gorm:"index;not null" json:"user_id"`
-	Name        string     `gorm:"size:128;not null" json:"name"`     // human-readable label
-	KeyHash     string     `gorm:"size:255;uniqueIndex;not null" json:"-"` // SHA-256 hash, never serialized
-	KeyPrefix   string     `gorm:"size:20" json:"key_prefix"`          // first 12 chars for identification (e.g. "k8ops_ab12cd34")
-	LastUsedAt  *time.Time `json:"last_used_at"`                       // nil = never used
-	ExpiresAt   *time.Time `json:"expires_at"`                         // nil = no expiry
-	Revoked     bool       `gorm:"default:false" json:"revoked"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
+	ID         uint       `gorm:"primaryKey" json:"id"`
+	UserID     uint       `gorm:"index;not null" json:"user_id"`
+	Name       string     `gorm:"size:128;not null" json:"name"`          // human-readable label
+	KeyHash    string     `gorm:"size:255;uniqueIndex;not null" json:"-"` // SHA-256 hash, never serialized
+	KeyPrefix  string     `gorm:"size:20" json:"key_prefix"`              // first 12 chars for identification (e.g. "k8ops_ab12cd34")
+	LastUsedAt *time.Time `json:"last_used_at"`                           // nil = never used
+	ExpiresAt  *time.Time `json:"expires_at"`                             // nil = no expiry
+	Revoked    bool       `gorm:"default:false" json:"revoked"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
 }
 
 // TableName overrides the table name.

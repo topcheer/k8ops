@@ -194,13 +194,13 @@ func (t *GetIngressTool) Execute(ctx context.Context, args map[string]any) (*too
 	}
 
 	type ingressInfo struct {
-		Name       string `json:"name"`
-		Namespace  string `json:"namespace"`
-		Class      string `json:"class"`
+		Name       string   `json:"name"`
+		Namespace  string   `json:"namespace"`
+		Class      string   `json:"class"`
 		Hosts      []string `json:"hosts"`
 		Backends   []string `json:"backends"`
-		TLSEnabled bool    `json:"tlsEnabled"`
-		IPAddress  string  `json:"ipAddress,omitempty"`
+		TLSEnabled bool     `json:"tlsEnabled"`
+		IPAddress  string   `json:"ipAddress,omitempty"`
 	}
 
 	results := make([]ingressInfo, 0, len(list.Items))
@@ -266,12 +266,12 @@ func (t *GetNetworkPolicyTool) Execute(ctx context.Context, args map[string]any)
 	}
 
 	type netpolInfo struct {
-		Name             string `json:"name"`
-		Namespace        string `json:"namespace"`
-		PodSelector      string `json:"podSelector"`
-		PolicyTypes      []string `json:"policyTypes"`
-		IngressRules     int     `json:"ingressRules"`
-		EgressRules      int     `json:"egressRules"`
+		Name         string   `json:"name"`
+		Namespace    string   `json:"namespace"`
+		PodSelector  string   `json:"podSelector"`
+		PolicyTypes  []string `json:"policyTypes"`
+		IngressRules int      `json:"ingressRules"`
+		EgressRules  int      `json:"egressRules"`
 	}
 
 	results := make([]netpolInfo, 0, len(list.Items))
@@ -313,9 +313,9 @@ func (t *GetPodStatusTool) Description() string {
 }
 func (t *GetPodStatusTool) Parameters() map[string]any {
 	return tools.Schema(map[string]tools.Property{
-		"namespace": {Type: "string", Description: "Namespace", Default: ""},
+		"namespace":     {Type: "string", Description: "Namespace", Default: ""},
 		"labelSelector": {Type: "string", Description: "Label selector", Default: ""},
-		"failed":    {Type: "boolean", Description: "Only show failed/pending pods", Default: false},
+		"failed":        {Type: "boolean", Description: "Only show failed/pending pods", Default: false},
 	}, []string{})
 }
 func (t *GetPodStatusTool) Execute(ctx context.Context, args map[string]any) (*tools.ToolResult, error) {
@@ -375,7 +375,7 @@ func (t *GetPodStatusTool) Execute(ctx context.Context, args map[string]any) (*t
 			Name: p.Name, Namespace: p.Namespace,
 			Phase: string(p.Status.Phase),
 			Node:  p.Spec.NodeName, IP: p.Status.PodIP,
-			QoS:    string(p.Status.QOSClass),
+			QoS:        string(p.Status.QOSClass),
 			Conditions: make(map[string]string),
 		}
 		info.Age = formatAge(p.CreationTimestamp.Time)

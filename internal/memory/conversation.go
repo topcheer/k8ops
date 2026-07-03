@@ -18,9 +18,9 @@ import (
 type Conversation struct {
 	mu sync.Mutex
 
-	id           string
-	provider     provider.Provider
-	log          *slog.Logger
+	id       string
+	provider provider.Provider
+	log      *slog.Logger
 
 	// The message list sent to the LLM: [system, summary?, ...recent messages]
 	messages []provider.Message
@@ -29,8 +29,8 @@ type Conversation struct {
 	tokenEstimate int
 
 	// Configuration
-	maxTokens      int   // threshold to trigger compression
-	keepRecent     int   // messages to keep uncompressed
+	maxTokens      int // threshold to trigger compression
+	keepRecent     int // messages to keep uncompressed
 	summarizeModel string
 
 	// Persistent memory: key findings and decisions across compressions
@@ -43,22 +43,22 @@ type Conversation struct {
 
 // MemoryItem is a persisted piece of knowledge from earlier in the conversation.
 type MemoryItem struct {
-	Type      string    `json:"type"`      // "finding", "decision", "fact"
-	Content   string    `json:"content"`
-	Timestamp string    `json:"timestamp"`
+	Type      string `json:"type"` // "finding", "decision", "fact"
+	Content   string `json:"content"`
+	Timestamp string `json:"timestamp"`
 }
 
 // NewConversation creates a new conversation with memory.
 func NewConversation(id string, p provider.Provider, systemPrompt string, log *slog.Logger) *Conversation {
 	return &Conversation{
-		id:           id,
-		provider:     p,
-		log:          log,
-		messages:     []provider.Message{{Role: provider.RoleSystem, Content: systemPrompt}},
-		maxTokens:    20000, // trigger compression at ~20k tokens
-		keepRecent:   8,     // keep last 8 messages uncompressed
-		createdAt:    time.Now(),
-		updatedAt:    time.Now(),
+		id:         id,
+		provider:   p,
+		log:        log,
+		messages:   []provider.Message{{Role: provider.RoleSystem, Content: systemPrompt}},
+		maxTokens:  20000, // trigger compression at ~20k tokens
+		keepRecent: 8,     // keep last 8 messages uncompressed
+		createdAt:  time.Now(),
+		updatedAt:  time.Now(),
 	}
 }
 

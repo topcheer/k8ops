@@ -19,17 +19,17 @@ import (
 
 // AgentConfig configures the agent.
 type AgentConfig struct {
-	Provider    provider.Provider
-	Registry    *tools.Registry
+	Provider     provider.Provider
+	Registry     *tools.Registry
 	SystemPrompt string
-	MaxSteps    int
-	Timeout     time.Duration
+	MaxSteps     int
+	Timeout      time.Duration
 }
 
 // Agent is the AI agent that runs the Observe→Think→Act loop.
 type Agent struct {
-	cfg  AgentConfig
-	log  *slog.Logger
+	cfg AgentConfig
+	log *slog.Logger
 }
 
 // New creates a new Agent.
@@ -45,8 +45,8 @@ func New(cfg AgentConfig, log *slog.Logger) *Agent {
 
 // Step represents a single step in the agent's execution trace.
 type Step struct {
-	Thought    string `json:"thought,omitempty"`
-	Action     string `json:"action,omitempty"`
+	Thought     string `json:"thought,omitempty"`
+	Action      string `json:"action,omitempty"`
 	ActionInput string `json:"actionInput,omitempty"`
 	Observation string `json:"observation,omitempty"`
 }

@@ -7,8 +7,8 @@ import (
 
 // AuthMiddleware protects routes that require authentication.
 // It supports dual-mode authentication:
-//   1. Session cookie (k8ops_token) for browser users
-//   2. Bearer token (Authorization: Bearer k8ops_xxx) for CLI/API integrations
+//  1. Session cookie (k8ops_token) for browser users
+//  2. Bearer token (Authorization: Bearer k8ops_xxx) for CLI/API integrations
 //
 // Public routes (/api/health, /api/auth/*) are exempted.
 func (a *Authenticator) Middleware(next http.Handler) http.Handler {

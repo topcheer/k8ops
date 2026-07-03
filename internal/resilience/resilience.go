@@ -13,7 +13,7 @@ import (
 // --- Retry ---
 
 type RetryConfig struct {
-	MaxAttempts int
+	MaxAttempts  int
 	InitialDelay time.Duration
 	MaxDelay     time.Duration
 	Multiplier   float64
@@ -81,14 +81,14 @@ func (s CircuitState) String() string {
 }
 
 type CircuitBreaker struct {
-	mu              sync.Mutex
-	state           CircuitState
-	failureCount    int
+	mu               sync.Mutex
+	state            CircuitState
+	failureCount     int
 	failureThreshold int
-	resetTimeout    time.Duration
-	lastFailureTime time.Time
-	successCount    int
-	halfOpenMax     int
+	resetTimeout     time.Duration
+	lastFailureTime  time.Time
+	successCount     int
+	halfOpenMax      int
 }
 
 func NewCircuitBreaker(threshold int, resetTimeout time.Duration) *CircuitBreaker {

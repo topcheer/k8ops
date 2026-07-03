@@ -79,8 +79,8 @@ func TestSummary_SingleNamespace(t *testing.T) {
 	ns := summary.Namespaces[0]
 	assert.Equal(t, "default", ns.Namespace)
 	assert.Equal(t, 1, ns.Pods)
-	assert.InDelta(t, 0.5, ns.CPURequested, 0.001)   // 500m = 0.5 core
-	assert.InDelta(t, 0.5, ns.RAMRequested, 0.05)   // 512Mi ≈ 0.537 GB
+	assert.InDelta(t, 0.5, ns.CPURequested, 0.001) // 500m = 0.5 core
+	assert.InDelta(t, 0.5, ns.RAMRequested, 0.05)  // 512Mi ≈ 0.537 GB
 
 	// Expected: 0.5 * 28 + 0.537 * 3.5 ≈ 14 + 1.88 = 15.88
 	assert.InDelta(t, 16.0, ns.MonthlyCost, 0.5)

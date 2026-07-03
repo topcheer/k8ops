@@ -72,11 +72,11 @@ type gemContent struct {
 }
 
 type gemSchema struct {
-	Type       string         `json:"type"`
-	Description string        `json:"description,omitempty"`
-	Properties map[string]any `json:"properties,omitempty"`
-	Required   []string       `json:"required,omitempty"`
-	Items      map[string]any `json:"items,omitempty"`
+	Type        string         `json:"type"`
+	Description string         `json:"description,omitempty"`
+	Properties  map[string]any `json:"properties,omitempty"`
+	Required    []string       `json:"required,omitempty"`
+	Items       map[string]any `json:"items,omitempty"`
 }
 
 type gemFunctionDecl struct {
@@ -105,10 +105,10 @@ type gemCandidate struct {
 }
 
 type gemResponse struct {
-	Candidates []gemCandidate `json:"candidates"`
+	Candidates    []gemCandidate `json:"candidates"`
 	UsageMetadata struct {
-		PromptTokenCount      int `json:"promptTokenCount"`
-		CandidatesTokenCount  int `json:"candidatesTokenCount"`
+		PromptTokenCount     int `json:"promptTokenCount"`
+		CandidatesTokenCount int `json:"candidatesTokenCount"`
 	} `json:"usageMetadata,omitempty"`
 	Error *struct {
 		Code    int    `json:"code"`

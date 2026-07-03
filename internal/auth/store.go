@@ -16,18 +16,18 @@ import (
 
 // User represents an authenticated dashboard user.
 type User struct {
-	ID            uint      `gorm:"primaryKey" json:"id"`
-	Username      string    `gorm:"uniqueIndex;size:255;not null" json:"username"`
-	Email         string    `gorm:"index;size:255" json:"email"`
-	DisplayName   string    `gorm:"size:255" json:"display_name"`
-	PasswordHash  string    `gorm:"size:255" json:"-"`          // bcrypt hash, never serialized
-	Role          string    `gorm:"size:32;default:'viewer'" json:"role"`  // admin, operator, viewer, ns-admin, ns-viewer
-	Provider      string    `gorm:"size:64;default:'local'" json:"provider"` // local, ldap, oidc
-	ProviderID    string    `gorm:"size:255" json:"provider_id"`
-	AllowedNamespaces string `gorm:"size:1024" json:"allowed_namespaces"` // comma-separated, for ns-* roles
-	MustChangePwd bool      `gorm:"default:false" json:"must_change_pwd"`
-	CreatedAt     time.Time `json:"created_at"`
-	UpdatedAt     time.Time `json:"updated_at"`
+	ID                uint      `gorm:"primaryKey" json:"id"`
+	Username          string    `gorm:"uniqueIndex;size:255;not null" json:"username"`
+	Email             string    `gorm:"index;size:255" json:"email"`
+	DisplayName       string    `gorm:"size:255" json:"display_name"`
+	PasswordHash      string    `gorm:"size:255" json:"-"`                       // bcrypt hash, never serialized
+	Role              string    `gorm:"size:32;default:'viewer'" json:"role"`    // admin, operator, viewer, ns-admin, ns-viewer
+	Provider          string    `gorm:"size:64;default:'local'" json:"provider"` // local, ldap, oidc
+	ProviderID        string    `gorm:"size:255" json:"provider_id"`
+	AllowedNamespaces string    `gorm:"size:1024" json:"allowed_namespaces"` // comma-separated, for ns-* roles
+	MustChangePwd     bool      `gorm:"default:false" json:"must_change_pwd"`
+	CreatedAt         time.Time `json:"created_at"`
+	UpdatedAt         time.Time `json:"updated_at"`
 }
 
 // TableName overrides the table name.
@@ -43,9 +43,10 @@ type Store struct {
 // dsn: connection string appropriate for the driver
 //
 // Examples:
-//   sqlite:   /data/k8ops.db
-//   mysql:    user:password@tcp(host:3306)/k8ops?charset=utf8mb4&parseTime=True
-//   postgres: host=localhost user=postgres password=secret dbname=k8ops port=5432 sslmode=disable
+//
+//	sqlite:   /data/k8ops.db
+//	mysql:    user:password@tcp(host:3306)/k8ops?charset=utf8mb4&parseTime=True
+//	postgres: host=localhost user=postgres password=secret dbname=k8ops port=5432 sslmode=disable
 func NewStore(driver, dsn string) (*Store, error) {
 	var dialector gorm.Dialector
 

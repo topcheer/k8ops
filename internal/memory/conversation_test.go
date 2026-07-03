@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
-	"log/slog"
 	"testing"
 
 	"github.com/ggai/k8ops/internal/provider"
@@ -19,9 +19,9 @@ type mockProvider struct {
 func (m *mockProvider) Name() string { return "mock" }
 func (m *mockProvider) Complete(ctx context.Context, req provider.CompletionRequest) (*provider.CompletionResponse, error) {
 	return &provider.CompletionResponse{
-		Content:           m.response,
-		PromptTokens:      10,
-		CompletionTokens:  5,
+		Content:          m.response,
+		PromptTokens:     10,
+		CompletionTokens: 5,
 	}, nil
 }
 func (m *mockProvider) StreamComplete(ctx context.Context, req provider.CompletionRequest, onDelta func(string)) (*provider.CompletionResponse, error) {
@@ -96,7 +96,7 @@ func TestConversation_Compress(t *testing.T) {
 
 	// Create a conversation with low threshold to trigger compression
 	conv := NewConversation("test", &mockProvider{response: "Summary of conversation"}, "sys", slog.Default())
-	conv.maxTokens = 1   // very low threshold
+	conv.maxTokens = 1  // very low threshold
 	conv.keepRecent = 2 // keep only 2 messages
 
 	// Add enough messages to trigger compression

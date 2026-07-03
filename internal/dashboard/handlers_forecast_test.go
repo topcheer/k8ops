@@ -136,11 +136,11 @@ func TestComputeForecast_WithPVCs(t *testing.T) {
 	pvcs := []corev1.PersistentVolumeClaim{
 		{
 			ObjectMeta: metav1.ObjectMeta{Name: "data-1", Namespace: "default"},
-			Spec: corev1.PersistentVolumeClaimSpec{},
+			Spec:       corev1.PersistentVolumeClaimSpec{},
 		},
 		{
 			ObjectMeta: metav1.ObjectMeta{Name: "data-2", Namespace: "default"},
-			Spec: corev1.PersistentVolumeClaimSpec{},
+			Spec:       corev1.PersistentVolumeClaimSpec{},
 		},
 	}
 	// Set storage requests via the correct API (VolumeResourceRequirements in k8s 0.36+)

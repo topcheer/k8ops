@@ -29,7 +29,7 @@ func TestGeminiProvider_SimpleCompletion(t *testing.T) {
 						"parts": []map[string]any{
 							{"text": "The deployment has insufficient replicas."},
 						},
-						"role":  "model",
+						"role": "model",
 					},
 					"finishReason": "STOP",
 				},

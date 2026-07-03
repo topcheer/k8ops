@@ -29,8 +29,8 @@ func NewChecker(safety *aiv1alpha1.SafetySpec, auto *aiv1alpha1.AutoRemediationS
 
 // CheckAction validates whether an action is allowed.
 type CheckResult struct {
-	Allowed  bool   `json:"allowed"`
-	Reason   string `json:"reason,omitempty"`
+	Allowed   bool   `json:"allowed"`
+	Reason    string `json:"reason,omitempty"`
 	RiskLevel string `json:"riskLevel"`
 }
 

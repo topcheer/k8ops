@@ -26,31 +26,31 @@ const (
 
 // CertInfo holds certificate expiration details.
 type CertInfo struct {
-	Name           string          `json:"name"`
-	Namespace      string          `json:"namespace"`
-	Kind           string          `json:"kind"` // "Secret" or "Ingress"
-	SecretType     string          `json:"secretType,omitempty"`
-	Issuer         string          `json:"issuer,omitempty"`
-	Subject        string          `json:"subject,omitempty"`
-	DNSNames       []string        `json:"dnsNames,omitempty"`
-	NotBefore      time.Time       `json:"notBefore"`
-	NotAfter       time.Time       `json:"notAfter"`
-	DaysUntilExpiry int            `json:"daysUntilExpiry"`
-	Level          CertExpiryLevel `json:"level"`
-	UsedByIngress  []string        `json:"usedByIngress,omitempty"` // ingress names referencing this cert
-	Error          string          `json:"error,omitempty"`
+	Name            string          `json:"name"`
+	Namespace       string          `json:"namespace"`
+	Kind            string          `json:"kind"` // "Secret" or "Ingress"
+	SecretType      string          `json:"secretType,omitempty"`
+	Issuer          string          `json:"issuer,omitempty"`
+	Subject         string          `json:"subject,omitempty"`
+	DNSNames        []string        `json:"dnsNames,omitempty"`
+	NotBefore       time.Time       `json:"notBefore"`
+	NotAfter        time.Time       `json:"notAfter"`
+	DaysUntilExpiry int             `json:"daysUntilExpiry"`
+	Level           CertExpiryLevel `json:"level"`
+	UsedByIngress   []string        `json:"usedByIngress,omitempty"` // ingress names referencing this cert
+	Error           string          `json:"error,omitempty"`
 }
 
 // CertExpirySummary aggregates cert scan results.
 type CertExpirySummary struct {
-	Total     int                       `json:"total"`
-	Expired   int                       `json:"expired"`
-	Critical  int                       `json:"critical"`
-	Warning   int                       `json:"warning"`
-	OK        int                       `json:"ok"`
-	Errors    int                       `json:"errors"`
-	Certificates []CertInfo             `json:"certificates"`
-	ScannedAt  time.Time                `json:"scannedAt"`
+	Total        int        `json:"total"`
+	Expired      int        `json:"expired"`
+	Critical     int        `json:"critical"`
+	Warning      int        `json:"warning"`
+	OK           int        `json:"ok"`
+	Errors       int        `json:"errors"`
+	Certificates []CertInfo `json:"certificates"`
+	ScannedAt    time.Time  `json:"scannedAt"`
 }
 
 // certExpiryThresholds

@@ -103,11 +103,11 @@ type ActionResult struct {
 
 // RemediationPlan phase constants.
 const (
-	RemediationPlanPhasePending   = "Pending"
-	RemediationPlanPhaseApproved  = "Approved"
-	RemediationPlanPhaseExecuting = "Executing"
-	RemediationPlanPhaseCompleted = "Completed"
-	RemediationPlanPhaseFailed    = "Failed"
+	RemediationPlanPhasePending    = "Pending"
+	RemediationPlanPhaseApproved   = "Approved"
+	RemediationPlanPhaseExecuting  = "Executing"
+	RemediationPlanPhaseCompleted  = "Completed"
+	RemediationPlanPhaseFailed     = "Failed"
 	RemediationPlanPhaseRolledBack = "RolledBack"
 )
 

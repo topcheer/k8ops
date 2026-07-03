@@ -25,8 +25,8 @@ type Message struct {
 
 // ToolCall represents a function/tool call from the AI.
 type ToolCall struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
+	ID        string `json:"id"`
+	Name      string `json:"name"`
 	Arguments string `json:"arguments"` // JSON string of arguments
 }
 
@@ -40,16 +40,16 @@ type ToolDefinition struct {
 type ToolFunctionSchema struct {
 	Name        string         `json:"name"`
 	Description string         `json:"description"`
-	Parameters map[string]any `json:"parameters"` // JSON Schema
+	Parameters  map[string]any `json:"parameters"` // JSON Schema
 }
 
 // CompletionRequest is a chat completion request.
 type CompletionRequest struct {
-	Messages []Message         `json:"messages"`
-	Tools    []ToolDefinition  `json:"tools,omitempty"`
-	Model    string            `json:"model"`
-	MaxTokens int              `json:"max_tokens,omitempty"`
-	Temperature float64        `json:"temperature,omitempty"`
+	Messages    []Message        `json:"messages"`
+	Tools       []ToolDefinition `json:"tools,omitempty"`
+	Model       string           `json:"model"`
+	MaxTokens   int              `json:"max_tokens,omitempty"`
+	Temperature float64          `json:"temperature,omitempty"`
 }
 
 // CompletionResponse is the AI's response.

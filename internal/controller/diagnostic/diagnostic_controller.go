@@ -15,8 +15,8 @@ import (
 	"github.com/ggai/k8ops/internal/tools/k8s"
 	"github.com/ggai/k8ops/internal/tools/remediation"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/rest"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -29,9 +29,9 @@ const finalizerName = "aiops.ggai.dev/diagnostic-finalizer"
 // DiagnosticReconciler reconciles a DiagnosticReport object.
 type DiagnosticReconciler struct {
 	client.Client
-	Scheme     *runtime.Scheme
-	Config     *rest.Config
-	Log        *slog.Logger
+	Scheme      *runtime.Scheme
+	Config      *rest.Config
+	Log         *slog.Logger
 	ProviderCfg provider.ProviderConfig
 }
 
@@ -351,9 +351,9 @@ func (r *DiagnosticReconciler) maybeCreateRemediationPlan(ctx context.Context, r
 			},
 		},
 		Spec: aiv1alpha1.RemediationPlanSpec{
-			DiagnosticRef: report.Name,
-			Actions:       actions,
-			Mode:          "auto",
+			DiagnosticRef:     report.Name,
+			Actions:           actions,
+			Mode:              "auto",
 			RollbackOnFailure: true,
 		},
 	}

@@ -14,11 +14,11 @@ import (
 
 // NetPolFinding represents a single network policy audit finding.
 type NetPolFinding struct {
-	Severity     string `json:"severity"`     // critical, high, medium, low
-	Category     string `json:"category"`     // no-policy, permissive, exposed, ingress-open, egress-open
-	Namespace    string `json:"namespace"`
-	Resource     string `json:"resource"`     // affected workload or namespace
-	Description  string `json:"description"`
+	Severity       string `json:"severity"` // critical, high, medium, low
+	Category       string `json:"category"` // no-policy, permissive, exposed, ingress-open, egress-open
+	Namespace      string `json:"namespace"`
+	Resource       string `json:"resource"` // affected workload or namespace
+	Description    string `json:"description"`
 	Recommendation string `json:"recommendation"`
 }
 
@@ -36,7 +36,7 @@ type NetPolPolicyInfo struct {
 
 // NetPolAuditResult is the full audit output.
 type NetPolAuditResult struct {
-	ScannedAt  time.Time         `json:"scannedAt"`
+	ScannedAt  time.Time          `json:"scannedAt"`
 	Summary    NetPolAuditSummary `json:"summary"`
 	Policies   []NetPolPolicyInfo `json:"policies"`
 	Findings   []NetPolFinding    `json:"findings"`
@@ -45,25 +45,25 @@ type NetPolAuditResult struct {
 
 // NetPolAuditSummary is the aggregate result.
 type NetPolAuditSummary struct {
-	TotalNamespaces   int `json:"totalNamespaces"`
+	TotalNamespaces      int `json:"totalNamespaces"`
 	NamespacesWithNetPol int `json:"namespacesWithNetPol"`
-	NamespacesWithout   int `json:"namespacesWithout"`
-	TotalPolicies    int `json:"totalPolicies"`
-	PermissivePolicies int `json:"permissivePolicies"`
-	TotalFindings    int `json:"totalFindings"`
-	CriticalCount    int `json:"criticalCount"`
-	HighCount        int `json:"highCount"`
-	MediumCount      int `json:"mediumCount"`
-	LowCount         int `json:"lowCount"`
+	NamespacesWithout    int `json:"namespacesWithout"`
+	TotalPolicies        int `json:"totalPolicies"`
+	PermissivePolicies   int `json:"permissivePolicies"`
+	TotalFindings        int `json:"totalFindings"`
+	CriticalCount        int `json:"criticalCount"`
+	HighCount            int `json:"highCount"`
+	MediumCount          int `json:"mediumCount"`
+	LowCount             int `json:"lowCount"`
 }
 
 // NetPolNamespace shows network policy coverage per namespace.
 type NetPolNamespace struct {
-	Name           string `json:"name"`
-	HasNetworkPolicy bool `json:"hasNetworkPolicy"`
-	PolicyCount    int    `json:"policyCount"`
-	PodCount       int    `json:"podCount"`
-	ExposedPods    int    `json:"exposedPods"`
+	Name             string `json:"name"`
+	HasNetworkPolicy bool   `json:"hasNetworkPolicy"`
+	PolicyCount      int    `json:"policyCount"`
+	PodCount         int    `json:"podCount"`
+	ExposedPods      int    `json:"exposedPods"`
 }
 
 // handleNetPolAudit scans the cluster for NetworkPolicy coverage and isolation gaps.
@@ -148,11 +148,11 @@ func auditNetworkPoliciesFull(namespaces []corev1.Namespace, pods []corev1.Pod, 
 		// Finding: namespace with pods but no NetworkPolicy
 		if !hasNetPol && podCount > 0 {
 			allFindings = append(allFindings, NetPolFinding{
-				Severity:     "critical",
-				Category:     "no-policy",
-				Namespace:    ns.Name,
-				Resource:     ns.Name,
-				Description:  fmt.Sprintf("命名空间 %s 有 %d 个 Pod 但没有 NetworkPolicy，所有流量不受限制", ns.Name, podCount),
+				Severity:       "critical",
+				Category:       "no-policy",
+				Namespace:      ns.Name,
+				Resource:       ns.Name,
+				Description:    fmt.Sprintf("命名空间 %s 有 %d 个 Pod 但没有 NetworkPolicy，所有流量不受限制", ns.Name, podCount),
 				Recommendation: "创建默认拒绝 NetworkPolicy，仅放行必要的 ingress/egress 流量",
 			})
 		}
@@ -164,11 +164,11 @@ func auditNetworkPoliciesFull(namespaces []corev1.Namespace, pods []corev1.Pod, 
 				sev = "high"
 			}
 			allFindings = append(allFindings, NetPolFinding{
-				Severity:     sev,
-				Category:     "partial-coverage",
-				Namespace:    ns.Name,
-				Resource:     fmt.Sprintf("%d/%d pods uncovered", exposedPods, podCount),
-				Description:  fmt.Sprintf("命名空间 %s 有 %d/%d 个 Pod 不被任何 NetworkPolicy 覆盖", ns.Name, exposedPods, podCount),
+				Severity:       sev,
+				Category:       "partial-coverage",
+				Namespace:      ns.Name,
+				Resource:       fmt.Sprintf("%d/%d pods uncovered", exposedPods, podCount),
+				Description:    fmt.Sprintf("命名空间 %s 有 %d/%d 个 Pod 不被任何 NetworkPolicy 覆盖", ns.Name, exposedPods, podCount),
 				Recommendation: "扩大 NetworkPolicy 的 podSelector 覆盖范围，或添加 catch-all 策略",
 			})
 		}
@@ -181,11 +181,11 @@ func auditNetworkPoliciesFull(namespaces []corev1.Namespace, pods []corev1.Pod, 
 			// Finding: policy that allows all ingress
 			if info.AllowsAllIngress {
 				allFindings = append(allFindings, NetPolFinding{
-					Severity:     "high",
-					Category:     "permissive",
-					Namespace:    ns.Name,
-					Resource:     pol.Name,
-					Description:  fmt.Sprintf("NetworkPolicy %s/%s 允许所有入站流量 (0.0.0.0/0)", ns.Name, pol.Name),
+					Severity:       "high",
+					Category:       "permissive",
+					Namespace:      ns.Name,
+					Resource:       pol.Name,
+					Description:    fmt.Sprintf("NetworkPolicy %s/%s 允许所有入站流量 (0.0.0.0/0)", ns.Name, pol.Name),
 					Recommendation: "限制入站来源 IP 范围或使用 namespaceSelector/podSelector",
 				})
 			}
@@ -193,11 +193,11 @@ func auditNetworkPoliciesFull(namespaces []corev1.Namespace, pods []corev1.Pod, 
 			// Finding: policy that allows all egress
 			if info.AllowsAllEgress {
 				allFindings = append(allFindings, NetPolFinding{
-					Severity:     "medium",
-					Category:     "permissive",
-					Namespace:    ns.Name,
-					Resource:     pol.Name,
-					Description:  fmt.Sprintf("NetworkPolicy %s/%s 允许所有出站流量", ns.Name, pol.Name),
+					Severity:       "medium",
+					Category:       "permissive",
+					Namespace:      ns.Name,
+					Resource:       pol.Name,
+					Description:    fmt.Sprintf("NetworkPolicy %s/%s 允许所有出站流量", ns.Name, pol.Name),
 					Recommendation: "限制出站目标，仅放行 DNS (UDP 53) 和必要的外部服务",
 				})
 			}
@@ -205,11 +205,11 @@ func auditNetworkPoliciesFull(namespaces []corev1.Namespace, pods []corev1.Pod, 
 			// Finding: policy with no types specified (defaults)
 			if len(pol.Spec.PolicyTypes) == 0 {
 				allFindings = append(allFindings, NetPolFinding{
-					Severity:     "low",
-					Category:     "implicit-types",
-					Namespace:    ns.Name,
-					Resource:     pol.Name,
-					Description:  fmt.Sprintf("NetworkPolicy %s/%s 未显式指定 policyTypes，将使用默认值", ns.Name, pol.Name),
+					Severity:       "low",
+					Category:       "implicit-types",
+					Namespace:      ns.Name,
+					Resource:       pol.Name,
+					Description:    fmt.Sprintf("NetworkPolicy %s/%s 未显式指定 policyTypes，将使用默认值", ns.Name, pol.Name),
 					Recommendation: "显式声明 policyTypes: [Ingress, Egress] 以明确意图",
 				})
 			}
