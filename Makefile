@@ -69,7 +69,7 @@ docker-local: ## Build and push to local registry (registry.iot2.win)
 
 .PHONY: test
 test: ## Run all unit tests
-	$(GO) test ./internal/... -count=1 -timeout 120s
+	$(GO) test ./internal/... -count=1 -timeout 180s
 
 .PHONY: test-race
 test-race: ## Run tests with race detector

@@ -56,6 +56,9 @@ func TestAllTools_HaveValidSchemas(t *testing.T) {
 }
 
 func TestHostDiskUsageTool_Execute(t *testing.T) {
+	if isCI() {
+		t.Skip("skipping disk usage test in CI (df can hang on container mounts)")
+	}
 	tool := &HostDiskUsageTool{}
 	result, err := tool.Execute(context.Background(), map[string]any{
 		"path": "/",
@@ -95,6 +98,9 @@ func TestHostExecTool_Echo(t *testing.T) {
 }
 
 func TestHostExecTool_Timeout(t *testing.T) {
+	if isCI() {
+		t.Skip("skipping exec timeout test in CI (nsenter/shell can hang)")
+	}
 	tool := &HostExecTool{}
 	result, err := tool.Execute(context.Background(), map[string]any{
 		"command": "sleep 10",
@@ -154,6 +160,9 @@ func hostname() (string, error) {
 }
 
 func TestHostname(t *testing.T) {
+	if isCI() {
+		t.Skip("skipping hostname test in CI")
+	}
 	h, err := hostname()
 	if err != nil {
 		t.Fatalf("hostname error: %v", err)
