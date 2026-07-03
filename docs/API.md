@@ -491,3 +491,79 @@ receivers:
 | `storage-exhaust` | 命名空间 PVC 请求超 500Gi |
 
 **集群容量摘要：** 提供节点数、CPU/内存容量与可分配量、Pod 容量与已分配量、扩展余量
+
+### RBAC 权限风险分析 (v14.67+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/security/rbac-risk` | 分析所有 RoleBinding/ClusterRoleBinding 的权限风险，0-100 评分系统，5 级风险等级（critical/high/elevated/moderate/low），检测 cluster-admin 绑定、权限提升、通配符权限、敏感资源访问 |
+
+**查询参数：** `namespace`（可选）
+
+**风险评分规则：**
+| 检测项 | 基础分 | 附加分 |
+|--------|--------|--------|
+| ClusterRoleBinding + cluster-admin | 100 | - |
+| 权限提升（escalate/bind/impersonate） | - | +25 |
+| 通配符动词（verbs: *） | - | +25 |
+| 通配符资源（resources: *） | - | +20 |
+| 集群范围写操作 | - | +30 |
+| 敏感资源访问（secrets/pods/exec） | - | +15 |
+
+### CronJob 执行健康监控 (v14.68+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/cronjobs/health` | 监控所有 CronJob 的执行健康：成功率、连续失败、暂停/停滞调度、从未执行，5 级健康状态（healthy/warning/failing/suspended/no-runs） |
+
+**查询参数：** `namespace`（可选）
+
+**健康状态：**
+| 状态 | 触发条件 |
+|------|---------|
+| `failing` | 连续 3 次以上失败 |
+| `warning` | 1-2 次连续失败，或成功率 < 50% |
+| `suspended` | CronJob 被 suspend |
+| `no-runs` | 从未执行过 |
+| `healthy` | 近期全部成功 |
+
+### Service & Endpoint 健康监控 (v14.69+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/networking/health` | 扫描所有 Service 和 Ingress 的网络健康：无端点服务、选择器不匹配、端点降级、LoadBalancer 等待、Ingress 后端服务缺失/无端点，5 级健康状态 |
+
+**查询参数：** `namespace`（可选）
+
+**Service 健康状态：**
+| 状态 | 含义 |
+|------|------|
+| `misconfigured` | 选择器不匹配 — 无 Pod 匹配 label |
+| `no-endpoints` | 所有端点不可用 |
+| `degraded` | 部分端点不可用 |
+| `external` | ExternalName/LoadBalancer（信息性） |
+| `healthy` | 所有端点正常 |
+
+**Ingress 健康检查：** 检测后端 Service 是否存在、是否有可用端点，验证默认后端和规则路径
+
+### PV/PVC 存储健康监控 (v14.70+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/storage/health` | 扫描所有 PVC/PV 的存储健康：Pending PVC 诊断、孤立 PVC（绑定但无 Pod 使用 > 1 天）、Lost/Failed PVC、Released/Failed PV 需手动清理、陈旧 Available PV 浪费容量，6 级健康状态 + 存储类分布分析 |
+
+**查询参数：** `namespace`（可选）
+
+**PVC 健康状态：**
+| 状态 | 含义 |
+|------|------|
+| `failed` | PVC 配置失败 |
+| `lost` | 底层 PV 已删除 |
+| `pending` | 等待供给（无存储类、WaitForFirstConsumer） |
+| `near-capacity` | 接近容量上限 |
+| `orphaned` | 已绑定但超过 1 天无 Pod 使用 |
+| `bound` | 正常绑定 |
+
+**PV 问题检测：** Released PV（需手动清理）、Failed PV（回收失败）、陈旧 Available PV（>7 天浪费容量）
+
+**存储类分析：** 默认类标记、provisioner、reclaim policy、binding mode、volume expansion 支持、PVC 数量分布

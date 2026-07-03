@@ -684,3 +684,44 @@ kubectl rollout restart daemonset/k8ops -n k8ops-system
 - 7 类瓶颈：节点调度、节点压力、配额限制、HPA 卡住、PDB 阻塞、存储耗尽
 - 集群容量摘要：节点数、CPU/内存、Pod 容量、扩展余量
 - 每项包含影响级别和修复建议
+
+### RBAC 权限风险分析
+
+`GET /api/security/rbac-risk` 分析集群中所有 RBAC 绑定的安全风险：
+
+- 0-100 评分系统，自动识别高危绑定
+- 5 级风险等级：critical / high / elevated / moderate / low
+- 检测项：cluster-admin 绑定、权限提升（escalate/bind/impersonate）、通配符权限（verbs/resources: *）、集群范围写操作、敏感资源访问（secrets/pods/exec）
+- 每项包含详细评分明细和修复建议（最小权限原则）
+- 支持按命名空间过滤：`?namespace=default`
+
+### CronJob 执行健康监控
+
+`GET /api/operations/cronjobs/health` 监控所有 CronJob 的执行健康状况：
+
+- 5 级健康状态：healthy / warning / failing / suspended / no-runs
+- 检测连续失败（3 次以上 = failing）、成功率低于 50%、暂停的调度、从未执行
+- 通过 OwnerReferences 关联 CronJob 及其子 Job
+- 计算下次预期运行时间
+- 支持按命名空间过滤：`?namespace=production`
+
+### Service & Endpoint 网络健康监控
+
+`GET /api/networking/health` 扫描所有 Service 和 Ingress 的网络连通性：
+
+- 5 级 Service 健康状态：healthy / degraded / no-endpoints / misconfigured / external
+- 检测选择器不匹配（label mismatch）、所有端点不可用、部分降级、LoadBalancer 等待 IP
+- Ingress 后端验证：后端 Service 是否存在、是否有可用端点
+- 交叉引用 Pod 选择器匹配，提供根因分析
+- 支持按命名空间过滤：`?namespace=default`
+
+### PV/PVC 存储健康监控
+
+`GET /api/storage/health` 扫描所有 PVC/PV 的存储健康状况：
+
+- 6 级 PVC 健康状态：bound / pending / lost / failed / orphaned / near-capacity
+- Pending 诊断：无存储类、WaitForFirstConsumer 绑定模式、provisioner 日志检查
+- 孤立 PVC 检测：已绑定但超过 1 天无 Pod 使用（容量浪费）
+- PV 问题：Released（需手动清理）、Failed（回收失败）、陈旧 Available（>7 天）
+- 存储类分布：默认类标记、provisioner、reclaim policy、volume expansion 支持
+- 支持按命名空间过滤：`?namespace=default`
