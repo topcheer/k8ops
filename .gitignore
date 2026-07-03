@@ -6,6 +6,10 @@ bin/
 *.out
 dist/
 
+# GoReleaser CI temp files
+release-body.md
+release-notes.txt
+
 # IDE / Editor
 .idea/
 .vscode/
