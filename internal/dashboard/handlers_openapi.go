@@ -932,6 +932,33 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Configuration Audit (v14.75+) ---
+	add("/api/deployments/audit", "get", OpenAPIOperation{
+		Summary: "Deployment configuration audit", OperationID: "deploymentAudit", Tags: []string{"Deployment", "Security"},
+		Description: "Audits all Deployments, StatefulSets, and DaemonSets for configuration best-practice violations affecting reliability and safety. Checks: revision history limits (rollback capability), image pull policy correctness (:latest vs pinned tags), missing resource limits/requests, missing liveness/readiness/startup probes, security context (privileged, runAsNonRoot, readOnlyRootFilesystem, privilege escalation), update strategy (Recreate downtime, OnDelete manual updates, partitioned rollouts), lifecycle (termination grace period, preStop hooks), and pod-level security context (seccomp profile). Each finding includes severity (critical/warning/info), category, message, and actionable suggestion. Provides health score per workload (0=perfect, 100=worst) and aggregated top findings across the cluster.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+			queryParam("severity", "Filter by severity: critical, warning, info"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Deployment audit report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"total":         30,
+					"deployments":   20,
+					"statefulSets":  7,
+					"daemonSets":    3,
+					"withFindings":  18,
+					"criticalCount": 5,
+					"warningCount":  22,
+					"infoCount":     15,
+					"avgScore":      35,
+				},
+				"workloads":   []interface{}{},
+				"topFindings": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
