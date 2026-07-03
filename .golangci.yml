@@ -1,10 +1,11 @@
+version: "2"
+
 linters:
-  disable-all: true
+  default: none
   enable:
     - govet
-    - errcheck
 
-linters-settings:
+settings:
   errcheck:
     exclude-functions:
       - (io.Closer).Close
@@ -15,11 +16,9 @@ issues:
   exclude-rules:
     - path: _test\.go
       linters:
-        - errcheck
         - govet
   max-issues-per-linter: 0
   max-same-issues: 0
 
 run:
   timeout: 5m
-

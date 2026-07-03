@@ -26,7 +26,7 @@ CONTROLLER_GEN := $(shell pwd)/bin/controller-gen
 KUSTOMIZE_VERSION ?= v5.4.0
 KUSTOMIZE := $(shell pwd)/bin/kustomize
 ENVTEST_K8S_VERSIONS ?= 1.30.0
-GOLANGCI_LINT_VERSION ?= v1.60.0
+GOLANGCI_LINT_VERSION ?= v2.12.2
 GOLANGCI_LINT := $(shell pwd)/bin/golangci-lint
 
 .PHONY: all
@@ -160,7 +160,17 @@ $(KUSTOMIZE):
 	$(call go-get-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v5@$(KUSTOMIZE_VERSION))
 
 $(GOLANGCI_LINT):
-	$(call go-get-tool,$(GOLANGCI_LINT),github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION))
+	@echo "Installing golangci-lint $(GOLANGCI_LINT_VERSION)..."
+	@OS=$$(uname -s | tr '[:upper:]' '[:lower:]') && \
+	ARCH=$$(uname -m | sed 's/aarch64/arm64/' | sed 's/x86_64/amd64/') && \
+	VER_NUM=$$(echo $(GOLANGCI_LINT_VERSION) | sed 's/^v//') && \
+	URL="https://github.com/golangci/golangci-lint/releases/download/$(GOLANGCI_LINT_VERSION)/golangci-lint-$${VER_NUM}-$${OS}-$${ARCH}.tar.gz" && \
+	tmpdir=$$(mktemp -d) && \
+	curl -sL "$$URL" | tar xz -C $$tmpdir && \
+	mkdir -p bin && \
+	cp $$tmpdir/golangci-lint-$${VER_NUM}-$${OS}-$${ARCH}/golangci-lint $(GOLANGCI_LINT) && \
+	chmod +x $(GOLANGCI_LINT) && \
+	rm -rf $$tmpdir
 
 # go-get-tool downloads a binary tool into bin/.
 define go-get-tool
