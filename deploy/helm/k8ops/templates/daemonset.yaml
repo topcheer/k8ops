@@ -16,6 +16,7 @@ spec:
         app.kubernetes.io/name: k8ops
     spec:
       serviceAccountName: k8ops
+      terminationGracePeriodSeconds: 30
       tolerations:
         {{- toYaml .Values.daemonset.tolerations | nindent 6 }}
       hostPID: {{ .Values.daemonset.hostPID }}
@@ -24,6 +25,10 @@ spec:
       - name: k8ops
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/manager", "--pre-stop"]
         env:
           {{- include "k8ops.env" . | nindent 8 }}
         envFrom:

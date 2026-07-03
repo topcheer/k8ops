@@ -10,11 +10,13 @@ import (
 	"fmt"
 	"io/fs"
 	"log/slog"
+	"net"
 	"net/http"
 	"os"
 	"sort"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	aiv1alpha1 "github.com/ggai/k8ops/api/v1alpha1"
@@ -58,6 +60,11 @@ type Server struct {
 	tlsKey             string
 	startTime          *time.Time
 	perfTracker        *apiPerformanceTracker
+
+	// Graceful shutdown state
+	draining       atomic.Bool  // true when server is draining (SIGTERM received)
+	activeConns    atomic.Int64 // number of in-flight HTTP connections
+	shutdownSignal atomic.Bool  // true when graceful shutdown has been initiated
 }
 
 // New creates a new dashboard server.
@@ -196,6 +203,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/pdbs", s.cacheMiddleware(30*time.Second, s.handlePDBList)) // 1min cache
 	mux.HandleFunc("/api/compatibility", s.cacheMiddleware(60*time.Second, s.handleCompatibility)) // 1min cache
 	mux.HandleFunc("/api/certificates/expiry", s.cacheMiddleware(120*time.Second, s.handleCertExpiryScan)) // 2min cache
+	mux.HandleFunc("/api/system/drain-status", s.handleDrainStatus) // server draining/shutdown observability
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))
@@ -230,6 +238,7 @@ func (s *Server) Start(addr string) error {
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 0, // no WriteTimeout: SSE streaming can take arbitrarily long
 		IdleTimeout:  120 * time.Second,
+		ConnState:    s.connStateTracker, // track active connections for graceful draining
 	}
 
 	// TLS support: use HTTPS if cert/key are configured
@@ -337,8 +346,65 @@ func (s *Server) adminOnlyMiddleware(next http.HandlerFunc) http.HandlerFunc {
 }
 
 // Stop gracefully shuts down the server.
+// It first marks the server as draining (so /readyz returns 503 and kubelet
+// removes this pod from Service endpoints), then waits for in-flight requests
+// to complete up to the given context deadline.
 func (s *Server) Stop(ctx context.Context) error {
+	// Step 1: mark as draining — readiness probe immediately returns 503.
+	s.draining.Store(true)
+	s.shutdownSignal.Store(true)
+	s.log.Info("server marked as draining, /readyz now returns 503",
+		"active_connections", s.activeConns.Load())
+
+	// Step 2: wait briefly for kubelet to notice /readyz=503 and remove
+	// this pod from Service endpoints (typically 1-5s depending on poll interval).
+	// This prevents new connections from arriving during the drain.
+	drainWait := 3 * time.Second
+	select {
+	case <-time.After(drainWait):
+	case <-ctx.Done():
+		// Context expired during drain wait — proceed to shutdown anyway.
+	}
+
+	s.log.Info("proceeding with HTTP server shutdown",
+		"remaining_connections", s.activeConns.Load())
+
+	// Step 3: gracefully shut down (drain remaining in-flight requests).
 	return s.server.Shutdown(ctx)
+}
+
+// connStateTracker tracks active HTTP connections for graceful draining.
+func (s *Server) connStateTracker(conn net.Conn, state http.ConnState) {
+	switch state {
+	case http.StateNew, http.StateActive:
+		s.activeConns.Add(1)
+	case http.StateIdle, http.StateClosed, http.StateHijacked:
+		s.activeConns.Add(-1)
+	}
+}
+
+// DrainStatus returns the current draining state and active connection count.
+// Used by /api/system/drain-status for observability.
+type DrainStatus struct {
+	Draining          bool   `json:"draining"`
+	ShutdownInitiated bool   `json:"shutdownInitiated"`
+	ActiveConnections int64  `json:"activeConnections"`
+	UptimeSeconds     int64  `json:"uptimeSeconds"`
+}
+
+// handleDrainStatus reports the server's draining/shutdown state.
+// GET /api/system/drain-status
+func (s *Server) handleDrainStatus(w http.ResponseWriter, r *http.Request) {
+	var uptime int64
+	if s.startTime != nil {
+		uptime = int64(time.Since(*s.startTime).Seconds())
+	}
+	writeJSON(w, DrainStatus{
+		Draining:          s.draining.Load(),
+		ShutdownInitiated: s.shutdownSignal.Load(),
+		ActiveConnections: s.activeConns.Load(),
+		UptimeSeconds:     uptime,
+	})
 }
 
 func (s *Server) corsMiddleware(next http.Handler) http.Handler {
@@ -446,8 +512,16 @@ func (s *Server) handleHealthz(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleReadyz is the K8s readiness probe endpoint.
-// Returns 503 if the k8s API is unreachable.
+// Returns 503 if the k8s API is unreachable OR if the server is draining.
 func (s *Server) handleReadyz(w http.ResponseWriter, r *http.Request) {
+	// During graceful shutdown, immediately return 503 so the kubelet
+	// removes this pod from Service endpoints and stops sending new traffic.
+	if s.draining.Load() {
+		w.Header().Set("Content-Type", "text/plain")
+		w.WriteHeader(503)
+		w.Write([]byte("draining\n"))
+		return
+	}
 	if s.clientset == nil {
 		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(503)
