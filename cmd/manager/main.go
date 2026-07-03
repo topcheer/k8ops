@@ -133,6 +133,22 @@ func main() {
 	}(), "Log level: debug, info, warn, error")
 	flag.Parse()
 
+	// Handle pre-stop hook: sleep 5s to let Ingress deregister, then exit.
+	// This is called by the kubelet preStop lifecycle hook before sending SIGTERM.
+	preStop := flag.Bool("pre-stop", false, "Pre-stop hook: sleep 5s then exit (for graceful connection draining)")
+	_ = preStop // re-parse since we already called flag.Parse above
+
+	// Check if --pre-stop was passed
+	for _, arg := range os.Args[1:] {
+		if arg == "--pre-stop" {
+			logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+			logger.Info("pre-stop hook: draining connections for 5s")
+			time.Sleep(5 * time.Second)
+			logger.Info("pre-stop hook complete, exiting")
+			os.Exit(0)
+		}
+	}
+
 	opts := zap.Options{
 		Development: false,
 	}

@@ -103,18 +103,32 @@ spec:
           limits:
             cpu: "2"
             memory: 2Gi
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          failureThreshold: 30
+          periodSeconds: 5
         livenessProbe:
           httpGet:
             path: /healthz
             port: 8081
-          initialDelaySeconds: 15
           periodSeconds: 20
+          failureThreshold: 3
+          timeoutSeconds: 5
         readinessProbe:
           httpGet:
             path: /readyz
             port: 8081
-          initialDelaySeconds: 5
           periodSeconds: 10
+          failureThreshold: 3
+          timeoutSeconds: 5
+          successThreshold: 1
+        lifecycle:
+          preStop:
+            exec:
+              # Give Ingress 5s to deregister before SIGTERM
+              command: ["/manager", "--pre-stop"]
         volumeMounts:
         - name: data
           mountPath: /data

@@ -129,18 +129,33 @@ spec:
           mountPath: /var/log/k8ops
         - name: data
           mountPath: /data
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          failureThreshold: 30
+          periodSeconds: 5
         livenessProbe:
           httpGet:
             path: /healthz
             port: 8081
-          initialDelaySeconds: 15
           periodSeconds: 20
+          failureThreshold: 3
+          timeoutSeconds: 5
         readinessProbe:
           httpGet:
             path: /readyz
             port: 8081
-          initialDelaySeconds: 5
           periodSeconds: 10
+          failureThreshold: 3
+          timeoutSeconds: 5
+          successThreshold: 1
+        lifecycle:
+          preStop:
+            exec:
+              # Give Traefik/Ingress 5s to remove this pod from upstream
+              # before SIGTERM is sent (distroless has no shell, use sleep binary)
+              command: ["/manager", "--pre-stop"]
       volumes:
       - name: host-root
         hostPath:
