@@ -194,6 +194,7 @@ func (s *Server) Start(addr string) error {
 
 	// Pod Disruption Budgets
 	mux.HandleFunc("/api/pdbs", s.cacheMiddleware(30*time.Second, s.handlePDBList)) // 1min cache
+	mux.HandleFunc("/api/compatibility", s.cacheMiddleware(60*time.Second, s.handleCompatibility)) // 1min cache
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))
@@ -535,10 +536,18 @@ func (s *Server) handleClusterOverview(w http.ResponseWriter, r *http.Request) {
 		overview["recentWarnings"] = len(events.Items)
 	}
 
-	// Version info
+	// Version info + cluster compatibility detection
 	info, err := rc.clientset.Discovery().ServerVersion()
 	if err == nil {
 		overview["clusterVersion"] = info.GitVersion
+
+		// Detect cloud provider, distribution, and version compatibility
+		var nodeList []corev1.Node
+		if nodes != nil {
+			nodeList = nodes.Items
+		}
+		compat := detectClusterCompat(info.GitVersion, nodeList)
+		overview["compatibility"] = compat
 	}
 
 	writeJSON(w, overview)
