@@ -760,6 +760,29 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Scaling Bottleneck Detector (v14.65+) ---
+	add("/api/scaling/bottlenecks", "get", OpenAPIOperation{
+		Summary: "Scaling bottleneck detector", OperationID: "scalingBottlenecks", Tags: []string{"Scaling", "Capacity", "Scalability"},
+		Description: "Scans for factors that prevent or limit horizontal scaling: node scheduling constraints (cordoned, pressure conditions), cluster pod capacity limits, resource quota pressure, HPA stuck at max replicas, PDBs blocking voluntary disruptions, and storage exhaustion. Provides cluster-level capacity summary and per-item recommendations.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Scaling bottleneck report", map[string]interface{}{
+				"clusterSummary": map[string]interface{}{
+					"totalNodes": 3, "schedulableNodes": 3, "podCapacity": 330,
+					"podsAllocated": 60, "podCapacityUsedPct": 18.2,
+					"scalingHeadroomPods": 270,
+				},
+				"summary": map[string]interface{}{
+					"total": 2, "blocking": 1,
+					"byType": map[string]int{"hpa-stuck": 1, "pdb-blocking": 1},
+				},
+				"bottlenecks": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
