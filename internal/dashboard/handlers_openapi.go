@@ -721,6 +721,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Rollout Status (v14.63+) ---
+	add("/api/deployments/rollout", "get", OpenAPIOperation{
+		Summary: "Deployment rollout status tracker", OperationID: "rolloutStatus", Tags: []string{"Deployments", "Operations"},
+		Description: "Scans all Deployments, StatefulSets, and DaemonSets for rollout health. Detects in-progress rollouts, stalled updates, degraded availability, failed deployments (ProgressDeadlineExceeded), paused deployments, and scaled-to-zero workloads. Provides conditions, images, template hash, and issue diagnostics per workload.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+			queryParam("status", "Filter by rollout status: complete, in-progress, stalled, degraded, paused, failed, scaled-to-zero"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Rollout status report", map[string]interface{}{
+				"summary": map[string]int{
+					"total": 45, "deployments": 30, "statefulSets": 10, "daemonSets": 5,
+					"complete": 40, "inProgress": 2, "degraded": 1, "failed": 1, "paused": 1,
+				},
+				"workloads": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
