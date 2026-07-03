@@ -651,7 +651,7 @@ func buildOpenAPISpec() OpenAPISpec {
 	add("/api/pdbs", "get", OpenAPIOperation{
 		Summary: "List Pod Disruption Budgets", OperationID: "listPDBs", Tags: []string{"Reliability"},
 		Description: "Lists all PDBs with disruption status, matched workloads, and health assessment (healthy/at-risk/blocked). Useful for pre-drain safety checks.",
-		Parameters: []OpenAPIParam{queryParam("namespace", "Filter by namespace")},
+		Parameters:  []OpenAPIParam{queryParam("namespace", "Filter by namespace")},
 		Responses: map[string]OpenAPIResponse{
 			"200": okResponse("PDB list", map[string]interface{}{
 				"summary": map[string]int{"total": 5, "healthy": 4, "atRisk": 1, "blocked": 0},
@@ -667,8 +667,8 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{
 			"200": okResponse("Compatibility info", map[string]interface{}{
 				"distribution": "k3s", "kubernetesVersion": "v1.33.1+k3s1",
-				"compatible":   true,
-				"features":     map[string]bool{"arm": true, "gpu": false, "windows": false},
+				"compatible": true,
+				"features":   map[string]bool{"arm": true, "gpu": false, "windows": false},
 			}),
 		},
 	})
@@ -677,7 +677,7 @@ func buildOpenAPISpec() OpenAPISpec {
 	add("/api/certificates/expiry", "get", OpenAPIOperation{
 		Summary: "TLS certificate expiry scanner", OperationID: "certExpiry", Tags: []string{"Security", "Operations"},
 		Description: "Scans all kubernetes.io/tls and Opaque secrets for X.509 certificates. Categorizes by expiry: expired (<0d), critical (<7d), warning (<30d), ok (>30d). Links certificates to Ingress resources.",
-		Parameters: []OpenAPIParam{queryParam("namespace", "Filter by namespace")},
+		Parameters:  []OpenAPIParam{queryParam("namespace", "Filter by namespace")},
 		Responses: map[string]OpenAPIResponse{
 			"200": okResponse("Certificate expiry report", map[string]interface{}{
 				"total": 57, "expired": 2, "critical": 0, "warning": 1, "ok": 54,
@@ -703,7 +703,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Non-intrusive detection and health check of 39 common K8s add-ons across 12 categories: CNI, DNS, Ingress, Cert Manager, Load Balancer, Service Mesh, Backup, Monitoring, Policy, Storage, GitOps, Virtual Machine.",
 		Responses: map[string]OpenAPIResponse{
 			"200": okResponse("Add-on health report", map[string]interface{}{
-				"summary": map[string]int{"totalDetected": 6, "healthy": 3, "degraded": 3, "notInstalled": 33},
+				"summary":    map[string]int{"totalDetected": 6, "healthy": 3, "degraded": 3, "notInstalled": 33},
 				"categories": map[string]interface{}{},
 			}),
 		},
@@ -736,6 +736,26 @@ func buildOpenAPISpec() OpenAPISpec {
 					"complete": 40, "inProgress": 2, "degraded": 1, "failed": 1, "paused": 1,
 				},
 				"workloads": []interface{}{},
+			}),
+		},
+	})
+
+	// --- Resource Waste Detection (v14.64+) ---
+	add("/api/resources/waste", "get", OpenAPIOperation{
+		Summary: "Resource waste detector", OperationID: "resourceWaste", Tags: []string{"Resources", "Cost Optimization"},
+		Description: "Scans for wasted and orphaned resources: dead services (no endpoints, especially LoadBalancer), unused PVCs, unattached PVs, orphaned ConfigMaps/Secrets, and empty namespaces. Each item includes severity rating, age, and actionable cleanup suggestions. Provides estimated cost risk level.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Resource waste report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"total":       15,
+					"byCategory":  map[string]int{"dead-service": 3, "unused-pvc": 2, "orphaned-configmap": 5},
+					"bySeverity":  map[string]int{"critical": 2, "high": 3, "medium": 5, "low": 5},
+					"estCostRisk": "moderate",
+				},
+				"items": []interface{}{},
 			}),
 		},
 	})
