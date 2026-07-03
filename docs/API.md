@@ -347,3 +347,46 @@ receivers:
 | v14.51 | `POST /api/webhooks/alertmanager` | Operations |
 | v14.52 | `GET /api/efficiency` | Scalability |
 | v14.53 | `GET /api/security/secrets` | Security |
+| v14.54 | OpenAPI 3.0 spec + API.md | Documentation |
+| v14.55 | `GET /api/pdbs` `GET /api/compatibility` | Product |
+| v14.56 | `GET /api/certificates/expiry` | Operations |
+| v14.57 | 优雅关闭 draining gate | Deployment |
+| v14.58 | `GET /api/addons/health` | Product |
+| v14.59 | `GET /api/capacity/forecast` | Scalability |
+| v14.60 | OpenAPI spec 补全 + API.md 更新 | Documentation |
+
+### Pod Disruption Budget 状态 (v14.55+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/pdbs` | 列出所有 PDB，含 disruption 状态、匹配工作负载、健康评估（healthy/at-risk/blocked），用于 drain 前安全检查 |
+
+### K8s 发行版兼容性检测 (v14.55+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/compatibility` | 自动检测集群发行版（vanilla/k3s/RKE2/EKS/GKE/AKS/OpenShift/Talos）、版本兼容性、ARM/Windows/GPU 节点特性 |
+
+### TLS 证书过期扫描 (v14.56+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/certificates/expiry` | 扫描所有 TLS/Opaque Secret 中的 X.509 证书，按过期时间分类（expired/critical/warning/ok），关联 Ingress 资源 |
+
+### 服务器 Drain 状态 (v14.57+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/system/drain-status` | 报告服务器优雅关闭状态：draining、shutdownInitiated、activeConnections、uptime |
+
+### 插件健康检测 (v14.58+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/addons/health` | 非侵入式检测 39 种常见 K8s 插件（12 类别：CNI/DNS/Ingress/CertManager/LB/Mesh/Backup/Monitoring/Policy/Storage/GitOps/VM）的健康状态 |
+
+### 容量耗尽预测 (v14.59+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/capacity/forecast` | 预测 CPU/内存/Pod/存储 容量何时耗尽，基于增长率估算提供 days-to-exhaustion 和中文扩容建议 |

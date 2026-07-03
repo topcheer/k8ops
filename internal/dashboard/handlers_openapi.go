@@ -647,6 +647,80 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- PDB Status (v14.55+) ---
+	add("/api/pdbs", "get", OpenAPIOperation{
+		Summary: "List Pod Disruption Budgets", OperationID: "listPDBs", Tags: []string{"Reliability"},
+		Description: "Lists all PDBs with disruption status, matched workloads, and health assessment (healthy/at-risk/blocked). Useful for pre-drain safety checks.",
+		Parameters: []OpenAPIParam{queryParam("namespace", "Filter by namespace")},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("PDB list", map[string]interface{}{
+				"summary": map[string]int{"total": 5, "healthy": 4, "atRisk": 1, "blocked": 0},
+				"items":   []interface{}{},
+			}),
+		},
+	})
+
+	// --- Compatibility Detection (v14.55+) ---
+	add("/api/compatibility", "get", OpenAPIOperation{
+		Summary: "K8s distribution & compatibility detection", OperationID: "compatibility", Tags: []string{"System", "Compatibility"},
+		Description: "Detects K8s distribution (vanilla, k3s, RKE2, EKS, GKE, AKS, OpenShift, Talos), version compatibility with k8ops, and feature availability (ARM, Windows, GPU nodes).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Compatibility info", map[string]interface{}{
+				"distribution": "k3s", "kubernetesVersion": "v1.33.1+k3s1",
+				"compatible":   true,
+				"features":     map[string]bool{"arm": true, "gpu": false, "windows": false},
+			}),
+		},
+	})
+
+	// --- Certificate Expiry Scanner (v14.56+) ---
+	add("/api/certificates/expiry", "get", OpenAPIOperation{
+		Summary: "TLS certificate expiry scanner", OperationID: "certExpiry", Tags: []string{"Security", "Operations"},
+		Description: "Scans all kubernetes.io/tls and Opaque secrets for X.509 certificates. Categorizes by expiry: expired (<0d), critical (<7d), warning (<30d), ok (>30d). Links certificates to Ingress resources.",
+		Parameters: []OpenAPIParam{queryParam("namespace", "Filter by namespace")},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Certificate expiry report", map[string]interface{}{
+				"total": 57, "expired": 2, "critical": 0, "warning": 1, "ok": 54,
+				"certificates": []interface{}{},
+			}),
+		},
+	})
+
+	// --- Server Drain Status (v14.57+) ---
+	add("/api/system/drain-status", "get", OpenAPIOperation{
+		Summary: "Server drain status", OperationID: "drainStatus", Tags: []string{"System", "Operations"},
+		Description: "Reports whether the server is in graceful-shutdown draining mode. During drain, /readyz returns 503 to remove the pod from Service endpoints.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Drain status", map[string]interface{}{
+				"draining": false, "shutdownInitiated": false, "activeConnections": 3, "uptimeSeconds": 3600,
+			}),
+		},
+	})
+
+	// --- Add-on Health Detection (v14.58+) ---
+	add("/api/addons/health", "get", OpenAPIOperation{
+		Summary: "K8s add-on health detection", OperationID: "addonHealth", Tags: []string{"System", "Add-ons"},
+		Description: "Non-intrusive detection and health check of 39 common K8s add-ons across 12 categories: CNI, DNS, Ingress, Cert Manager, Load Balancer, Service Mesh, Backup, Monitoring, Policy, Storage, GitOps, Virtual Machine.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Add-on health report", map[string]interface{}{
+				"summary": map[string]int{"totalDetected": 6, "healthy": 3, "degraded": 3, "notInstalled": 33},
+				"categories": map[string]interface{}{},
+			}),
+		},
+	})
+
+	// --- Capacity Forecast (v14.59+) ---
+	add("/api/capacity/forecast", "get", OpenAPIOperation{
+		Summary: "Cluster capacity exhaustion forecast", OperationID: "capacityForecast", Tags: []string{"Capacity", "Scalability"},
+		Description: "Predicts when cluster resources (CPU, memory, pods, storage) will be exhausted. Estimates growth from pod creation timestamps. Risk levels: safe (<60%), moderate (60-80%), high (80-95%), critical (>95%). Provides days-to-exhaustion and actionable recommendations.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Capacity forecast", map[string]interface{}{
+				"overallRisk": "safe", "nodeCount": 3, "podCount": 63,
+				"forecasts": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
