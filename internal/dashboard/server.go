@@ -131,7 +131,8 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/config", s.handleConfig)
 	mux.HandleFunc("/api/nodes", s.cacheMiddleware(30*time.Second, s.handleNodes))
 	mux.HandleFunc("/api/events", s.handleEvents)
-	mux.HandleFunc("/api/events/stream", s.handleEventsStream) // SSE real-time
+	mux.HandleFunc("/api/events/summary", s.cacheMiddleware(30*time.Second, s.handleEventSummary)) // 30s cache
+	mux.HandleFunc("/api/events/stream", s.handleEventsStream)                                     // SSE real-time
 	mux.HandleFunc("/api/audit", s.handleAudit)
 	mux.HandleFunc("/api/audit/stats", s.handleAuditStats)
 	mux.HandleFunc("/api/audit/events", s.handleAuditEvents)
