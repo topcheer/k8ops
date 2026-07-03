@@ -203,15 +203,16 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/efficiency", s.cacheMiddleware(60*time.Second, s.handleEfficiency))
 
 	// Pod Disruption Budgets
-	mux.HandleFunc("/api/pdbs", s.cacheMiddleware(30*time.Second, s.handlePDBList))                           // 1min cache
-	mux.HandleFunc("/api/compatibility", s.cacheMiddleware(60*time.Second, s.handleCompatibility))            // 1min cache
-	mux.HandleFunc("/api/certificates/expiry", s.cacheMiddleware(120*time.Second, s.handleCertExpiryScan))    // 2min cache
-	mux.HandleFunc("/api/system/drain-status", s.handleDrainStatus)                                           // server draining/shutdown observability
-	mux.HandleFunc("/api/addons/health", s.cacheMiddleware(120*time.Second, s.handleAddonScan))               // 2min cache
-	mux.HandleFunc("/api/deployments/rollout", s.cacheMiddleware(30*time.Second, s.handleRolloutStatus))      // deployment rollout health
-	mux.HandleFunc("/api/resources/waste", s.cacheMiddleware(60*time.Second, s.handleWasteDetection))         // resource waste detection
-	mux.HandleFunc("/api/scaling/bottlenecks", s.cacheMiddleware(60*time.Second, s.handleScalingBottlenecks)) // scaling bottleneck detection
-	mux.HandleFunc("/api/security/rbac-risk", s.cacheMiddleware(120*time.Second, s.handleRBACRiskScan))       // RBAC permission risk analysis
+	mux.HandleFunc("/api/pdbs", s.cacheMiddleware(30*time.Second, s.handlePDBList))                             // 1min cache
+	mux.HandleFunc("/api/compatibility", s.cacheMiddleware(60*time.Second, s.handleCompatibility))              // 1min cache
+	mux.HandleFunc("/api/certificates/expiry", s.cacheMiddleware(120*time.Second, s.handleCertExpiryScan))      // 2min cache
+	mux.HandleFunc("/api/system/drain-status", s.handleDrainStatus)                                             // server draining/shutdown observability
+	mux.HandleFunc("/api/addons/health", s.cacheMiddleware(120*time.Second, s.handleAddonScan))                 // 2min cache
+	mux.HandleFunc("/api/deployments/rollout", s.cacheMiddleware(30*time.Second, s.handleRolloutStatus))        // deployment rollout health
+	mux.HandleFunc("/api/resources/waste", s.cacheMiddleware(60*time.Second, s.handleWasteDetection))           // resource waste detection
+	mux.HandleFunc("/api/scaling/bottlenecks", s.cacheMiddleware(60*time.Second, s.handleScalingBottlenecks))   // scaling bottleneck detection
+	mux.HandleFunc("/api/security/rbac-risk", s.cacheMiddleware(120*time.Second, s.handleRBACRiskScan))         // RBAC permission risk analysis
+	mux.HandleFunc("/api/operations/cronjobs/health", s.cacheMiddleware(60*time.Second, s.handleCronJobHealth)) // cronjob execution health
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))

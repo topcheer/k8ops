@@ -799,6 +799,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- CronJob Execution Health Monitor (v14.68+) ---
+	add("/api/operations/cronjobs/health", "get", OpenAPIOperation{
+		Summary: "CronJob execution health monitor", OperationID: "cronJobHealth", Tags: []string{"Operations", "Batch"},
+		Description: "Monitors all CronJobs for execution health: tracks job success/failure rates, detects consecutive failures, suspended crons, stale schedules, and never-executed crons. Links each CronJob to its child Jobs via owner references. Provides 5 health levels: healthy/warning/failing/suspended/no-runs.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("CronJob health report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalCronJobs": 5, "suspended": 1, "failedJobs": 3,
+					"byStatus": map[string]int{"healthy": 3, "failing": 1, "suspended": 1},
+				},
+				"cronJobs": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
