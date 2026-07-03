@@ -817,6 +817,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Service & Endpoint Health Monitor (v14.69+) ---
+	add("/api/networking/health", "get", OpenAPIOperation{
+		Summary: "Service & Endpoint health monitor", OperationID: "networkingHealth", Tags: []string{"Networking", "Product"},
+		Description: "Scans all Services and Ingresses for networking health. Detects: services with no endpoints (dangling), selector mismatches, all endpoints not ready, degraded services (partial endpoint loss), LoadBalancer pending IP, and ingress backends pointing to missing or endpoint-less services. Provides 5 health levels: healthy/degraded/no-endpoints/misconfigured/external.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Networking health report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalServices":      25,
+					"byStatus":           map[string]int{"healthy": 20, "no-endpoints": 3, "misconfigured": 1, "external": 1},
+					"totalIngresses":     5,
+					"unhealthyIngress":   1,
+					"noEndpointServices": 3,
+				},
+				"services":  []interface{}{},
+				"ingresses": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
