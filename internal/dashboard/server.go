@@ -161,10 +161,11 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/resource/data", s.handleResourceData)                                    // configmap/secret data viewer
 
 	// Security audit
-	mux.HandleFunc("/api/security/audit", s.handleSecurityAudit)                // cluster-wide security scan
-	mux.HandleFunc("/api/security/health", s.handleSecurityHealth)              // platform security health check
-	mux.HandleFunc("/api/security/compliance", s.handleComplianceScan)          // CIS benchmark compliance scan
-	mux.HandleFunc("/api/security/compliance/report", s.handleComplianceReport) // downloadable compliance report
+	mux.HandleFunc("/api/security/audit", s.handleSecurityAudit)
+	mux.HandleFunc("/api/security/secrets", s.cacheMiddleware(60*time.Second, s.handleSecretExposure)) // 1min cache                // cluster-wide security scan
+	mux.HandleFunc("/api/security/health", s.handleSecurityHealth)                                     // platform security health check
+	mux.HandleFunc("/api/security/compliance", s.handleComplianceScan)                                 // CIS benchmark compliance scan
+	mux.HandleFunc("/api/security/compliance/report", s.handleComplianceReport)                        // downloadable compliance report
 
 	// OpenAPI documentation
 	mux.HandleFunc("/api/openapi.json", s.handleOpenAPISpec) // OpenAPI 3.0 spec
