@@ -185,8 +185,11 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/images", s.cacheMiddleware(60*time.Second, s.handleImageInventory)) // 1min cache
 
 	// Storage & Capacity Planning
-	mux.HandleFunc("/api/storage/capacity", s.cacheMiddleware(60*time.Second, s.handleStorageCapacity))   // 1min cache
-	mux.HandleFunc("/api/capacity/planning", s.cacheMiddleware(60*time.Second, s.handleCapacityPlanning)) // 1min cache
+	mux.HandleFunc("/api/storage/capacity", s.cacheMiddleware(60*time.Second, s.handleStorageCapacity)) // 1min cache
+	mux.HandleFunc("/api/capacity/planning", s.cacheMiddleware(60*time.Second, s.handleCapacityPlanning))
+
+	// Cluster efficiency analysis
+	mux.HandleFunc("/api/efficiency", s.cacheMiddleware(60*time.Second, s.handleEfficiency)) // 1min cache
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))
