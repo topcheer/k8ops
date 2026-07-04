@@ -1094,6 +1094,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Secret Rotation & Lifecycle Audit (v14.85+) ---
+	add("/api/security/secrets/rotation", "get", OpenAPIOperation{
+		Summary: "Secret rotation & lifecycle audit", OperationID: "secretRotationAudit", Tags: []string{"Security", "Secrets", "Compliance"},
+		Description: "Audits all Kubernetes secrets for rotation compliance and lifecycle management. Checks: secret age (stale >90d, very stale >180d), unused secrets (not referenced by any pod), TLS certificate secrets with expiry dates (expired or expiring <30d), Docker registry secrets, legacy service-account-token secrets, sensitive name detection (password/key/token/credential). Provides per-secret risk level, cluster-wide rotation score (0-100), and per-namespace/type breakdown.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter secrets by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Secret rotation audit report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalSecrets":  50,
+					"staleSecrets":  10,
+					"unusedSecrets": 5,
+					"expiredTLS":    1,
+					"rotationScore": 72,
+				},
+				"secrets":         []interface{}{},
+				"byNamespace":     []interface{}{},
+				"byType":          []interface{}{},
+				"recommendations": []string{},
+			}),
+		},
+	})
+
 	return spec
 }
 
