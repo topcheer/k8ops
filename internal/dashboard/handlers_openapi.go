@@ -1009,10 +1009,35 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Event Storm Detector (v14.80+) ---
+	add("/api/operations/event-storm", "get", OpenAPIOperation{
+		Summary: "Event storm & cascade failure detector", OperationID: "eventStorm", Tags: []string{"Operations", "Events", "Alerting"},
+		Description: "Analyzes Kubernetes Warning events to detect event storms, cascading failures, and resource flapping. Counts warning events in time windows (15min/1h/24h), classifies storm severity (critical/high/medium/low), identifies flapping resources (same resource+reason repeated 3+ times), aggregates events by namespace and reason, and provides actionable recommendations for investigation.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter events by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Event storm analysis report", map[string]interface{}{
+				"stormDetected": true,
+				"summary": map[string]interface{}{
+					"events15Min":       30,
+					"events1Hour":       150,
+					"stormSeverity":     "high",
+					"topNamespace":      "kube-system",
+					"affectedResources": 12,
+				},
+				"namespaces":        []interface{}{},
+				"topReasons":        []interface{}{},
+				"flappingResources": []interface{}{},
+				"recentEvents":      []interface{}{},
+				"recommendations":   []string{},
+			}),
+		},
+	})
+
 	return spec
 }
 
-// handleAPIDocs serves a lightweight HTML page listing all API endpoints.
 // GET /api/docs
 func (s *Server) handleAPIDocs(w http.ResponseWriter, r *http.Request) {
 	spec := buildOpenAPISpec()
