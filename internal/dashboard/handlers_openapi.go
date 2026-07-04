@@ -1183,6 +1183,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Image Security & Supply Chain (v14.92+) ---
+	add("/api/security/images", "get", OpenAPIOperation{
+		Summary: "Image security & supply chain analyzer", OperationID: "imageSecurityAudit", Tags: []string{"Security", "Images", "Supply Chain"},
+		Description: "Scans all running container images for supply chain security risks. Checks: digest pinning (@sha256), :latest tag usage, no-tag images, old version tags, public vs private registries, unknown registries. Provides per-image risk level (critical/high/medium/low), per-registry statistics, top risk images, and cluster-wide image security score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter pods by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Image security report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalImages":   30,
+					"usingLatest":   5,
+					"notPinned":     20,
+					"securityScore": 62,
+				},
+				"images":     []interface{}{},
+				"byRegistry": []interface{}{},
+				"topRisks":   []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
