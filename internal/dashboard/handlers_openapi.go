@@ -985,6 +985,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Security Posture Scan (v14.79+) ---
+	add("/api/security/pods", "get", OpenAPIOperation{
+		Summary: "Pod security posture scan", OperationID: "podSecurityScan", Tags: []string{"Security", "Compliance"},
+		Description: "Audits all running pods for real-time security posture: privileged containers, hostNetwork/hostPID/hostIPC, hostPath mounts, dangerous Linux capabilities (SYS_ADMIN, NET_ADMIN, etc.), running as root (UID 0), privilege escalation, writable root filesystem, missing security context, :latest/no-tag images, images not pinned by digest, secrets injected as env vars, no resource limits, host port bindings. Provides per-pod risk score (0-100), aggregated findings by type and namespace.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter pods by namespace (empty = all)"),
+			queryParam("severity", "Filter by severity: critical, warning, info"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Pod security scan report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":      50,
+					"podsWithIssues": 12,
+					"criticalCount":  3,
+					"warningCount":   8,
+					"avgRiskScore":   20,
+				},
+				"pods":        []interface{}{},
+				"topFindings": []interface{}{},
+				"byNamespace": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
