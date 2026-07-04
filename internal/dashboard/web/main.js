@@ -32,6 +32,10 @@ for (const mod of allModules) {
 
 // Initialize on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
+  // Initialize collapsed nav groups
+  if (typeof core.initNavGroups === 'function') {
+    core.initNavGroups();
+  }
   // Call initTabFromHash to restore tab from URL
   if (typeof core.initTabFromHash === 'function') {
     core.initTabFromHash();

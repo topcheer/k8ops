@@ -9,6 +9,8 @@ export function showTab(name, btn) {
   document.getElementById('tab-' + name).classList.remove('hidden');
   document.querySelectorAll('.sidebar-nav button').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
+  // Auto-expand the group containing this tab
+  autoExpandActiveGroup(name);
   if (location.hash !== '#' + name) {
     history.replaceState(null, '', '#' + name);
   }
@@ -35,13 +37,41 @@ export function showTab(name, btn) {
   if (name === 'cost') window.loadCost();
 }
 
+// ============================
+// Collapsible Nav Groups
+// ============================
+export function toggleNavGroup(group) {
+  const el = document.querySelector('.nav-group[data-group="' + group + '"]');
+  if (el) el.classList.toggle('collapsed');
+}
+
+// Auto-expand group containing active tab
+function autoExpandActiveGroup(tabName) {
+  const map = {
+    diagnostics: 'operations', remediations: 'operations', events: 'operations', audit: 'operations',
+    nodes: 'resources', pods: 'resources', resources: 'resources', crds: 'resources', images: 'resources', topology: 'resources',
+    optimizations: 'optimization', hpa: 'optimization', cost: 'optimization', capacity: 'optimization', namespaces: 'optimization',
+    compliance: 'security', security: 'security', rbac: 'security',
+  };
+  const group = map[tabName];
+  if (!group) return;
+  document.querySelectorAll('.nav-group').forEach(g => g.classList.add('collapsed'));
+  const target = document.querySelector('.nav-group[data-group="' + group + '"]');
+  if (target) target.classList.remove('collapsed');
+}
+
+// Collapse all groups by default on load
+export function initNavGroups() {
+  document.querySelectorAll('.nav-group').forEach(g => g.classList.add('collapsed'));
+}
+
 export function initTabFromHash() {
   const hash = location.hash.replace('#', '');
   if (hash === 'chat') {
     window.openChatOverlay();
     return;
   }
-  const validTabs = ['overview','diagnostics','remediations','optimizations','nodes','events','pods','resources','crds','audit','settings','rbac','cost','topology'];
+  const validTabs = ['overview','diagnostics','remediations','optimizations','nodes','events','pods','resources','crds','audit','settings','rbac','cost','topology','security','api','namespaces','capacity','compliance','hpa','images'];
   if (hash && validTabs.includes(hash)) {
     const btn = document.querySelector('.sidebar-nav button[onclick*="' + hash + '"]');
     showTab(hash, btn);

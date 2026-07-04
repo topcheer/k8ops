@@ -15,27 +15,70 @@
     <span class="version" id="version">Kubernetes AI Operations</span>
     <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle theme">&#9790; Dark</button>
   </div>
-  <div class="sidebar-nav">
+  <div class="sidebar-nav" id="sidebarNav">
+    <!-- Always visible -->
     <button class="active" onclick="showTab('overview', this)"><span class="nav-icon">&#9632;</span><span>Overview</span></button>
     <button onclick="openChatOverlay()" class="nav-chat-btn"><span class="nav-icon">&#128172;</span><span>AI Chat</span></button>
-    <button onclick="showTab('diagnostics', this)"><span class="nav-icon">&#9888;</span><span>Diagnostics</span></button>
-    <button onclick="showTab('remediations', this)"><span class="nav-icon">&#9881;</span><span>Remediations</span></button>
-    <button onclick="showTab('optimizations', this)"><span class="nav-icon">&#9650;</span><span>Optimizations</span></button>
-    <button onclick="showTab('cost', this)"><span class="nav-icon">&#36;</span><span>Cost</span></button>
-    <button onclick="showTab('topology', this)"><span class="nav-icon">&#9672;</span><span>Topology</span></button>
-    <button onclick="showTab('nodes', this)"><span class="nav-icon">&#9678;</span><span>Nodes</span></button>
-    <button onclick="showTab('events', this)"><span class="nav-icon">&#9888;</span><span>Events</span></button>
-    <button onclick="showTab('pods', this)"><span class="nav-icon">&#9635;</span><span>Pods</span></button>
-    <button onclick="showTab('resources', this)"><span class="nav-icon">&#10010;</span><span>Resources</span></button>
-    <button onclick="showTab('crds', this)"><span class="nav-icon">&#9881;</span><span>CRDs</span></button>
-    <button onclick="showTab('images', this)"><span class="nav-icon">&#128230;</span><span>Images</span></button>
-    <button onclick="showTab('hpa', this)"><span class="nav-icon">&#9650;</span><span>HPA</span></button>
-    <button onclick="showTab('capacity', this)"><span class="nav-icon">&#128203;</span><span>Capacity</span></button>
-    <button onclick="showTab('namespaces', this)"><span class="nav-icon">&#128202;</span><span>Namespaces</span></button>
-    <button onclick="showTab('compliance', this)"><span class="nav-icon">&#128737;</span><span>Compliance</span></button>
-    <button onclick="showTab('security', this)"><span class="nav-icon">&#128737;</span><span>Security</span></button>
-    <button onclick="showTab('audit', this)"><span class="nav-icon">&#9776;</span><span>Audit</span></button>
-    <button onclick="showTab('rbac', this)" id="rbacTabBtn" style="display:none;"><span class="nav-icon">&#128274;</span><span>Access Control</span></button>
+
+    <!-- Group: Operations -->
+    <div class="nav-group" data-group="operations">
+      <button class="nav-group-header" onclick="toggleNavGroup('operations')">
+        <span class="nav-icon">&#9881;</span><span>Operations</span>
+        <span class="nav-arrow">&#9662;</span>
+      </button>
+      <div class="nav-group-items" id="navgrp-operations">
+        <button onclick="showTab('diagnostics', this)"><span class="nav-icon">&#9888;</span><span>Diagnostics</span></button>
+        <button onclick="showTab('remediations', this)"><span class="nav-icon">&#9881;</span><span>Remediations</span></button>
+        <button onclick="showTab('events', this)"><span class="nav-icon">&#9888;</span><span>Events</span></button>
+        <button onclick="showTab('audit', this)"><span class="nav-icon">&#9776;</span><span>Audit Log</span></button>
+      </div>
+    </div>
+
+    <!-- Group: Resources -->
+    <div class="nav-group" data-group="resources">
+      <button class="nav-group-header" onclick="toggleNavGroup('resources')">
+        <span class="nav-icon">&#9635;</span><span>Resources</span>
+        <span class="nav-arrow">&#9662;</span>
+      </button>
+      <div class="nav-group-items" id="navgrp-resources">
+        <button onclick="showTab('nodes', this)"><span class="nav-icon">&#9678;</span><span>Nodes</span></button>
+        <button onclick="showTab('pods', this)"><span class="nav-icon">&#9635;</span><span>Pods</span></button>
+        <button onclick="showTab('resources', this)"><span class="nav-icon">&#10010;</span><span>Workloads</span></button>
+        <button onclick="showTab('crds', this)"><span class="nav-icon">&#9881;</span><span>CRDs</span></button>
+        <button onclick="showTab('images', this)"><span class="nav-icon">&#128230;</span><span>Images</span></button>
+        <button onclick="showTab('topology', this)"><span class="nav-icon">&#9672;</span><span>Topology</span></button>
+      </div>
+    </div>
+
+    <!-- Group: Optimization -->
+    <div class="nav-group" data-group="optimization">
+      <button class="nav-group-header" onclick="toggleNavGroup('optimization')">
+        <span class="nav-icon">&#9650;</span><span>Optimization</span>
+        <span class="nav-arrow">&#9662;</span>
+      </button>
+      <div class="nav-group-items" id="navgrp-optimization">
+        <button onclick="showTab('optimizations', this)"><span class="nav-icon">&#9650;</span><span>Suggestions</span></button>
+        <button onclick="showTab('hpa', this)"><span class="nav-icon">&#9650;</span><span>HPA</span></button>
+        <button onclick="showTab('cost', this)"><span class="nav-icon">&#36;</span><span>Cost</span></button>
+        <button onclick="showTab('capacity', this)"><span class="nav-icon">&#128203;</span><span>Capacity</span></button>
+        <button onclick="showTab('namespaces', this)"><span class="nav-icon">&#128202;</span><span>Namespaces</span></button>
+      </div>
+    </div>
+
+    <!-- Group: Security -->
+    <div class="nav-group" data-group="security">
+      <button class="nav-group-header" onclick="toggleNavGroup('security')">
+        <span class="nav-icon">&#128737;</span><span>Security</span>
+        <span class="nav-arrow">&#9662;</span>
+      </button>
+      <div class="nav-group-items" id="navgrp-security">
+        <button onclick="showTab('compliance', this)"><span class="nav-icon">&#128737;</span><span>Compliance</span></button>
+        <button onclick="showTab('security', this)"><span class="nav-icon">&#128737;</span><span>Security Scan</span></button>
+        <button onclick="showTab('rbac', this)" id="rbacTabBtn" style="display:none;"><span class="nav-icon">&#128274;</span><span>Access Control</span></button>
+      </div>
+    </div>
+
+    <!-- System -->
     <button onclick="showTab('api', this)"><span class="nav-icon">&#128279;</span><span>API Docs</span></button>
     <button onclick="showTab('settings', this)"><span class="nav-icon">&#9881;</span><span>Settings</span></button>
   </div>
@@ -73,7 +116,10 @@
         </svg>
         <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
         <div class="notif-panel" id="notifPanel" style="display:none;">
-          <div class="notif-panel-header">Recent Alerts</div>
+          <div class="notif-panel-header">
+            <span>Recent Alerts</span>
+            <button class="notif-view-all" onclick="showTab('events', document.querySelector('[onclick*=\"events\"]')); document.getElementById('notifPanel').style.display='none';">View All Events &rarr;</button>
+          </div>
           <div id="notifList" class="notif-list"></div>
         </div>
       </div>
