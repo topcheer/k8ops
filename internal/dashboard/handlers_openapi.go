@@ -1221,6 +1221,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Autoscaling Right-Sizing Recommendations (v14.94+) ---
+	add("/api/scalability/autoscale-recommendations", "get", OpenAPIOperation{
+		Summary: "HPA/VPA right-sizing recommendations", OperationID: "autoscaleRecommendations", Tags: []string{"Scalability", "Autoscaling", "Cost"},
+		Description: "Analyzes HPA coverage and resource right-sizing across all workloads. Detects: multi-replica workloads without HPA, over-provisioned resource requests (>1 core or >2GB per container), under-provisioned workloads, HPAs pegged at max/min replicas, idle HPAs. Provides per-workload recommended CPU/memory values, potential CPU core and memory savings, HPA efficiency analysis, and cluster-wide autoscaling score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter workloads by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Autoscaling recommendations", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalWorkloads":           30,
+					"withHPA":                  5,
+					"overProvisioned":          8,
+					"potentialCPUSavingsCores": 3.5,
+					"autoscaleScore":           62,
+				},
+				"recommendations":   []interface{}{},
+				"unscaledWorkloads": []interface{}{},
+				"hpaEfficiency":     []interface{}{},
+				"topSavings":        []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
