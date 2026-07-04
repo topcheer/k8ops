@@ -822,3 +822,43 @@ kubectl rollout restart daemonset/k8ops -n k8ops-system
 - 识别缺少拓扑标签的节点
 - 单域集群提示
 - 支持按命名空间和拓扑域 key 过滤
+
+### Secret 轮转与生命周期审计
+
+`GET /api/security/secrets/rotation?namespace=xxx` 审计所有 Secret 的生命周期：
+
+- 年龄追踪：stale (>90d) / very stale (>180d)
+- 未使用 Secret 检测（不被任何 Pod 引用）
+- TLS 证书过期检测（解析证书，检测已过期和 <30d 过期）
+- Docker registry Secret、遗留 SA token 追踪
+- 敏感名称检测（password/key/token/credential）
+- 每 Secret 风险等级、集群轮转评分 0-100
+- 支持按命名空间过滤
+
+### 健康探针有效性审计
+
+`GET /api/operations/probes?namespace=xxx` 审计探针配置：
+
+- 8 个检查类别：缺少探针、过于激进、超时过短、阈值不当等
+- 每工作负载风险评分，集群有效性评分 (0-100)
+- 聚合 Top 问题统计
+- 可操作建议
+
+### 工作负载陈旧度追踪
+
+`GET /api/product/staleness?namespace=xxx` 追踪部署陈旧度：
+
+- 5 级陈旧度分类：fresh/recent/stale/very-stale/ancient
+- 镜像标签分析：:latest、digest、no-tag
+- 年龄分布桶、命名空间统计
+- 集群新鲜度评分 (0-100)
+
+### 资源超卖与压力分析
+
+`GET /api/scalability/overcommit?namespace=xxx` 分析资源超卖：
+
+- 每节点 CPU/内存 request 和 limit 超卖比率
+- 压力评分 0-100 和风险等级
+- 无 limits/requests 的 Pod 检测
+- 集群安全评分 0-100
+- 命名空间资源消耗明细

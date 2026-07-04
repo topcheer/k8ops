@@ -760,3 +760,83 @@ receivers:
 | `single-replica` | 单副本（拓扑分布不适用） |
 
 **返回内容：** 拓扑域统计、每工作负载的域分布（Pod 数/期望值）、实际偏差 vs 最大偏差、每节点的域标签和 Pod 数、建议（添加约束、标记节点、单域集群提示）
+
+### Secret 轮转与生命周期审计 (v14.85+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/security/secrets/rotation` | 审计所有 Secret 的轮转合规性和生命周期管理：年龄追踪（stale >90d / very stale >180d）、未使用 Secret 检测（不被任何 Pod 引用）、TLS 证书过期检测（解析证书）、Docker registry Secret 追踪、遗留 ServiceAccount Token 检测、敏感名称检测 |
+
+**查询参数：** `namespace`（可选）
+
+**风险评分：** 每 Secret 风险等级（critical / high / medium / low），集群轮转评分 0-100
+
+**检查类别：**
+| 检查项 | 严重度 | 说明 |
+|---------|--------|------|
+| TLS 证书已过期 | critical | 立即更新 |
+| Docker Secret 过期 >180d | critical | 可能包含过期的注册表凭据 |
+| TLS 证书 <30d 过期 | high | 尽快安排续订 |
+| Stale + 未使用 + 敏感名称 | high | 安全风险 |
+| Stale Docker Secret | medium | 建议轮转 |
+| Stale 但在使用中 | low | 计划轮转 |
+
+### 健康探针有效性审计 (v14.86+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/probes` | 审计所有工作负载的 liveness/readiness/startup 探针配置，检测配置不当导致的级联重启、流量到未就绪 Pod、启动失败等问题 |
+
+**查询参数：** `namespace`（可选）
+
+**检查类别：**
+| 检查项 | 严重度 | 说明 |
+|---------|--------|------|
+| 缺少 liveness | warning | 挂死容器不会被重启 |
+| 缺少 readiness | warning | 流量可能到达未就绪 Pod |
+| 探针过于激进 (period <5s) | warning | 对 API server 造成过大负载 |
+| 超时过短 (<2s) | warning | 延迟峰值下可能误判 |
+| 失败阈值过低 (<3) | warning | 对瞬时错误过于敏感 |
+| readiness 间隔过长 (>60s) | info | 检测就绪慢 |
+| liveness 失败阈值过高 (>10) | info | 重启恢复慢 |
+| 相同的 liveness+readiness | info | 应差异化配置 |
+
+**返回内容：** 每工作负载风险评分、集群有效性评分 (0-100)、聚合 Top 问题、可操作建议
+
+### 工作负载陈旧度追踪 (v14.87+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/product/staleness` | 追踪所有工作负载的部署陈旧度，检测长期未更新的工作负载、使用 :latest 标签的镜像、未用 digest 锁定的镜像 |
+
+**查询参数：** `namespace`（可选）
+
+**陈旧度分类：**
+| 状态 | 条件 | 说明 |
+|------|------|------|
+| `fresh` | <7d | 最近更新 |
+| `recent` | <30d | 较新 |
+| `stale` | <90d | 需关注 |
+| `very-stale` | <180d | 建议更新 |
+| `ancient` | >180d | 安全风险 |
+
+**返回内容：** 每工作负载风险等级、镜像标签分析（:latest / digest / no-tag）、年龄分布桶、命名空间统计、集群新鲜度评分 (0-100)、可操作建议
+
+### 资源超卖与压力分析 (v14.88+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/scalability/overcommit` | 分析所有节点的 CPU 和内存超卖比率，检测危险的 over-commit、无 limits 的 Pod、资源压力评分 |
+
+**查询参数：** `namespace`（可选）
+
+**每节点分析：**
+| 指标 | 说明 |
+|------|------|
+| CPU request commit | sum(requests) / allocatable |
+| CPU limit commit | sum(limits) / allocatable |
+| Mem request/limit commit | 同上 |
+| 压力评分 | 0-100（加权计算） |
+| 风险等级 | safe / moderate / high / critical (>3x) |
+
+**集群指标：** 总 CPU/内存超卖比率、风险节点数、无 limits 的 Pod 数、安全评分 (0-100)、命名空间资源消耗明细、可操作建议
