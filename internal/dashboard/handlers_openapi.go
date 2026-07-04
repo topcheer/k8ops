@@ -1161,6 +1161,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Resource Over-commit & Pressure Analyzer (v14.88+) ---
+	add("/api/scalability/overcommit", "get", OpenAPIOperation{
+		Summary: "Resource over-commit & pressure analyzer", OperationID: "overcommitAnalysis", Tags: []string{"Scalability", "Resources", "Capacity"},
+		Description: "Analyzes CPU and memory over-commit ratios across all nodes. For each node: calculates request commit (sum of requests vs allocatable), limit commit (sum of limits vs allocatable), pressure score (0-100), and risk level (safe/moderate/high/critical). Detects pods without limits or requests that could starve neighbors. Tracks cluster-wide over-commit ratios and provides per-namespace resource consumption breakdown.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter pods by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Over-commit analysis report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"nodesAtRisk":         2,
+					"totalCPULimitCommit": 2.5,
+					"totalMemLimitCommit": 3.1,
+					"clusterScore":        65,
+				},
+				"nodes":       []interface{}{},
+				"noLimitPods": []interface{}{},
+				"byNamespace": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
