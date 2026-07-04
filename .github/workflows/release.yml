@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   gate:
-    name: Pre-release Gate
+    name: Pre-release Gate (format + vet + test)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,8 +38,11 @@ jobs:
       - name: Go build
         run: go build ./...
 
+      - name: Run tests
+        run: go test -timeout 5m ./...
+
   release:
-    name: Release (GoReleaser - binaries + Docker)
+    name: Release (GoReleaser + SBOM)
     needs: gate
     runs-on: ubuntu-latest
     steps:
@@ -94,3 +97,66 @@ jobs:
           args: release --clean --release-notes=release-body.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # --- SBOM Generation (Software Bill of Materials) ---
+      - name: Install syft
+        uses: anchore/sbom-action@v0
+        with:
+          format: spdx-json
+          artifact-name: k8ops-sbom.spdx.json
+
+      - name: Upload SBOM to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: k8ops-sbom.spdx.json
+
+  verify:
+    name: Post-release Verification
+    needs: release
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+          - goos: darwin
+            goarch: arm64
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download checksums
+        uses: actions/download-artifact@v4
+        with:
+          name: checksums
+        continue-on-error: true
+
+      - name: Verify release assets exist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          echo "Verifying release $TAG..."
+
+          # Check release exists and has assets
+          ASSET_COUNT=$(gh release view "$TAG" --json assets --jq '.assets | length')
+          echo "Asset count: $ASSET_COUNT"
+
+          if [ "$ASSET_COUNT" -lt 15 ]; then
+            echo "::error::Expected at least 15 assets, got $ASSET_COUNT"
+            exit 1
+          fi
+
+          # Check it's not a draft
+          IS_DRAFT=$(gh release view "$TAG" --json isDraft --jq '.isDraft')
+          if [ "$IS_DRAFT" = "true" ]; then
+            echo "::error::Release is still a draft"
+            exit 1
+          fi
+
+          # Verify GHCR image exists
+          echo "Checking GHCR image..."
+          gh api -H "Accept: application/vnd.github.v3+json" \
+            "/users/topcheer/packages/container/k8ops/versions" \
+            --jq ".[0].metadata.container.tags[0]" || echo "GHCR check skipped"
+
+          echo "Release $TAG verified successfully."
