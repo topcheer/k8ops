@@ -1,12 +1,11 @@
-# Dockerfile.goreleaser — used by GoReleaser for pre-built binaries
-# GoReleaser compiles the binary, then this Dockerfile just copies it in.
-FROM alpine:3.21
-
-RUN apk add --no-cache ca-certificates
+# Dockerfile for GoReleaser dockers_v2 — uses pre-built binaries, NO go build.
+# GoReleaser places per-platform binaries under $TARGETPLATFORM/ in the context.
+# This avoids redundant compilation: GoReleaser builds once, Docker just packages.
+FROM gcr.io/distroless/static-debian12:nonroot
 
 WORKDIR /
-COPY manager /manager
-
-USER 65532:65532
+ARG TARGETPLATFORM
+COPY $TARGETPLATFORM/manager /manager
+COPY $TARGETPLATFORM/k8ops /usr/local/bin/k8ops
 
 ENTRYPOINT ["/manager"]

@@ -39,7 +39,7 @@ jobs:
           fi
 
   release:
-    name: Release (GoReleaser + Docker)
+    name: Release (GoReleaser: binaries + Docker)
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -94,16 +94,3 @@ jobs:
           args: release --clean --release-notes=release-body.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: true
-          build-args: VERSION=${{ github.ref_name }}
-          tags: |
-            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
-            ghcr.io/${{ github.repository }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max

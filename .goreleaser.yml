@@ -93,9 +93,26 @@ builds:
       - -s -w
       - -X github.com/ggai/k8ops/internal/dashboard.Version={{.Version}}
 
+# Docker images — GoReleaser v2 docker syntax: single buildx build for multi-arch.
+# Uses pre-built binaries (no redundant go build), auto-creates multi-arch manifest.
+dockers_v2:
+  - images:
+      - "ghcr.io/topcheer/k8ops"
+    tags:
+      - "{{ .Tag }}"
+      - "latest"
+    dockerfile: Dockerfile.goreleaser
+    labels:
+      "org.opencontainers.image.description": "k8ops — Kubernetes AIOps platform"
+      "org.opencontainers.image.created": "{{.Date}}"
+      "org.opencontainers.image.name": "{{.ProjectName}}"
+      "org.opencontainers.image.revision": "{{.FullCommit}}"
+      "org.opencontainers.image.version": "{{.Version}}"
+      "org.opencontainers.image.source": "{{.GitURL}}"
+
 archives:
   - id: default
-    builds:
+    ids:
       - manager
       - k8ops-cli
     name_template: >-
@@ -105,7 +122,7 @@ archives:
       {{ .Arch }}
     format_overrides:
       - goos: windows
-        format: zip
+        formats: [zip]
     files:
       - README.md
       - LICENSE
