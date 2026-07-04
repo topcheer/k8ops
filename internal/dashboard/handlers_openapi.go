@@ -1205,6 +1205,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Cluster Health Score Aggregator (v14.93+) ---
+	add("/api/operations/health-score", "get", OpenAPIOperation{
+		Summary: "Cluster health score aggregator", OperationID: "healthScore", Tags: []string{"Operations", "Health", "Monitoring"},
+		Description: "Aggregates all cluster health signals into one comprehensive score (0-100, grade A-F). Combines 5 weighted categories: Node Health (25%), Pod Health (25%), Workload Health (20%), Event Activity (15%), API Server Latency (15%). Provides per-category scores, status (healthy/warning/critical), cluster-wide summary (node/pod/workload counts), and top actionable issues.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Cluster health score", map[string]interface{}{
+				"overallScore": 78,
+				"grade":        "C",
+				"status":       "healthy",
+				"categories":   []interface{}{},
+				"topIssues":    []interface{}{},
+				"summary":      map[string]interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
