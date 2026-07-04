@@ -1290,6 +1290,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Node Condition & Resource Pressure (v14.99+) ---
+	add("/api/operations/node-pressure", "get", OpenAPIOperation{
+		Summary: "Node condition & resource pressure analyzer", OperationID: "nodePressure", Tags: []string{"Operations", "Nodes", "Health"},
+		Description: "Analyzes all node conditions (DiskPressure, MemoryPressure, PIDPressure, NetworkUnavailable) and resource saturation (CPU/memory/pod density vs allocatable). Provides per-node risk level (critical/high/medium/low), usage percentages, condition details with duration, cluster-wide pressure score (0-100), and actionable recommendations.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Node pressure report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNodes":        3,
+					"nodesWithPressure": 1,
+					"diskPressure":      0,
+					"memoryPressure":    1,
+					"pressureScore":     78,
+				},
+				"nodes":    []interface{}{},
+				"topRisks": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
