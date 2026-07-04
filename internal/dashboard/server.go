@@ -222,6 +222,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployments/audit", s.cacheMiddleware(60*time.Second, s.handleDeployAudit))            // deployment config audit
 	mux.HandleFunc("/api/scheduling/health", s.cacheMiddleware(30*time.Second, s.handleSchedulingHealth))       // scheduling health & fragmentation
 	mux.HandleFunc("/api/security/pods", s.cacheMiddleware(60*time.Second, s.handlePodSecurityScan))            // pod security posture scan
+	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))             // resource dependency graph & blast radius
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))

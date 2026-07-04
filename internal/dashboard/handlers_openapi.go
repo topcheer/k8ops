@@ -1035,6 +1035,34 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Resource Dependency Graph & Blast Radius (v14.81+) ---
+	add("/api/dependencies", "get", OpenAPIOperation{
+		Summary: "Resource dependency graph & blast radius analyzer", OperationID: "dependencyGraph", Tags: []string{"Product", "Dependencies", "Topology"},
+		Description: "Traces the full dependency graph for any workload (Deployment, StatefulSet, DaemonSet, Pod). Forward dependencies: ConfigMaps, Secrets, PVCs, ServiceAccounts referenced by the workload. Reverse dependencies: Services selecting the pods, Ingresses routing traffic, NetworkPolicies applying rules, HPAs scaling the workload, and other pods sharing the same ConfigMaps/Secrets. Provides blast radius assessment with risk level for safe change planning.",
+		Parameters: []OpenAPIParam{
+			{Name: "kind", In: "query", Required: true, Description: "Resource kind: Deployment, StatefulSet, DaemonSet, or Pod"},
+			{Name: "name", In: "query", Required: true, Description: "Resource name"},
+			queryParam("namespace", "Namespace (default: default)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Dependency graph", map[string]interface{}{
+				"root": map[string]interface{}{"kind": "Deployment", "name": "my-app", "namespace": "default"},
+				"dependencies": []interface{}{
+					map[string]interface{}{"kind": "ConfigMap", "name": "app-config", "relation": "depends-on"},
+					map[string]interface{}{"kind": "Secret", "name": "db-pass", "relation": "depends-on"},
+				},
+				"dependents": []interface{}{
+					map[string]interface{}{"kind": "Service", "name": "my-app-svc", "relation": "selects"},
+					map[string]interface{}{"kind": "Ingress", "name": "my-app-ing", "relation": "routes-to"},
+				},
+				"summary": map[string]interface{}{
+					"blastRadius": 8,
+					"riskLevel":   "medium",
+				},
+			}),
+		},
+	})
+
 	return spec
 }
 
