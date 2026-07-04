@@ -20,25 +20,34 @@ export function escapeHtml(s) {
  * - other errors → throw with detail message
  */
 export async function fetchJSON(url, opts) {
-  const res = await fetch(url, opts);
-  if (res.status === 401) {
-    window.location.href = '/login.html';
-    throw new Error('Unauthorized');
+  showLoading();
+  try {
+    const res = await fetch(url, opts);
+    if (res.status === 401) {
+      window.location.href = '/login.html';
+      throw new Error('Unauthorized');
+    }
+    if (res.status === 403) {
+      let detail = '';
+      try { const e = await res.json(); detail = e.error || e.message || ''; } catch(_) {}
+      const err = new Error('FORBIDDEN:' + detail);
+      err.status = 403;
+      err.detail = detail;
+      throw err;
+    }
+    if (!res.ok) {
+      // Update connection status on server errors
+      if (res.status >= 500 && typeof window.setConnStatus === 'function') {
+        window.setConnStatus('reconnecting');
+      }
+      let detail = '';
+      try { const e = await res.json(); detail = e.error || e.message || ''; } catch(_) {}
+      throw new Error(detail || `HTTP ${res.status}`);
+    }
+    return res.json();
+  } finally {
+    hideLoading();
   }
-  if (res.status === 403) {
-    let detail = '';
-    try { const e = await res.json(); detail = e.error || e.message || ''; } catch(_) {}
-    const err = new Error('FORBIDDEN:' + detail);
-    err.status = 403;
-    err.detail = detail;
-    throw err;
-  }
-  if (!res.ok) {
-    let detail = '';
-    try { const e = await res.json(); detail = e.error || e.message || ''; } catch(_) {}
-    throw new Error(detail || `HTTP ${res.status}`);
-  }
-  return res.json();
 }
 
 /** Check if an error is a 403 Forbidden. */
@@ -178,23 +187,5 @@ export function hideLoading() {
     const bar = getLoadingBar();
     bar.classList.remove('loading-active');
     setTimeout(() => { if (_loadingCount === 0) bar.style.display = 'none'; }, 300);
-  }
-}
-
-export async function fetchJSON(url, opts) {
-  showLoading();
-  try {
-    const resp = await fetch(url, opts);
-    if (!resp.ok) {
-      // Update connection status on server errors
-      if (resp.status >= 500 && typeof window.setConnStatus === 'function') {
-        window.setConnStatus('reconnecting');
-      }
-      const body = await resp.json().catch(() => ({}));
-      throw new Error(body.error || resp.statusText);
-    }
-    return await resp.json();
-  } finally {
-    hideLoading();
   }
 }
