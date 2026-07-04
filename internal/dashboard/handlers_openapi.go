@@ -1063,6 +1063,37 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Topology Spread Compliance (v14.82+) ---
+	add("/api/topology/spread", "get", OpenAPIOperation{
+		Summary: "Topology spread constraint compliance checker", OperationID: "topologySpread", Tags: []string{"Scalability", "Topology", "HA"},
+		Description: "Analyzes pod distribution across topology domains (zones, regions, nodes) to verify topology spread constraint compliance. For each workload: checks if topologySpreadConstraints are configured, computes actual pod distribution per domain, calculates actual skew (max - min pod count), compares against declared maxSkew, and classifies as balanced/skewed/no-constraint/single-replica. Also checks for nodes missing topology labels.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter pods by namespace (empty = all)"),
+			queryParam("domain", "Topology domain key (default: kubernetes.io/hostname, try: topology.kubernetes.io/zone)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Topology spread report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalDomains":      3,
+					"domainKey":         "topology.kubernetes.io/zone",
+					"balancedWorkloads": 10,
+					"skewedWorkloads":   2,
+					"maxSkew":           3,
+				},
+				"workloads": []interface{}{
+					map[string]interface{}{
+						"name":         "my-app",
+						"status":       "skewed",
+						"actualSkew":   3,
+						"maxSkew":      1,
+						"distribution": []interface{}{},
+					},
+				},
+				"nodes": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
