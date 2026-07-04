@@ -1139,6 +1139,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Workload Staleness & Release Cadence (v14.87+) ---
+	add("/api/product/staleness", "get", OpenAPIOperation{
+		Summary: "Workload staleness & release cadence tracker", OperationID: "stalenessCheck", Tags: []string{"Product", "Workloads", "Lifecycle"},
+		Description: "Tracks deployment staleness across all workloads (Deployment, StatefulSet, DaemonSet). Detects workloads not updated in 30/90/180+ days, identifies :latest tag usage, unpinned images (no digest), and provides per-workload risk levels. Includes age distribution buckets, per-namespace breakdown, and cluster-wide freshness score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter workloads by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Staleness report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalWorkloads": 30,
+					"staleWorkloads": 8,
+					"usingLatest":    3,
+					"freshnessScore": 65,
+				},
+				"workloads":       []interface{}{},
+				"byNamespace":     []interface{}{},
+				"imageAgeBuckets": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
