@@ -1245,6 +1245,29 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Ingress & Traffic Routing Health (v14.96+) ---
+	add("/api/product/ingress-health", "get", OpenAPIOperation{
+		Summary: "Ingress & traffic routing health monitor", OperationID: "ingressHealth", Tags: []string{"Product", "Networking", "Health"},
+		Description: "Analyzes all Ingress resources for traffic routing health. Checks: backend service existence and endpoint readiness, TLS configuration, IngressClass validity, host+path conflicts across ingresses, missing rules. Provides per-ingress status (healthy/warning/critical), per-namespace breakdown, cluster-wide health score (0-100), and actionable recommendations.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter ingresses by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Ingress health report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalIngresses":   15,
+					"healthyIngresses": 10,
+					"noBackend":        2,
+					"hostConflicts":    1,
+					"healthScore":      72,
+				},
+				"ingresses":   []interface{}{},
+				"issues":      []interface{}{},
+				"byNamespace": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
