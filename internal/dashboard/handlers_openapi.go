@@ -1118,6 +1118,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Health Probe Effectiveness Audit (v14.86+) ---
+	add("/api/operations/probes", "get", OpenAPIOperation{
+		Summary: "Health probe effectiveness analyzer", OperationID: "probeAudit", Tags: []string{"Operations", "Health", "Reliability"},
+		Description: "Audits liveness, readiness, and startup probe configurations across all workloads (Deployment, StatefulSet, DaemonSet). Detects: missing probes, aggressive probes (period <5s), short timeouts (<2s), low failure thresholds (<3), slow readiness checks (>60s), high liveness failure thresholds (>10), identical liveness+readiness probes, slow-starting apps without startup probes. Provides per-workload risk score and cluster-wide effectiveness score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter workloads by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Probe effectiveness report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalContainers":  20,
+					"missingReadiness": 5,
+					"missingLiveness":  3,
+					"score":            72,
+				},
+				"workloads":   []interface{}{},
+				"topFindings": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
