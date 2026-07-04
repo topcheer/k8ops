@@ -669,3 +669,94 @@ receivers:
 | `recommendations` | 可操作的修复建议 |
 
 **调度失败原因解析：** insufficient-cpu / insufficient-memory / untolerated-taint / node-selector-mismatch / node-affinity-mismatch / pod-affinity-conflict / pod-limit-reached / volume-binding-failure / no-nodes-available
+
+### Pod 安全态势扫描 (v14.79+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/security/pods` | 审计所有运行中 Pod 的安全态势：特权容器、hostNetwork/hostPID/hostIPC、HostPath 挂载、危险 Linux capabilities、以 root 运行、允许提权、可写根文件系统、缺少安全上下文、:latest/无标签镜像、未用 digest 锁定、Secret 环境变量注入、无资源限制、host port 绑定 |
+
+**查询参数：** `namespace`（可选）、`severity`（可选：critical / warning / info）
+
+**风险评分：** 0（安全）到 100（极高风险），critical=25分/warning=8分/info=2分
+
+**检查类别：**
+| 类别 | 严重度 | 说明 |
+|------|--------|------|
+| `privileged` | critical | 特权容器 — 完全主机访问 |
+| `host-network` | critical | 共享节点网络命名空间 |
+| `host-pid` | critical | 可见节点所有进程 |
+| `host-ipc` | critical | 共享 IPC 命名空间 |
+| `host-path` | critical | 从节点挂载 HostPath 卷 |
+| `dangerous-capabilities` | critical | SYS_ADMIN/NET_ADMIN/NET_RAW/SYS_PTRACE/SYS_MODULE/DAC_OVERRIDE/SETUID/SETGID |
+| `runs-as-root` | warning | 以 UID 0 运行 |
+| `privilege-escalation` | warning | 允许提权 |
+| `missing-security-context` | warning | 缺少安全上下文 |
+| `image-latest` | warning | 使用 :latest 标签 |
+| `image-no-tag` | warning | 无标签（默认 :latest） |
+| `host-port` | warning | 绑定主机端口 |
+| `image-no-digest` | info | 未用 digest 锁定 |
+| `writable-rootfs` | info | 可写根文件系统 |
+| `secret-env-vars` | info | Secret 作为环境变量注入 |
+| `no-resource-limits` | info | 无资源限制 |
+
+### 事件风暴与级联故障检测 (v14.80+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/event-storm` | 分析集群 Warning 事件，检测事件风暴、级联故障和资源抖动。统计 15min/1h/24h 时间窗口的告警事件，分级风暴严重度，识别抖动资源（同资源同原因重复 3+ 次），按命名空间和原因聚合，提供可操作建议 |
+
+**查询参数：** `namespace`（可选）
+
+**风暴严重度：**
+| 严重度 | 条件 | 说明 |
+|--------|------|------|
+| `critical` | >50 events/15min | 紧急排查 |
+| `high` | >20 events/15min | 需要关注 |
+| `medium` | >10 events/15min | 监控趋势 |
+| `low` | >5 events/15min | 信息性 |
+
+**返回内容：** 风暴检测结果、命名空间告警排名、Top 事件原因、抖动资源列表（含抖动频率）、最近 15 分钟事件时间线、受影响资源数（爆炸半径）、可操作建议
+
+### 资源依赖图与影响范围分析 (v14.81+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/dependencies` | 追踪任意工作负载的完整依赖图（Deployment/StatefulSet/DaemonSet/Pod），评估变更影响范围 |
+
+**查询参数：**
+
+| 参数 | 必填 | 说明 |
+|------|------|------|
+| `kind` | 是 | 资源类型：Deployment / StatefulSet / DaemonSet / Pod |
+| `name` | 是 | 资源名称 |
+| `namespace` | 否 | 命名空间（默认：default） |
+
+**正向依赖（该工作负载依赖什么）：** ConfigMap、Secret、PVC、ServiceAccount
+
+**反向依赖（什么依赖该工作负载）：**
+- Service（通过 label selector 匹配 Pod）
+- Ingress（路由到匹配的 Service）
+- NetworkPolicy（应用于该 Pod）
+- HPA（以该工作负载为目标）
+- 共享 ConfigMap/Secret 的其他 Pod
+
+**影响范围评估：** blastRadius = 正向依赖数 + 反向依赖数，风险等级 low(<6) / medium(6-10) / high(11-20) / critical(>20)
+
+### 拓扑分布合规检查 (v14.82+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/topology/spread` | 分析 Pod 在拓扑域（zone/region/node）中的分布，验证 topologySpreadConstraints 合规性 |
+
+**查询参数：** `namespace`（可选）、`domain`（可选，拓扑域 key，默认 `kubernetes.io/hostname`，可设为 `topology.kubernetes.io/zone`）
+
+**工作负载状态：**
+| 状态 | 含义 |
+|------|------|
+| `balanced` | 分布均匀（actualSkew ≤ maxSkew） |
+| `skewed` | 分布不均（actualSkew > maxSkew） |
+| `no-constraint` | 多副本但无拓扑约束 |
+| `single-replica` | 单副本（拓扑分布不适用） |
+
+**返回内容：** 拓扑域统计、每工作负载的域分布（Pod 数/期望值）、实际偏差 vs 最大偏差、每节点的域标签和 Pod 数、建议（添加约束、标记节点、单域集群提示）

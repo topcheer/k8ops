@@ -782,3 +782,43 @@ kubectl rollout restart daemonset/k8ops -n k8ops-system
 - 健康评分 0-100（加权惩罚）
 - 可操作的修复建议
 - 支持按命名空间过滤：`?namespace=default`
+
+### Pod 安全态势扫描
+
+`GET /api/security/pods?namespace=xxx&severity=critical` 审计所有运行中 Pod 的实时安全态势：
+
+- 15 个检查类别覆盖特权容器、主机访问（network/PID/IPC）、HostPath 挂载、危险 capabilities、root 运行、提权等
+- 每 Pod 风险评分 0-100（critical=25分/warning=8分/info=2分）
+- 按检查类型和命名空间聚合统计
+- 支持按命名空间和严重度过滤
+
+### 事件风暴与级联故障检测
+
+`GET /api/operations/event-storm?namespace=xxx` 分析集群 Warning 事件：
+
+- 4 级风暴严重度：critical (>50) / high (>20) / medium (>10) / low (>5)
+- 抖动资源检测（同资源同原因重复 3+ 次，含抖动频率）
+- 按命名空间和事件原因聚合
+- 爆炸半径评估（受影响资源数）
+- 可操作的排查建议
+- 支持按命名空间过滤：`?namespace=kube-system`
+
+### 资源依赖图与影响范围分析
+
+`GET /api/dependencies?kind=Deployment&name=xxx&namespace=xxx` 追踪工作负载的完整依赖图：
+
+- 正向依赖：ConfigMap、Secret、PVC、ServiceAccount
+- 反向依赖：Service（label selector）、Ingress、NetworkPolicy、HPA、共享配置的其他 Pod
+- 影响范围评估：blastRadius 评分和风险等级
+- 用于变更前影响评估，避免级联故障
+
+### 拓扑分布合规检查
+
+`GET /api/topology/spread?namespace=xxx&domain=topology.kubernetes.io/zone` 检查 Pod 的拓扑分布合规性：
+
+- 4 级工作负载状态：balanced / skewed / no-constraint / single-replica
+- 每工作负载的拓扑域分布和偏差分析
+- 检测缺少拓扑约束的多副本工作负载
+- 识别缺少拓扑标签的节点
+- 单域集群提示
+- 支持按命名空间和拓扑域 key 过滤
