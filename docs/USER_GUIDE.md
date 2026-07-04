@@ -862,3 +862,71 @@ kubectl rollout restart daemonset/k8ops -n k8ops-system
 - 无 limits/requests 的 Pod 检测
 - 集群安全评分 0-100
 - 命名空间资源消耗明细
+
+### 镜像安全与供应链分析
+
+`GET /api/security/images?namespace=xxx` 扫描所有容器镜像的供应链安全：
+
+- Digest 锁定检测（@sha256: 不可变引用）
+- :latest 标签检测（可变，不可复现）
+- 无标签镜像检测（默认 :latest）
+- 旧版本标签检测（v1, 1.0 — 可能含已知 CVE）
+- 公共 vs 私有镜像仓库分析
+- 每镜像风险等级、每仓库统计
+- 集群镜像安全评分 0-100
+
+### 容量规划
+
+`GET /api/capacity/planning` 节点容量规划：
+
+- 每节点 CPU/内存请求 vs 可分配量
+- 剩余容量和扩容建议
+- 资源碎片化检测
+
+### 容量预测
+
+`GET /api/capacity/forecast` 容量趋势预测：
+
+- 基于历史数据的资源增长趋势
+- 预计耗尽时间
+- 扩容建议
+
+### 资源效率分析
+
+`GET /api/efficiency` 资源使用效率：
+
+- 过大资源分配检测
+- 资源浪费识别
+- 优化建议
+
+### PDB 状态
+
+`GET /api/pdbs` Pod Disruption Budget 状态：
+
+- PDB 配置检查
+- 允许中断数 vs 当前可用数
+- PDB 阻塞检测
+
+### 版本兼容性
+
+`GET /api/compatibility` K8s 版本兼容性：
+
+- API 弃用检查
+- 资源版本兼容性
+- 升级影响评估
+
+### 证书过期
+
+`GET /api/certificates/expiry` TLS 证书过期扫描：
+
+- 集群证书过期时间
+- 即将过期证书警告
+- 续期建议
+
+### Addon 健康
+
+`GET /api/addons/health` 集群 addon 健康检查：
+
+- 核心 addon 运行状态
+- 异常 addon 检测
+- 修复建议
