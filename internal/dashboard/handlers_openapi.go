@@ -1268,6 +1268,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Container Security Context Audit (v14.98+) ---
+	add("/api/security/containers", "get", OpenAPIOperation{
+		Summary: "Container security context audit", OperationID: "containerSecurityAudit", Tags: []string{"Security", "Containers", "Pod Security"},
+		Description: "Scans all running pods for container security context risks. Checks: privileged containers, allowPrivilegeEscalation, runAsUser=0 (root), runAsNonRoot=false, readOnlyRootFilesystem=false, hostNetwork/hostPID/hostIPC, hostPath mounts (with sensitive path detection), dangerous Linux capabilities (SYS_ADMIN, NET_ADMIN, etc), missing securityContext. Provides per-pod risk level (critical/high/medium/low), per-namespace breakdown, top risks, cluster security score (0-100), and actionable recommendations.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter pods by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Container security report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"privileged":     2,
+					"runAsRoot":      15,
+					"hasHostNetwork": 1,
+					"securityScore":  68,
+				},
+				"pods":        []interface{}{},
+				"topRisks":    []interface{}{},
+				"byNamespace": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
