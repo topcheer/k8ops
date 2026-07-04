@@ -567,3 +567,105 @@ receivers:
 **PV 问题检测：** Released PV（需手动清理）、Failed PV（回收失败）、陈旧 Available PV（>7 天浪费容量）
 
 **存储类分析：** 默认类标记、provisioner、reclaim policy、binding mode、volume expansion 支持、PVC 数量分布
+
+### ServiceAccount 安全审计 (v14.72+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/security/service-accounts` | 全面审计所有 ServiceAccount 的安全状况：未使用 SA、默认 SA 被 Pod 使用、不必要的 token 自动挂载、cluster-admin 绑定、集群范围权限、陈旧 SA、遗留长效 token secret |
+
+**查询参数：** `namespace`（可选）
+
+**风险评分：** 0-100（越高越危险），5 级严重度：critical / high / elevated / moderate / low
+
+**检测项：**
+| 检测项 | 严重度 | 说明 |
+|--------|--------|------|
+| 未使用 SA（>7 天无 Pod 引用） | moderate | 攻击面扩大 |
+| 默认 SA 被 Pod 使用 | elevated | 违反最小权限原则 |
+| cluster-admin 绑定 | critical | 集群级超级权限 |
+| 不必要的 token 自动挂载 | moderate | 无需 token 的 SA 不应挂载 |
+| 陈旧 SA（>30 天无使用但仍有权限） | high | 僵尸权限 |
+| 遗留长效 token secret（K8s <1.24） | high | 不推荐的长效 token |
+
+### SLO/SLA 错误预算追踪 (v14.73+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/slo` | 基于多窗口多燃烧率算法的 SLO/SLA 可用性和错误预算追踪 |
+
+**查询参数：** `namespace`（可选）
+
+**窗口配置：** 5m / 1h / 6h / 24h / 7d
+
+**返回内容：**
+| 字段 | 说明 |
+|------|------|
+| `availability` | 各窗口可用性百分比 |
+| `errorBudget` | 错误预算剩余量和消耗率 |
+| `burnRate` | 多窗口燃烧率（fast: 5m/1h, slow: 6h/24h） |
+| `latencySLO` | P50/P95/P99 延迟百分位及目标 |
+| `status` | meeting（达标）/ at-risk（风险）/ violated（违反）|
+
+### ResourceQuota 与 LimitRange 监控 (v14.74+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/resources/quota` | 扫描所有命名空间的 ResourceQuota 利用率和 LimitRange 默认约束 |
+
+**查询参数：** `namespace`（可选）
+
+**配额状态级别：**
+| 状态 | 使用率 | 说明 |
+|------|--------|------|
+| `ok` | <70% | 正常 |
+| `warning` | 70-85% | 接近上限 |
+| `critical` | 85-100% | 危险 |
+| `exceeded` | >100% | 已超限 |
+| `no-limit` | — | 无配额设置 |
+
+**检测项：** 每命名空间的 CPU/内存/Pod/ConfigMap/Secret/存储配额利用率、无配额保护的命名空间、LimitRange 默认/最小/最大约束分析、Top 消费者排名
+
+### 部署配置审计 (v14.75+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/deployments/audit` | 审计所有 Deployment/StatefulSet/DaemonSet 的配置最佳实践违规，8 个检查类别，每项包含严重度和修复建议 |
+
+**查询参数：** `namespace`（可选）、`severity`（可选：critical / warning / info）
+
+**检查类别：**
+| 类别 | 检查项 |
+|------|--------|
+| `revision-history` | 修订历史太少（< 2，无法回滚）或太多（> 20，浪费资源） |
+| `image-policy` | `:latest` 标签但 pullPolicy 不是 Always；固定标签但 pullPolicy 是 Always |
+| `resources` | 缺少资源 limits/requests |
+| `probes` | 缺少 liveness/readiness/startup 探针 |
+| `security-context` | 特权容器、以 root 运行、可写根文件系统、允许提权 |
+| `update-strategy` | Recreate 策略（停机）、OnDelete（需手动删 Pod）、分区滚动更新 |
+| `lifecycle` | terminationGracePeriod 太短（< 10s）或太长（> 300s）、缺少 preStop 钩子 |
+| `config-drift` | 缺少 seccomp profile |
+
+**健康评分：** 0（完美）到 100（最差），critical=20分/warning=8分/info=2分
+
+### 调度健康与资源碎片分析 (v14.76+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/scheduling/health` | 分析集群调度健康、节点可调度性、资源碎片化和 Pending Pod 诊断 |
+
+**查询参数：** `namespace`（可选）
+
+**返回内容：**
+| 字段 | 说明 |
+|------|------|
+| `summary` | 节点统计（可调度/不可调度/已隔离/有压力）、Pending Pod 数、FailedScheduling 数、24h 驱逐数、健康评分 0-100 |
+| `nodes` | 每节点可调度状态、压力类型、taints、CPU/内存/Pod 可用量和百分比 |
+| `pendingPods` | Pending Pod 列表，含 CPU/内存请求、nodeSelector、解析后的调度失败原因 |
+| `largestFittablePod` | 当前可调度的最大 Pod（CPU/内存/Pod 数量），最优节点 |
+| `effectiveCapacity` | 理论容量 vs 有效容量（不可调度节点导致的容量损失百分比） |
+| `fragmentation` | 资源碎片化指标（平均 CPU/内存碎片率、最差碎片节点、超大 Pod 检测） |
+| `evictions` | 24h 内驱逐记录（Pod、节点、原因） |
+| `recommendations` | 可操作的修复建议 |
+
+**调度失败原因解析：** insufficient-cpu / insufficient-memory / untolerated-taint / node-selector-mismatch / node-affinity-mismatch / pod-affinity-conflict / pod-limit-reached / volume-binding-failure / no-nodes-available

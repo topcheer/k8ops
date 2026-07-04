@@ -725,3 +725,60 @@ kubectl rollout restart daemonset/k8ops -n k8ops-system
 - PV 问题：Released（需手动清理）、Failed（回收失败）、陈旧 Available（>7 天）
 - 存储类分布：默认类标记、provisioner、reclaim policy、volume expansion 支持
 - 支持按命名空间过滤：`?namespace=default`
+
+### ServiceAccount 安全审计
+
+`GET /api/security/service-accounts` 全面审计集群中所有 ServiceAccount 的安全风险：
+
+- 0-100 风险评分系统，自动识别高危 SA
+- 5 级严重度：critical / high / elevated / moderate / low
+- 检测项：未使用 SA（>7 天）、cluster-admin 绑定（critical）、默认 SA 被 Pod 使用、不必要的 token 自动挂载、陈旧 SA（>30 天有权限但无使用）、遗留长效 token secret
+- 每项包含详细安全风险说明和修复建议
+- 支持按命名空间过滤：`?namespace=default`
+
+### SLO/SLA 错误预算追踪
+
+`GET /api/operations/slo` 基于多窗口多燃烧率算法追踪 SLO/SLA 达标情况：
+
+- 5 个时间窗口：5 分钟、1 小时、6 小时、24 小时、7 天
+- 可用性百分比和错误预算剩余量/消耗率
+- 多窗口燃烧率检测（fast: 5m+1h，slow: 6h+24h）
+- P50/P95/P99 延迟百分位及 SLO 目标
+- 3 级状态：meeting（达标）/ at-risk（风险）/ violated（违反）
+- 支持按命名空间过滤：`?namespace=production`
+
+### ResourceQuota 与 LimitRange 监控
+
+`GET /api/resources/quota` 扫描所有命名空间的配额利用率和 LimitRange 约束：
+
+- 4 级配额状态：ok（<70%）/ warning（70-85%）/ critical（85-100%）/ exceeded（>100%）
+- 每命名空间的 CPU/内存/Pod/ConfigMap/Secret/存储配额利用率
+- 识别无配额保护的命名空间
+- LimitRange 默认/最小/最大约束分析
+- Top 消费者排名
+- 支持按命名空间过滤：`?namespace=default`
+
+### 部署配置审计
+
+`GET /api/deployments/audit` 审计所有工作负载的配置最佳实践违规：
+
+- 8 个检查类别：revision-history / image-policy / resources / probes / security-context / update-strategy / lifecycle / config-drift
+- 每项包含严重度（critical/warning/info）、具体问题描述和可操作修复建议
+- 健康评分 0（完美）到 100（最差）
+- 聚合 Top Findings 显示全集群最常见问题
+- 支持按命名空间和严重度过滤：`?namespace=default&severity=critical`
+
+### 调度健康与资源碎片分析
+
+`GET /api/scheduling/health` 分析集群调度健康和资源利用率：
+
+- 每节点可调度性（隔离/taint/压力条件）和资源可用量
+- Pending Pod 诊断：解析 FailedScheduling 事件原因（CPU/内存不足、taint 不匹配、nodeSelector 冲突、卷绑定失败等）
+- 最大可调度 Pod 计算（当前能部署多大的 Pod）
+- 有效容量 vs 理论容量（不可调度节点导致的容量损失）
+- 资源碎片化分析（散落的空闲容量）
+- 超大 Pod 检测（请求超过任何单节点容量）
+- 24h 驱逐历史（含原因）
+- 健康评分 0-100（加权惩罚）
+- 可操作的修复建议
+- 支持按命名空间过滤：`?namespace=default`
