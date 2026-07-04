@@ -39,7 +39,7 @@ jobs:
           fi
 
   release:
-    name: Release (GoReleaser: binaries + Docker)
+    name: Release (GoReleaser - binaries + Docker)
     needs: test
     runs-on: ubuntu-latest
     steps:
