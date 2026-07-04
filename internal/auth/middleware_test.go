@@ -3,9 +3,18 @@ package auth
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
+
+// TestMain sets bcrypt to MinCost for all auth tests (~0.001s per hash vs ~0.4s at cost 12).
+func TestMain(m *testing.M) {
+	bcryptCost = bcrypt.MinCost
+	os.Exit(m.Run())
+}
 
 // testAuth creates an Authenticator backed by an in-memory SQLite database,
 // pre-seeded with the bootstrap admin (admin/admin). The DB connection pool

@@ -203,9 +203,13 @@ func (a *Authenticator) generateToken(user *User) (string, error) {
 	return token.SignedString([]byte(a.cfg.JWTSecret))
 }
 
+// bcryptCost controls the bcrypt work factor. Cost 12 is the production default;
+// tests override it to bcrypt.MinCost (4) for ~500x speedup.
+var bcryptCost = 12
+
 // HashPassword creates a bcrypt hash of the password.
 func HashPassword(password string) (string, error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), 12)
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcryptCost)
 	if err != nil {
 		return "", err
 	}
