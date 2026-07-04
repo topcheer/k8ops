@@ -866,3 +866,59 @@ receivers:
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/api/capacity/planning` | 节点容量规划分析：每节点 CPU/内存请求 vs 可分配量、剩余容量、建议扩容时间、资源碎片化检测 |
+
+### 集群健康评分聚合 (v14.93+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/health-score` | 聚合所有集群健康信号为一个综合评分 (0-100, 等级 A-F)，结合 5 个加权维度 |
+
+**5 个加权维度：**
+| 维度 | 权重 | 检查内容 |
+|------|------|----------|
+| Node Health | 25% | 节点就绪状态 |
+| Pod Health | 25% | CrashLoop、Pending、Failed、高重启次数 |
+| Workload Health | 20% | Deployment/StatefulSet/DaemonSet 就绪副本 |
+| Event Activity | 15% | 最近 1 小时 Warning 事件数 |
+| API Server | 15% | API server 实时延迟测量 |
+
+**返回内容：** 总分 0-100、字母评级 A-F、状态 (healthy/warning/critical)、每维度评分详情、集群摘要 (节点/Pod/工作负载计数)、按严重度排序的 Top 问题
+
+### HPA/VPA 资源合理配置建议 (v14.94+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/scalability/autoscale-recommendations` | 分析所有工作负载的 HPA 覆盖率和资源合理配置，检测过度配置、缺少 HPA 的多副本工作负载、HPA 效率 |
+
+**查询参数：** `namespace`（可选）
+
+**检测类别：**
+| 检查项 | 说明 |
+|---------|------|
+| 缺少 HPA 的多副本工作负载 | 建议添加自动缩放 |
+| CPU 请求过高 (>1 core/container) | 高置信度，建议减半 |
+| 内存请求过高 (>2GB/container) | 建议右-sizing |
+| HPA 达到 maxReplicas | 需要增加容量 |
+| HPA 闲置 (<20% 利用率) | 建议减少 maxReplicas |
+
+**返回内容：** 每工作负载当前 vs 建议 CPU/内存值、变化百分比、置信度、潜在 CPU 核心和内存节省、HPA 效率分析、集群自动缩放评分 (0-100)
+
+### Ingress 与流量路由健康监控 (v14.96+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/product/ingress-health` | 分析所有 Ingress 资源的流量路由健康和配置问题 |
+
+**查询参数：** `namespace`（可选）
+
+**检查类别：**
+| 检查项 | 严重度 | 说明 |
+|---------|--------|------|
+| 后端服务不存在 | critical | 引用的 Service 不存在 |
+| 后端无就绪端点 | warning | Service 无 ready endpoints |
+| 无 TLS 配置 | warning | 有 host 但未加密 |
+| IngressClass 不存在 | critical | 指定的 class 未部署 |
+| host+path 冲突 | warning | 多个 Ingress 争抢同一路由 |
+| 无路由规则 | warning | Ingress 不起作用 |
+
+**返回内容：** 每 Ingress 状态 (healthy/warning/critical)、每命名空间统计、集群健康评分 (0-100)、可操作建议

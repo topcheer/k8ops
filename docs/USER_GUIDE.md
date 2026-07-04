@@ -930,3 +930,37 @@ kubectl rollout restart daemonset/k8ops -n k8ops-system
 - 核心 addon 运行状态
 - 异常 addon 检测
 - 修复建议
+
+### 集群健康评分
+
+`GET /api/operations/health-score` 聚合所有集群健康信号为一个综合评分：
+
+- 5 个加权维度：Node(25%) + Pod(25%) + Workload(20%) + Events(15%) + API Server(15%)
+- 总分 0-100，字母评级 A-F
+- 状态：healthy / warning / critical
+- 每维度评分、权重、详情
+- 集群摘要：节点/Pod/工作负载计数
+- 按严重度排序的 Top 问题
+
+### HPA/VPA 资源合理配置建议
+
+`GET /api/scalability/autoscale-recommendations?namespace=xxx` 分析自动缩放和资源右-sizing：
+
+- 检测缺少 HPA 的多副本工作负载
+- CPU 请求过高 (>1 core/container)
+- 内存请求过高 (>2GB/container)
+- HPA 效率分析（达到上限/下限/闲置）
+- 每工作负载当前 vs 建议资源值
+- 潜在 CPU 核心和内存节省
+- 集群自动缩放评分 0-100
+
+### Ingress 与流量路由健康监控
+
+`GET /api/product/ingress-health?namespace=xxx` 检查所有 Ingress 的流量路由健康：
+
+- 后端服务存在性和端点就绪检查
+- TLS 配置检测
+- IngressClass 有效性验证
+- host+path 冲突检测
+- 无路由规则检测
+- 每 Ingress 状态和集群健康评分 0-100
