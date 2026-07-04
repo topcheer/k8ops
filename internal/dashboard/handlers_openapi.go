@@ -959,6 +959,32 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Scheduling Health & Resource Fragmentation (v14.76+) ---
+	add("/api/scheduling/health", "get", OpenAPIOperation{
+		Summary: "Scheduling health & resource fragmentation analyzer", OperationID: "schedulingHealth", Tags: []string{"Scheduling", "Scalability"},
+		Description: "Analyzes cluster scheduling health, node schedulability, resource fragmentation, and pending pod diagnostics. Detects: cordoned/tainted nodes reducing effective capacity, nodes under pressure (memory/disk/PID/network), pods stuck in Pending with parsed FailedScheduling failure reasons (insufficient CPU/memory, taint mismatch, node selector conflict, volume binding failure), recent evictions (24h), oversized pods requesting more than any node can provide, and resource fragmentation patterns. Computes largest schedulable pod size, effective vs theoretical capacity, and a scheduling health score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter pods by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Scheduling health report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNodes":         5,
+					"schedulableNodes":   4,
+					"unschedulableNodes": 1,
+					"pendingPods":        2,
+					"failedScheduling":   2,
+					"healthScore":        85,
+				},
+				"nodes":              []interface{}{},
+				"pendingPods":        []interface{}{},
+				"largestFittablePod": map[string]interface{}{"maxCpuM": 2000, "maxMemoryGB": 8},
+				"effectiveCapacity":  map[string]interface{}{"cpuLostPct": 20, "memLostPct": 20},
+				"recommendations":    []string{},
+			}),
+		},
+	})
+
 	return spec
 }
 
