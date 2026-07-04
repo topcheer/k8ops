@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   test:
-    name: Test & Vet
+    name: Format + Test + Vet
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +25,15 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
+
+      - name: Check formatting
+        run: |
+          UNFORMATTED=$(gofmt -l . | grep -v vendor/ || true)
+          if [ -n "$UNFORMATTED" ]; then
+            echo "::error::Files need formatting:"
+            echo "$UNFORMATTED"
+            exit 1
+          fi
 
       - name: Download dependencies
         run: go mod download
@@ -42,7 +51,6 @@ jobs:
         run: |
           COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | sed 's/%//')
           echo "Total coverage: ${COVERAGE}%"
-          # Warn if below 30% but don't fail (some packages have no tests yet)
           if (( $(echo "$COVERAGE < 15" | bc -l) )); then
             echo "::warning::Coverage is ${COVERAGE}%, below 15% threshold"
           fi
@@ -89,7 +97,7 @@ jobs:
           install-mode: binary
 
   docker-build:
-    name: Docker Build Test
+    name: Docker Build + Trivy Scan
     needs: [test, lint]
     runs-on: ubuntu-latest
     steps:
@@ -114,3 +122,37 @@ jobs:
 
       - name: Report image size
         run: docker images k8ops:ci-test --format '{{.Repository}}:{{.Tag}} {{.Size}}'
+
+      - name: Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: k8ops:ci-test
+          format: table
+          exit-code: '0'
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: CRITICAL,HIGH
+
+      - name: Trivy SARIF report
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: k8ops:ci-test
+          format: sarif
+          output: trivy-results.sarif
+
+      - name: Upload Trivy SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate

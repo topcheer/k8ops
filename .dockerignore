@@ -1,6 +1,7 @@
 # Git
 .git
 .gitignore
+.gitattributes
 
 # CI
 .github/
@@ -8,6 +9,7 @@
 # Documentation
 docs/
 *.md
+LICENSE
 
 # Scripts (not needed at runtime)
 scripts/
@@ -17,6 +19,7 @@ scripts/
 .idea/
 *.swp
 *.swo
+*~
 
 # OS
 .DS_Store
@@ -24,14 +27,40 @@ Thumbs.db
 
 # Test artifacts
 coverage.out
+coverage.html
 test-results/
+*.test
+*.out
 
-# Local config
+# Local config (must not leak into image)
 config/
 secrets/
 release-notes/
+release-body.md
+release-notes.txt
 
 # Docker files themselves
 Dockerfile
 .dockerignore
 docker-compose*
+.docker/
+
+# Helm charts (not needed at runtime)
+deploy/
+config/
+
+# Build artifacts
+dist/
+bin/
+release/
+
+# GoReleaser
+.goreleaser.yml
+
+# Makefile (build tool, not runtime)
+Makefile
+
+# Environment files
+.env
+.env.*
+!.env.example
