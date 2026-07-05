@@ -1395,6 +1395,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Storage Capacity Exhaustion Predictor (v15.06+) ---
+	add("/api/scalability/storage-forecast", "get", OpenAPIOperation{
+		Summary: "Storage capacity exhaustion predictor", OperationID: "storageForecast", Tags: []string{"Scalability", "Storage", "Forecasting"},
+		Description: "Predicts when storage capacity will be exhausted based on PV usage trends and growth rate estimation. Analyzes all bound PVs for: capacity vs used space, estimated daily growth rate, days to exhaustion, Longhorn actual-size annotation support, risk level per PV. Provides per-PV forecast with predicted exhaustion date, per-storage-class statistics, at-risk namespace ranking, cluster-wide days-to-full estimate, and actionable recommendations including top critical PV identification.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Storage forecast report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPVs":        25,
+					"totalCapacityGB": 500,
+					"usedCapacityGB":  320,
+					"pvsFull":         1,
+					"pvsNearFull":     3,
+					"forecastDays":    45,
+					"healthScore":     72,
+				},
+				"pvForecasts":      []interface{}{},
+				"byStorageClass":   []interface{}{},
+				"atRiskNamespaces": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
