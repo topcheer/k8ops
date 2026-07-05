@@ -1,4 +1,4 @@
-.PHONY: build vet test fmt deploy release clean help regression-gate pre-commit helm-sync-version smoke-test
+.PHONY: build vet test fmt deploy release clean help regression-gate pre-commit helm-sync-version smoke-test rollback docker-build-multiarch release-notes
 
 VERSION ?= dev
 REGISTRY ?= registry.iot2.win/k8ops
@@ -38,6 +38,31 @@ coverage: ## Run tests with coverage
 docker-build: ## Build Docker image for local registry
 	docker buildx build --platform linux/amd64 --build-arg VERSION=$(VERSION) \
 		-t $(REGISTRY):$(VERSION) -t $(REGISTRY):latest --push .
+
+docker-build-multiarch: ## Build multi-arch Docker image (amd64 + arm64)
+	docker buildx build --platform linux/amd64,linux/arm64 --build-arg VERSION=$(VERSION) \
+		-t $(REGISTRY):$(VERSION) -t $(REGISTRY):latest --push .
+
+rollback: ## Quick rollback to previous image version
+	@CURRENT=$$(kubectl get daemonset k8ops -n k8ops-system -o jsonpath='{.spec.template.spec.containers[0].image}' | sed 's|.*:||'); \
+	echo "Current image: $$CURRENT"; \
+	PREV_TAG=$$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo ""); \
+	if [ -z "$$PREV_TAG" ]; then \
+		echo "No previous tag found"; exit 1; \
+	fi; \
+	echo "Rolling back to: $$PREV_TAG"; \
+	kubectl set image daemonset/k8ops k8ops=$(REGISTRY):$$PREV_TAG -n k8ops-system; \
+	sleep 15; \
+	curl -sk -o /dev/null -w 'Health after rollback: %{http_code}\n' https://k8ops.iot2.win/; \
+	echo "Rollback complete. Verify with: make smoke-test"
+
+release-notes: ## Generate release notes from commits (usage: make release-notes VERSION=v15XX)
+	@if [ "$(VERSION)" = "dev" ]; then echo "Usage: make release-notes VERSION=v15XX"; exit 1; fi; \
+	PREV_TAG=$$(git describe --tags --abbrev=0 HEAD 2>/dev/null || echo "HEAD~20"); \
+	echo "Generating release notes from $$PREV_TAG to HEAD..."; \
+	git log $$PREV_TAG..HEAD --pretty=format:'- %s (%h)' --no-merges > release-notes.txt; \
+	echo "Release notes written to release-notes.txt"; \
+	cat release-notes.txt
 
 deploy: ## Deploy to k8s cluster (usage: make deploy VERSION=v15XX)
 	@if [ "$(VERSION)" = "dev" ]; then echo "Usage: make deploy VERSION=v15XX"; exit 1; fi
