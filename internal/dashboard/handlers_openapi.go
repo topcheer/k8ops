@@ -1437,6 +1437,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Admission Webhook Configuration Audit (v15.10+) ---
+	add("/api/security/admission-audit", "get", OpenAPIOperation{
+		Summary: "Admission webhook configuration auditor", OperationID: "admissionAudit", Tags: []string{"Security", "Admission Control", "Webhooks"},
+		Description: "Audits all ValidatingWebhookConfigurations and MutatingWebhookConfigurations for security and reliability issues. Detects: missing CA bundles (TLS verification failure), failurePolicy=Ignore (silent failures), no namespaceSelector (catches all namespaces including system), broad scope (wildcard * resource matching), short timeouts (<3s), all operations matched without filtering. Provides per-webhook risk level (critical/high/medium/low), detailed rules analysis, cluster-wide admission security score (0-100), and actionable recommendations.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Admission webhook audit report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalValidating":     5,
+					"totalMutating":       3,
+					"healthyHooks":        6,
+					"withIssues":          2,
+					"noCABundle":          1,
+					"failurePolicyIgnore": 2,
+					"securityScore":       72,
+				},
+				"validatingWebhooks": []interface{}{},
+				"mutatingWebhooks":   []interface{}{},
+				"issues":             []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
