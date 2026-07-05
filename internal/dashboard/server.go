@@ -228,6 +228,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/secrets/rotation", s.cacheMiddleware(120*time.Second, s.handleSecretRotationAudit))                 // secret lifecycle & rotation audit
 	mux.HandleFunc("/api/security/images", s.cacheMiddleware(120*time.Second, s.handleImageSecurityAudit))                            // image supply chain security
 	mux.HandleFunc("/api/security/containers", s.cacheMiddleware(120*time.Second, s.handleContainerSecurityAudit))                    // container security context audit
+	mux.HandleFunc("/api/security/rbac-effective", s.cacheMiddleware(120*time.Second, s.handleRBACEffective))                         // RBAC effective permissions & escalation
 	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                                   // resource dependency graph & blast radius
 	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpread))                                 // topology spread compliance
 	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                               // workload staleness & release cadence

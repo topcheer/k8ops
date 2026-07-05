@@ -1352,6 +1352,26 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- RBAC Effective Permissions & Escalation (v15.04+) ---
+	add("/api/security/rbac-effective", "get", OpenAPIOperation{
+		Summary: "RBAC effective permissions & escalation analyzer", OperationID: "rbacEffective", Tags: []string{"Security", "RBAC", "Access Control"},
+		Description: "Analyzes effective RBAC permissions across all subjects (Users, Groups, ServiceAccounts). Aggregates ClusterRoleBindings and RoleBindings to compute each subject's actual permissions. Detects: cluster-admin equivalent access, privilege escalation paths (can create/modify RBAC), wildcard (*) permissions, secret readers, pod exec access, node access. Provides per-subject risk level (critical/high/medium/low), escalation risk paths, cluster-wide RBAC security score (0-100), and actionable recommendations.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("RBAC effective permissions report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalSubjects":   15,
+					"clusterAdmins":   2,
+					"escalationPaths": 1,
+					"securityScore":   68,
+				},
+				"subjects":        []interface{}{},
+				"privilegedUsers": []interface{}{},
+				"escalationRisks": []interface{}{},
+				"issues":          []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
