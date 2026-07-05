@@ -1505,6 +1505,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Container Image Deployment Hygiene (v15.13+) ---
+	add("/api/deployment/image-hygiene", "get", OpenAPIOperation{
+		Summary: "Container image deployment hygiene analyzer", OperationID: "imageHygiene", Tags: []string{"Deployment", "Images", "CI/CD"},
+		Description: "Analyzes all running container images for deployment hygiene. Checks: :latest tag usage (mutable, non-reproducible), missing tags (defaults to latest), digest pinning (@sha256), version tag classification, duplicate detection (same base image with multiple tags), registry trust level, per-registry distribution. Provides per-image risk level, replica count, namespace coverage, and pod list. Cluster-wide image hygiene score (0-100) with actionable recommendations for tag pinning, digest usage, duplicate consolidation, and private registry migration.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter pods by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Image hygiene report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalContainers": 25,
+					"uniqueImages":    12,
+					"latestTagCount":  3,
+					"digestPinned":    5,
+					"duplicateImages": 2,
+					"hygieneScore":    72,
+				},
+				"images":     []interface{}{},
+				"byRegistry": []interface{}{},
+				"duplicates": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
