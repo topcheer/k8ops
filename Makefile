@@ -1,4 +1,4 @@
-.PHONY: build vet test fmt deploy release clean help
+.PHONY: build vet test fmt deploy release clean help regression-gate pre-commit
 
 VERSION ?= dev
 REGISTRY ?= registry.iot2.win/k8ops
@@ -41,6 +41,11 @@ docker-build: ## Build Docker image for local registry
 
 deploy: ## Deploy to k8s cluster (usage: make deploy VERSION=v14XX)
 	@if [ "$(VERSION)" = "dev" ]; then echo "Usage: make deploy VERSION=v14XX"; exit 1; fi
+	@echo "=== Pre-deploy regression gate ==="
+	$(MAKE) regression-gate
+	@echo "=== All checks passed, building image ==="
+	$(MAKE) docker-build VERSION=$(VERSION)
+	@echo "=== Deploying $(VERSION) ==="
 	kubectl set image daemonset/k8ops k8ops=$(REGISTRY):$(VERSION) -n k8ops-system
 	@echo "Waiting for rollout..."
 	@sleep 15
@@ -58,10 +63,7 @@ deploy-check: ## Check deployment health
 
 release: ## Tag and push a release (usage: make release VERSION=v14XX)
 	@if [ "$(VERSION)" = "dev" ]; then echo "Usage: make release VERSION=v14XX"; exit 1; fi
-	$(MAKE) check-fmt
-	$(MAKE) build
-	$(MAKE) vet
-	$(MAKE) test
+	$(MAKE) regression-gate
 	git tag -a $(VERSION) -m "Release $(VERSION)"
 	git push origin $(VERSION)
 	@echo "Release triggered. Monitor with: gh run watch"
@@ -77,6 +79,10 @@ clean: ## Clean build artifacts
 	rm -rf dist/
 	go clean -cache 2>/dev/null || true
 
-# Pre-commit checklist
-pre-commit: fmt check-fmt build vet test ## Run all checks before committing
+# Full regression gate — must pass before any deploy or release
+regression-gate: check-fmt build vet lint test
+	@echo "=== Regression gate PASSED ==="
+
+# Pre-commit checklist (same as regression-gate)
+pre-commit: fmt regression-gate
 	@echo "All checks passed. Ready to commit."
