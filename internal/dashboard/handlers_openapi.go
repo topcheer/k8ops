@@ -1605,6 +1605,31 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Namespace Resource Consumption & Cost Attribution (v15.18+) ---
+	add("/api/scalability/ns-consumption", "get", OpenAPIOperation{
+		Summary: "Namespace resource consumption & cost attribution", OperationID: "nsConsumption", Tags: []string{"Scalability", "FinOps", "Cost"},
+		Description: "Analyzes per-namespace resource consumption and estimates cost attribution. Aggregates CPU/memory requests and limits across all pods, plus PVC storage capacity. Calculates estimated monthly cost per namespace using configurable pricing ($28/core CPU, $3.8/GB memory, $0.10/GB storage defaults). Identifies waste: over-provisioned namespaces (limit >> request, >5x over-commit ratio), idle namespaces (no running pods, wasted budget), and total wasted capacity in limit-request gap. Provides resource efficiency metrics (request/limit ratio), per-namespace cost share percentage, top 10 consumers ranked by cost, and actionable FinOps recommendations for right-sizing and cleanup.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Namespace consumption report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNamespaces":  12,
+					"activeNamespaces": 10,
+					"idleNamespaces":   2,
+					"estMonthlyCost":   285.50,
+					"avgEfficiency":    62.5,
+				},
+				"byNamespace":  []interface{}{},
+				"topConsumers": []interface{}{},
+				"wasteAnalysis": map[string]interface{}{
+					"overProvisionedNS": 3,
+					"idleCost":          45.20,
+					"wasteScore":        38,
+				},
+				"costConfig": map[string]interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
