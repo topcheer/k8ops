@@ -1309,6 +1309,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- PVC Binding & Storage Performance (v15.00+) ---
+	add("/api/scalability/pvc-analysis", "get", OpenAPIOperation{
+		Summary: "PVC binding & storage performance analyzer", OperationID: "pvcAnalysis", Tags: []string{"Scalability", "Storage", "Performance"},
+		Description: "Analyzes all PersistentVolumeClaims for binding health and storage performance. Checks: PVC phases (Bound/Pending/Lost), stuck PVCs (>5min pending), bind time measurement, slow binding detection (>30s), storage class distribution, missing default StorageClass, storage provisioner analysis. Provides per-PVC status, per-storage-class statistics with avg bind time, stuck PVC diagnostics with root cause, cluster storage health score (0-100), and actionable recommendations.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter PVCs by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("PVC analysis report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPVCs":     20,
+					"boundPVCs":     18,
+					"stuckPVCs":     1,
+					"avgBindTimeMs": 3200,
+					"healthScore":   85,
+				},
+				"pvcs":           []interface{}{},
+				"byStorageClass": []interface{}{},
+				"stuckPVCs":      []interface{}{},
+				"issues":         []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 

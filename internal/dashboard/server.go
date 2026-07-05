@@ -234,6 +234,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/ingress-health", s.cacheMiddleware(60*time.Second, s.handleIngressHealth))                           // ingress traffic routing health
 	mux.HandleFunc("/api/scalability/overcommit", s.cacheMiddleware(60*time.Second, s.handleOvercommitAnalysis))                      // resource over-commit & pressure
 	mux.HandleFunc("/api/scalability/autoscale-recommendations", s.cacheMiddleware(60*time.Second, s.handleAutoscaleRecommendations)) // HPA/VPA right-sizing
+	mux.HandleFunc("/api/scalability/pvc-analysis", s.cacheMiddleware(60*time.Second, s.handlePVCAnalysis))                           // PVC binding & storage performance
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))
