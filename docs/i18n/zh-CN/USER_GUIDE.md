@@ -1,0 +1,1040 @@
+# k8ops 用户手册
+
+> 从安装到精通，覆盖所有功能的详细使用指南。
+
+---
+
+## 目录
+
+1. [快速入门](#1-快速入门)
+2. [集群总览](#2-集群总览)
+3. [AI Chat — 智能助手](#3-ai-chat--智能助手)
+4. [诊断与修复](#4-诊断与修复)
+5. [优化建议](#5-优化建议)
+6. [成本分析 (FinOps)](#6-成本分析-finops)
+7. [集群拓扑可视化](#7-集群拓扑可视化)
+8. [节点与 Pod 管理](#8-节点与-pod-管理)
+9. [事件流与通知](#9-事件流与通知)
+10. [资源浏览器与 YAML 编辑器](#10-资源浏览器与-yaml-编辑器)
+11. [RBAC 访问控制](#11-rbac-访问控制)
+12. [审计日志](#12-审计日志)
+13. [设置与配置](#13-设置与配置)
+14. [键盘快捷键](#14-键盘快捷键)
+15. [主题切换](#15-主题切换)
+16. [容量规划](#16-容量规划)
+17. [HPA 可视化](#17-hpa-可视化)
+18. [容器镜像清单](#18-容器镜像清单)
+19. [命名空间资源排行](#19-命名空间资源排行)
+20. [安全合规](#20-安全合规)
+21. [系统管理](#21-系统管理)
+22. [运维诊断 API](#22-运维诊断-apiv1461)
+
+---
+
+## 1. 快速入门
+
+### 首次登录
+
+1. 打开浏览器访问 k8ops 地址（如 `https://k8ops.iot2.win` 或 `http://localhost:9090`）
+2. 默认账号：`admin` / `admin`
+3. 首次登录会提示修改密码
+
+### 页面布局
+
+```
+┌─────────┬───────────────────────────────┐
+│         │  [Namespace ▼]  [🔔]  [☀/☽]  │  ← 顶栏
+│ Sidebar ├───────────────────────────────┤
+│         │                                │
+│ Overview│       Content Area             │  ← 内容区
+│ Diagnose│                                │
+│ Nodes   │                                │
+│ Pods    │                                │
+│ ...     │                                │
+└─────────┴───────────────────────────────┘
+```
+
+### Ctrl+K 命令面板
+
+随时按 `Ctrl+K`（Mac: `Cmd+K`）打开全局命令面板：
+
+- 输入 `nodes` → 跳转到节点页
+- 输入 `chat` → 打开 AI Chat
+- 输入 `cost` → 查看成本分析
+- 方向键选择，Enter 确认，Esc 关闭
+
+---
+
+## 2. 集群总览
+
+Overview 页面展示集群整体状态。
+
+### 统计卡片
+
+| 卡片 | 含义 |
+|------|------|
+| Nodes | 集群节点总数 / Ready 数 |
+| Pods | 运行中 Pod 数 / 总数 |
+| CPU | 集群整体 CPU 利用率 |
+| Memory | 集群整体内存利用率 |
+| Warnings | 当前 Warning 事件数 |
+
+### Sparkline 趋势图
+
+每个卡片下方有 SVG 迷你折线图，展示最近 30 分钟的趋势变化。
+
+### Namespace 切换
+
+顶栏左侧的下拉选择器可以切换 namespace scope。切换后影响 Pods、Events、Nodes 等页面。选择会持久化到 localStorage。
+
+---
+
+## 3. AI Chat — 智能助手
+
+点击侧边栏底部的 Chat 按钮或 `Ctrl+K` 输入 `chat` 打开。
+
+### 基本用法
+
+在输入框输入问题，AI 会：
+
+1. 理解自然语言意图
+2. 自动调用合适的 K8s 工具
+3. 流式返回分析结果
+
+### 示例查询
+
+```
+# 查看资源
+查看 default 命名空间的 pod
+有哪些节点 CPU 使用率高？
+
+# 故障诊断
+为什么 nginx-deployment 的 pod 在 CrashLoopBackOff？
+集群有什么异常？
+
+# 优化建议
+帮我分析资源使用情况
+有哪些 pod 可以缩小副本数？
+```
+
+### 工具调用透明度
+
+AI 执行工具调用时，会显示折叠式的 Thinking 面板：
+
+- 点击展开可以看到每个工具调用的参数和返回结果
+- JSON 格式化展示，支持搜索
+
+### 诊断建议卡片
+
+当 AI 建议执行 kubectl 命令时，代码块下方会显示：
+
+- **▶ Run in Chat** — 将命令载入输入框，方便发送执行
+- **📋 Copy** — 复制命令到剪贴板
+
+### 会话管理
+
+- **New** — 新建会话
+- **左侧会话列表** — 点击切换历史会话
+- 会话自动总结压缩（超过 20k token 时自动触发）
+
+### Markdown 渲染
+
+Chat 支持：
+- 代码块（带语法高亮和复制按钮）
+- 表格
+- 列表、粗体、斜体
+- 链接（仅 http/https/mailto 协议）
+
+---
+
+## 4. 诊断与修复
+
+### 触发诊断
+
+**方式一：Web 界面**
+
+1. 进入 Diagnostics 页面
+2. 点击 "New Diagnostic"
+3. 填写问题描述（如 "production 命名空间的 API 响应变慢"）
+4. 提交后 AI 自动分析
+
+**方式二：AI Chat**
+
+在 Chat 中直接描述问题，AI 会自动执行诊断流程。
+
+**方式三：CRD**
+
+```bash
+kubectl apply -f - <<EOF
+apiVersion: aiops.ggai.dev/v1alpha1
+kind: DiagnosticReport
+metadata:
+  name: check-nginx
+  namespace: k8ops-system
+spec:
+  problem: "nginx pods keep restarting"
+EOF
+```
+
+**方式四：CLI**
+
+```bash
+k8ops diagnose --problem "pods in production keep CrashLoopBackOff"
+```
+
+### 诊断结果
+
+每份诊断报告包含：
+
+- **Root Cause** — AI 分析的根本原因
+- **Evidence** — 支持分析的日志、事件、指标数据
+- **Recommendations** — 建议的修复操作
+- **Severity** — 严重等级（Info / Warning / Critical）
+
+### 自动修复 (Remediation)
+
+AI 生成的修复计划需要人工审批：
+
+1. 进入 Remediations 页面
+2. 查看待审批的修复计划
+3. 点击 **Approve** 执行，或 **Reject** 拒绝
+4. 所有操作记录在审计日志中
+
+---
+
+## 5. 优化建议
+
+Optimizations 页面展示 AI 对集群资源的优化建议。
+
+### 建议类型
+
+| 类型 | 说明 |
+|------|------|
+| Resource Rightsizing | CPU/Memory requests 和 limits 建议调整 |
+| HPA Gap | 缺少水平自动扩缩配置的 Deployment |
+| PDB Gap | 缺少 PodDisruptionBudget 的工作负载 |
+| Cost Saving | 可节省的成本（闲置资源、过剩副本等） |
+
+### 操作
+
+- 点击建议查看详情
+- 可直接 Apply 或忽略
+
+---
+
+## 6. 成本分析 (FinOps)
+
+Cost 页面提供集群成本可见性。
+
+### 功能
+
+- **命名空间成本汇总** — 按 namespace 展示资源消耗和预估成本
+- **资源利用率** — CPU/Memory 实际使用 vs 分配
+- **Rightsizing 建议** — 过度分配的资源调整建议
+- **闲置资源** — 长期未使用的 PV、LoadBalancer、弹性 IP 等
+
+---
+
+## 7. 集群拓扑可视化
+
+Topology 页面以 SVG 图形展示节点和 Pod 的关系。
+
+### 视觉元素
+
+| 元素 | 含义 |
+|------|------|
+| 绿色框 | Ready 节点 |
+| 红色框 | NotReady 节点 |
+| 节点框内进度条 | CPU（上）/ MEM（下）利用率 |
+| Pod 绿色圆点 | Running |
+| Pod 黄色圆点 | Pending |
+| Pod 红色圆点 | Failed |
+| Pod 闪烁边框 | CrashLoop（restarts > 3） |
+
+### 交互
+
+- **点击 Pod** — 打开该 Pod 的日志查看器
+- **底部统计** — Ready/NotReady 节点数、Pod 状态汇总
+
+---
+
+## 8. 节点与 Pod 管理
+
+### Nodes 页面
+
+- 节点列表表格：名称、角色、状态、CPU、内存、Pod 数量
+- 每列支持搜索过滤
+- 点击节点名查看详细信息和该节点上的所有 Pod
+
+### Pods 页面
+
+- Pod 列表表格：名称、命名空间、状态、重启次数、节点、年龄
+- 支持命名空间过滤和实时搜索
+
+### Pod 日志查看器
+
+点击 Pod 行打开日志查看器：
+
+- **实时流式** — SSE 推送，日志实时更新
+- **日志级别高亮** — ERROR（红）、WARN（黄）、DEBUG（灰）
+- **搜索过滤** — 输入关键词过滤日志行
+- **自动滚动** — 新日志到达时自动滚到底部（可暂停）
+- **下载** — 导出当前日志为文件
+
+---
+
+## 9. 事件流与通知
+
+### Events 页面
+
+展示 K8s 集群事件，支持：
+
+- 实时搜索过滤
+- Warning 事件红色高亮
+- 按命名空间过滤
+
+### 实时事件流
+
+Events 页面右侧有 Live Events 面板：
+
+- 点击 **Go Live** 开启 SSE 实时推送
+- 新事件带蓝色 NEW 徽章动画
+- 删除事件带红色 DEL 徽章
+- Warning 事件自动红色高亮
+
+### 通知中心
+
+顶栏右侧的铃铛图标：
+
+- 有告警时显示红色数字徽章 + 脉冲动画
+- 点击展开下拉面板
+- 展示最近的 Warning 事件和 NotReady 节点
+- 60 秒自动刷新
+
+---
+
+## 10. 资源浏览器与 YAML 编辑器
+
+### Resources 页面
+
+浏览集群中的所有 K8s 资源：
+
+- 按 API Group / Resource Type 分组
+- 点击资源名查看 YAML 定义
+- 支持命名空间多选过滤
+
+### YAML 查看器
+
+点击任意资源可打开 YAML overlay：
+
+- 格式化展示完整 YAML
+- **Copy** 按钮一键复制
+
+### YAML 编辑器
+
+在 YAML 查看器中点击 **Edit** 按钮进入编辑模式：
+
+1. YAML 内容变为可编辑 textarea
+2. 修改后点击 **Apply** 提交
+3. 后端使用 server-side apply（kubectl apply 语义）
+4. 成功显示绿色提示，失败显示红色错误信息
+
+---
+
+## 11. RBAC 访问控制
+
+RBAC 页面（需要 admin 权限）管理用户和角色。
+
+### 用户管理
+
+- **创建用户** — 用户名、密码、角色、命名空间 scope
+- **编辑用户** — 修改角色、启用/禁用
+- **删除用户**
+
+### 角色
+
+| 角色 | 权限 |
+|------|------|
+| admin | 全集群读写，可管理用户 |
+| operator | 大部分资源读写，不能管理 RBAC/Secrets |
+| viewer | 只读访问 |
+
+### 命名空间 Scope
+
+每个用户可以绑定特定的命名空间，只能访问该范围内的资源（通过 K8s impersonation 实现）。
+
+---
+
+## 12. 审计日志
+
+Audit 页面展示所有 AI 操作的审计记录。
+
+### 功能
+
+- **Severity 过滤** — 下拉选择 Info / Warning / Error / Critical
+- **实时搜索** — 输入关键词过滤
+- **统计卡片** — Total / Successful / Failed / Critical / Warnings
+- **表格** — 时间、严重级别、动作、目标资源、操作者、成功/失败、耗时
+
+### 审计范围
+
+所有以下操作都会被记录：
+
+- AI 工具调用（kubectl get/describe/logs 等）
+- AI 发起的修复操作
+- LLM API 调用
+- 用户登录/登出
+- 资源修改
+
+---
+
+## 13. 设置与配置
+
+Settings 页面配置 AI Provider 和认证。
+
+### AI Provider 配置
+
+| 字段 | 说明 |
+|------|------|
+| Provider Type | openai / deepseek / zai / anthropic |
+| Model | gpt-4o / deepseek-chat / glm-4-plus 等 |
+| Endpoint | LLM API 地址（留空使用默认） |
+| API Key | LLM API 密钥 |
+
+### 认证配置
+
+- **Local** — 内置用户系统（默认）
+- **LDAP** — 企业 LDAP/AD 集成
+- **OIDC** — GitHub / Google / Keycloak 等
+
+---
+
+## 14. 键盘快捷键
+
+| 快捷键 | 功能 |
+|--------|------|
+| `Ctrl+K` / `Cmd+K` | 打开命令面板 |
+| `Esc` | 关闭命令面板 / 弹窗 |
+| `↓` / `↑` | 命令面板中选择 |
+| `Enter` | 命令面板中确认 |
+
+---
+
+## 15. 主题切换
+
+点击侧边栏右上角的月亮/太阳按钮切换暗色/亮色主题。选择会持久化到 localStorage，刷新页面后保持。
+
+---
+
+## 附录
+
+### 相关文档
+
+- [架构设计](ARCHITECTURE.md)
+- [部署指南](DEPLOYMENT.md)
+- [本地运行](LOCAL_RUN.md)
+- [API 参考](API.md)
+- [安全策略](SECURITY.md)
+
+### 常见问题
+
+**Q: Chat 没有响应？**
+A: 检查 Settings → Provider 配置是否正确，API Key 是否有效。
+
+**Q: 看不到某些命名空间？**
+A: 当前用户的 RBAC 角色可能限制了命名空间访问范围，联系管理员调整。
+
+**Q: Pod 日志查看器空白？**
+A: Pod 可能刚启动还没有日志，或者没有日志权限。检查 RBAC 配置。
+
+**Q: AI 建议的命令安全吗？**
+A: 所有 AI 建议的操作都会先通过 Safety Checker 的 dry-run 验证，修复操作需要人工审批才能执行。
+
+---
+
+## 16. 容量规划
+
+### 存储容量监控
+
+**路径：** Dashboard → Capacity 标签页
+
+展示集群中所有 PVC（PersistentVolumeClaim）的存储状态：
+
+| 指标 | 说明 |
+|------|------|
+| Total PVCs | 集群中 PVC 总数 |
+| Bound | 已绑定 PV 的 PVC 数 |
+| Pending | 等待绑定的 PVC |
+| Total Capacity | 所有 PVC 的总容量 |
+| Requested | 所有 PVC 请求的总量 |
+
+### 节点容量分析
+
+Capacity 页面同时展示每个节点的资源利用率：
+
+- **CPU 利用率**：已请求 CPU / 可分配 CPU（颜色编码：<60% 绿色，60-80% 黄色，>80% 红色）
+- **内存利用率**：已请求内存 / 可分配内存
+- **Pod 密度**：已运行 Pod 数 / 最大 Pod 数限制
+- **扩容建议**：当节点资源超过 80% 时自动生成扩容建议
+
+### 集群级汇总
+
+| 指标 | 说明 |
+|------|------|
+| Cluster CPU Utilization | 全集群 CPU 请求/可分配比率 |
+| Cluster Mem Utilization | 全集群内存请求/可分配比率 |
+| Total CPU Allocatable | 全集群可分配 CPU 总量 |
+| Total CPU Requested | 全集群已请求 CPU 总量 |
+
+---
+
+## 17. HPA 可视化
+
+**路径：** Dashboard → HPA 标签页
+
+展示所有 HorizontalPodAutoscaler 的自动扩缩状态：
+
+### 功能
+
+- **副本缩放条**：可视化当前副本数、期望副本数、最小/最大范围
+- **指标利用率条**：CPU/内存当前利用率 vs 目标值（绿/黄/红）
+- **扩缩状态标识**：当当前副本 ≠ 期望副本时显示 "SCALING" 徽章
+- **摘要卡片**：HPA 总数、正在扩缩数、当前/期望副本总数
+
+### 支持的指标类型
+
+| 类型 | 说明 |
+|------|------|
+| Resource | CPU/内存利用率百分比 |
+| Pods | 自定义 Pod 指标（如 QPS） |
+| External | 外部指标（如 SQS 队列长度） |
+| ContainerResource | 容器级资源指标 |
+
+---
+
+## 18. 容器镜像清单
+
+**路径：** Dashboard → Images 标签页
+
+展示集群中所有正在使用的容器镜像：
+
+| 指标 | 说明 |
+|------|------|
+| Unique Images | 去重后的镜像总数 |
+| Using :latest | 使用 `:latest` 标签的镜像数（不推荐用于生产） |
+| No Limits | 没有设置资源 limits 的镜像数 |
+| No Requests | 没有设置资源 requests 的镜像数 |
+| Registries | 使用的镜像仓库数量 |
+
+### 安全最佳实践
+
+- 避免使用 `:latest` 标签 — 使用固定版本号确保可重现部署
+- 所有容器应设置 CPU/内存 limits — 防止资源耗尽
+- 所有容器应设置 CPU/内存 requests — 确保调度器正确分配
+
+---
+
+## 19. 命名空间资源排行
+
+**路径：** Dashboard → Namespaces 标签页
+
+按 CPU 消耗排序列出所有命名空间的资源使用情况：
+
+### 功能
+
+- **资源汇总**：每个 namespace 的 CPU/内存 requests + limits、Pod 数、PVC 存储量
+- **集群占比**：CPU/内存请求占集群可分配总量的百分比（带可视化进度条）
+- **搜索过滤**：快速定位特定 namespace
+- **详情钻取**：点击任意 namespace 查看 ResourceQuota 使用情况、LimitRange 配置、近期警告事件
+
+---
+
+## 20. 安全合规
+
+### CIS Benchmark 合规扫描
+
+**路径：** Dashboard → Compliance 标签页
+
+运行 CIS Kubernetes Benchmark 检查，覆盖以下类别：
+
+| 类别 | 检查项 |
+|------|--------|
+| RBAC | cluster-admin 绑定范围、通配符 ClusterRole、默认 SA 使用 |
+| Pod Security | 特权容器、hostNetwork/hostPID/hostIPC、hostPath 卷、root 用户、资源 limits |
+| Network | NetworkPolicy 覆盖率 |
+| Secrets | Secret 管理健康度 |
+
+### 合规报告下载
+
+点击 "Download Report" 按钮可下载完整合规报告（.txt 格式），包含：
+
+- 合规分数（百分比）
+- 每项检查的状态（PASS/WARN/FAIL）
+- 修复建议（针对 WARN/FAIL 项）
+
+### 审计事件搜索
+
+**路径：** API → `GET /api/audit/events`
+
+支持多维度过滤审计日志：
+
+| 参数 | 说明 |
+|------|------|
+| `actor` | 按用户名过滤 |
+| `action` | 按操作类型过滤（如 delete, scale, exec） |
+| `q` | 全文搜索 |
+| `severity` | 按严重级别过滤 |
+| `from`/`to` | 时间范围（RFC3339 格式） |
+
+### CSV 导出
+
+`GET /api/audit/export` — 导出审计日志为 CSV 格式，可导入 SIEM 系统进行合规分析。
+
+---
+
+## 21. 系统管理
+
+### 系统信息
+
+`GET /api/system/info` 提供运行时信息：
+
+- 版本号、Go 版本、运行平台
+- 内存使用（Alloc/Sys/GC cycles/Heap objects）
+- Goroutine 数量
+- 服务运行时间
+- 审计日志大小和事件数
+
+### 日志管理
+
+| API | 功能 |
+|-----|------|
+| `POST /api/system/log/rotate` | 手动触发审计日志轮转（admin） |
+| `POST /api/system/log/cleanup` | 清理 30 天以上的轮转文件（admin） |
+
+### 日志级别配置
+
+通过环境变量 `LOG_LEVEL` 配置（debug/info/warn/error）：
+
+```bash
+kubectl set env daemonset/k8ops -n k8ops-system LOG_LEVEL=debug
+kubectl rollout restart daemonset/k8ops -n k8ops-system
+```
+
+### 备份管理
+
+| API | 功能 |
+|-----|------|
+| `GET /api/system/backup` | 列出所有备份文件 |
+| `POST /api/system/backup` | 创建数据库备份 |
+| `DELETE /api/system/backup?name=X` | 删除指定备份 |
+| `POST /api/system/backup/restore?name=X` | 从备份恢复数据库 |
+
+### API 性能监控
+
+`GET /api/system/performance` 提供每个 API 端点的延迟统计：
+
+- **p50/p95/p99** 百分位延迟
+- 平均和最大延迟
+- 错误率和请求总数
+
+---
+
+## 22. 运维诊断 API（v14.61+）
+
+### Network Policy 审计
+
+`GET /api/security/network-policies` 审计集群的 NetworkPolicy 覆盖情况：
+
+- 检测无 NetworkPolicy 的命名空间（默认全开放）
+- 识别宽松策略（0.0.0.0/0 入站/出站）
+- 按严重级别分类：critical / warning / info
+- 每个发现包含详细描述和修复建议
+
+### Pod 重启诊断
+
+`GET /api/diagnostics/restarts` 诊断 Pod 重启模式和根因：
+
+- 分类重启模式：crash-loop / occasional / post-deploy
+- 提取终止原因：OOMKilled / Error / 退出码
+- 识别等待状态：CrashLoopBackOff / ImagePullBackOff
+- 每个容器独立的诊断信息
+
+### 部署 Rollout 状态
+
+`GET /api/deployments/rollout` 追踪所有工作负载的 rollout 健康状态：
+
+- 覆盖 Deployment / StatefulSet / DaemonSet
+- 7 种状态：complete / in-progress / stalled / degraded / paused / failed / scaled-to-zero
+- 检测 ProgressDeadlineExceeded 和 ReplicaFailure
+- 支持按状态过滤：`?status=failed`
+
+### 资源浪费检测
+
+`GET /api/resources/waste` 扫描浪费和孤立资源以降低成本：
+
+- 6 类浪费：死服务、未用 PVC、孤立 ConfigMap/Secret、空命名空间、未绑定 PV
+- 成本风险评估：low / moderate / high
+- 每项包含严重度、年龄、清理建议
+- 智能过滤系统资源（kube-system、SA token、Helm release）
+
+### 扩展瓶颈检测
+
+`GET /api/scaling/bottlenecks` 识别限制水平扩展的因素：
+
+- 7 类瓶颈：节点调度、节点压力、配额限制、HPA 卡住、PDB 阻塞、存储耗尽
+- 集群容量摘要：节点数、CPU/内存、Pod 容量、扩展余量
+- 每项包含影响级别和修复建议
+
+### RBAC 权限风险分析
+
+`GET /api/security/rbac-risk` 分析集群中所有 RBAC 绑定的安全风险：
+
+- 0-100 评分系统，自动识别高危绑定
+- 5 级风险等级：critical / high / elevated / moderate / low
+- 检测项：cluster-admin 绑定、权限提升（escalate/bind/impersonate）、通配符权限（verbs/resources: *）、集群范围写操作、敏感资源访问（secrets/pods/exec）
+- 每项包含详细评分明细和修复建议（最小权限原则）
+- 支持按命名空间过滤：`?namespace=default`
+
+### CronJob 执行健康监控
+
+`GET /api/operations/cronjobs/health` 监控所有 CronJob 的执行健康状况：
+
+- 5 级健康状态：healthy / warning / failing / suspended / no-runs
+- 检测连续失败（3 次以上 = failing）、成功率低于 50%、暂停的调度、从未执行
+- 通过 OwnerReferences 关联 CronJob 及其子 Job
+- 计算下次预期运行时间
+- 支持按命名空间过滤：`?namespace=production`
+
+### Service & Endpoint 网络健康监控
+
+`GET /api/networking/health` 扫描所有 Service 和 Ingress 的网络连通性：
+
+- 5 级 Service 健康状态：healthy / degraded / no-endpoints / misconfigured / external
+- 检测选择器不匹配（label mismatch）、所有端点不可用、部分降级、LoadBalancer 等待 IP
+- Ingress 后端验证：后端 Service 是否存在、是否有可用端点
+- 交叉引用 Pod 选择器匹配，提供根因分析
+- 支持按命名空间过滤：`?namespace=default`
+
+### PV/PVC 存储健康监控
+
+`GET /api/storage/health` 扫描所有 PVC/PV 的存储健康状况：
+
+- 6 级 PVC 健康状态：bound / pending / lost / failed / orphaned / near-capacity
+- Pending 诊断：无存储类、WaitForFirstConsumer 绑定模式、provisioner 日志检查
+- 孤立 PVC 检测：已绑定但超过 1 天无 Pod 使用（容量浪费）
+- PV 问题：Released（需手动清理）、Failed（回收失败）、陈旧 Available（>7 天）
+- 存储类分布：默认类标记、provisioner、reclaim policy、volume expansion 支持
+- 支持按命名空间过滤：`?namespace=default`
+
+### ServiceAccount 安全审计
+
+`GET /api/security/service-accounts` 全面审计集群中所有 ServiceAccount 的安全风险：
+
+- 0-100 风险评分系统，自动识别高危 SA
+- 5 级严重度：critical / high / elevated / moderate / low
+- 检测项：未使用 SA（>7 天）、cluster-admin 绑定（critical）、默认 SA 被 Pod 使用、不必要的 token 自动挂载、陈旧 SA（>30 天有权限但无使用）、遗留长效 token secret
+- 每项包含详细安全风险说明和修复建议
+- 支持按命名空间过滤：`?namespace=default`
+
+### SLO/SLA 错误预算追踪
+
+`GET /api/operations/slo` 基于多窗口多燃烧率算法追踪 SLO/SLA 达标情况：
+
+- 5 个时间窗口：5 分钟、1 小时、6 小时、24 小时、7 天
+- 可用性百分比和错误预算剩余量/消耗率
+- 多窗口燃烧率检测（fast: 5m+1h，slow: 6h+24h）
+- P50/P95/P99 延迟百分位及 SLO 目标
+- 3 级状态：meeting（达标）/ at-risk（风险）/ violated（违反）
+- 支持按命名空间过滤：`?namespace=production`
+
+### ResourceQuota 与 LimitRange 监控
+
+`GET /api/resources/quota` 扫描所有命名空间的配额利用率和 LimitRange 约束：
+
+- 4 级配额状态：ok（<70%）/ warning（70-85%）/ critical（85-100%）/ exceeded（>100%）
+- 每命名空间的 CPU/内存/Pod/ConfigMap/Secret/存储配额利用率
+- 识别无配额保护的命名空间
+- LimitRange 默认/最小/最大约束分析
+- Top 消费者排名
+- 支持按命名空间过滤：`?namespace=default`
+
+### 部署配置审计
+
+`GET /api/deployments/audit` 审计所有工作负载的配置最佳实践违规：
+
+- 8 个检查类别：revision-history / image-policy / resources / probes / security-context / update-strategy / lifecycle / config-drift
+- 每项包含严重度（critical/warning/info）、具体问题描述和可操作修复建议
+- 健康评分 0（完美）到 100（最差）
+- 聚合 Top Findings 显示全集群最常见问题
+- 支持按命名空间和严重度过滤：`?namespace=default&severity=critical`
+
+### 调度健康与资源碎片分析
+
+`GET /api/scheduling/health` 分析集群调度健康和资源利用率：
+
+- 每节点可调度性（隔离/taint/压力条件）和资源可用量
+- Pending Pod 诊断：解析 FailedScheduling 事件原因（CPU/内存不足、taint 不匹配、nodeSelector 冲突、卷绑定失败等）
+- 最大可调度 Pod 计算（当前能部署多大的 Pod）
+- 有效容量 vs 理论容量（不可调度节点导致的容量损失）
+- 资源碎片化分析（散落的空闲容量）
+- 超大 Pod 检测（请求超过任何单节点容量）
+- 24h 驱逐历史（含原因）
+- 健康评分 0-100（加权惩罚）
+- 可操作的修复建议
+- 支持按命名空间过滤：`?namespace=default`
+
+### Pod 安全态势扫描
+
+`GET /api/security/pods?namespace=xxx&severity=critical` 审计所有运行中 Pod 的实时安全态势：
+
+- 15 个检查类别覆盖特权容器、主机访问（network/PID/IPC）、HostPath 挂载、危险 capabilities、root 运行、提权等
+- 每 Pod 风险评分 0-100（critical=25分/warning=8分/info=2分）
+- 按检查类型和命名空间聚合统计
+- 支持按命名空间和严重度过滤
+
+### 事件风暴与级联故障检测
+
+`GET /api/operations/event-storm?namespace=xxx` 分析集群 Warning 事件：
+
+- 4 级风暴严重度：critical (>50) / high (>20) / medium (>10) / low (>5)
+- 抖动资源检测（同资源同原因重复 3+ 次，含抖动频率）
+- 按命名空间和事件原因聚合
+- 爆炸半径评估（受影响资源数）
+- 可操作的排查建议
+- 支持按命名空间过滤：`?namespace=kube-system`
+
+### 资源依赖图与影响范围分析
+
+`GET /api/dependencies?kind=Deployment&name=xxx&namespace=xxx` 追踪工作负载的完整依赖图：
+
+- 正向依赖：ConfigMap、Secret、PVC、ServiceAccount
+- 反向依赖：Service（label selector）、Ingress、NetworkPolicy、HPA、共享配置的其他 Pod
+- 影响范围评估：blastRadius 评分和风险等级
+- 用于变更前影响评估，避免级联故障
+
+### 拓扑分布合规检查
+
+`GET /api/topology/spread?namespace=xxx&domain=topology.kubernetes.io/zone` 检查 Pod 的拓扑分布合规性：
+
+- 4 级工作负载状态：balanced / skewed / no-constraint / single-replica
+- 每工作负载的拓扑域分布和偏差分析
+- 检测缺少拓扑约束的多副本工作负载
+- 识别缺少拓扑标签的节点
+- 单域集群提示
+- 支持按命名空间和拓扑域 key 过滤
+
+### Secret 轮转与生命周期审计
+
+`GET /api/security/secrets/rotation?namespace=xxx` 审计所有 Secret 的生命周期：
+
+- 年龄追踪：stale (>90d) / very stale (>180d)
+- 未使用 Secret 检测（不被任何 Pod 引用）
+- TLS 证书过期检测（解析证书，检测已过期和 <30d 过期）
+- Docker registry Secret、遗留 SA token 追踪
+- 敏感名称检测（password/key/token/credential）
+- 每 Secret 风险等级、集群轮转评分 0-100
+- 支持按命名空间过滤
+
+### 健康探针有效性审计
+
+`GET /api/operations/probes?namespace=xxx` 审计探针配置：
+
+- 8 个检查类别：缺少探针、过于激进、超时过短、阈值不当等
+- 每工作负载风险评分，集群有效性评分 (0-100)
+- 聚合 Top 问题统计
+- 可操作建议
+
+### 工作负载陈旧度追踪
+
+`GET /api/product/staleness?namespace=xxx` 追踪部署陈旧度：
+
+- 5 级陈旧度分类：fresh/recent/stale/very-stale/ancient
+- 镜像标签分析：:latest、digest、no-tag
+- 年龄分布桶、命名空间统计
+- 集群新鲜度评分 (0-100)
+
+### 资源超卖与压力分析
+
+`GET /api/scalability/overcommit?namespace=xxx` 分析资源超卖：
+
+- 每节点 CPU/内存 request 和 limit 超卖比率
+- 压力评分 0-100 和风险等级
+- 无 limits/requests 的 Pod 检测
+- 集群安全评分 0-100
+- 命名空间资源消耗明细
+
+### 镜像安全与供应链分析
+
+`GET /api/security/images?namespace=xxx` 扫描所有容器镜像的供应链安全：
+
+- Digest 锁定检测（@sha256: 不可变引用）
+- :latest 标签检测（可变，不可复现）
+- 无标签镜像检测（默认 :latest）
+- 旧版本标签检测（v1, 1.0 — 可能含已知 CVE）
+- 公共 vs 私有镜像仓库分析
+- 每镜像风险等级、每仓库统计
+- 集群镜像安全评分 0-100
+
+### 容量规划
+
+`GET /api/capacity/planning` 节点容量规划：
+
+- 每节点 CPU/内存请求 vs 可分配量
+- 剩余容量和扩容建议
+- 资源碎片化检测
+
+### 容量预测
+
+`GET /api/capacity/forecast` 容量趋势预测：
+
+- 基于历史数据的资源增长趋势
+- 预计耗尽时间
+- 扩容建议
+
+### 资源效率分析
+
+`GET /api/efficiency` 资源使用效率：
+
+- 过大资源分配检测
+- 资源浪费识别
+- 优化建议
+
+### PDB 状态
+
+`GET /api/pdbs` Pod Disruption Budget 状态：
+
+- PDB 配置检查
+- 允许中断数 vs 当前可用数
+- PDB 阻塞检测
+
+### 版本兼容性
+
+`GET /api/compatibility` K8s 版本兼容性：
+
+- API 弃用检查
+- 资源版本兼容性
+- 升级影响评估
+
+### 证书过期
+
+`GET /api/certificates/expiry` TLS 证书过期扫描：
+
+- 集群证书过期时间
+- 即将过期证书警告
+- 续期建议
+
+### Addon 健康
+
+`GET /api/addons/health` 集群 addon 健康检查：
+
+- 核心 addon 运行状态
+- 异常 addon 检测
+- 修复建议
+
+### 集群健康评分
+
+`GET /api/operations/health-score` 聚合所有集群健康信号为一个综合评分：
+
+- 5 个加权维度：Node(25%) + Pod(25%) + Workload(20%) + Events(15%) + API Server(15%)
+- 总分 0-100，字母评级 A-F
+- 状态：healthy / warning / critical
+- 每维度评分、权重、详情
+- 集群摘要：节点/Pod/工作负载计数
+- 按严重度排序的 Top 问题
+
+### HPA/VPA 资源合理配置建议
+
+`GET /api/scalability/autoscale-recommendations?namespace=xxx` 分析自动缩放和资源合理配置：
+
+- 检测缺少 HPA 的多副本工作负载
+- CPU 请求过高 (>1 core/container)
+- 内存请求过高 (>2GB/container)
+- HPA 效率分析（达到上限/下限/闲置）
+- 每工作负载当前 vs 建议资源值
+- 潜在 CPU 核心和内存节省
+- 集群自动缩放评分 0-100
+
+### Ingress 与流量路由健康监控
+
+`GET /api/product/ingress-health?namespace=xxx` 检查所有 Ingress 的流量路由健康：
+
+- 后端服务存在性和端点就绪检查
+- TLS 配置检测
+- IngressClass 有效性验证
+- host+path 冲突检测
+- 无路由规则检测
+- 每 Ingress 状态和集群健康评分 0-100
+
+### 节点条件与资源压力
+
+`GET /api/operations/node-pressure` 分析所有节点的条件和资源压力：
+
+- DiskPressure / MemoryPressure / PIDPressure / NetworkUnavailable 检测
+- CPU/内存/Pod 使用率 vs 可分配量
+- 每节点风险等级 (critical/high/medium/low)
+- 集群压力评分 0-100
+
+### PVC 绑定与存储性能
+
+`GET /api/scalability/pvc-analysis?namespace=xxx` 分析存储绑定健康：
+
+- Stuck PVC 根因检测（>5min pending）
+- 绑定时间测量和慢绑定检测（>30s）
+- Lost PVC 检测
+- 每 StorageClass 统计和供应器分析
+- 集群存储健康评分 0-100
+
+### Namespace 治理与生命周期
+
+`GET /api/product/namespaces/lifecycle` 审计命名空间治理：
+
+- ResourceQuota / LimitRange / NetworkPolicy 覆盖率
+- 专用 ServiceAccount 检测（最小权限）
+- 必需标签检查（app, team, env, owner）
+- 命名空间生命周期（active / stale / terminating）
+- 集群治理评分 0-100
+
+### RBAC 有效权限与提权分析
+
+`GET /api/security/rbac-effective` 分析所有主体的 RBAC 有效权限：
+
+- 聚合 ClusterRoleBindings + RoleBindings 计算实际权限
+- cluster-admin 等效检测
+- 提权路径检测（可修改 RBAC 的主体）
+- 通配符 (*) 权限检测
+- Secret 读取和 Pod exec 访问分析
+- 集群 RBAC 安全评分 0-100
+
+### 容器 OOM Kill 追踪
+
+`GET /api/operations/oom-tracker?namespace=xxx` 追踪容器 OOM 事件：
+
+- OOMKilled 容器检测和根因分析
+- 高重启次数检测 (>=5)
+- 缺失/过低内存限制检测
+- 限制远大于请求 (10x+) 的节点压力风险
+- Top OOM 排名和每命名空间统计
+- 集群 OOM 风险评分 0-100
+
+### 存储容量耗尽预测
+
+`GET /api/scalability/storage-forecast` 预测存储容量：
+
+- 每 PV 使用率、增长率、耗尽天数预测
+- Longhorn actual-size 注解支持
+- 集群存满天数估算
+- 每 StorageClass 统计和供应器分析
+- 高风险命名空间排名
+- 存储健康评分 0-100
+
+### DNS 解析健康检查
+
+`GET /api/product/dns-health` 分析 DNS 解析健康：
+
+- CoreDNS Pod 健康检查（运行/就绪/重启/版本）
+- Corefile 配置分析（forwarders, plugins）
+- Headless Service 端点覆盖和 NXDOMAIN 风险
+- NodeLocal DNS 缓存检测
+- Pod dnsConfig ndots 覆盖检测
+- External-DNS 托管服务发现
+- 集群 DNS 健康评分 0-100
