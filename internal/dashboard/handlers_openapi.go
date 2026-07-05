@@ -1630,6 +1630,31 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Rollout Strategy & Health (v15.19+) ---
+	add("/api/deployment/rollout-health", "get", OpenAPIOperation{
+		Summary: "Deployment rollout strategy & health analyzer", OperationID: "rolloutHealth", Tags: []string{"Deployment", "Rollout", "Strategy"},
+		Description: "Analyzes deployment rollout strategies and health status. Per-deployment: strategy type (RollingUpdate/Recreate), maxSurge/maxUnavailable config, revisionHistoryLimit (rollback readiness), progressDeadlineSeconds, minReadySeconds, replica status (desired/updated/ready/available/unavailable), conditions (Progressing, Available, ReplicaFailure). Classifies status: healthy (all replicas ready), progressing (rolling update in progress), stuck (Progressing=False or ReplicaFailure=True or deadline exceeded), paused. Detects: Recreate strategy with multiple replicas (causes downtime), revisionHistoryLimit=0 (rollback impossible), aggressive progressDeadline (<300s), missing minReadySeconds. Cluster-wide rollout health score (0-100) with actionable recommendations.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Rollout health report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalDeployments": 15,
+					"healthy":          12,
+					"stuck":            1,
+					"paused":           1,
+					"defaultStrategy":  8,
+					"recreateStrategy": 2,
+					"healthScore":      78,
+				},
+				"deployments":   []interface{}{},
+				"stuckRollouts": []interface{}{},
+				"poorStrategy":  []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 

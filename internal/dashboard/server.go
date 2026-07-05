@@ -248,6 +248,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/pod-density", s.cacheMiddleware(60*time.Second, s.handlePodDensity))                             // pod density & scheduling capacity analyzer
 	mux.HandleFunc("/api/scalability/ns-consumption", s.cacheMiddleware(60*time.Second, s.handleNSConsumption))                       // namespace resource consumption & cost attribution
 	mux.HandleFunc("/api/deployment/image-hygiene", s.cacheMiddleware(60*time.Second, s.handleImageHygiene))                          // container image deployment hygiene analyzer
+	mux.HandleFunc("/api/deployment/rollout-health", s.cacheMiddleware(30*time.Second, s.handleRolloutHealth))                        // deployment rollout strategy & health analyzer
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))
