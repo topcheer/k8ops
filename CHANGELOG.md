@@ -1,300 +1,95 @@
-# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
-## [v14.41] — 2026-07-03
-
-### Security
-- Exec command hardening — 7-layer defense: body size limit, command length limit, shell metacharacter blocking (11 patterns), verb whitelist, sensitive resource blocking (7 types), execution timeout
-- 11 new security tests for injection prevention
-
-## [v14.40] — 2026-07-03
-
-### Added
-- API performance tracking — per-endpoint p50/p95/p99 latency percentiles, in-memory ring buffer (5000 samples)
-- GET /api/system/performance — latency stats with error rate and cluster-wide p95
-
-## [v14.39] — 2026-07-03
-
-### Added
-- HPA (Horizontal Pod Autoscaler) visualization — replica scale bars, per-metric utilization, scaling status badges
-- GET /api/hpa — detailed HPA data with all metric types (Resource, Pods, External, ContainerResource)
-
-## [v14.38] — 2026-07-03
-
-### Added
-- Audit log rotation — auto-rotation at 100MB, manual rotation + cleanup via API
-- GET /api/system/info — version, Go runtime, memory stats, uptime, audit log size
-- POST /api/system/log/rotate — manual audit log rotation (admin-only)
-- POST /api/system/log/cleanup — remove old rotated files (admin-only)
-
-## [v14.37] — 2026-07-03
-
-### Documentation
-- docs/TROUBLESHOOTING.md — 382-line guide covering 8 issue categories
-- CHANGELOG.md updated with v14.31-v14.36 entries
-- docs/ARCHITECTURE.md — request tracing and HTTP metrics design decisions
-
-## [v14.36] — 2026-07-03
-
-### Added
-- Deployment automation — one-command deploy with auto-rollback (`scripts/deploy.sh`)
-- Quick rollback script (`scripts/rollback.sh`) — by revision, version, or previous
-- Release workflow with pre-release test gate and auto-generated release notes
-- CI/CD documentation in `docs/DEPLOYMENT.md`
-
-## [v14.35] — 2026-07-03
-
-### Added
-- CIS Benchmark compliance scanner — 10 CIS-style checks (RBAC, Pod Security, Network, Secrets)
-- Downloadable compliance report (`GET /api/security/compliance/report`)
-- Compliance score gauge and per-check status badges
-
-## [v14.34] — 2026-07-03
-
-### Added
-- Storage capacity monitoring — PVC overview with capacity, status, storage class
-- Node capacity planning — per-node CPU/memory/pod utilization with expansion recommendations
-
-## [v14.33] — 2026-07-02
-
-### Added
-- Namespace resource ranking — per-namespace CPU/memory/pod/PVC aggregation, sorted by consumption
-- Namespace detail drill-down — ResourceQuota usage, LimitRanges, recent warnings
-
-## [v14.32] — 2026-07-02
-
-### Added
-- Request ID middleware — `X-Request-ID` header for every request (log correlation)
-- HTTP metrics — request count, latency histogram, in-flight gauge, error counter (4 new Prometheus metrics)
-- SLO/SLA definitions in Runbook — targets, error budgets, PromQL queries, degradation strategy
-
-## [v14.31] — 2026-07-02
-
-### Changed
-- Distroless image base (alpine → gcr.io/distroless/static-debian12) — 31.8MB → 28.6MB
-- BuildKit cache mounts for faster CI builds
-- CI: added govulncheck security scan, coverage threshold, job dependencies
-
-### Added
-- Pre-deploy validation script (`scripts/pre-deploy-check.sh`) — 5-step gate
-- Changelog auto-generation script (`scripts/generate-changelog.sh`)
-- `.dockerignore` to exclude docs/scripts from build context
-
-## [v14.30] — 2026-07-02
-
-### Added
-- OpenAPI 3.0 spec — auto-generated spec for 40+ endpoints (`GET /api/openapi.json`)
-- Interactive API Explorer — search, filter, try-it-now, download spec from dashboard
-- Security audit scanner — cluster-wide Pod Security Standards check (`GET /api/security/audit`)
-- Platform security health check (`GET /api/security/health`)
-
-### Documentation
-- docs/API.md — OpenAPI section, Security Audit docs, Write Ops section
-
-## [v14.28] — 2026-07-02
-
-### Added
-- Scalability improvements — ResourceQuota/LimitRange browser, API timing middleware, backup/restore scripts
-- Events search — instant search filter on Events page
-- Connection status indicator + loading skeletons
-
-## [v14.27] — 2026-07-02
-
-### Added
-- Recent events feed on overview — compact K8s event timeline
-- Resource search filter — instant name/namespace filtering on Resources page
-- ConfigMap/Secret data viewer — inline key-value display
-
-## [v14.25] — 2026-07-02
-
-### Added
-- Node resource utilization bars — visual CPU/Memory/Pod capacity
-- Node cordon/uncordon — schedule management from UI
-- Pod delete + rollout restart for deployments/statefulsets/daemonsets
-- Workload scale — deployment & statefulset scaling from UI
-
-## [v14.20] — 2026-07-02
-
-### Added
-- Audit logging for all user-initiated write operations
-- Global Chat entry — sidebar highlight + top-bar button
-- Chat quick actions + improved welcome screen
-- Notification center — live alert polling + bell badge
-
-### Security
-- XSS prevention round 4 — providers.js preset cards
-- XSS prevention round 3 — rbac.js complete coverage
-- XSS prevention round 2 — rbac.js, providers.js, resources.js
-- XSS prevention — escapeHtml on all K8s data in template literals
-- Sanitize href URLs in renderMarkdown to prevent attribute injection
-- 13 security tests for scale/pod-delete/rollout-restart handlers
-- 5 tests for gzip middleware + security headers
-- 6 security tests for /api/exec endpoint
-
-## [v14.10] — 2026-07-02
-
-### Added
-- NL-to-kubectl — natural language command shortcuts in chat
-- Comprehensive mobile responsive + UX polish
-- Enterprise Runbook (`docs/RUNBOOK.md`) — 400+ 行运行手册
-- Grafana dashboard JSON (`docs/grafana-dashboard.json`) — 10-panel dashboard
-- Prometheus alerting rules (`docs/alerting-rules.yaml`) — 9 alert rules
-
-### Changed
-- Clean dead CSS + improve overview phase display
-- Remove dead NL-to-kubectl code from chat.js
-
-### Fixed
-- Root package stub for `go build .` compatibility
-- YAML validation — single-document format for monitoring configs
-- Chat overlay URL hash persistence + Traefik upload timeout fix
-
-## [v14.1] — 2026-07-01
-
-### Added
-- AI Diagnostic Action Cards — kubectl/shell code blocks auto-enhanced with Run+Copy buttons
-- GitHub Actions CI/CD — `.github/workflows/ci.yml` (test+lint+docker build), `release.yml` (GoReleaser)
-- GoReleaser config — multi-platform binary builds (linux/darwin, amd64/arm64), Docker multi-arch manifests
-- User Guide (`docs/USER_GUIDE.md`) — comprehensive 15-section user manual
-- Local Run Guide (`docs/LOCAL_RUN.md`) — bare-metal binary execution guide
-
-### Changed
-- Agent context management confirmed working: memory.Conversation with 20k token threshold, LLM-based summarization
-
-## [v14.0] — 2026-07-01
-
-### Changed — Breaking
-- **ES Modules migration** — all frontend JS files converted to ES modules
-  - New `modules/utils.js` shared utility module (single source of truth for escapeHtml, fetchJSON, etc.)
-  - New `main.js` entry point bridges module exports to `window` for inline handler compatibility
-  - `index.html` uses single `<script type="module" src="/main.js">` instead of 9 script tags
-  - Zero duplicate function definitions (previously `escapeHtml` existed in both core.js and chat.js)
-
-## [v13.11] — 2026-07-01
-
-### Fixed
-- **P0: CSP blocking inline JS** — `script-src 'self'` prevented all 87 inline event handlers from working; added `'unsafe-inline'`
-- **P1: gzip middleware SSE panic** — `Flush()` operated on closed gzip writer; added `gzClosed` flag
-- **P1: closeLogViewer stale reference** — `logEventSource` replaced with `logFetchController` (old SSE viewer)
-- **P1: duplicate clearLogs** — removed dead-code version, kept correct v13.4 implementation
-- **P2: chat.js duplicate comment** — merged two "Step 1" annotation lines
-
-## [v13.10] — 2026-07-01
-
-### Added
-- Audit log query+filter UI — severity dropdown, stats cards (Total/Success/Failed/Critical/Warning), severity badges
-- Natural language → kubectl — enhanced system prompt with explicit NL examples, AI auto-translates queries to tool calls
-
-## [v13.9] — 2026-07-01
-
-### Added
-- Dark/light theme toggle — 14 CSS variables, light theme override blocks, localStorage persistence, sidebar toggle button
-- YAML editor — edit mode with textarea, server-side apply via `POST /api/yaml/apply`, dry-run support, success/error feedback
-
-### Changed
-- Dockerfile binary size optimization — `-ldflags="-s -w"` reduces binary from 83MB → 58MB
-
-## [v13.8] — 2026-07-01
-
-### Added
-- API gzip compression — `compress/gzip` middleware for `/api/` JSON responses, SSE excluded
-- Table search filter — real-time search input on Nodes/Pods/Events tables with match count badge
-
-## [v13.7] — 2026-07-01
-
-### Added
-- Cluster topology visualization — SVG node→Pod graph, health status colors, resource bars, crash loop pulse animation
-- Notification center — bell icon with pulse badge, dropdown panel with warning/critical alerts, 60s polling
-
-## [v13.6] — 2026-06-30
-
-### Added
-- Live event stream UI — EventSource consuming `/api/events/stream`, real-time scrolling feed, NEW/DEL badges, warning highlighting
-- Multi-namespace switcher — top bar dropdown, localStorage persistence, affects Pods/Events/Nodes
-
-## [v13.5] — 2026-06-30
-
-### Added
-- Node resource utilization bars — per-node CPU/MEM/Pod usage with color coding
-- Sparkline mini charts — SVG trend charts on overview cards for node/warning history
-
-## [v13.4] — 2026-06-30
-
-### Added
-- Pod log viewer upgrade — SSE streaming, log level highlighting (ERROR/WARN/DEBUG), search filter, auto-scroll toggle, download
-
-## [v13.3] — 2026-06-30
-
-### Added
-- Real-time event SSE stream — `/api/events/stream` endpoint with K8s Watch integration
-
-## [v13.2] — 2026-06-30
-
-### Added
-- Ctrl+K Command Palette — global search + quick navigation
-- Code block copy button — copy-to-clipboard on chat code blocks
-
-## [v13.1] — 2026-06-30
-
-### Added
-- Per-user chat rate limiting — 20 burst, 10 req/min per user
-- Health/readiness probes — `/healthz` and `/readyz` endpoints for K8s
-
-## [v13.0] — 2026-06-30
-
-### Security
-- **P0 XSS fix** — markdown link URL sanitization (allowlist http/https/mailto only)
-- **P0 CSP header** — Content-Security-Policy added to all responses
-- **P0 SSE timeout fix** — `WriteTimeout` set to 0 for long AI streaming responses
-
-### Changed
-- **P1 imagePullPolicy** — changed from `IfNotPresent` to `Always` (required for mutable `:latest` tag)
-
-### Added
-- Per-user rate limiting infrastructure
-- Backup/HA documentation in DEPLOYMENT.md (MySQL HA + CronJob backup strategy)
-
-## [v0.1.0] — 2026-03-15
-
-### Added
-- Initial release
-- AI-powered diagnostic engine with streaming LLM responses
-- Auto-remediation with human-in-the-loop approval workflow
-- K8s resource optimization recommendations
-- Embedded dashboard web UI (vanilla HTML/JS/CSS)
-- Kustomize deployment (base + production overlay)
-- SQLite + K8s CRD persistence
-- Multi-provider AI support (OpenAI, DeepSeek, ZAI, Anthropic)
-- Audit logging with severity levels
-- RBAC with namespace scoping via impersonation
-- Cost visibility / FinOps module
-- Prometheus metrics export
-- CLI tool (`k8ops` command)
-
-### Known Limitations
-- No WebSocket terminal (exec via tool only, not interactive)
-- Host tools bypass K8s RBAC impersonation
-- No Helm chart (Kustomize only)
-- bcrypt operations slow under `-race` (TestChangePassword_NonLocalUser may timeout)
-
-[v14.1]: https://github.com/topcheer/k8ops/releases/tag/v14.1
-[v14.0]: https://github.com/topcheer/k8ops/releases/tag/v14.0
-[v13.11]: https://github.com/topcheer/k8ops/releases/tag/v13.11
-[v13.10]: https://github.com/topcheer/k8ops/releases/tag/v13.10
-[v13.9]: https://github.com/topcheer/k8ops/releases/tag/v13.9
-[v13.8]: https://github.com/topcheer/k8ops/releases/tag/v13.8
-[v13.7]: https://github.com/topcheer/k8ops/releases/tag/v13.7
-[v13.6]: https://github.com/topcheer/k8ops/releases/tag/v13.6
-[v13.5]: https://github.com/topcheer/k8ops/releases/tag/v13.5
-[v13.4]: https://github.com/topcheer/k8ops/releases/tag/v13.4
-[v13.3]: https://github.com/topcheer/k8ops/releases/tag/v13.3
-[v13.2]: https://github.com/topcheer/k8ops/releases/tag/v13.2
-[v13.1]: https://github.com/topcheer/k8ops/releases/tag/v13.1
-[v13.0]: https://github.com/topcheer/k8ops/releases/tag/v13.0
-[v0.1.0]: https://github.com/topcheer/k8ops/releases/tag/v0.1.0
+# 变更日志
+
+所有重要变更记录在此文件中。版本号遵循语义化版本规范。
+
+---
+
+## v15.20 (2026-07-05)
+
+### 新增
+- **Network Policy 合规与流量隔离审计器** (`GET /api/product/network-policy`)
+  - 按命名空间分析 NetworkPolicy 覆盖率和流量隔离
+  - 未保护 Pod 检测、宽松出站检测 (0.0.0.0/0)
+  - 集群隔离评分 (0-100)
+  - 7 个单元测试
+
+## v15.19 (2026-07-05)
+
+### 新增
+- **Deployment 滚动更新策略与健康分析器** (`GET /api/deployment/rollout-health`)
+  - 滚动更新策略分析 (RollingUpdate vs Recreate)
+  - 卡住部署检测 (Progressing=False / ReplicaFailure / 超时)
+  - 回滚就绪评估 (revisionHistoryLimit)
+  - 集群滚动更新健康评分 (0-100)
+  - 7 个单元测试
+
+## v15.18 (2026-07-05)
+
+### 新增
+- **命名空间资源消耗与成本归属** (`GET /api/scalability/ns-consumption`)
+  - 按命名空间聚合 CPU/内存/存储消耗
+  - 月成本估算 ($28/核 CPU, $3.8/GB 内存, $0.10/GB 存储)
+  - 浪费分析：过度配置、空闲命名空间、浪费评分
+  - Top 10 消费者排行
+  - 5 个单元测试
+
+## v15.17 (2026-07-05)
+
+### 新增
+- **PDB 合规与自愿中断风险分析器** (`GET /api/operations/pdb-audit`)
+  - PDB 状态分类：healthy / blocked / impossible
+  - 未保护多副本部署检测
+  - 节点排空模拟（逐节点 PDB 阻塞分析）
+  - 集群 PDB 覆盖评分 (0-100)
+  - 8 个单元测试
+
+## v15.16 (2026-07-05)
+
+### 新增
+- **证书与 TLS 过期监控器** (`GET /api/security/cert-expiry`)
+  - PEM 证书解析 (CN, SANs, 颁发者, 有效期, 密钥大小)
+  - 自签名检测、Pod 引用追踪
+  - 过期分级：critical (<30d) / high (<60d) / medium (<90d) / low (>90d)
+  - 集群证书健康评分 (0-100)
+  - 9 个单元测试
+
+## v15.15 (2026-07-05)
+
+### 新增
+- **多语言文档** — 7 种语言，76 个文件
+  - English, 中文, 日本語, 한국어, Español, Français, Deutsch
+  - 每语言 10 篇文档 + README
+  - 母语级 Review 完成
+
+## v15.14 (2026-07-05)
+
+### 新增
+- **ConfigMap & Secret 配置审计器** (`GET /api/product/config-audit`)
+  - ConfigMap：超大检测 (>1MB)、未引用检测、空数据键、不可变标志
+  - Secret：过期凭证 (>180d)、未引用、明文凭证键检测、轮换建议
+  - 交叉引用引擎 (Pod volumes, env, envFrom, projected sources)
+  - 集群配置审计健康评分 (0-100)
+  - 7 个单元测试
+
+## v15.13 (2026-07-05)
+
+### 新增
+- **容器镜像部署规范分析器** (`GET /api/deployment/image-hygiene`)
+  - 镜像标签策略分析 (版本号 / :latest / @sha256 摘要锁定)
+  - 重复镜像检测、仓库信任分级
+  - 集群镜像规范评分 (0-100)
+  - 8 个单元测试
+
+---
+
+## 统计信息
+
+| 指标 | 数值 |
+|------|------|
+| OpenAPI 端点 | 108 |
+| 单元测试 | 692 |
+| 文档 | 12 篇 (7 种语言) |
+| i18n 文件 | 76 个 |
+| Release Assets | 17 个 |
+| 镜像大小 | 28.6MB (distroless) |
+| Go 版本 | 1.26+ |

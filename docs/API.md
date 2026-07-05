@@ -1062,3 +1062,209 @@ receivers:
 - External-DNS 托管服务发现
 
 **返回内容：** CoreDNS Pod 状态、Headless Service 覆盖率、DNS 配置分析、集群 DNS 健康评分 (0-100)、可操作建议
+
+---
+
+### 36. ConfigMap & Secret 配置审计 (v15.14)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/product/config-audit` | 审计 ConfigMap 和 Secret 的配置最佳实践 |
+| GET | `/api/product/config-audit?namespace=xxx` | 按命名空间过滤 |
+
+**ConfigMap 分析：**
+
+| 检查项 | 说明 |
+|---------|------|
+| 超大 ConfigMap | >1MB 检测（拖慢 etcd 和 API）|
+| 未引用 ConfigMap | 无 Pod 通过 volume/env/envFrom 使用 |
+| 空数据键 | 无 Data/BinaryData |
+| 不可变标志 | immutable=true 检查 |
+
+**Secret 分析：**
+
+| 检查项 | 说明 |
+|---------|------|
+| 过期凭证 | >180 天未轮换 |
+| 未引用 Secret | 安全删除候选 |
+| 明文凭证键 | Opaque 类型含 password/token/key |
+| 轮换建议 | External Secrets Operator / Sealed Secrets |
+
+**返回内容：** ConfigMap/Secret 列表（含大小、引用状态、风险等级）、未引用资源列表、超大 ConfigMap、集群配置审计健康评分 (0-100)、可操作建议
+
+---
+
+### 37. 容器镜像部署规范分析 (v15.13)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/deployment/image-hygiene` | 分析所有运行中容器的镜像部署规范 |
+
+**每镜像分析：**
+
+| 指标 | 说明 |
+|------|------|
+| 标签策略 | 版本号 / :latest / 无标签 / @sha256 摘要锁定 |
+| 仓库信任 | 可信仓库 (k8s.io, gcr.io, quay.io...) vs 不可信 |
+| 风险等级 | high (latest+无摘要+docker.io) / medium / low |
+| 副本数 | 使用该镜像的容器总数 |
+
+**重复检测：** 相同基础镜像 + 不同标签 → 合并建议
+
+**仓库分布：** 每仓库镜像数、Pod 数、latest 使用量、可信度
+
+**返回内容：** 镜像列表（含标签策略、仓库、风险）、重复镜像、仓库分布、集群镜像规范评分 (0-100)、可操作建议
+
+---
+
+### 38. Deployment 滚动更新策略与健康分析 (v15.19)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/deployment/rollout-health` | 分析所有 Deployment 的滚动更新策略和健康状态 |
+
+**每部署分析：**
+
+| 指标 | 说明 |
+|------|------|
+| 策略类型 | RollingUpdate / Recreate |
+| maxSurge / maxUnavailable | 滚动更新配置 |
+| revisionHistoryLimit | 回滚就绪评估 |
+| progressDeadlineSeconds | 卡住部署超时检测 |
+| 副本状态 | 期望/已更新/就绪/可用/不可用 |
+
+**状态分类：**
+- **healthy** — 所有副本就绪且已更新
+- **progressing** — 滚动更新进行中
+- **stuck** — Progressing=False / ReplicaFailure / 超时
+- **paused** — 已暂停
+
+**风险检测：** Recreate 策略多副本(停机)、revisionHistoryLimit=0(无法回滚)、激进 progressDeadline(<300s)
+
+**返回内容：** 部署列表（含策略、状态、风险）、卡住的滚动更新列表、不佳策略列表、集群滚动更新健康评分 (0-100)、可操作建议
+
+---
+
+### 39. 证书与 TLS 过期监控 (v15.16)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/security/cert-expiry` | 监控所有 TLS 证书的过期状态 |
+
+**每证书分析：**
+
+| 指标 | 说明 |
+|------|------|
+| CN / SANs | 通用名和主体备选名称 |
+| 颁发者 | CA 或自签名检测 (Subject == Issuer) |
+| 有效期 | NotBefore / NotAfter |
+| 剩余天数 | 过期倒计时 |
+| 风险等级 | critical (过期/<30d) / high (<60d) / medium (<90d) / low (>90d) |
+| 引用状态 | 是否被运行中的 Pod 通过卷挂载使用 |
+
+**返回内容：** 过期证书列表、即将过期证书列表（30/60/90天窗口）、所有证书列表、每命名空间统计、集群证书健康评分 (0-100)、可操作建议
+
+---
+
+### 40. PDB 合规与自愿中断风险分析 (v15.17)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/pdb-audit` | 审计 PodDisruptionBudget 合规性和自愿中断风险 |
+
+**PDB 状态分类：**
+
+| 状态 | 条件 | 影响 |
+|------|------|------|
+| healthy | allowed > 0 | 节点排空可成功 |
+| blocked | allowed = 0 | 节点排空将停滞 |
+| impossible | minAvailable > pods | 永远无法满足 |
+
+**未保护部署检测：** 多副本 Deployment 无 PDB → 按副本数风险分级
+
+**节点排空模拟：** 逐节点分析受影响 Pod，识别哪些 PDB 会阻止驱逐
+
+**返回内容：** 受保护工作负载列表、未保护部署列表、阻塞 PDB 列表、节点排空模拟结果、集群 PDB 覆盖评分 (0-100)、可操作建议
+
+---
+
+### 41. 命名空间资源消耗与成本归属 (v15.18)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/scalability/ns-consumption` | 按命名空间聚合资源消耗并估算成本 |
+
+**每命名空间分析：**
+
+| 指标 | 说明 |
+|------|------|
+| CPU/内存请求 + 限制 | 聚合所有容器的 requests 和 limits |
+| 存储容量 | 从已绑定 PVC 聚合 |
+| 月成本估算 | CPU $28/核 + 内存 $3.8/GB + 存储 $0.10/GB |
+| 资源效率 | request/limit 比率 (%) |
+| 过度提交比率 | limit/request (>5x = 高风险) |
+| 成本占比 | 该 NS 占集群总成本的百分比 |
+
+**浪费分析：** 过度配置 NS、空闲 NS、浪费容量、浪费评分 (0-100)
+
+**返回内容：** 命名空间消耗排行、Top 10 消费者、空闲命名空间、浪费分析（含成本）、可配置定价模型、FinOps 建议
+
+---
+
+### 42. Network Policy 合规与流量隔离审计 (v15.20)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/product/network-policy` | 审计 NetworkPolicy 覆盖率和流量隔离 |
+
+**每命名空间分析：**
+
+| 指标 | 说明 |
+|------|------|
+| Pod 数量 | 运行中的 Pod 总数 |
+| 策略数量 | NetworkPolicy 数量 |
+| 受保护 Pod | 被至少一个策略选中的 Pod |
+| 默认拒绝 | 是否有 default-deny 策略 |
+| 隔离评分 | 0-100（覆盖率 + 默认拒绝加成）|
+| 风险等级 | critical (<30) / high (<60) / medium (<85) / low (>=85) |
+
+**策略分析：** 入站/出站规则计数、Default-deny 检测、宽松出站检测 (0.0.0.0/0 = 数据泄露风险)
+
+**返回内容：** 命名空间隔离统计、未保护 Pod 列表、所有策略列表（含宽松标记）、集群隔离评分 (0-100)、可操作建议
+
+---
+
+## API 端点总览
+
+| # | 端点 | 维度 | 版本 | 说明 |
+|---|------|------|------|------|
+| 1 | /api/health | - | v1.0 | 健康检查 |
+| 2 | /api/version | - | v1.0 | 版本信息 |
+| 3 | /api/cluster/overview | Product | v1.0 | 集群概览 |
+| 4 | /api/cluster/nodes | Product | v1.0 | 节点列表 |
+| 5 | /api/cluster/pods | Product | v1.0 | Pod 列表 |
+| 6 | /api/chat/stream | Product | v1.0 | AI 聊天 |
+| ... | ... | ... | ... | ... |
+| 36 | /api/product/config-audit | Product | v15.14 | ConfigMap & Secret 配置审计 |
+| 37 | /api/deployment/image-hygiene | Deployment | v15.13 | 容器镜像部署规范分析 |
+| 38 | /api/deployment/rollout-health | Deployment | v15.19 | 滚动更新策略与健康分析 |
+| 39 | /api/security/cert-expiry | Security | v15.16 | 证书与 TLS 过期监控 |
+| 40 | /api/operations/pdb-audit | Operations | v15.17 | PDB 合规与中断风险 |
+| 41 | /api/scalability/ns-consumption | Scalability | v15.18 | 命名空间资源消耗与成本 |
+| 42 | /api/product/network-policy | Product | v15.20 | Network Policy 合规审计 |
+
+**总计：108 个 OpenAPI 端点**

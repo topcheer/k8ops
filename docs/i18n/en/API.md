@@ -1062,3 +1062,59 @@ receivers:
 - External-DNS 托管服务发现
 
 **返回内容：** CoreDNS Pod 状态、Headless Service 覆盖率、DNS 配置分析、集群 DNS 健康评分 (0-100)、可操作建议
+
+---
+
+### 36. ConfigMap & Secret Configuration Audit (v15.14)
+
+**Path:** `GET /api/product/config-audit?namespace=xxx`
+
+Audits ConfigMaps and Secrets for configuration best practices. ConfigMap: large size detection (>1MB), unreferenced detection, empty data, immutability. Secret: stale credential detection (>180d), unreferenced, plaintext credential keys, rotation recommendations. Cross-reference engine scans pod volumes, env vars, envFrom, and projected sources. Returns config audit health score (0-100).
+
+### 37. Container Image Deployment Hygiene Analyzer (v15.13)
+
+**Path:** `GET /api/deployment/image-hygiene?namespace=xxx`
+
+Analyzes all running container images for deployment hygiene. Per-image: tag strategy (versioned/latest/digest-pinned), registry trust level, risk classification. Duplicate detection (same base image with multiple tags). Registry distribution. Cluster-wide image hygiene score (0-100).
+
+### 38. Deployment Rollout Strategy & Health Analyzer (v15.19)
+
+**Path:** `GET /api/deployment/rollout-health?namespace=xxx`
+
+Analyzes deployment rollout strategies and health. Per-deployment: strategy type, maxSurge/maxUnavailable, revisionHistoryLimit (rollback readiness), progressDeadline, replica status. Status classification: healthy/progressing/stuck/paused. Risk detection: Recreate downtime, no-rollback, aggressive deadline. Cluster-wide rollout health score (0-100).
+
+### 39. Certificate & TLS Expiry Monitor (v15.16)
+
+**Path:** `GET /api/security/cert-expiry?namespace=xxx`
+
+Monitors all TLS certificates (kubernetes.io/tls Secrets) for expiry. Parses PEM to extract CN, SANs, Issuer, validity period, key size, self-signed status. Risk: critical (expired/<30d), high (<60d), medium (<90d), low (>90d). Pod reference tracking. Cluster-wide certificate health score (0-100).
+
+### 40. PDB Compliance & Voluntary Disruption Risk (v15.17)
+
+**Path:** `GET /api/operations/pdb-audit?namespace=xxx`
+
+Audits PodDisruptionBudget compliance and voluntary disruption risk. PDB status: healthy/blocked/impossible. Unprotected multi-replica deployment detection. Node drain simulation (per-node PDB blocking analysis). Cluster-wide PDB coverage score (0-100).
+
+### 41. Namespace Resource Consumption & Cost Attribution (v15.18)
+
+**Path:** `GET /api/scalability/ns-consumption`
+
+Analyzes per-namespace resource consumption and estimates cost attribution. Aggregates CPU/memory requests and limits plus PVC storage. Cost estimation ($28/core CPU, $3.8/GB memory, $0.10/GB storage). Waste analysis: over-provisioned, idle namespaces, wasted capacity. Top 10 consumers.
+
+### 42. Network Policy Compliance & Traffic Isolation (v15.20)
+
+**Path:** `GET /api/product/network-policy?namespace=xxx`
+
+Audits NetworkPolicy coverage and traffic isolation. Per-namespace: pod count, policy count, protected pods, default-deny status, isolation score (0-100). Unprotected pod detection via label selector matching. Permissive egress detection (0.0.0.0/0). Cluster isolation score (0-100).
+
+---
+
+## API Summary
+
+**Total: 108 OpenAPI endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy
+- **Deployment**: Image hygiene, rollout health
+- **Operations**: CrashLoopBackOff, PDB compliance
+- **Security**: Admission webhook, certificate expiry
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption
+- **Infrastructure**: Auth, RBAC, health, version
