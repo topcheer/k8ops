@@ -1554,6 +1554,31 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Certificate & TLS Expiry Monitor (v15.16+) ---
+	add("/api/security/cert-expiry", "get", OpenAPIOperation{
+		Summary: "Certificate & TLS expiry monitor", OperationID: "certExpiry", Tags: []string{"Security", "Certificates", "TLS"},
+		Description: "Monitors all TLS certificates (kubernetes.io/tls type Secrets) for expiry. Parses each certificate's PEM data to extract: Common Name (CN), Subject Alternative Names (SANs), Issuer, validity period (NotBefore/NotAfter), key size, and self-signed status. Classifies risk: critical (expired or <30d), high (<60d), medium (<90d), low (>90d). Tracks which certificates are referenced by running pods via volume mounts. Provides cluster-wide certificate health score (0-100), per-namespace statistics, sorted expiry timeline, and actionable recommendations for renewal via cert-manager or manual rotation.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Certificate expiry report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalCerts":  15,
+					"expired":     1,
+					"expiring30d": 2,
+					"expiring60d": 3,
+					"expiring90d": 4,
+					"healthScore": 72,
+				},
+				"expired":      []interface{}{},
+				"expiringSoon": []interface{}{},
+				"allCerts":     []interface{}{},
+				"byNamespace":  []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
