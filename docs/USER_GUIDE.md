@@ -964,3 +964,32 @@ kubectl rollout restart daemonset/k8ops -n k8ops-system
 - host+path 冲突检测
 - 无路由规则检测
 - 每 Ingress 状态和集群健康评分 0-100
+
+### 节点条件与资源压力
+
+`GET /api/operations/node-pressure` 分析所有节点的条件和资源压力：
+
+- DiskPressure / MemoryPressure / PIDPressure / NetworkUnavailable 检测
+- CPU/内存/Pod 使用率 vs 可分配量
+- 每节点风险等级 (critical/high/medium/low)
+- 集群压力评分 0-100
+
+### PVC 绑定与存储性能
+
+`GET /api/scalability/pvc-analysis?namespace=xxx` 分析存储绑定健康：
+
+- Stuck PVC 根因检测（>5min pending）
+- 绑定时间测量和慢绑定检测（>30s）
+- Lost PVC 检测
+- 每 StorageClass 统计和供应器分析
+- 集群存储健康评分 0-100
+
+### Namespace 治理与生命周期
+
+`GET /api/product/namespaces/lifecycle` 审计命名空间治理：
+
+- ResourceQuota / LimitRange / NetworkPolicy 覆盖率
+- 专用 ServiceAccount 检测（最小权限）
+- 必需标签检查（app, team, env, owner）
+- 命名空间生命周期（active / stale / terminating）
+- 集群治理评分 0-100

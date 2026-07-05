@@ -922,3 +922,60 @@ receivers:
 | 无路由规则 | warning | Ingress 不起作用 |
 
 **返回内容：** 每 Ingress 状态 (healthy/warning/critical)、每命名空间统计、集群健康评分 (0-100)、可操作建议
+
+### 节点条件与资源压力分析 (v14.99+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/node-pressure` | 分析所有节点的条件状态和资源饱和度 |
+
+**检测类别：**
+| 条件 | 风险分 | 说明 |
+|------|--------|------|
+| NetworkUnavailable | +30 | CNI/网络未就绪 |
+| DiskPressure | +25 | 磁盘满或接近满 |
+| MemoryPressure | +25 | 节点内存耗尽 |
+| PIDPressure | +20 | 进程数过多 |
+| NotReady | →critical | kubelet/运行时问题 |
+| CPU >90% | +20 | CPU 请求饱和 |
+| Memory >95% | +20 | 内存请求饱和 |
+| Cordoned | — | 不可调度 |
+
+**返回内容：** 每节点风险等级 (critical/high/medium/low)、CPU/内存/Pod 使用率、条件详情（原因、消息、持续时间）、集群压力评分 (0-100)、可操作建议
+
+### PVC 绑定与存储性能分析 (v15.00+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/scalability/pvc-analysis` | 分析所有 PVC 的绑定健康和存储性能 |
+
+**查询参数：** `namespace`（可选）
+
+**检测类别：**
+| 检查项 | 严重度 | 说明 |
+|---------|--------|------|
+| Stuck PVC (>5min) | critical | 卡住的 PVC + 根因分析 |
+| Lost PVC | critical | 底层 PV 可能被删除 |
+| 慢绑定 (>30s) | warning | 存储供应延迟 |
+| Pending PVC | warning | 正在等待绑定 |
+| 缺少默认 StorageClass | info | 未设置默认 SC |
+
+**返回内容：** 每 PVC 状态 (healthy/warning/critical)、绑定时间、每 StorageClass 统计、Stuck PVC 根因、集群存储健康评分 (0-100)
+
+### Namespace 治理与生命周期审计 (v15.02+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/product/namespaces/lifecycle` | 审计所有命名空间的治理合规性和生命周期 |
+
+**治理检查：**
+| 检查项 | 风险分 | 说明 |
+|---------|--------|------|
+| 无 ResourceQuota | +15 | 资源无限消耗 |
+| 无 NetworkPolicy | +15 | 流量不受限 |
+| 无 LimitRange | +5 | 无默认资源限制 |
+| 命名空间过期 | +10 | 无运行 Pod，清理候选 |
+| 缺少必需标签 | +5 | 缺 app/team/env/owner |
+| 仅 default SA | 0 | 缺少最小权限 SA |
+
+**返回内容：** 每命名空间风险等级 (critical/high/medium/low)、合规标志、生命周期状态 (active/stale/terminating)、集群治理评分 (0-100)、可操作建议
