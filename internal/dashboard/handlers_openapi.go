@@ -1483,6 +1483,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Density & Scheduling Capacity (v15.12+) ---
+	add("/api/scalability/pod-density", "get", OpenAPIOperation{
+		Summary: "Pod density & scheduling capacity analyzer", OperationID: "podDensity", Tags: []string{"Scalability", "Scheduling", "Capacity"},
+		Description: "Analyzes pod density and scheduling capacity across all nodes. Per-node: pod count vs max-pods limit, CPU/memory request vs allocatable, pod capacity percentage, pod headroom, risk level. Cluster-wide: total scheduling headroom (pod slots, CPU cores, memory GB), nodes at/near capacity, cordoned nodes, resource fragmentation detection (pod slots available but blocked by CPU/memory exhaustion). Bin-packing analysis: standard deviation of CPU/memory/pod distribution, imbalance score, distribution strategy classification (spread/moderate/uneven). Actionable recommendations for node expansion, fragmentation resolution, and workload rebalancing.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Pod density analysis", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNodes":        3,
+					"schedulableNodes":  3,
+					"avgPodsPerNode":    35.2,
+					"totalHeadroomPods": 225,
+					"cpuHeadroomCores":  12.5,
+					"nodesNearFull":     1,
+					"healthScore":       85,
+				},
+				"nodeAnalysis": []interface{}{},
+				"binPacking":   map[string]interface{}{},
+				"fragments":    []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
