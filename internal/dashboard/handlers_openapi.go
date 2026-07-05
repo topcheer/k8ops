@@ -1529,6 +1529,31 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- ConfigMap & Secret Configuration Audit (v15.14+) ---
+	add("/api/product/config-audit", "get", OpenAPIOperation{
+		Summary: "ConfigMap & Secret configuration audit", OperationID: "configAudit", Tags: []string{"Product", "ConfigMaps", "Secrets"},
+		Description: "Audits all ConfigMaps and Secrets for best practices. ConfigMaps: large size detection (>1MB slows etcd), unreferenced detection (not used by any pod via volume/env/envFrom), empty data keys, immutability flag. Secrets: stale credential detection (>180 days), unreferenced detection, plaintext credential key detection (password/token/key in Opaque secrets), immutability flag, rotation recommendation. Cross-references all pods to build accurate usage maps. Provides per-resource risk level, cluster-wide config audit health score (0-100), and actionable recommendations for cleanup, rotation policy, and etcd optimization.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Config audit report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalConfigMaps": 15,
+					"totalSecrets":    8,
+					"unreferencedCMs": 3,
+					"largeCMs":        1,
+					"oldSecrets":      2,
+					"healthScore":     78,
+				},
+				"configMaps":   []interface{}{},
+				"secrets":      []interface{}{},
+				"unreferenced": []interface{}{},
+				"largeConfigs": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 

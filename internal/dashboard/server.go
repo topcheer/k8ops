@@ -238,6 +238,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/ingress-health", s.cacheMiddleware(60*time.Second, s.handleIngressHealth))                           // ingress traffic routing health
 	mux.HandleFunc("/api/product/namespaces/lifecycle", s.cacheMiddleware(60*time.Second, s.handleNamespaceLifecycle))                // namespace governance & lifecycle
 	mux.HandleFunc("/api/product/dns-health", s.cacheMiddleware(60*time.Second, s.handleDNSHealth))                                   // DNS resolution health checker
+	mux.HandleFunc("/api/product/config-audit", s.cacheMiddleware(60*time.Second, s.handleConfigAudit))                               // ConfigMap & Secret configuration audit
 	mux.HandleFunc("/api/scalability/overcommit", s.cacheMiddleware(60*time.Second, s.handleOvercommitAnalysis))                      // resource over-commit & pressure
 	mux.HandleFunc("/api/scalability/autoscale-recommendations", s.cacheMiddleware(60*time.Second, s.handleAutoscaleRecommendations)) // HPA/VPA right-sizing
 	mux.HandleFunc("/api/scalability/pvc-analysis", s.cacheMiddleware(60*time.Second, s.handlePVCAnalysis))                           // PVC binding & storage performance
