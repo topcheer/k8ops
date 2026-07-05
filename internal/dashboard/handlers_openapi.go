@@ -1579,6 +1579,32 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- PDB Compliance & Voluntary Disruption Risk (v15.17+) ---
+	add("/api/operations/pdb-audit", "get", OpenAPIOperation{
+		Summary: "PDB compliance & voluntary disruption risk analyzer", OperationID: "pdbAudit", Tags: []string{"Operations", "Disruption", "PDB"},
+		Description: "Audits PodDisruptionBudget compliance and voluntary disruption risk. Matches PDBs to their target deployments via label selectors. Classifies PDB status: healthy (allowed disruptions > 0), blocked (allowed = 0, drain will stall), impossible (minAvailable > current pods, can never satisfy). Identifies multi-replica deployments without PDB coverage, ranked by replica count risk. Simulates node drain impact: per-node analysis of which PDBs would block eviction. Cluster-wide PDB coverage score (0-100) with actionable recommendations for PDB creation, impossible PDB fixes, and drain planning.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("PDB audit report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalDeployments":        20,
+					"totalPDBs":               8,
+					"protectedCount":          8,
+					"unprotectedCount":        7,
+					"blockedCount":            1,
+					"totalAllowedDisruptions": 12,
+					"healthScore":             65,
+				},
+				"protectedWorkloads": []interface{}{},
+				"unprotected":        []interface{}{},
+				"blockers":           []interface{}{},
+				"drainSimulation":    []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
