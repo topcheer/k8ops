@@ -1417,6 +1417,26 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- DNS Resolution Health Checker (v15.08+) ---
+	add("/api/product/dns-health", "get", OpenAPIOperation{
+		Summary: "DNS resolution health checker", OperationID: "dnsHealth", Tags: []string{"Product", "DNS", "Networking"},
+		Description: "Analyzes cluster DNS resolution health. Checks: CoreDNS pod health (running/ready/restarts/version), CoreDNS ConfigMap Corefile (forwarders, plugins), headless service endpoint resolution (NXDOMAIN risk), NodeLocal DNS cache presence, pod custom dnsConfig ndots overrides, external-dns managed services. Provides per-pod CoreDNS status, headless service endpoint coverage, DNS configuration analysis, cluster DNS health score (0-100), and actionable recommendations.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("DNS health report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"corednsPods":         2,
+					"corednsReady":        2,
+					"headlessNoEndpoints": 1,
+					"healthScore":         88,
+				},
+				"coreDNS":          map[string]interface{}{},
+				"dnsConfig":        map[string]interface{}{},
+				"headlessServices": []interface{}{},
+				"issues":           []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
