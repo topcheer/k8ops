@@ -1333,6 +1333,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Namespace Lifecycle & Governance (v15.02+) ---
+	add("/api/product/namespaces/lifecycle", "get", OpenAPIOperation{
+		Summary: "Namespace governance & lifecycle audit", OperationID: "namespaceLifecycle", Tags: []string{"Product", "Namespaces", "Governance"},
+		Description: "Audits all namespaces for governance compliance. Checks: ResourceQuota presence, LimitRange presence, NetworkPolicy coverage, dedicated ServiceAccount (beyond default), required labels (app, team, env, owner), stale namespaces (no running pods), system namespace detection. Provides per-namespace risk level (critical/high/medium/low), compliance flags, cluster-wide governance score (0-100), and actionable recommendations.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Namespace governance report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNamespaces":  25,
+					"activeNamespaces": 18,
+					"withoutQuota":     5,
+					"withoutNetPolicy": 8,
+					"governanceScore":  62,
+				},
+				"namespaces": []interface{}{},
+				"issues":     []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
