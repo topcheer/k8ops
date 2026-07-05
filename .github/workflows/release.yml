@@ -110,6 +110,18 @@ jobs:
         with:
           files: k8ops-sbom.spdx.json
 
+      # --- Helm Chart Packaging ---
+      - name: Package Helm chart
+        run: |
+          helm package deploy/helm/k8ops/ --destination .helm-dist/
+          echo "Packaged chart:"
+          ls -la .helm-dist/
+
+      - name: Upload Helm chart to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: .helm-dist/*.tgz
+
   verify:
     name: Post-release Verification
     needs: release

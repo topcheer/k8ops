@@ -1,4 +1,4 @@
-.PHONY: build vet test fmt deploy release clean help regression-gate pre-commit
+.PHONY: build vet test fmt deploy release clean help regression-gate pre-commit helm-sync-version smoke-test
 
 VERSION ?= dev
 REGISTRY ?= registry.iot2.win/k8ops
@@ -39,10 +39,12 @@ docker-build: ## Build Docker image for local registry
 	docker buildx build --platform linux/amd64 --build-arg VERSION=$(VERSION) \
 		-t $(REGISTRY):$(VERSION) -t $(REGISTRY):latest --push .
 
-deploy: ## Deploy to k8s cluster (usage: make deploy VERSION=v14XX)
-	@if [ "$(VERSION)" = "dev" ]; then echo "Usage: make deploy VERSION=v14XX"; exit 1; fi
+deploy: ## Deploy to k8s cluster (usage: make deploy VERSION=v15XX)
+	@if [ "$(VERSION)" = "dev" ]; then echo "Usage: make deploy VERSION=v15XX"; exit 1; fi
 	@echo "=== Pre-deploy regression gate ==="
 	$(MAKE) regression-gate
+	@echo "=== Syncing Helm chart version ==="
+	$(MAKE) helm-sync-version VERSION=$(VERSION)
 	@echo "=== All checks passed, building image ==="
 	$(MAKE) docker-build VERSION=$(VERSION)
 	@echo "=== Deploying $(VERSION) ==="
@@ -50,6 +52,8 @@ deploy: ## Deploy to k8s cluster (usage: make deploy VERSION=v14XX)
 	@echo "Waiting for rollout..."
 	@sleep 15
 	@curl -sk -o /dev/null -w 'Health: %{http_code}\n' https://k8ops.iot2.win/
+	@echo "=== Post-deploy smoke test ==="
+	$(MAKE) smoke-test
 
 deploy-check: ## Check deployment health
 	@echo "Pod status:"
@@ -61,9 +65,12 @@ deploy-check: ## Check deployment health
 	@echo "Version:"
 	@curl -sk https://k8ops.iot2.win/api/version 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'  {d.get(\"version\",\"?\")} (built {d.get(\"buildDate\",\"?\")[:19]}')')" 2>/dev/null || true
 
-release: ## Tag and push a release (usage: make release VERSION=v14XX)
-	@if [ "$(VERSION)" = "dev" ]; then echo "Usage: make release VERSION=v14XX"; exit 1; fi
+release: ## Tag and push a release (usage: make release VERSION=v15XX)
+	@if [ "$(VERSION)" = "dev" ]; then echo "Usage: make release VERSION=v15XX"; exit 1; fi
 	$(MAKE) regression-gate
+	$(MAKE) helm-sync-version VERSION=$(VERSION)
+	git add deploy/helm/k8ops/Chart.yaml
+	git commit -m "chore: sync Helm chart to $(VERSION)" 2>/dev/null || true
 	git tag -a $(VERSION) -m "Release $(VERSION)"
 	git push origin $(VERSION)
 	@echo "Release triggered. Monitor with: gh run watch"
@@ -86,3 +93,42 @@ regression-gate: check-fmt build vet lint test
 # Pre-commit checklist (same as regression-gate)
 pre-commit: fmt regression-gate
 	@echo "All checks passed. Ready to commit."
+
+# Sync Helm Chart.yaml version with release version
+helm-sync-version: ## Sync Helm chart appVersion (usage: make helm-sync-version VERSION=v15XX)
+	@if [ "$(VERSION)" = "dev" ]; then echo "Usage: make helm-sync-version VERSION=v15XX"; exit 1; fi
+	@# Strip 'v' prefix for appVersion
+	@APP_VER=$$(echo $(VERSION) | sed 's/^v//'); \
+	CHART_FILE=deploy/helm/k8ops/Chart.yaml; \
+	CURRENT=$$(grep appVersion $$CHART_FILE | sed 's/.*"\(.*\)".*/\1/'); \
+	if [ "$$CURRENT" = "$$APP_VER" ]; then \
+		echo "Helm chart already at appVersion $$APP_VER"; \
+	else \
+		sed -i.bak "s/appVersion:.\".*\"/appVersion: \"$$APP_VER\"/" $$CHART_FILE; \
+		rm -f $$CHART_FILE.bak; \
+		echo "Updated Helm chart appVersion: $$CURRENT -> $$APP_VER"; \
+	fi
+
+# Post-deploy smoke test: verify key APIs are responding
+smoke-test: ## Run API smoke tests against deployed instance
+	@echo "=== Smoke Test ==="
+	@COOKIE=$$(mktemp); \
+	curl -sk -X POST https://k8ops.iot2.win/api/auth/login \
+		-H 'Content-Type: application/json' \
+		-d '{"username":"admin","password":"admin"}' \
+		-c $$COOKIE -o /dev/null 2>/dev/null; \
+	FAIL=0; \
+	for endpoint in "/api/health" "/api/version" "/api/cluster/overview" "/api/operations/health-score"; do \
+		CODE=$$(curl -sk -o /dev/null -w '%{http_code}' -b $$COOKIE https://k8ops.iot2.win$$endpoint 2>/dev/null || echo "000"); \
+		if [ "$$CODE" = "200" ] || [ "$$CODE" = "303" ]; then \
+			echo "  OK   $$endpoint -> $$CODE"; \
+		else \
+			echo "  FAIL $$endpoint -> $$CODE"; FAIL=1; \
+		fi; \
+	done; \
+	rm -f $$COOKIE; \
+	if [ $$FAIL -eq 1 ]; then \
+		echo "Smoke test FAILED"; exit 1; \
+	else \
+		echo "Smoke test PASSED"; \
+	fi
