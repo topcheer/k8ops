@@ -1459,6 +1459,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- CrashLoopBackOff Detector (v15.11+) ---
+	add("/api/operations/crashloop", "get", OpenAPIOperation{
+		Summary: "CrashLoopBackOff detector & crash pattern analyzer", OperationID: "crashLoop", Tags: []string{"Operations", "Pods", "CrashLoop"},
+		Description: "Detects CrashLoopBackOff state and analyzes crash patterns across all pods. Classifies each crashing container by pattern: OOM (memory exhaustion), config-error (exit code 1, missing deps), permission-denied (securityContext or volume issues), image-issue (pull failures), rolling-crash (rapid startup failure in new pods), or unknown. Estimates crash interval from pod age and restart count, detects rapid restarts (within last hour), identifies owner deployment, and provides root cause hypothesis per container. Includes per-namespace crash statistics, pattern grouping, top crashers ranking, cluster crash health score (0-100), and actionable recommendations with kubectl commands.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter pods by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("CrashLoop analysis report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"crashLoopPods":   3,
+					"highRestartPods": 2,
+					"rapidRestarts":   1,
+					"patternOOM":      1,
+					"healthScore":     72,
+				},
+				"affectedPods": []interface{}{},
+				"patterns":     []interface{}{},
+				"topCrashers":  []interface{}{},
+				"byNamespace":  []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
