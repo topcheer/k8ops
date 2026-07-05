@@ -1680,6 +1680,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Volume Security & Mount Risk (v15.22+) ---
+	add("/api/security/volume-mounts", "get", OpenAPIOperation{
+		Summary: "Volume & mount risk security auditor", OperationID: "volumeSecurity", Tags: []string{"Security", "Volumes", "Container Escape"},
+		Description: "Audits all pod volume mounts for container escape risks. Scans every container's volumeMounts against 14 known dangerous paths (docker.sock, /proc, /sys, /, kubelet data, etcd, etc.). HostPath analysis: risk level per mount (critical/high/medium/low), read-write vs read-only, path sensitivity. Privileged container detection. Host namespace sharing (hostNetwork/hostPID/hostIPC). ServiceAccount token projection tracking. Per-namespace risk aggregation with critical mount counts. Cluster-wide volume security score (0-100, higher = safer).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Volume security audit", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":          45,
+					"podsWithHostPath":   5,
+					"podsWithPrivileged": 2,
+					"criticalMounts":     3,
+					"securityScore":      72,
+				},
+				"dangerousMounts": []interface{}{},
+				"hostPathVolumes": []interface{}{},
+				"saTokenVolumes":  []interface{}{},
+				"byNamespace":     []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
