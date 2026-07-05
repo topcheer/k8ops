@@ -1372,6 +1372,29 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Container OOM Kill Tracker (v15.05+) ---
+	add("/api/operations/oom-tracker", "get", OpenAPIOperation{
+		Summary: "Container OOM kill tracker & memory analysis", OperationID: "oomTracker", Tags: []string{"Operations", "Containers", "Memory"},
+		Description: "Tracks container OOMKilled events and analyzes memory configuration across all running pods. Detects: containers with OOMKilled termination reason, high restart counts (>=5), missing memory limits, low memory limits (<256MB), memory limits 10x+ higher than requests. Provides per-pod OOM risk level, top OOM offenders ranked by restart count, per-namespace OOM statistics, cluster-wide OOM risk score (0-100), and actionable recommendations including top offender identification.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter pods by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("OOM tracker report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"oomKilledCount":   3,
+					"podsWithOOM":      2,
+					"highRestartCount": 1,
+					"noMemLimit":       8,
+					"oomRiskScore":     72,
+				},
+				"affectedPods": []interface{}{},
+				"topKillers":   []interface{}{},
+				"byNamespace":  []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 

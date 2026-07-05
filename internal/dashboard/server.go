@@ -220,6 +220,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/probes", s.cacheMiddleware(60*time.Second, s.handleProbeAudit))                                   // health probe effectiveness audit
 	mux.HandleFunc("/api/operations/health-score", s.cacheMiddleware(30*time.Second, s.handleHealthScore))                            // cluster health score aggregator
 	mux.HandleFunc("/api/operations/node-pressure", s.cacheMiddleware(30*time.Second, s.handleNodePressure))                          // node condition & resource pressure
+	mux.HandleFunc("/api/operations/oom-tracker", s.cacheMiddleware(30*time.Second, s.handleOOMTracker))                              // container OOM kill tracker
 	mux.HandleFunc("/api/networking/health", s.cacheMiddleware(30*time.Second, s.handleNetworkingHealth))                             // service & endpoint health
 	mux.HandleFunc("/api/storage/health", s.cacheMiddleware(60*time.Second, s.handleStorageHealth))                                   // PV/PVC storage health
 	mux.HandleFunc("/api/deployments/audit", s.cacheMiddleware(60*time.Second, s.handleDeployAudit))                                  // deployment config audit
