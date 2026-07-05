@@ -1655,6 +1655,31 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Network Policy Compliance & Traffic Isolation (v15.20+) ---
+	add("/api/product/network-policy", "get", OpenAPIOperation{
+		Summary: "Network policy compliance & traffic isolation auditor", OperationID: "networkPolicy", Tags: []string{"Product", "Security", "NetworkPolicy"},
+		Description: "Audits NetworkPolicy coverage and traffic isolation across the cluster. Matches policies to pods via label selectors to determine which pods have traffic restrictions. Per-namespace: pod count, policy count, protected pod count, default-deny status, isolation score (0-100). Identifies: namespaces with pods but zero NetworkPolicies (all traffic unrestricted), unprotected pods (no policy selects them), permissive egress policies (0.0.0.0/0 = data exfiltration risk), missing default-deny baseline. Cluster-wide isolation score with actionable recommendations for policy creation.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Network policy audit", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNamespaces": 8,
+					"totalPods":       45,
+					"protectedPods":   15,
+					"unprotectedPods": 30,
+					"totalPolicies":   5,
+					"defaultDenyNS":   1,
+					"isolationScore":  33,
+				},
+				"byNamespace":     []interface{}{},
+				"unprotectedPods": []interface{}{},
+				"allPolicies":     []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
