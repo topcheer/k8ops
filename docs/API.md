@@ -979,3 +979,86 @@ receivers:
 | 仅 default SA | 0 | 缺少最小权限 SA |
 
 **返回内容：** 每命名空间风险等级 (critical/high/medium/low)、合规标志、生命周期状态 (active/stale/terminating)、集群治理评分 (0-100)、可操作建议
+
+### RBAC 有效权限与提权分析 (v15.04+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/security/rbac-effective` | 分析所有主体的 RBAC 有效权限和提权风险 |
+
+聚合 ClusterRoleBindings + RoleBindings，计算每个主体 (User/Group/ServiceAccount) 的实际权限。
+
+**检测类别：**
+
+| 检查项 | 风险分 | 说明 |
+|---------|--------|------|
+| cluster-admin 等效 | →critical | 通配符 verbs + resources |
+| 可创建/修改 RBAC | +25 | 自我提权路径 |
+| 通配符 (*) 权限 | +20 | 过度授权 |
+| 可读取 Secrets | +10 | 敏感数据泄露 |
+| 可 exec Pod | +10 | 容器逃逸入口 |
+
+**返回内容：** 每主体风险等级、提权路径详情、集群 RBAC 安全评分 (0-100)、可操作建议
+
+### 容器 OOM Kill 追踪器 (v15.05+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/oom-tracker` | 追踪容器 OOMKill 事件和内存配置分析 |
+
+**查询参数：** `namespace`（可选）
+
+**检测类别：**
+
+| 检查项 | 风险分 | 说明 |
+|---------|--------|------|
+| OOMKilled 容器 | +15/个 | 内存不足被杀死 |
+| 高重启次数 (>=10) | +20 | CrashLoop 指标 |
+| 高重启次数 (>=5) | +10 | 频繁重启 |
+| 无内存限制 | +5 | OOM 行为不可预测 |
+| 低内存限制 (<256MB) | — | 可能导致不必要的 OOM |
+| 限制>>请求 (10x+) | — | 节点内存压力风险 |
+
+**返回内容：** 每 Pod OOM 风险等级、Top OOM 排名、每命名空间统计、集群 OOM 风险评分 (0-100)
+
+### 存储容量耗尽预测器 (v15.06+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/scalability/storage-forecast` | 预测存储容量何时耗尽 |
+
+基于 PV 使用趋势和增长率估算，预测存储空间耗尽时间。
+
+**分析维度：**
+
+| 指标 | 说明 |
+|------|------|
+| 容量 vs 已用 | 支持 Longhorn actual-size 注解获取真实使用量 |
+| 日增长率 | 基于使用率和 PV 年龄的启发式估算 |
+| 耗尽天数 | 剩余空间 / 日增长率 |
+| 预测耗尽日期 | 日期或 ">10年" 或 "无增长" |
+| 风险等级 | critical(>95%) / high(>85%或<14d) / medium(<30d) / low |
+
+**返回内容：** 每 PV 预测、集群存满天数估算、每 StorageClass 统计、高风险命名空间排名、存储健康评分 (0-100)
+
+### DNS 解析健康检查器 (v15.08+)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/product/dns-health` | 分析集群 DNS 解析健康状态 |
+
+**CoreDNS 分析：**
+
+| 检查项 | 说明 |
+|---------|------|
+| Pod 健康 | running/ready/restarts/version per pod |
+| Corefile | forwarders, plugins, missing Corefile 检测 |
+| 副本数 | 推荐 >= 2 用于高可用 |
+
+**其他检测：**
+- Headless Service 端点覆盖 (NXDOMAIN 风险)
+- NodeLocal DNS 缓存检测
+- Pod dnsConfig ndots 覆盖检测 (>5 = 过多 DNS 查询)
+- External-DNS 托管服务发现
+
+**返回内容：** CoreDNS Pod 状态、Headless Service 覆盖率、DNS 配置分析、集群 DNS 健康评分 (0-100)、可操作建议

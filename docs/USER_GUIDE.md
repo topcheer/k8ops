@@ -993,3 +993,48 @@ kubectl rollout restart daemonset/k8ops -n k8ops-system
 - 必需标签检查（app, team, env, owner）
 - 命名空间生命周期（active / stale / terminating）
 - 集群治理评分 0-100
+
+### RBAC 有效权限与提权分析
+
+`GET /api/security/rbac-effective` 分析所有主体的 RBAC 有效权限：
+
+- 聚合 ClusterRoleBindings + RoleBindings 计算实际权限
+- cluster-admin 等效检测
+- 提权路径检测（可修改 RBAC 的主体）
+- 通配符 (*) 权限检测
+- Secret 读取和 Pod exec 访问分析
+- 集群 RBAC 安全评分 0-100
+
+### 容器 OOM Kill 追踪
+
+`GET /api/operations/oom-tracker?namespace=xxx` 追踪容器 OOM 事件：
+
+- OOMKilled 容器检测和根因分析
+- 高重启次数检测 (>=5)
+- 缺失/过低内存限制检测
+- 限制远大于请求 (10x+) 的节点压力风险
+- Top OOM 排名和每命名空间统计
+- 集群 OOM 风险评分 0-100
+
+### 存储容量耗尽预测
+
+`GET /api/scalability/storage-forecast` 预测存储容量：
+
+- 每 PV 使用率、增长率、耗尽天数预测
+- Longhorn actual-size 注解支持
+- 集群存满天数估算
+- 每 StorageClass 统计和供应器分析
+- 高风险命名空间排名
+- 存储健康评分 0-100
+
+### DNS 解析健康检查
+
+`GET /api/product/dns-health` 分析 DNS 解析健康：
+
+- CoreDNS Pod 健康检查（运行/就绪/重启/版本）
+- Corefile 配置分析（forwarders, plugins）
+- Headless Service 端点覆盖和 NXDOMAIN 风险
+- NodeLocal DNS 缓存检测
+- Pod dnsConfig ndots 覆盖检测
+- External-DNS 托管服务发现
+- 集群 DNS 健康评分 0-100
