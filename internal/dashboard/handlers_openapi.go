@@ -2141,6 +2141,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Update Strategy & Rollback Readiness (v15.44+) ---
+	add("/api/deployment/update-strategy", "get", OpenAPIOperation{
+		Summary: "Deployment update strategy & rollback readiness auditor", OperationID: "updateStrategy", Tags: []string{"Deployment", "Rollout", "Rollback"},
+		Description: "Audits deployment update strategies for safe rollouts and rollback readiness. Per-deployment: strategy type (RollingUpdate/Recreate), maxSurge/maxUnavailable values, revisionHistoryLimit, progressDeadlineSeconds. Detection: Recreate strategy (causes downtime, critical), maxUnavailable=100% (all pods down during update), maxSurge=0 (no extra capacity, slow rollouts), low revisionHistoryLimit (<3, insufficient rollback history), missing progressDeadlineSeconds (failed deploys hang indefinitely). Readiness score (0-100). Recommendations for strategy tuning, rollback capability, and progress tracking.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Update strategy report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalWorkloads":     15,
+					"rollingUpdate":      12,
+					"recreate":           3,
+					"revHistoryLow":      4,
+					"noProgressDeadline": 8,
+					"readinessScore":     58,
+				},
+				"byWorkload":        []interface{}{},
+				"recreateStrategy":  []interface{}{},
+				"noRevisionHistory": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
