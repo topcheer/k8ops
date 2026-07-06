@@ -2094,6 +2094,32 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Scheduling Latency Analyzer (v15.41+) ---
+	add("/api/operations/scheduling-latency", "get", OpenAPIOperation{
+		Summary: "Pod scheduling latency analyzer", OperationID: "schedulingLatency", Tags: []string{"Operations", "Scheduling", "Capacity"},
+		Description: "Tracks pod scheduling latency across the cluster. Per-pod: time from creation to PodScheduled condition (seconds), current phase, assigned node, pending reason. Identifies: slow pods (>60s to schedule), very slow pods (>300s), unschedulable pods (Pending with Unschedulable condition), resource shortage (Insufficient cpu/memory), exceeded quota. Per-node average scheduling time and slow count. Per-namespace pending count. Cluster-wide scheduling efficiency score (0-100). Recommendations for capacity planning, priority classes, and scheduling constraint optimization.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Scheduling latency report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":       150,
+					"runningPods":     140,
+					"pendingPods":     3,
+					"avgScheduleSec":  12.5,
+					"maxScheduleSec":  340,
+					"slowCount":       8,
+					"unschedulable":   2,
+					"efficiencyScore": 72,
+				},
+				"slowPods":    []interface{}{},
+				"pendingPods": []interface{}{},
+				"byNode":      []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
