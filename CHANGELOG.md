@@ -4,6 +4,43 @@
 
 ---
 
+## v15.30 (2026-07-05)
+
+### 新增
+- **资源配额使用率与限制合规审计器** (`GET /api/scalability/quota-utilization`)
+  - ResourceQuota 使用率分析 (hard/used/utilization%)
+  - LimitRange 合规检查 (default request/limit, max enforcement)
+  - 容器资源治理：缺失 requests/limits 检测
+  - 配额合规评分 (0-100)
+  - 7 个单元测试
+
+## v15.29 (2026-07-05)
+
+### 新增
+- **ImagePullBackOff 与容器启动失败追踪器** (`GET /api/operations/image-pull-failures`)
+  - 失败类型：ImagePullBackOff, ErrImagePull, CreateContainerError, CrashLoopBackOff
+  - 根因分类：Registry 认证失败、Docker Hub 限速、无效镜像名
+  - 按镜像聚合、按命名空间统计
+  - 镜像拉取健康评分 (0-100)
+  - 10 个单元测试
+
+## v15.28 (2026-07-05)
+
+### 新增
+- **服务端点暴露与攻击面审计器** (`GET /api/security/endpoint-exposure`)
+  - 每服务：类型、暴露级别 (public/node/internal)、端口分析
+  - 每 Ingress：域名、TLS 状态、后端、路由计数
+  - 风险检测：公开暴露+无NP、无TLS Ingress、NodePort、ExternalIP
+  - 攻击面评分 (0-100，越高越安全)
+  - 10 个单元测试
+
+## v15.27 (2026-07-05)
+
+### 文档
+- API.md 新增 5 个端点文档 (v15.22-v15.26)
+- CHANGELOG.md 更新 v15.22-v15.26 发布日志
+- 更新 en/API.md 英文端点文档
+
 ## v15.26 (2026-07-05)
 
 ### 新增
@@ -143,8 +180,8 @@
 
 | 指标 | 数值 |
 |------|------|
-| OpenAPI 端点 | 113 |
-| 单元测试 | 733 |
+| OpenAPI 端点 | 116 |
+| 单元测试 | 760 |
 | 文档 | 12 篇 (7 种语言) |
 | i18n 文件 | 76 个 |
 | Release Assets | 17 个 |

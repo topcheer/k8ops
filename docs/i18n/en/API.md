@@ -1137,14 +1137,32 @@ Audits liveness, readiness, and startup probe configuration. Per-container: prob
 
 Audits label hygiene across all workloads. Zero-label detection (breaks Service selectors), missing standard labels (app.kubernetes.io/name), missing team/owner labels, malformed key detection (DNS-1123), excessive labels (>20). Per-namespace scoring. Cluster compliance health score (0-100).
 
+### 48. Service Endpoint Exposure & Attack Surface (v15.28)
+
+**Path:** `GET /api/security/endpoint-exposure?namespace=xxx`
+
+Maps all externally-accessible services and ingress routes. Per-service: type, exposure level (public/node/internal), port analysis (HTTP/HTTPS), NetworkPolicy coverage. Per-ingress: hosts, TLS status, backend, route counts. Attack surface score (0-100, higher = safer).
+
+### 49. ImagePullBackOff & Container Start Failure Tracker (v15.29)
+
+**Path:** `GET /api/operations/image-pull-failures?namespace=xxx`
+
+Tracks image pull failures and container start failures. Per-container: image, reason, message, restart count. Failure types: ImagePullBackOff, ErrImagePull, CreateContainerError, CrashLoopBackOff. Root cause: registry auth, rate limiting, invalid images. Per-image aggregation. Health score (0-100).
+
+### 50. Resource Quota Utilization & Limit Compliance (v15.30)
+
+**Path:** `GET /api/scalability/quota-utilization?namespace=xxx`
+
+Audits ResourceQuota utilization and LimitRange compliance. Per-quota: hard/used/utilization%, risk level. LimitRange: default request/limit, max enforcement. Container governance: missing requests/limits. Compliance score (0-100).
+
 ---
 
 ## API Summary
 
-**Total: 113 OpenAPI endpoints** across 6 dimensions:
+**Total: 116 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene
 - **Deployment**: Image hygiene, rollout health, probe compliance
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution
-- **Security**: Admission webhook, certificate expiry, volume security
-- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures
+- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization
 - **Infrastructure**: Auth, RBAC, health, version

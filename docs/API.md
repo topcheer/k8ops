@@ -1395,6 +1395,84 @@ receivers:
 
 ---
 
+### 48. 服务端点暴露与攻击面审计 (v15.28)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/security/endpoint-exposure` | 审计所有服务的暴露面和攻击面 |
+| GET | `/api/security/endpoint-exposure?namespace=xxx` | 按命名空间过滤 |
+
+**每服务分析：**
+
+| 指标 | 说明 |
+|------|------|
+| Type | ClusterIP / NodePort / LoadBalancer |
+| Exposure Level | public (LB/ExternalIP) / node (NodePort) / internal |
+| External IPs | 手动设置的防火墙绕过检测 |
+| Port Analysis | HTTP (80/8080/3000/5000) vs HTTPS (443/8443) |
+| NP Coverage | 命名空间是否有 NetworkPolicy |
+
+**每 Ingress 分析：** 域名列表、TLS 状态（明文流量检测）、后端服务、HTTP vs TLS 路由计数
+
+**风险检测：** critical（公开暴露+无NetworkPolicy）、high（Ingress 无 TLS）、warning（NodePort 暴露在所有节点）
+
+**返回内容：** 暴露服务列表、Ingress 路由列表、内部服务列表、每命名空间暴露统计、攻击面评分 (0-100，越高越安全)、可操作建议
+
+---
+
+### 49. ImagePullBackOff 与容器启动失败追踪 (v15.29)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/image-pull-failures` | 追踪镜像拉取失败和容器启动失败 |
+| GET | `/api/operations/image-pull-failures?namespace=xxx` | 按命名空间过滤 |
+
+**每容器分析：** 镜像名、失败原因、错误消息、重启次数、风险等级
+
+**失败类型：** ImagePullBackOff、ErrImagePull、ErrImageNeverPull、CreateContainerError、CreateContainerConfigError、CrashLoopBackOff
+
+**根因分类：**
+
+| 根因 | 检测方式 |
+|------|---------|
+| Registry 认证失败 | 错误消息含 unauthorized / authentication |
+| Docker Hub 限速 | 错误消息含 rate limit / toomanyrequests |
+| 无效镜像名 | ImagePullBackOff + 镜像格式错误 |
+| 容器配置错误 | CreateContainerConfigError |
+
+**返回内容：** 失败容器列表、按镜像聚合统计、按命名空间统计、按原因分布、镜像拉取健康评分 (0-100)、可操作建议
+
+---
+
+### 50. 资源配额使用率与限制合规审计 (v15.30)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/scalability/quota-utilization` | 审计 ResourceQuota 使用率和 LimitRange 合规性 |
+| GET | `/api/scalability/quota-utilization?namespace=xxx` | 按命名空间过滤 |
+
+**ResourceQuota 分析：**
+
+| 指标 | 说明 |
+|------|------|
+| Hard/Used | 每资源的硬限制和已用量 |
+| Utilization % | 精确使用率 (MilliValue 计算) |
+| Risk Level | critical (>90%) / high (>80%) / medium (>60%) / low (<60%) |
+
+**LimitRange 分析：** Default request/limit 是否存在、Max limit 强制执行检测、不完整 LimitRange 告警
+
+**容器资源治理：** 缺失 requests 的容器（调度器盲区）、缺失 limits 的容器（吵闹邻居风险）
+
+**返回内容：** 配额列表（含使用率）、关键配额列表、LimitRange 列表、未受限 Pod 列表、每命名空间统计、配额合规评分 (0-100)、可操作建议
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -1418,5 +1496,8 @@ receivers:
 | 45 | /api/scalability/capacity-headroom | Scalability | v15.24 | 集群容量余量与扩容就绪 |
 | 46 | /api/deployment/probe-compliance | Deployment | v15.25 | 健康探针合规审计 |
 | 47 | /api/product/label-hygiene | Product | v15.26 | 标签与注解卫生审计 |
+| 48 | /api/security/endpoint-exposure | Security | v15.28 | 服务端点暴露与攻击面审计 |
+| 49 | /api/operations/image-pull-failures | Operations | v15.29 | ImagePullBackOff 与启动失败追踪 |
+| 50 | /api/scalability/quota-utilization | Scalability | v15.30 | 资源配额使用率与限制合规 |
 
-**总计：113 个 OpenAPI 端点**
+**总计：116 个 OpenAPI 端点**
