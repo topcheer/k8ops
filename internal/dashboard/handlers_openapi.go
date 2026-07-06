@@ -1965,6 +1965,33 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Restart Reason Analyzer (v15.35+) ---
+	add("/api/operations/restart-reasons", "get", OpenAPIOperation{
+		Summary: "Pod restart reason analyzer", OperationID: "restartReasons", Tags: []string{"Operations", "Troubleshooting", "Reliability"},
+		Description: "Comprehensively categorizes WHY pods are restarting across the cluster. Goes beyond CrashLoopBackOff/OOM tracker to give the full restart picture. Per-container: last termination reason, exit code, restart count, risk level. Reason categorization: OOMKilled (exit 137), application errors (exit != 0), config errors (CreateContainerError, ErrImagePull), DeadlineExceeded (Jobs), Completed (exit 0), Unknown. Top 20 restarters by restart count. Per-namespace restart breakdown with reason distribution. Cluster-wide stability score (0-100) based on restarted/total pod ratio. Recommendations for memory tuning, log investigation, and backoff limits.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Restart reason report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":      100,
+					"restartedPods":  15,
+					"totalRestarts":  85,
+					"oomKills":       5,
+					"appErrors":      3,
+					"configErrors":   2,
+					"maxRestarts":    42,
+					"stabilityScore": 77,
+				},
+				"byReason":      map[string]int{},
+				"topRestarters": []interface{}{},
+				"oomKills":      []interface{}{},
+				"byNamespace":   []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
