@@ -2044,6 +2044,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- PV/PVC Storage Health (v15.39+) ---
+	add("/api/product/pvc-health", "get", OpenAPIOperation{
+		Summary: "PV/PVC storage health & capacity auditor", OperationID: "pvcHealth", Tags: []string{"Product", "Storage", "Capacity"},
+		Description: "Audits PersistentVolume and PersistentVolumeClaim health across the cluster. Per-PVC: phase (Bound/Pending/Lost), storage class, access modes, capacity, bound PV name, risk level. Per-PV: phase (Bound/Available/Released/Failed), reclaim policy (Retain/Delete), capacity, claim ref. StorageClass analysis: provisioner, volume binding mode, allowVolumeExpansion flag, default SC detection, PVC count per SC. Issue detection: Pending PVCs (provisioning stuck), Lost PVCs (PV in Lost/Failed state), Failed PVs (storage backend errors), Released PVs (orphaned storage wasting capacity), SCs without volume expansion, missing default StorageClass, Reclaim Retain PVs (orphan risk). Per-namespace PVC stats. Storage health score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Storage health report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPVCs":   15,
+					"boundPVCs":   12,
+					"pendingPVCs": 2,
+					"releasedPVs": 1,
+					"healthScore": 76,
+				},
+				"pvcs":           []interface{}{},
+				"pendingPVCs":    []interface{}{},
+				"pvs":            []interface{}{},
+				"storageClasses": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 

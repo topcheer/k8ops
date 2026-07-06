@@ -250,6 +250,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/network-policy", s.cacheMiddleware(60*time.Second, s.handleNetworkPolicyAudit))                      // network policy compliance & traffic isolation
 	mux.HandleFunc("/api/product/label-hygiene", s.cacheMiddleware(60*time.Second, s.handleLabelHygiene))                             // label & annotation hygiene auditor
 	mux.HandleFunc("/api/product/orphaned-resources", s.cacheMiddleware(60*time.Second, s.handleOrphanedResources))                   // orphaned resource detector
+	mux.HandleFunc("/api/product/pvc-health", s.cacheMiddleware(60*time.Second, s.handlePVCHealth))                                   // PV/PVC storage health & capacity
 	mux.HandleFunc("/api/scalability/overcommit", s.cacheMiddleware(60*time.Second, s.handleOvercommitAnalysis))                      // resource over-commit & pressure
 	mux.HandleFunc("/api/scalability/autoscale-recommendations", s.cacheMiddleware(60*time.Second, s.handleAutoscaleRecommendations)) // HPA/VPA right-sizing
 	mux.HandleFunc("/api/scalability/pvc-analysis", s.cacheMiddleware(60*time.Second, s.handlePVCAnalysis))                           // PVC binding & storage performance
