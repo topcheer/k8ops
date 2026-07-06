@@ -1828,6 +1828,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Image Pull & Container Start Failure Tracker (v15.29+) ---
+	add("/api/operations/image-pull-failures", "get", OpenAPIOperation{
+		Summary: "Image pull & container start failure tracker", OperationID: "imagePullFailures", Tags: []string{"Operations", "Troubleshooting", "Images"},
+		Description: "Tracks image pull failures (ImagePullBackOff, ErrImagePull, ErrImageNeverPull) and container start failures (CreateContainerError, CreateContainerConfigError) across all pods. Per-container: image, reason, error message, restart count, age, risk level. Aggregates failures by unique image (failure count, pods affected, registry, reasons). Classifies root causes: registry authentication failures (unauthorized), Docker Hub rate limiting (toomanyrequests), invalid image names, config errors. Per-namespace failure tracking with health scoring. Cluster-wide image pull health score (0-100). Recommendations for imagePullSecrets, registry mirrors, and image verification.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Image pull failure report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":          50,
+					"failedPods":         3,
+					"imagePullBackOff":   2,
+					"registryAuthFail":   1,
+					"uniqueFailedImages": 2,
+					"healthScore":        88,
+				},
+				"failedContainers": []interface{}{},
+				"byImage":          []interface{}{},
+				"byNamespace":      []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
