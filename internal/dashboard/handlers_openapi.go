@@ -2068,6 +2068,32 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- CronJob & Batch Job Security Audit (v15.40+) ---
+	add("/api/security/batch-audit", "get", OpenAPIOperation{
+		Summary: "CronJob & batch job security audit", OperationID: "batchSecurity", Tags: []string{"Security", "BatchWorkloads", "CronJobs"},
+		Description: "Audits CronJobs and one-shot Jobs for security risks. Batch workloads are the most overlooked security attack surface: they run with elevated SAs, mount secrets for data processing, and can be used for attacker persistence. Per-workload: privileged flag, hostPath mounts, hostNetwork/hostPID, ServiceAccount usage (default vs dedicated), resource limits, secret mount count, concurrency limit, schedule analysis. Detection: privileged containers (critical), hostPath access (critical), hostNetwork/hostPID (high), default ServiceAccount (medium), no resource limits (medium), suspicious every-minute schedules (persistence risk), no concurrency limit (fork-bomb risk), excessive secret mounts. Batch security score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Batch security report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalCronJobs":      8,
+					"totalJobs":          3,
+					"privileged":         1,
+					"hostPath":           2,
+					"defaultSA":          4,
+					"suspiciousSchedule": 1,
+					"securityScore":      55,
+				},
+				"cronJobs":    []interface{}{},
+				"oneShotJobs": []interface{}{},
+				"highRisk":    []interface{}{},
+				"suspicious":  []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
