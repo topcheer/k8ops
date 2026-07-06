@@ -1908,6 +1908,36 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Orphaned Resource Detector (v15.33+) ---
+	add("/api/product/orphaned-resources", "get", OpenAPIOperation{
+		Summary: "Orphaned resource detector", OperationID: "orphanedResources", Tags: []string{"Product", "Cleanup", "Hygiene"},
+		Description: "Detects orphaned resources across all 5 resource types. Orphaned Services: selector returns zero pods (traffic goes nowhere). Orphaned ConfigMaps: not referenced by any pod's volumes, envFrom, or env ValueFrom. Orphaned Secrets: not referenced by any pod (stale credential risk). Orphaned PVCs: not mounted by any pod (wasted storage). Orphaned Ingresses: backend service does not exist (404/502 for users). Skips auto-created resources (kube-root-ca.crt, service account tokens, kube-system services). Per-namespace orphan breakdown. Cluster-wide resource hygiene score (0-100). Recommendations for cleanup and CI/CD integration.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Orphaned resource report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalServices":    20,
+					"totalConfigMaps":  35,
+					"totalSecrets":     15,
+					"totalPVCs":        8,
+					"orphanedServices": 3,
+					"orphanedConfigs":  10,
+					"orphanedSecrets":  4,
+					"orphanedPVCs":     2,
+					"totalOrphaned":    19,
+					"hygieneScore":     65,
+				},
+				"orphanedServices": []interface{}{},
+				"orphanedConfigs":  []interface{}{},
+				"orphanedSecrets":  []interface{}{},
+				"orphanedPVCs":     []interface{}{},
+				"orphanedIngress":  []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
