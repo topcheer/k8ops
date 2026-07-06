@@ -1777,6 +1777,31 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Label & Annotation Hygiene (v15.26+) ---
+	add("/api/product/label-hygiene", "get", OpenAPIOperation{
+		Summary: "Label & annotation hygiene auditor", OperationID: "labelHygiene", Tags: []string{"Product", "Labels", "Governance"},
+		Description: "Audits label and annotation hygiene across all workloads. Checks for: zero-label workloads (breaks Service selectors, monitoring, NetworkPolicy matching), missing standard labels (app.kubernetes.io/name for kubectl/Helm discovery), missing team/owner labels (breaks ownership tracking and FinOps cost attribution), missing version labels, malformed label keys (non-DNS-1123 format), and excessive labels (>20). Per-namespace hygiene scoring. Cluster-wide label compliance health score (0-100). Recommendations for label standardization.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Label hygiene report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalWorkloads":   15,
+					"hasStandardLabel": 10,
+					"hasTeamLabel":     7,
+					"noLabels":         2,
+					"malformedKeys":    1,
+					"healthScore":      68,
+				},
+				"byWorkload":      []interface{}{},
+				"noLabels":        []interface{}{},
+				"missingStandard": []interface{}{},
+				"byNamespace":     []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
