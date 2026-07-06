@@ -2120,6 +2120,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Node Failure Impact Simulator (v15.42+) ---
+	add("/api/scalability/node-failure-sim", "get", OpenAPIOperation{
+		Summary: "Node failure impact simulator", OperationID: "nodeFailureSim", Tags: []string{"Scalability", "HA", "FailureSimulation"},
+		Description: "Simulates the impact of each node failing. For every node: which pods would be affected (count), can they be rescheduled on other nodes (resource capacity, node selector, taints/tolerations check), how many are unschedulable, how many are single-replica workloads (permanent downtime). Identifies critical nodes (>10 affected pods), nodes hosting single-replica workloads, worst-case blast radius. Excludes DaemonSet pods (they're on every node), completed pods, and kube-system pods from rescheduling analysis. Per-node: CPU/memory requests, top 5 affected workloads. Cluster-wide resilience score (0-100). Recommendations for anti-affinity, scaling, and node spreading.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Node failure simulation report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNodes":         5,
+					"affectedPerNodeAvg": 8,
+					"maxAffected":        15,
+					"criticalNodes":      2,
+					"singleReplicaNodes": 1,
+					"resilienceScore":    65,
+				},
+				"byNode":        []interface{}{},
+				"criticalNodes": []interface{}{},
+				"singleReplica": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
