@@ -1727,6 +1727,29 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Cluster Capacity Headroom & Scale-Out (v15.24+) ---
+	add("/api/scalability/capacity-headroom", "get", OpenAPIOperation{
+		Summary: "Cluster capacity headroom & scale-out readiness", OperationID: "capacityHeadroom", Tags: []string{"Scalability", "Capacity", "Planning"},
+		Description: "Analyzes cluster capacity headroom and scale-out readiness. Per-node: allocatable vs used CPU/memory, headroom percentage, pod slot usage, bottleneck resource identification, full-node detection (<10% headroom). Cluster-wide: total/used/free CPU/memory, utilization %, bottleneck resource, headroom score (0-100, min of free CPU/memory/pod-slots). Pod scheduling profiles: how many small/medium/large/xlarge pods can fit before cluster is full, with limiting factor. Scale-out readiness: Cluster Autoscaler/Karpenter detection, urgency level (immediate/soon/no). Recommendations for node addition, workload right-sizing, and autoscaler configuration.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Capacity headroom report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNodes":       5,
+					"schedulableNodes": 5,
+					"fullNodes":        1,
+					"cpuUtilization":   72.5,
+					"memUtilization":   68.3,
+					"bottleneck":       "cpu",
+					"headroomScore":    27,
+				},
+				"byNode":          []interface{}{},
+				"bottleneckNodes": []interface{}{},
+				"podProfiles":     []interface{}{},
+				"scaleOutReady":   map[string]interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
