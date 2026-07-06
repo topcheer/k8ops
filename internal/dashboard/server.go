@@ -238,6 +238,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/cert-expiry", s.cacheMiddleware(120*time.Second, s.handleCertExpiry))                               // certificate & TLS expiry monitor
 	mux.HandleFunc("/api/security/volume-mounts", s.cacheMiddleware(120*time.Second, s.handleVolumeSecurity))                         // volume & mount risk security audit
 	mux.HandleFunc("/api/security/endpoint-exposure", s.cacheMiddleware(120*time.Second, s.handleEndpointExposure))                   // service endpoint exposure & attack surface audit
+	mux.HandleFunc("/api/security/seccomp-audit", s.cacheMiddleware(120*time.Second, s.handleSeccompAudit))                           // seccomp profile & PSS restricted compliance
 	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                                   // resource dependency graph & blast radius
 	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpread))                                 // topology spread compliance
 	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                               // workload staleness & release cadence

@@ -1938,6 +1938,33 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Seccomp & PSS Restricted Compliance (v15.34+) ---
+	add("/api/security/seccomp-audit", "get", OpenAPIOperation{
+		Summary: "Seccomp profile & PSS restricted compliance auditor", OperationID: "seccompAudit", Tags: []string{"Security", "Hardening", "PodSecurityStandards"},
+		Description: "Audits seccomp profiles and Pod Security Standards restricted-level compliance across all containers. Per-container: seccomp profile type (RuntimeDefault/Localhost/Unconfined/unset), capabilities drop/add list, droppedAll flag, allowPrivilegeEscalation status, runAsNonRoot/runAsUser check, readOnlyRootFilesystem, privileged flag. PSS level classification: restricted (fully compliant) / baseline (partial) / privileged (fails baseline). Dangerous capability detection: SYS_ADMIN, SYS_MODULE, NET_ADMIN, SYS_PTRACE, etc. Container hardening score (0-100). Recommendations for Pod Security Admission, seccomp defaults, and capability minimization.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Seccomp & PSS compliance report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalContainers": 25,
+					"hasSeccomp":      10,
+					"noSeccomp":       15,
+					"droppedAllCaps":  8,
+					"canEscalate":     12,
+					"runsAsRoot":      5,
+					"pssRestrictedOK": 4,
+					"hardeningScore":  38,
+				},
+				"byWorkload":   []interface{}{},
+				"nonCompliant": []interface{}{},
+				"noSeccomp":    []interface{}{},
+				"canEscalate":  []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
