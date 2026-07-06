@@ -223,6 +223,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/oom-tracker", s.cacheMiddleware(30*time.Second, s.handleOOMTracker))                              // container OOM kill tracker
 	mux.HandleFunc("/api/operations/crashloop", s.cacheMiddleware(30*time.Second, s.handleCrashLoop))                                 // CrashLoopBackOff detector & crash pattern analyzer
 	mux.HandleFunc("/api/operations/pdb-audit", s.cacheMiddleware(60*time.Second, s.handlePDBAudit))                                  // PDB compliance & voluntary disruption risk
+	mux.HandleFunc("/api/operations/topology-distribution", s.cacheMiddleware(60*time.Second, s.handleTSAudit))                       // topology spread & pod distribution audit
 	mux.HandleFunc("/api/networking/health", s.cacheMiddleware(30*time.Second, s.handleNetworkingHealth))                             // service & endpoint health
 	mux.HandleFunc("/api/storage/health", s.cacheMiddleware(60*time.Second, s.handleStorageHealth))                                   // PV/PVC storage health
 	mux.HandleFunc("/api/deployments/audit", s.cacheMiddleware(60*time.Second, s.handleDeployAudit))                                  // deployment config audit

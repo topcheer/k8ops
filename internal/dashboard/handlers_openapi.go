@@ -1704,6 +1704,29 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Topology Spread & Pod Distribution (v15.23+) ---
+	add("/api/operations/topology-distribution", "get", OpenAPIOperation{
+		Summary: "Topology spread & pod distribution auditor", OperationID: "topologySpread", Tags: []string{"Operations", "Scheduling", "Availability"},
+		Description: "Audits pod distribution across nodes and topology spread constraint compliance. Per-workload: node distribution map, max pods per node, unique node count, spread ratio, topologySpreadConstraints status, podAntiAffinity status. Risk classification: critical (>70% on one node), high (>50%), medium (>34%), low (<34%). Identifies: concentrated workloads (single-node failure risk), missing constraints (multi-replica without TSC/anti-affinity), node load imbalance. Cluster-wide distribution score (0-100) with recommendations for topologySpreadConstraints adoption.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Topology spread report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalWorkloads":    15,
+					"withConstraints":   5,
+					"concentrated":      3,
+					"wellSpread":        8,
+					"distributionScore": 65,
+				},
+				"byController":      []interface{}{},
+				"concentrated":      []interface{}{},
+				"nodeLoadImbalance": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
