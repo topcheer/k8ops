@@ -1185,14 +1185,44 @@ Comprehensively categorizes pod restart reasons. Per-container: last termination
 
 Detects single points of failure. SPOF detection: single-replica deployments, multi-replica without PDB, no pod anti-affinity, single-node spread, missing readiness probes. Risk: critical (single replica/node), high (no PDB), medium (no anti-affinity/readiness). HA score (0-100).
 
+### 56. Graceful Shutdown & Termination Compliance (v15.38)
+
+**Path:** `GET /api/deployment/graceful-shutdown?namespace=xxx`
+
+Audits graceful shutdown config for zero-downtime deployments. Per-container: preStop hook (httpGet/exec), readiness probe, terminationGracePeriodSeconds classification. Risk: critical (no preStop + no readiness = dropped requests), high (no preStop). Shutdown score (0-100).
+
+### 57. PV/PVC Storage Health & Capacity (v15.39)
+
+**Path:** `GET /api/product/pvc-health?namespace=xxx`
+
+Audits PV/PVC health. Per-PVC: phase (Bound/Pending/Lost), SC, capacity. Per-PV: phase (Bound/Available/Released/Failed), reclaim policy. StorageClass: expansion support, default detection. Storage health score (0-100).
+
+### 58. CronJob & Batch Job Security Audit (v15.40)
+
+**Path:** `GET /api/security/batch-audit?namespace=xxx`
+
+Audits CronJobs and Jobs for security risks. Detection: privileged (critical), hostPath (critical), hostNetwork/PID (high), default SA (medium), suspicious every-minute schedules (persistence), no concurrency limit (fork-bomb). Batch security score (0-100).
+
+### 59. Pod Scheduling Latency Analyzer (v15.41)
+
+**Path:** `GET /api/operations/scheduling-latency?namespace=xxx`
+
+Tracks pod scheduling latency. Per-pod: creation-to-scheduled time, pending reason. Detection: unschedulable, resource shortage (Insufficient cpu/memory), slow scheduling (>60s), very slow (>300s). Scheduling efficiency score (0-100).
+
+### 60. Node Failure Impact Simulator (v15.42)
+
+**Path:** `GET /api/scalability/node-failure-sim`
+
+Simulates each node failing. Per-node: affected pods, can reschedule (resource/selector/taint check), unschedulable, single-replica workloads. Excludes DaemonSet/completed/system pods. Resilience score (0-100).
+
 ---
 
 ## API Summary
 
-**Total: 121 OpenAPI endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons
-- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS
-- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF
+**Total: 126 OpenAPI endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency
+- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim
 - **Infrastructure**: Auth, RBAC, health, version

@@ -4,6 +4,61 @@
 
 ---
 
+## v15.42 (2026-07-06)
+
+### 新增
+- **节点故障影响模拟器** (`GET /api/scalability/node-failure-sim`)
+  - 模拟每个节点故障后的影响：受影响 Pod 数、可重调度/不可调度
+  - 重调度可行性检查：资源容量、Node Selector、Taint/Toleration
+  - 弹性评分 (0-100)
+  - 6 个单元测试
+
+## v15.41 (2026-07-06)
+
+### 新增
+- **Pod 调度延迟分析器** (`GET /api/operations/scheduling-latency`)
+  - 每 Pod：创建→调度时间、Pending 原因
+  - 检测：Unschedulable、资源短缺、慢调度 (>60s/>300s)
+  - 每节点平均调度时间
+  - 调度效率评分 (0-100)
+  - 7 个单元测试
+
+## v15.40 (2026-07-06)
+
+### 新增
+- **CronJob 与批处理作业安全审计** (`GET /api/security/batch-audit`)
+  - Privileged 检测、HostPath、HostNetwork/PID
+  - 默认 SA 检测、可疑调度（每分钟=持久化）检测
+  - 批处理安全评分 (0-100)
+  - 7 个单元测试
+
+## v15.39 (2026-07-06)
+
+### 新增
+- **PV/PVC 存储健康与容量审计** (`GET /api/product/pvc-health`)
+  - 每 PVC：Phase（Bound/Pending/Lost）、SC、容量
+  - 每 PV：Phase（Bound/Available/Released/Failed）、Reclaim Policy
+  - StorageClass 分析：扩容支持、默认检测
+  - 存储健康评分 (0-100)
+  - 7 个单元测试
+
+## v15.38 (2026-07-06)
+
+### 新增
+- **优雅终止与终止合规审计** (`GET /api/deployment/graceful-shutdown`)
+  - preStop Hook 检测、Readiness Probe 检测
+  - Grace Period 分类（short/default/long/custom）
+  - 丢弃请求风险检测（无 preStop + 无 readiness = critical）
+  - 优雅终止评分 (0-100)
+  - 8 个单元测试
+
+## v15.37 (2026-07-06)
+
+### 文档
+- API.md 新增 5 个端点文档 (v15.32-v15.36)
+- CHANGELOG.md 更新 v15.32-v15.36 发布日志
+- 更新 en/API.md 英文端点文档
+
 ## v15.36 (2026-07-06)
 
 ### 新增
@@ -233,8 +288,8 @@
 
 | 指标 | 数值 |
 |------|------|
-| OpenAPI 端点 | 121 |
-| 单元测试 | 795 |
+| OpenAPI 端点 | 126 |
+| 单元测试 | 830 |
 | 文档 | 12 篇 (7 种语言) |
 | i18n 文件 | 76 个 |
 | Release Assets | 17 个 |

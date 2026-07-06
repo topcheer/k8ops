@@ -1591,6 +1591,127 @@ receivers:
 
 ---
 
+### 56. 优雅终止与终止合规审计 (v15.38)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/deployment/graceful-shutdown` | 审计优雅终止配置 |
+| GET | `/api/deployment/graceful-shutdown?namespace=xxx` | 按命名空间过滤 |
+
+**每容器分析：**
+
+| 检查项 | 说明 |
+|---------|------|
+| preStop Hook | httpGet (path:port) 或 exec (command) |
+| Readiness Probe | 终止前从 endpoints 移除所需 |
+| Grace Period | short (<10s) / default (30s) / custom / long (>60s) |
+
+**风险分类：** critical（无 preStop + 无 readiness，滚动更新必丢请求）、high（无 preStop）、medium（无 readiness）、low（完全合规）
+
+**优雅终止评分 (0-100)：** 丢弃请求(-15)、无 preStop(-5)、无 readiness(-4)、短 grace(-3)
+
+---
+
+### 57. PV/PVC 存储健康与容量审计 (v15.39)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/product/pvc-health` | 审计 PV/PVC 存储健康 |
+| GET | `/api/product/pvc-health?namespace=xxx` | 按命名空间过滤 |
+
+**每 PVC 分析：** Phase（Bound/Pending/Lost）、StorageClass、Access Modes、Capacity
+
+**每 PV 分析：** Phase（Bound/Available/Released/Failed）、Reclaim Policy（Retain/Delete）
+
+**StorageClass 分析：** Provisioner、Volume Binding Mode、AllowExpansion、默认 SC 检测、PVC 计数
+
+**问题检测：** Pending PVC、Lost PVC、Failed PV、Released PV（孤立存储）、无扩容 SC、无默认 SC
+
+**存储健康评分 (0-100)：** Pending(-8)、Lost(-20)、Failed PV(-15)、Released(-3)
+
+---
+
+### 58. CronJob 与批处理作业安全审计 (v15.40)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/security/batch-audit` | 审计 CronJob 与 Job 安全 |
+| GET | `/api/security/batch-audit?namespace=xxx` | 按命名空间过滤 |
+
+**每工作负载分析：**
+
+| 检查项 | 严重程度 | 说明 |
+|--------|---------|------|
+| Privileged | critical | 特权容器 — 完全节点访问 |
+| HostPath | critical | 挂载路径（可读写节点文件系统）|
+| HostNetwork/PID | high | 共享节点网络/进程命名空间 |
+| Default SA | medium | 使用默认 ServiceAccount — 可能继承广泛 RBAC |
+| No Limits | medium | 无资源限制 — 可耗尽节点资源 |
+| Suspicious Schedule | warning | 每分钟执行 — 潜在持久化机制 |
+| No Concurrency | warning | Allow 策略 — fork-bomb 风险 |
+
+**批处理安全评分 (0-100)：** 特权(-20)、hostPath(-15)、hostNetwork/PID(-8)、默认SA(-4)、无限制(-3)、可疑调度(-6)
+
+---
+
+### 59. Pod 调度延迟分析器 (v15.41)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/scheduling-latency` | 分析 Pod 调度延迟 |
+| GET | `/api/operations/scheduling-latency?namespace=xxx` | 按命名空间过滤 |
+
+**每 Pod 分析：** 从创建到 PodScheduled 的时间（秒）、当前 Phase、分配的节点、Pending 原因
+
+**检测：**
+
+| 检测项 | 严重程度 |
+|--------|---------|
+| Unschedulable Pods | warning |
+| Resource Shortage (Insufficient cpu/memory) | critical |
+| Slow Scheduling (>60s) | high |
+| Very Slow Scheduling (>300s) | critical |
+
+**每节点：** 平均调度时间、慢 Pod 计数
+
+**调度效率评分 (0-100)：** unschedulable(-10)、resource shortage(-12)、very slow(-6)、slow(-3)、pending(-4)
+
+---
+
+### 60. 节点故障影响模拟器 (v15.42)
+
+**路径：** `GET /api/scalability/node-failure-sim`
+
+模拟每个节点故障后的影响，用于 HA 规划和容量管理。
+
+**每节点分析：**
+
+| 指标 | 说明 |
+|------|------|
+| Affected Pods | 节点上的非 DaemonSet/非系统 Pod 数量 |
+| Can Reschedule | 能在其他节点找到资源（容量/selector/taint 检查）|
+| Unschedulable | 无法在任何其他节点调度 |
+| Single-Replica WL | 节点故障会导致永久停机的工作负载 |
+| CPU/Memory Requests | 节点上的总请求量 |
+
+**重调度可行性检查：** 资源容量、Node Selector 匹配、Taint/Toleration（NoSchedule/NoExecute）、Node Ready 状态
+
+**模拟排除：** DaemonSet Pod（每节点都有）、Completed/Failed Pod、kube-system Pod
+
+**风险分类：** critical（单副本 WL 或 >5 unschedulable）、high（>10 affected）、medium（部分 unschedulable）、low（全部可重调度）
+
+**弹性评分 (0-100)：** 单副本节点(-12)、关键节点(-6)、unschedulable 均值(-4)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -1622,5 +1743,10 @@ receivers:
 | 53 | /api/security/seccomp-audit | Security | v15.34 | Seccomp 与 PSS 合规审计 |
 | 54 | /api/operations/restart-reasons | Operations | v15.35 | Pod 重启原因分析器 |
 | 55 | /api/scalability/ha-audit | Scalability | v15.36 | 高可用与单点故障检测器 |
+| 56 | /api/deployment/graceful-shutdown | Deployment | v15.38 | 优雅终止与终止合规审计 |
+| 57 | /api/product/pvc-health | Product | v15.39 | PV/PVC 存储健康与容量审计 |
+| 58 | /api/security/batch-audit | Security | v15.40 | CronJob 与批处理作业安全审计 |
+| 59 | /api/operations/scheduling-latency | Operations | v15.41 | Pod 调度延迟分析器 |
+| 60 | /api/scalability/node-failure-sim | Scalability | v15.42 | 节点故障影响模拟器 |
 
-**总计：121 个 OpenAPI 端点**
+**总计：126 个 OpenAPI 端点**
