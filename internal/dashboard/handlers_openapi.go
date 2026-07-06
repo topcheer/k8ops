@@ -1881,6 +1881,33 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Resource Limit & Enforcement Gap (v15.32+) ---
+	add("/api/deployment/resource-limits", "get", OpenAPIOperation{
+		Summary: "Resource limit & enforcement gap auditor", OperationID: "resourceLimits", Tags: []string{"Deployment", "Resources", "Governance"},
+		Description: "Audits resource limits and enforcement gaps across all containers. Per-container: CPU/memory requests and limits in both human-readable and machine-numeric forms, request-to-limit ratio, risk classification. Identifies: unbounded containers (no limits at all — critical), missing memory limits (OOM kill risk), missing CPU limits (no throttling protection), under-provisioned containers (limit/request < 1.2x — tight burst headroom), over-provisioned containers (limit/request > 4x — wasted capacity), excessive requests (>2000m CPU or >4Gi memory). Per-namespace aggregation with total CPU/memory requests. Cluster-wide resource compliance score (0-100). Recommendations for right-sizing, LimitRange defaults, and resource governance.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Resource limit report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalContainers":  30,
+					"noLimits":         5,
+					"noCPULimit":       8,
+					"noMemLimit":       6,
+					"overProvisioned":  4,
+					"underProvisioned": 3,
+					"complianceScore":  55,
+				},
+				"byWorkload":       []interface{}{},
+				"unbounded":        []interface{}{},
+				"overProvisioned":  []interface{}{},
+				"underProvisioned": []interface{}{},
+				"byNamespace":      []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
