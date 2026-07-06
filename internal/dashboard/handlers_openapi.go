@@ -2019,6 +2019,31 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Graceful Shutdown & Termination Compliance (v15.38+) ---
+	add("/api/deployment/graceful-shutdown", "get", OpenAPIOperation{
+		Summary: "Graceful shutdown & termination compliance auditor", OperationID: "gracefulShutdown", Tags: []string{"Deployment", "Lifecycle", "ZeroDowntime"},
+		Description: "Audits graceful shutdown configuration for zero-downtime deployments. Per-container: preStop hook presence and action (httpGet/exec), readiness probe (needed for endpoint draining), terminationGracePeriodSeconds classification (short <10s / default 30s / custom / long >60s). Identifies: containers that WILL drop in-flight requests during rolling updates (no preStop + no readiness = critical), missing preStop hooks (SIGTERM sent immediately), missing readiness probes (endpoints not removed before termination), short grace periods (insufficient for slow shutdown apps). Graceful shutdown score (0-100). Recommendations for preStop hooks, drain endpoints, and grace period tuning.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Graceful shutdown report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalContainers": 25,
+					"hasPreStop":      5,
+					"noPreStop":       20,
+					"hasReadiness":    15,
+					"noReadiness":     10,
+					"likelyDropReqs":  8,
+					"shutdownScore":   35,
+				},
+				"byWorkload":       []interface{}{},
+				"noPreStop":        []interface{}{},
+				"shortGracePeriod": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
