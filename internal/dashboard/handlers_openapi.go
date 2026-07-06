@@ -1852,6 +1852,35 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Quota Utilization & Limit Compliance (v15.30+) ---
+	add("/api/scalability/quota-utilization", "get", OpenAPIOperation{
+		Summary: "Resource quota utilization & limit compliance auditor", OperationID: "quotaUtilization", Tags: []string{"Scalability", "Quota", "Governance"},
+		Description: "Audits ResourceQuota utilization, LimitRange compliance, and container resource governance across the cluster. Per-quota: hard limits, used amounts, utilization percentage per resource, max utilization, risk level (critical >90%, high >80%). Per-LimitRange: default request/limit presence, max limit enforcement. Container analysis: containers without requests (scheduler blind spots), containers without limits (noisy neighbor risk). Per-namespace: quota presence, limit range presence, max utilization, risk level. Identifies: namespaces without quotas (unbounded consumption), critical quotas (>80%), unbounded containers, missing LimitRanges. Cluster-wide quota compliance score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Quota utilization report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNamespaces": 8,
+					"nsWithQuota":     5,
+					"nsWithoutQuota":  3,
+					"criticalQuotas":  2,
+					"totalContainers": 50,
+					"noRequests":      8,
+					"noLimits":        12,
+					"unboundedRatio":  20.0,
+					"complianceScore": 65,
+				},
+				"quotas":         []interface{}{},
+				"criticalQuotas": []interface{}{},
+				"limitRanges":    []interface{}{},
+				"unboundedPods":  []interface{}{},
+				"byNamespace":    []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
