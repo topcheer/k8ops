@@ -1802,6 +1802,32 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Endpoint Exposure & Attack Surface (v15.28+) ---
+	add("/api/security/endpoint-exposure", "get", OpenAPIOperation{
+		Summary: "Service endpoint exposure & attack surface auditor", OperationID: "endpointExposure", Tags: []string{"Security", "Network", "Attack Surface"},
+		Description: "Maps all externally-accessible services and ingress routes to identify the cluster's attack surface. Per-service: type (ClusterIP/NodePort/LoadBalancer), exposure level (public/node/internal), external IPs, port analysis (HTTP/HTTPS), NetworkPolicy coverage status. Per-ingress: host list, TLS status, backend service, HTTP vs TLS route counts. Identifies: exposed services without NetworkPolicy (unrestricted access), ingress without TLS (plaintext traffic), NodePorts (exposed on all nodes), external IPs (manual firewall bypass). Per-namespace exposure aggregation. Cluster-wide attack surface score (0-100, higher = safer).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Endpoint exposure report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalServices":      25,
+					"exposedExternal":    5,
+					"loadBalancers":      2,
+					"nodePorts":          3,
+					"totalIngress":       4,
+					"ingressNoTLS":       1,
+					"noNetworkPolicy":    3,
+					"attackSurfaceScore": 62,
+				},
+				"exposedServices": []interface{}{},
+				"ingressRoutes":   []interface{}{},
+				"byNamespace":     []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
