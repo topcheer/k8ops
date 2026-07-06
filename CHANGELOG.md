@@ -4,6 +4,59 @@
 
 ---
 
+## v15.36 (2026-07-06)
+
+### 新增
+- **高可用与单点故障检测器** (`GET /api/scalability/ha-audit`)
+  - 5 种 SPOF 检测：单副本、单节点分布、无 PDB、无反亲和、无 Readiness
+  - HA 评分 (0-100)
+  - 8 个单元测试
+
+## v15.35 (2026-07-06)
+
+### 新增
+- **Pod 重启原因分析器** (`GET /api/operations/restart-reasons`)
+  - 原因分类：OOMKilled、应用错误、配置错误、DeadlineExceeded、Completed
+  - Top 20 重启最多容器，每命名空间分析
+  - 集群稳定性评分 (0-100)
+  - 8 个单元测试
+
+## v15.34 (2026-07-06)
+
+### 新增
+- **Seccomp 与 PSS Restricted 合规审计器** (`GET /api/security/seccomp-audit`)
+  - Seccomp 配置文件检测、Capabilities drop/add 追踪
+  - PSS 级别分类：restricted/baseline/privileged
+  - 危险 Capability 检测（11 个：SYS_ADMIN 等）
+  - 容器加固评分 (0-100)
+  - 6 个单元测试
+
+## v15.33 (2026-07-06)
+
+### 新增
+- **孤立资源检测器** (`GET /api/product/orphaned-resources`)
+  - 5 种资源：Services（无 Pod）、ConfigMaps（未引用）、Secrets（过期凭证）、PVCs（未挂载）、Ingresses（后端缺失）
+  - Pod 引用追踪：卷、环境变量、envFrom、ImagePullSecrets
+  - 集群卫生评分 (0-100)
+  - 5 个单元测试
+
+## v15.32 (2026-07-05)
+
+### 新增
+- **资源限制与强制差距审计器** (`GET /api/deployment/resource-limits`)
+  - 无限制容器检测（critical）、无内存限制（critical）
+  - 供应不足 (<1.2x) / 供应过度 (>4x) 检测
+  - 过度请求检测 (>2000m CPU, >4Gi 内存)
+  - 合规评分 (0-100)
+  - 8 个单元测试
+
+## v15.31 (2026-07-05)
+
+### 文档
+- API.md 新增 3 个端点文档 (v15.28-v15.30)
+- CHANGELOG.md 更新 v15.28-v15.30 发布日志
+- 更新 en/API.md 英文端点文档
+
 ## v15.30 (2026-07-05)
 
 ### 新增
@@ -180,8 +233,8 @@
 
 | 指标 | 数值 |
 |------|------|
-| OpenAPI 端点 | 116 |
-| 单元测试 | 760 |
+| OpenAPI 端点 | 121 |
+| 单元测试 | 795 |
 | 文档 | 12 篇 (7 种语言) |
 | i18n 文件 | 76 个 |
 | Release Assets | 17 个 |

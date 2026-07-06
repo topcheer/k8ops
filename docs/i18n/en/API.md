@@ -1155,14 +1155,44 @@ Tracks image pull failures and container start failures. Per-container: image, r
 
 Audits ResourceQuota utilization and LimitRange compliance. Per-quota: hard/used/utilization%, risk level. LimitRange: default request/limit, max enforcement. Container governance: missing requests/limits. Compliance score (0-100).
 
+### 51. Resource Limit & Enforcement Gap Auditor (v15.32)
+
+**Path:** `GET /api/deployment/resource-limits?namespace=xxx`
+
+Audits resource limits and enforcement gaps. Per-container: CPU/memory requests/limits, request-to-limit ratio. Unbounded containers (no limits, critical), missing memory limits (OOM risk), under-provisioned (<1.2x ratio), over-provisioned (>4x ratio). Compliance score (0-100).
+
+### 52. Orphaned Resource Detector (v15.33)
+
+**Path:** `GET /api/product/orphaned-resources?namespace=xxx`
+
+Detects orphaned resources across 5 types: Services (no backing pods), ConfigMaps (unreferenced), Secrets (stale credentials), PVCs (unmounted), Ingresses (missing backend service). Pod reference tracking via volumes, env vars, envFrom, imagePullSecrets. Hygiene score (0-100).
+
+### 53. Seccomp & PSS Restricted Compliance Auditor (v15.34)
+
+**Path:** `GET /api/security/seccomp-audit?namespace=xxx`
+
+Audits seccomp profiles and Pod Security Standards restricted-level compliance. Per-container: seccomp type, capabilities drop/add, allowPrivilegeEscalation, runAsNonRoot, readOnlyRootFilesystem. PSS level: restricted/baseline/privileged. Dangerous capability detection (11 caps). Hardening score (0-100).
+
+### 54. Pod Restart Reason Analyzer (v15.35)
+
+**Path:** `GET /api/operations/restart-reasons?namespace=xxx`
+
+Comprehensively categorizes pod restart reasons. Per-container: last termination reason, exit code, restart count. Categories: OOMKilled (exit 137), application errors (exit != 0), config errors, DeadlineExceeded, Completed. Top 20 restarters. Stability score (0-100).
+
+### 55. HA & Single-Point-of-Failure Detector (v15.36)
+
+**Path:** `GET /api/scalability/ha-audit?namespace=xxx`
+
+Detects single points of failure. SPOF detection: single-replica deployments, multi-replica without PDB, no pod anti-affinity, single-node spread, missing readiness probes. Risk: critical (single replica/node), high (no PDB), medium (no anti-affinity/readiness). HA score (0-100).
+
 ---
 
 ## API Summary
 
-**Total: 116 OpenAPI endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene
-- **Deployment**: Image hygiene, rollout health, probe compliance
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures
-- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure
-- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization
+**Total: 121 OpenAPI endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons
+- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF
 - **Infrastructure**: Auth, RBAC, health, version

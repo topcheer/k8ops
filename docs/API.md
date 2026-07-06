@@ -1473,6 +1473,124 @@ receivers:
 
 ---
 
+### 51. 资源限制与强制差距审计 (v15.32)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/deployment/resource-limits` | 审计资源限制与强制差距 |
+| GET | `/api/deployment/resource-limits?namespace=xxx` | 按命名空间过滤 |
+
+**每容器分析：** CPU/内存请求与限制（人类可读 + 毫核值/MB）、请求/限制比率、风险等级
+
+**问题检测：** 无限制容器（critical）、无内存限制（critical，OOM 级联风险）、无 CPU 限制（high）、供应不足 <1.2x（high，突发余量紧张）、供应过度 >4x（medium，容量浪费）、过度请求 >2000m CPU 或 >4Gi 内存
+
+**合规评分 (0-100)：** 无限制(-15)、无内存限制(-8)、无CPU限制(-4)、无请求(-5)、供应不足(-3)
+
+---
+
+### 52. 孤立资源检测器 (v15.33)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/product/orphaned-resources` | 检测 5 种孤立资源 |
+| GET | `/api/product/orphaned-resources?namespace=xxx` | 按命名空间过滤 |
+
+**5 种资源类型：**
+
+| 资源 | 检测逻辑 | 风险 |
+|------|---------|------|
+| Services | Selector 返回零个 Pod | 流量无处可去 |
+| ConfigMaps | 不被任何 Pod 引用 | 存储浪费 |
+| Secrets | 不被任何 Pod 引用 | 过期凭证（high）|
+| PVCs | 不被任何 Pod 挂载 | 存储容量浪费 |
+| Ingresses | 后端 Service 不存在 | 用户 404/502 |
+
+**Pod 引用追踪：** 卷挂载、环境变量、envFrom、ImagePullSecrets、Projected volumes
+
+**集群卫生评分 (0-100)：** 基于孤立率（每 1% 扣 2 分）
+
+---
+
+### 53. Seccomp 与 PSS Restricted 合规审计 (v15.34)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/security/seccomp-audit` | 审计 Seccomp 配置文件与 PSS 合规 |
+| GET | `/api/security/seccomp-audit?namespace=xxx` | 按命名空间过滤 |
+
+**每容器分析：**
+
+| 检查项 | 说明 |
+|---------|------|
+| Seccomp Profile | RuntimeDefault / Localhost / Unconfined / unset |
+| Capabilities | drop/add 列表，droppedALL 标记 |
+| allowPrivilegeEscalation | 默认 true（如未显式 false）|
+| runAsNonRoot/runAsUser | root 运行检测 |
+| readOnlyRootFilesystem | 只读根文件系统 |
+| Privileged Flag | 特权容器检测 |
+
+**PSS 级别分类：** restricted (零违规) / baseline (部分合规) / privileged (不合规)
+
+**危险 Capability 检测 (11 个)：** SYS_ADMIN, SYS_MODULE, SYS_PTRACE, NET_ADMIN, NET_RAW, DAC_OVERRIDE 等
+
+**容器加固评分 (0-100)：** 无 seccomp(-8)、特权(-20)、未 drop ALL(-4)、可提权(-6)、root 运行(-3)
+
+---
+
+### 54. Pod 重启原因分析器 (v15.35)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/restart-reasons` | 分析 Pod 重启原因 |
+| GET | `/api/operations/restart-reasons?namespace=xxx` | 按命名空间过滤 |
+
+**原因分类：**
+
+| 类别 | 检测方式 |
+|------|---------|
+| OOMKilled | exit 137 或 reason=OOMKilled |
+| 应用错误 | exit != 0，非 OOM |
+| 配置错误 | CreateContainerError, ErrImagePull |
+| 超时 | DeadlineExceeded (Jobs) |
+| 正常退出 | exit 0 (Jobs/CronJobs) |
+
+**Top 20 重启最多容器** — 按重启次数排序
+
+**集群稳定性评分 (0-100)：** 基于重启/总 Pod 比率（1.5x 惩罚）
+
+---
+
+### 55. 高可用与单点故障检测器 (v15.36)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/scalability/ha-audit` | 检测单点故障与 HA 合规 |
+| GET | `/api/scalability/ha-audit?namespace=xxx` | 按命名空间过滤 |
+
+**5 种 SPOF 检测：**
+
+| 检测项 | 严重程度 | 影响 |
+|--------|---------|------|
+| 单副本 Deployment | critical | 任何重启导致停机 |
+| 单节点分布 (多副本但全在一个节点) | critical | 节点故障全灭 |
+| 多副本无 PDB | high | 自愿中断同时杀死所有 Pod |
+| 无 Pod 反亲和性 | medium | 调度器可能将所有 Pod 放在同一节点 |
+| 缺少 Readiness Probe | medium | 故障转移缓慢 |
+
+**HA 评分 (0-100)：** 单副本(-15)、单节点(-12)、无PDB(-6)、无反亲和(-3)、无Readiness(-4)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -1499,5 +1617,10 @@ receivers:
 | 48 | /api/security/endpoint-exposure | Security | v15.28 | 服务端点暴露与攻击面审计 |
 | 49 | /api/operations/image-pull-failures | Operations | v15.29 | ImagePullBackOff 与启动失败追踪 |
 | 50 | /api/scalability/quota-utilization | Scalability | v15.30 | 资源配额使用率与限制合规 |
+| 51 | /api/deployment/resource-limits | Deployment | v15.32 | 资源限制与强制差距审计 |
+| 52 | /api/product/orphaned-resources | Product | v15.33 | 孤立资源检测器 |
+| 53 | /api/security/seccomp-audit | Security | v15.34 | Seccomp 与 PSS 合规审计 |
+| 54 | /api/operations/restart-reasons | Operations | v15.35 | Pod 重启原因分析器 |
+| 55 | /api/scalability/ha-audit | Scalability | v15.36 | 高可用与单点故障检测器 |
 
-**总计：116 个 OpenAPI 端点**
+**总计：121 个 OpenAPI 端点**
