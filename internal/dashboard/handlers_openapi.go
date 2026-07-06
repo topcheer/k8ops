@@ -1992,6 +1992,33 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- HA & Single-Point-of-Failure Detector (v15.36+) ---
+	add("/api/scalability/ha-audit", "get", OpenAPIOperation{
+		Summary: "High availability & single-point-of-failure detector", OperationID: "haAudit", Tags: []string{"Scalability", "HA", "Reliability"},
+		Description: "Detects single points of failure across all deployments. SPOF detection: single-replica deployments (any restart causes downtime), multi-replica without PDB (voluntary disruptions kill all pods), no pod anti-affinity (pods may co-locate on one node), single-node spread (all pods on one node despite multiple replicas), missing readiness probes (slow failover). Per-workload: replica count, ready replicas, PDB status, anti-affinity/topologySpread status, node spread count, readiness probe presence, SPOF risk list. Risk classification: critical (single replica or single-node spread), high (no PDB), medium (no anti-affinity or no readiness), low (fully HA). Per-namespace HA scoring. Cluster-wide HA score (0-100). Recommendations for scaling, PDB, anti-affinity, and topology spread.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("HA & SPOF report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalWorkloads":   15,
+					"singleReplicas":   4,
+					"multiReplica":     11,
+					"noPDB":            6,
+					"noAntiAffinity":   8,
+					"singleNodeSpread": 2,
+					"noReadiness":      3,
+					"haScore":          52,
+				},
+				"singleReplicas": []interface{}{},
+				"noPDB":          []interface{}{},
+				"noAntiAffinity": []interface{}{},
+				"allEntries":     []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
