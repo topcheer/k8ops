@@ -1107,14 +1107,44 @@ Analyzes per-namespace resource consumption and estimates cost attribution. Aggr
 
 Audits NetworkPolicy coverage and traffic isolation. Per-namespace: pod count, policy count, protected pods, default-deny status, isolation score (0-100). Unprotected pod detection via label selector matching. Permissive egress detection (0.0.0.0/0). Cluster isolation score (0-100).
 
+### 43. Volume Security & Mount Risk Auditor (v15.22)
+
+**Path:** `GET /api/security/volume-mounts?namespace=xxx`
+
+Audits all pod volume mounts for container escape risks. Scans 14 known dangerous paths (docker.sock, /proc, /sys, /, kubelet, etcd). HostPath risk classification (critical/high/medium/low). Privileged container and host namespace detection. SA token projected volume tracking. Cluster security score (0-100, higher = safer).
+
+### 44. Topology Spread & Pod Distribution Auditor (v15.23)
+
+**Path:** `GET /api/operations/topology-distribution?namespace=xxx`
+
+Audits pod distribution across nodes. Per-workload: node distribution map, max pods per node, spread ratio, TSC/anti-affinity status. Risk: critical (>70% on 1 node) / high (>50%) / medium (>34%) / low (<34%). Node load imbalance detection. Distribution score (0-100).
+
+### 45. Cluster Capacity Headroom & Scale-Out Readiness (v15.24)
+
+**Path:** `GET /api/scalability/capacity-headroom`
+
+Analyzes cluster capacity headroom. Per-node: allocatable vs used CPU/memory, headroom %, bottleneck resource. Pod scheduling profiles (small/medium/large/xlarge). Scale-out readiness: Cluster Autoscaler/Karpenter detection, urgency level. Headroom score (0-100).
+
+### 46. Health Probe Compliance Auditor (v15.25)
+
+**Path:** `GET /api/deployment/probe-compliance?namespace=xxx`
+
+Audits liveness, readiness, and startup probe configuration. Per-container: probe type, path, port, timing thresholds. Issue detection: zero probes, missing readiness (critical), missing liveness, TCP probes. Misconfiguration: excessive delay, slow period, high threshold. Probe compliance health score (0-100).
+
+### 47. Label & Annotation Hygiene Auditor (v15.26)
+
+**Path:** `GET /api/product/label-hygiene?namespace=xxx`
+
+Audits label hygiene across all workloads. Zero-label detection (breaks Service selectors), missing standard labels (app.kubernetes.io/name), missing team/owner labels, malformed key detection (DNS-1123), excessive labels (>20). Per-namespace scoring. Cluster compliance health score (0-100).
+
 ---
 
 ## API Summary
 
-**Total: 108 OpenAPI endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy
-- **Deployment**: Image hygiene, rollout health
-- **Operations**: CrashLoopBackOff, PDB compliance
-- **Security**: Admission webhook, certificate expiry
-- **Scalability**: Overcommit, storage forecast, pod density, NS consumption
+**Total: 113 OpenAPI endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene
+- **Deployment**: Image hygiene, rollout health, probe compliance
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution
+- **Security**: Admission webhook, certificate expiry, volume security
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom
 - **Infrastructure**: Auth, RBAC, health, version

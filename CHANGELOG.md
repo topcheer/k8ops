@@ -4,6 +4,63 @@
 
 ---
 
+## v15.26 (2026-07-05)
+
+### 新增
+- **标签与注解卫生审计器** (`GET /api/product/label-hygiene`)
+  - 零标签检测、缺失标准/团队/版本标签检测
+  - 畸形标签键检测 (DNS-1123 合规)
+  - 每命名空间评分，集群合规评分 (0-100)
+  - 10 个单元测试
+
+## v15.25 (2026-07-05)
+
+### 新增
+- **健康探针合规审计器** (`GET /api/deployment/probe-compliance`)
+  - Liveness/Readiness/Startup 探针状态检测
+  - 零探针、缺失 readiness (critical)、缺失 liveness 检测
+  - 配置错误检测（过长延迟、慢周期、高阈值）
+  - 探针合规评分 (0-100)
+  - 8 个单元测试
+
+## v15.24 (2026-07-05)
+
+### 新增
+- **集群容量余量与扩容就绪分析器** (`GET /api/scalability/capacity-headroom`)
+  - 每节点 CPU/内存/Pod 槽位余量分析
+  - Pod 调度容量估算 (small/medium/large/xlarge)
+  - Cluster Autoscaler/Karpenter 检测
+  - 余量评分 (0-100)
+  - 8 个单元测试
+
+## v15.23 (2026-07-05)
+
+### 新增
+- **拓扑分布与 Pod 分配审计器** (`GET /api/operations/topology-distribution`)
+  - 节点分布图、集中检测、分布比率
+  - topologySpreadConstraints / podAntiAffinity 状态
+  - 节点负载不均衡检测
+  - 分布评分 (0-100)
+  - 6 个单元测试
+
+## v15.22 (2026-07-05)
+
+### 新增
+- **卷安全与挂载风险审计器** (`GET /api/security/volume-mounts`)
+  - 14 个危险路径检测 (docker.sock, /proc, /sys, /, kubelet, etcd)
+  - HostPath 风险分级 (critical/high/medium/low)
+  - 特权容器 + Host namespace 共享检测
+  - SA Token 投射卷追踪
+  - 安全评分 (0-100，越高越安全)
+  - 9 个单元测试
+
+## v15.21 (2026-07-05)
+
+### 文档
+- API.md 新增 7 个端点文档 (v15.13-v15.20)
+- 创建 CHANGELOG.md (v15.13-v15.20 发布日志)
+- 更新 en/API.md 英文端点文档
+
 ## v15.20 (2026-07-05)
 
 ### 新增
@@ -86,8 +143,8 @@
 
 | 指标 | 数值 |
 |------|------|
-| OpenAPI 端点 | 108 |
-| 单元测试 | 692 |
+| OpenAPI 端点 | 113 |
+| 单元测试 | 733 |
 | 文档 | 12 篇 (7 种语言) |
 | i18n 文件 | 76 个 |
 | Release Assets | 17 个 |

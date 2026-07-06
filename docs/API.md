@@ -1248,6 +1248,153 @@ receivers:
 
 ---
 
+### 43. 卷安全与挂载风险审计 (v15.22)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/security/volume-mounts` | 审计所有 Pod 卷挂载的容器逃逸风险 |
+| GET | `/api/security/volume-mounts?namespace=xxx` | 按命名空间过滤 |
+
+**危险路径检测 (14 个已知路径)：**
+
+| 路径 | 风险 |
+|------|------|
+| `/var/run/docker.sock` | Docker socket — 容器逃逸，完全控制宿主机 |
+| `/proc`, `/sys`, `/dev` | 内核和硬件访问 |
+| `/` | 根文件系统 — 完全宿主机访问 |
+| `/etc/kubernetes` | 集群凭证窃取 |
+| `/var/lib/kubelet` | kubelet 数据 — Pod 注入、凭证窃取 |
+| `/var/lib/etcd` | etcd 数据 — 全集群状态和 Secrets |
+| `/root/.kube` | kubeconfig — 集群管理员凭证窃取 |
+
+**HostPath 分析：** 风险等级 (critical/high/medium/low)、读写检测、路径敏感度分类
+
+**额外检测：** 特权容器、Host namespace 共享 (hostNetwork/hostPID/hostIPC)、SA Token 投射卷追踪
+
+**返回内容：** 危险挂载列表、HostPath 卷列表、SA Token 卷列表、每命名空间风险统计、集群安全评分 (0-100，越高越安全)、可操作建议
+
+---
+
+### 44. 拓扑分布与 Pod 分配审计 (v15.23)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/topology-distribution` | 审计 Pod 在节点间的分布和拓扑约束合规性 |
+| GET | `/api/operations/topology-distribution?namespace=xxx` | 按命名空间过滤 |
+
+**每工作负载分析：**
+
+| 指标 | 说明 |
+|------|------|
+| 节点分布图 | 每节点的 Pod 数量 |
+| 每节点最大值 | 单节点上最多的 Pod 数 |
+| 唯一节点数 | 跨多少个不同节点 |
+| 分布比率 | 唯一节点 / 期望节点 |
+| TSC 状态 | 是否有 topologySpreadConstraints |
+| 反亲和性 | 是否有 podAntiAffinity |
+
+**风险分类：**
+- **critical** — >70% 副本在一个节点（单节点故障即全灭）
+- **high** — >50% 在一个节点
+- **medium** — >34% 在一个节点
+- **low** — <34%（良好分布）
+
+**返回内容：** 工作负载分布分析、集中部署列表、良好分布列表、节点负载不均衡分析、分布评分 (0-100)、可操作建议
+
+---
+
+### 45. 集群容量余量与扩容就绪 (v15.24)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/scalability/capacity-headroom` | 分析集群容量余量和扩容就绪状态 |
+
+**每节点分析：**
+
+| 指标 | 说明 |
+|------|------|
+| Allocatable vs Used | 可分配 vs 已用 CPU/内存 |
+| Headroom % | CPU/内存/Pod 槽位剩余百分比 |
+| Bottleneck | 最紧张的资源 (cpu/memory/pods) |
+| Full Node | <10% 余量的节点检测 |
+
+**Pod 调度容量估算：**
+
+| 配置 | CPU | 内存 | 说明 |
+|------|-----|------|------|
+| small | 100m | 128MB | 微服务 |
+| medium | 500m | 512MB | 标准服务 |
+| large | 1 core | 1GB | 数据库 |
+| xlarge | 2 core | 4GB | 计算密集型 |
+
+**扩容就绪：** Cluster Autoscaler/Karpenter 检测，紧急程度 (immediate/soon/no)
+
+**返回内容：** 集群容量汇总、每节点余量分析、瓶颈节点列表、Pod 调度容量估算、扩容就绪状态、余量评分 (0-100)、可操作建议
+
+---
+
+### 46. 健康探针合规审计 (v15.25)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/deployment/probe-compliance` | 审计所有 Deployment 的健康探针配置 |
+| GET | `/api/deployment/probe-compliance?namespace=xxx` | 按命名空间过滤 |
+
+**每容器分析：**
+
+| 检查项 | 说明 |
+|---------|------|
+| Liveness | 检测配置/缺失 + 完整详情 (类型/路径/端口/时序) |
+| Readiness | 检测配置/缺失 + 完整详情 |
+| Startup | 启动探针检测 (慢启动应用保护) |
+| Probe Type | httpGet / tcpSocket / exec |
+
+**问题检测：**
+- **critical** — 零探针（无任何健康监控）
+- **critical** — 缺少 readiness（流量发送到不健康的 Pod）
+- **warning** — 缺少 liveness（僵死容器不会自动重启）
+- **info** — TCP socket 探针（不如 HTTP 可靠）
+- **info** — 缺少 startup（慢启动应用误判为不健康）
+
+**配置错误检测：** 过长 initialDelay (>120s/180s)、慢 period (>60s/30s)、高 failureThreshold (>10)、长 timeout (>10s)
+
+**返回内容：** 工作负载探针详情、缺失 readiness 列表、缺失 liveness 列表、配置错误列表、探针合规评分 (0-100)、可操作建议
+
+---
+
+### 47. 标签与注解卫生审计 (v15.26)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/product/label-hygiene` | 审计所有工作负载的标签和注解卫生 |
+| GET | `/api/product/label-hygiene?namespace=xxx` | 按命名空间过滤 |
+
+**每工作负载检查：**
+
+| 检查项 | 严重程度 | 影响 |
+|---------|---------|------|
+| 零标签 | critical | Service 选择器、监控、NetworkPolicy 全部失效 |
+| 缺少 app.kubernetes.io/name | warning | kubectl、Helm、监控发现中断 |
+| 缺少 team/owner 标签 | info | 所有权追踪和 FinOps 成本归属断裂 |
+| 畸形标签键 | high | 非 DNS-1123 格式（必须小写）|
+| 过多标签 (>20) | info | 性能和可管理性问题 |
+
+**DNS-1123 合规验证：** 标签键名必须为小写字母数字、'-'、'.'，前缀/名称格式校验
+
+**返回内容：** 工作负载标签详情、零标签列表、缺失标准标签列表、缺失团队标签列表、畸形键列表、每命名空间评分、集群合规评分 (0-100)、可操作建议
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -1266,5 +1413,10 @@ receivers:
 | 40 | /api/operations/pdb-audit | Operations | v15.17 | PDB 合规与中断风险 |
 | 41 | /api/scalability/ns-consumption | Scalability | v15.18 | 命名空间资源消耗与成本 |
 | 42 | /api/product/network-policy | Product | v15.20 | Network Policy 合规审计 |
+| 43 | /api/security/volume-mounts | Security | v15.22 | 卷安全与挂载风险审计 |
+| 44 | /api/operations/topology-distribution | Operations | v15.23 | 拓扑分布与 Pod 分配审计 |
+| 45 | /api/scalability/capacity-headroom | Scalability | v15.24 | 集群容量余量与扩容就绪 |
+| 46 | /api/deployment/probe-compliance | Deployment | v15.25 | 健康探针合规审计 |
+| 47 | /api/product/label-hygiene | Product | v15.26 | 标签与注解卫生审计 |
 
-**总计：108 个 OpenAPI 端点**
+**总计：113 个 OpenAPI 端点**
