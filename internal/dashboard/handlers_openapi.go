@@ -1750,6 +1750,33 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Health Probe Compliance Auditor (v15.25+) ---
+	add("/api/deployment/probe-compliance", "get", OpenAPIOperation{
+		Summary: "Health probe compliance auditor", OperationID: "probeCompliance", Tags: []string{"Deployment", "Probes", "Reliability"},
+		Description: "Audits liveness, readiness, and startup probe configuration across all deployments. Per-container: probe type (httpGet/tcpSocket/exec), path, port, timing thresholds (initialDelay, period, timeout, successThreshold, failureThreshold). Identifies: containers with zero probes (no health monitoring), missing readiness (traffic to unhealthy pods), missing liveness (stale containers won't restart), tcpSocket probes (less reliable than HTTP), missing startup probes (slow apps at risk of false liveness failures). Misconfiguration detection: excessive initialDelay (>120s/180s), slow period (>60s/30s), high failureThreshold (>10), long timeout (>10s), wrong successThreshold (>1 for liveness). Cluster-wide probe compliance health score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Probe compliance report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalContainers":  25,
+					"hasLiveness":      18,
+					"hasReadiness":     15,
+					"hasStartup":       3,
+					"missingLiveness":  7,
+					"missingReadiness": 10,
+					"noProbeAtAll":     4,
+					"healthScore":      52,
+				},
+				"byWorkload":       []interface{}{},
+				"missingReadiness": []interface{}{},
+				"missingLiveness":  []interface{}{},
+				"misconfigured":    []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
