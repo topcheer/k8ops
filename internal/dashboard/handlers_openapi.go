@@ -2276,6 +2276,26 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Node Lease & Heartbeat Health Monitor (v15.52+) ---
+	add("/api/operations/node-lease", "get", OpenAPIOperation{
+		Summary: "Node lease & heartbeat health monitor", OperationID: "nodeLease", Tags: []string{"Operations", "NodeHealth", "Heartbeat"},
+		Description: "Monitors kubelet heartbeat freshness via node Lease objects. Tracks heartbeat age (renewTime), identifies stale (>40s) and very stale (>2min) heartbeats, nodes with no Lease, and NotReady nodes. Per-node: lease existence, heartbeat age, holder identity, kubelet version, active negative conditions. Critical for detecting zombie nodes before they cause split-brain or scheduling failures. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Node heartbeat report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNodes":         5,
+					"readyNodes":         4,
+					"staleHeartbeat":     1,
+					"noLease":            0,
+					"avgHeartbeatAgeSec": 15.5,
+					"healthScore":        82,
+				},
+				"byNode":         []interface{}{},
+				"staleHeartbeat": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
