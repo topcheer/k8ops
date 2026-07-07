@@ -12,7 +12,7 @@ import (
 
 // RevHResult is the deployment revision history analysis.
 type RevHResult struct {
-	ScannedAt        time.Time `json:"scannedAt"`
+	ScannedAt        time.Time   `json:"scannedAt"`
 	Summary          RevHSummary `json:"summary"`
 	ByWorkload       []RevHEntry `json:"byWorkload"`
 	LowHistory       []RevHEntry `json:"lowHistory"`       // revisionHistoryLimit < 5
@@ -20,7 +20,7 @@ type RevHResult struct {
 	HighChurn        []RevHEntry `json:"highChurn"`        // many ReplicaSets = frequent deploys
 	StaleReplicaSets []RevHEntry `json:"staleReplicaSets"` // old revisions still running
 	Issues           []RevHIssue `json:"issues"`
-	Recommendations  []string  `json:"recommendations"`
+	Recommendations  []string    `json:"recommendations"`
 }
 
 // RevHSummary aggregates revision history stats.
