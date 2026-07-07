@@ -2464,6 +2464,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- API Server Audit Logging Configuration Checker (v15.65+) ---
+	add("/api/security/audit-policy", "get", OpenAPIOperation{
+		Summary: "API server audit logging configuration checker", OperationID: "auditPolicy", Tags: []string{"Security", "Compliance", "Audit"},
+		Description: "Verifies Kubernetes audit logging configuration for compliance. Checks: audit enabled (file/webhook backend), audit policy file presence, log retention (maxAge, maxBackup, maxSize), sensitive resource coverage (Secrets/ConfigMaps/RBAC verb auditing). Detects k3s/microk8s environments. Findings categorized as policy/backend/retention/coverage with pass/warning/fail status. Compliance score (0-100). Required for PCI-DSS, SOC2, HIPAA.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Audit policy report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"auditEnabled":    true,
+					"hasPolicy":       true,
+					"logBackend":      "file",
+					"maxAgeDays":      30,
+					"complianceScore": 70,
+				},
+				"findings": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 

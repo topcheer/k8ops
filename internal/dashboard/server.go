@@ -241,6 +241,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/containers", s.cacheMiddleware(120*time.Second, s.handleContainerSecurityAudit))                    // container security context audit
 	mux.HandleFunc("/api/security/rbac-effective", s.cacheMiddleware(120*time.Second, s.handleRBACEffective))                         // RBAC effective permissions & escalation
 	mux.HandleFunc("/api/security/admission-audit", s.cacheMiddleware(120*time.Second, s.handleAdmissionAudit))                       // admission webhook configuration audit
+	mux.HandleFunc("/api/security/audit-policy", s.cacheMiddleware(120*time.Second, s.handleAuditPolicy))                             // API server audit logging configuration checker
 	mux.HandleFunc("/api/security/cert-expiry", s.cacheMiddleware(120*time.Second, s.handleCertExpiry))                               // certificate & TLS expiry monitor
 	mux.HandleFunc("/api/security/volume-mounts", s.cacheMiddleware(120*time.Second, s.handleVolumeSecurity))                         // volume & mount risk security audit
 	mux.HandleFunc("/api/security/endpoint-exposure", s.cacheMiddleware(120*time.Second, s.handleEndpointExposure))                   // service endpoint exposure & attack surface audit
