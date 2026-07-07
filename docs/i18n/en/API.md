@@ -1303,12 +1303,20 @@ Tracks evicted pods with cause classification (memory/disk/pid/unknown). Per-nod
 
 ---
 
+### 76. API Server Audit Logging Configuration Checker (v15.65)
+
+**Path:** `GET /api/security/audit-policy`
+
+Verifies audit logging configuration for compliance. Checks: audit enabled, policy file, log retention, sensitive resource coverage. Detects k3s/microk8s. Compliance score (0-100) for PCI-DSS/SOC2/HIPAA.
+
+---
+
 ## API Summary
 
-**Total: 141 OpenAPI endpoints** across 6 dimensions:
+**Total: 142 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size
 - **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history
 - **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions
-- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security
+- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy
 - **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation
 - **Infrastructure**: Auth, RBAC, health, version

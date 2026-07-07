@@ -1998,6 +1998,20 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 76. API Server 审计日志配置检查 (v15.65)
+
+**路径：** `GET /api/security/audit-policy`
+
+验证 Kubernetes 审计日志是否正确配置——这是 PCI-DSS、SOC2、HIPAA 等合规框架的必要要求。
+
+**检查项：** 审计是否启用、日志后端（file/webhook/both/none）、策略文件、保留天数、备份数量、敏感资源覆盖
+
+**检测项：** 审计未启用（critical）、无策略文件（warning）、保留 <90 天（warning）
+
+**合规评分 (0-100)：** enabled(+40)、policy(+25)、sensitive(+15)、retention(+10)、backup(+5)、both(+5)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -2049,5 +2063,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 73 | /api/deployment/revision-history | Deployment | v15.60 | 部署版本历史与回滚就绪 |
 | 74 | /api/product/configmap-size | Product | v15.61 | ConfigMap/Secret 大小与内存压力审计 |
 | 75 | /api/operations/pod-evictions | Operations | v15.63 | Pod 驱逐与节点压力历史追踪 |
+| 76 | /api/security/audit-policy | Security | v15.65 | API Server 审计日志配置检查 |
 
-**总计：141 个 OpenAPI 端点**
+**总计：142 个 OpenAPI 端点**
