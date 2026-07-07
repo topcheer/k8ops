@@ -2380,6 +2380,26 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Namespace Isolation & Multi-tenancy Audit (v15.59+) ---
+	add("/api/scalability/namespace-isolation", "get", OpenAPIOperation{
+		Summary: "Namespace isolation & multi-tenancy audit", OperationID: "namespaceIsolation", Tags: []string{"Scalability", "Multi-tenancy", "Isolation"},
+		Description: "Audits namespace isolation controls for multi-tenant cluster safety. Per-namespace: NetworkPolicy presence, ResourceQuota presence, LimitRange presence, PSA enforce label (privileged/baseline/restricted). System namespaces (kube-*, default) are excluded from checks. Detection: missing NetworkPolicy (pods accessible from anywhere), missing ResourceQuota (unlimited resource consumption), missing LimitRange (no default requests/limits), no PSA label (privileged pods allowed). Fully isolated = all 3 controls + PSA. Isolation score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Namespace isolation report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNamespaces":   15,
+					"userNamespaces":    8,
+					"withNetworkPolicy": 5,
+					"withResourceQuota": 6,
+					"fullyIsolated":     3,
+					"isolationScore":    72,
+				},
+				"byNamespace": []interface{}{},
+				"unisolated":  []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
