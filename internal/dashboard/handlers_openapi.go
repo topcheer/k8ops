@@ -2318,6 +2318,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Image Drift & Version Consistency Detector (v15.54+) ---
+	add("/api/deployment/image-drift", "get", OpenAPIOperation{
+		Summary: "Deployment image drift & version consistency detector", OperationID: "imageDrift", Tags: []string{"Deployment", "Images", "Drift"},
+		Description: "Detects image version drift within workloads — pods in the same Deployment/StatefulSet/DaemonSet running different image versions. This happens during stalled rollouts, manual pod edits, or image tag mutation. Per-workload: distinct image variants with pod counts, drift detection, latest tag usage, digest presence. Detection: image drift (high, pods running different versions), latest tag (medium, not reproducible), no digest (low, mutable). Consistency score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Image drift report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalWorkloads":   15,
+					"driftedWorkloads": 2,
+					"usingLatestTag":   4,
+					"noDigest":         8,
+					"consistencyScore": 62,
+				},
+				"driftedWorkloads": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
