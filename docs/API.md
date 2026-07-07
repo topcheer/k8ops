@@ -1977,6 +1977,27 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 75. Pod 驱逐与节点压力历史追踪 (v15.63)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/pod-evictions` | Pod 驱逐历史追踪 |
+| GET | `/api/operations/pod-evictions?namespace=xxx` | 按命名空间过滤 |
+
+追踪被 kubelet 驱逐的 Pod，按原因分类（内存/磁盘/PID/未知），帮助识别资源不足的节点。
+
+**每 Pod 分析：** 驱逐原因（memory/disk/pid/unknown）、驱逐时间、所在节点、驱逐消息
+
+**每节点分析：** 总驱逐数、按原因分类、风险级别
+
+**检测项：** 节点驱逐 ≥5（warning）、24h 内 ≥3 次驱逐（warning）
+
+**健康评分 (0-100)：** recent(-8)、memory(-3)、disk(-3)、pid(-2)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -2027,5 +2048,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 72 | /api/scalability/namespace-isolation | Scalability | v15.59 | 命名空间隔离与多租户审计 |
 | 73 | /api/deployment/revision-history | Deployment | v15.60 | 部署版本历史与回滚就绪 |
 | 74 | /api/product/configmap-size | Product | v15.61 | ConfigMap/Secret 大小与内存压力审计 |
+| 75 | /api/operations/pod-evictions | Operations | v15.63 | Pod 驱逐与节点压力历史追踪 |
 
-**总计：140 个 OpenAPI 端点**
+**总计：141 个 OpenAPI 端点**

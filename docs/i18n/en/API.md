@@ -1295,12 +1295,20 @@ Verifies control plane component health (kube-apiserver, kube-scheduler, kube-co
 
 ---
 
+### 75. Pod Eviction & Node Pressure History Tracker (v15.63)
+
+**Path:** `GET /api/operations/pod-evictions?namespace=xxx`
+
+Tracks evicted pods with cause classification (memory/disk/pid/unknown). Per-node eviction counts and risk levels. Recent evictions (24h). Health score (0-100).
+
+---
+
 ## API Summary
 
-**Total: 140 OpenAPI endpoints** across 6 dimensions:
+**Total: 141 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size
 - **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions
 - **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security
 - **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation
 - **Infrastructure**: Auth, RBAC, health, version
