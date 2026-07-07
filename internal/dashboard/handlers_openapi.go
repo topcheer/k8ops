@@ -2253,6 +2253,29 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Affinity & Anti-Affinity Conflict Detector (v15.50+) ---
+	add("/api/product/affinity-conflict", "get", OpenAPIOperation{
+		Summary: "Affinity & anti-affinity conflict detector", OperationID: "affinityConflict", Tags: []string{"Product", "Scheduling", "Affinity"},
+		Description: "Detects pods stuck due to unsatisfiable affinity/anti-affinity rules. Per-pod: has affinity/anti-affinity, type (required/preferred), topologyKey, match labels, pending reason. Builds topology domain map from node labels (hostname/zone/region) and checks if required anti-affinity can be satisfied. Detection: unsatisfiable anti-affinity (critical — topology domain too small), pending due to affinity constraints (high), required hard anti-affinity (medium). Health score (0-100). Recommendations for topology spreading, preferred vs required, and node label configuration.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Affinity conflict report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":            120,
+					"pendingPods":          5,
+					"pendingDueToAffinity": 3,
+					"conflicts":            1,
+					"healthScore":          75,
+				},
+				"conflicts":       []interface{}{},
+				"pendingPods":     []interface{}{},
+				"hasAntiAffinity": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
