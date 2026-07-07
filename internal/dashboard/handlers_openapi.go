@@ -2188,6 +2188,31 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Resource Contention & Throttling Detector (v15.46+) ---
+	add("/api/operations/resource-contention", "get", OpenAPIOperation{
+		Summary: "Resource contention & throttling detector", OperationID: "resourceContention", Tags: []string{"Operations", "Performance", "Resources"},
+		Description: "Detects CPU throttling patterns, memory pressure, and resource contention between pods. Per-pod: CPU/memory request/limit values, restart count, node pressure status. Detection: pods on nodes with MemoryPressure/DiskPressure (critical, eviction risk), high-restart pods likely CPU throttled (liveness probe timeouts), no CPU limit (can starve neighbors), no memory limit (OOM cascade), CPU limit <100m (throttled under load), memory limit <128Mi (OOMKilled). Per-namespace contention stats. Contention score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Resource contention report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":       120,
+					"throttledPods":   8,
+					"memoryPressure":  3,
+					"noCpuLimits":     15,
+					"noMemoryLimits":  10,
+					"cpuLimitTooLow":  5,
+					"contentionScore": 62,
+				},
+				"throttledPods":  []interface{}{},
+				"memoryPressure": []interface{}{},
+				"byNamespace":    []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
