@@ -2339,6 +2339,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Node Taint & Pod Toleration Impact Analyzer (v15.56+) ---
+	add("/api/product/taint-toleration", "get", OpenAPIOperation{
+		Summary: "Node taint & pod toleration impact analyzer", OperationID: "taintToleration", Tags: []string{"Product", "Scheduling", "Taints"},
+		Description: "Analyzes node taints and pod tolerations for maintenance planning and node pool isolation. Per-node: taint list, NoSchedule/NoExecute flags, cordon status, risk level. Per-taint: cluster-wide summary with affected nodes. Pod analysis: broad tolerations (key=Exists, tolerates everything — dangerous, can run on master). Detection: NoExecute taints (critical, evicting pods), cordoned nodes (warning), NoSchedule blocking scheduling, broad tolerations (warning, may run on tainted nodes). Impact score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Taint & toleration report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNodes":       5,
+					"nodesWithTaints":  2,
+					"noScheduleNodes":  1,
+					"noExecuteNodes":   0,
+					"cordonedNodes":    1,
+					"podsWithBroadTol": 3,
+					"impactScore":      72,
+				},
+				"byNode":           []interface{}{},
+				"blockedNodes":     []interface{}{},
+				"broadTolerations": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
