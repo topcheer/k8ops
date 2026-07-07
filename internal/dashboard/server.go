@@ -229,6 +229,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/scheduling-latency", s.cacheMiddleware(30*time.Second, s.handleSchedulingLatency))                // pod scheduling latency analyzer
 	mux.HandleFunc("/api/operations/resource-contention", s.cacheMiddleware(30*time.Second, s.handleResourceContention))              // resource contention & throttling detector
 	mux.HandleFunc("/api/operations/node-lease", s.cacheMiddleware(30*time.Second, s.handleNodeLease))                                // node lease & heartbeat health monitor
+	mux.HandleFunc("/api/operations/control-plane", s.cacheMiddleware(30*time.Second, s.handleControlPlaneHealth))                    // control plane health checker
 	mux.HandleFunc("/api/networking/health", s.cacheMiddleware(30*time.Second, s.handleNetworkingHealth))                             // service & endpoint health
 	mux.HandleFunc("/api/storage/health", s.cacheMiddleware(60*time.Second, s.handleStorageHealth))                                   // PV/PVC storage health
 	mux.HandleFunc("/api/deployments/audit", s.cacheMiddleware(60*time.Second, s.handleDeployAudit))                                  // deployment config audit

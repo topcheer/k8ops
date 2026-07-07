@@ -2361,6 +2361,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Control Plane Health Checker (v15.57+) ---
+	add("/api/operations/control-plane", "get", OpenAPIOperation{
+		Summary: "Control plane health checker", OperationID: "controlPlaneHealth", Tags: []string{"Operations", "ControlPlane", "Health"},
+		Description: "Verifies control plane component health by checking kube-system pods (kube-apiserver, kube-scheduler, kube-controller-manager, etcd). Per-component: pod name, ready status, restart count, uptime, node kubelet version, risk level. Detection: unhealthy components (critical), excessive restarts (warning), recent restarts <1h uptime (warning), missing critical components like etcd or apiserver (critical). Handles k3s/microk8s/kind which run components as host processes (reports info, not error). Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Control plane health report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalComponents":     4,
+					"healthyComponents":   4,
+					"unhealthyComponents": 0,
+					"hasEtcd":             true,
+					"hasAPIServer":        true,
+					"healthScore":         100,
+				},
+				"components": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
