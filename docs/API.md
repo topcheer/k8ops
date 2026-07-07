@@ -1843,6 +1843,70 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 67. 节点心跳与健康租约监控 (v15.52)
+
+**路径：** `GET /api/operations/node-lease`
+
+通过 kube-node-lease 命名空间的 Lease 对象监控 kubelet 心跳新鲜度，对检测僵尸节点至关重要。
+
+**每节点分析：**
+
+| 检查项 | 说明 |
+|--------|------|
+| Lease 存在性 | kube-node-lease 中是否存在该节点的 Lease |
+| 心跳年龄 | renewTime 到现在的秒数 |
+| Holder Identity | kubelet 标识 |
+| Kubelet 版本 | 节点 kubelet 版本 |
+| 活跃负面条件 | MemoryPressure、DiskPressure 等 |
+
+**检测项：** 无 Lease（critical）、心跳 >2min（critical）、心跳 >40s（high）、NotReady（warning）
+
+**健康评分 (0-100)：** no lease(-15)、very stale(-12)、stale(-6)、NotReady(-8)
+
+---
+
+### 68. K8s 可扩展性瓶颈预测器 (v15.53)
+
+**路径：** `GET /api/scalability/bottleneck-predictor`
+
+比较实际使用量与 K8s 推荐限制，预测哪种资源将首先成为集群瓶颈。
+
+**每资源类型分析：**
+
+| 资源 | K8s 限制 |
+|------|---------|
+| Max pods per node | 110 |
+| Total cluster pods | 150,000 |
+| Total services | 5,000 |
+| Services per node | 20 (kube-proxy) |
+| Total nodes | 5,000 |
+| Namespaces | 10,000 |
+
+**状态分级：** healthy (<50%)、warning (>50%)、critical (>70%)、bottleneck (>90%)
+
+**输出：** 主要瓶颈类型 + 比率、风险评分（0-100，越高越安全）
+
+---
+
+### 69. 部署镜像漂移与版本一致性检测 (v15.54)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/deployment/image-drift` | 检测镜像版本漂移 |
+| GET | `/api/deployment/image-drift?namespace=xxx` | 按命名空间过滤 |
+
+检测同一工作负载内的 Pod 运行不同镜像版本——在滚动更新停滞或手动编辑时发生。
+
+**每工作负载分析：** 不同镜像版本列表 + Pod 数、漂移检测、:latest 标签检测、摘要存在性
+
+**检测项：** 镜像漂移（high）、:latest 标签（medium）、无摘要（low）
+
+**一致性评分 (0-100)：** drift(-15)、latest(-8)、no digest(-2)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -1885,5 +1949,8 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 64 | /api/scalability/crd-explosion | Scalability | v15.48 | API 对象计数与 CRD 爆炸风险检测器 |
 | 65 | /api/deployment/ref-integrity | Deployment | v15.49 | Secret/ConfigMap 引用完整性检查 |
 | 66 | /api/product/affinity-conflict | Product | v15.50 | Pod 亲和性/反亲和性冲突检测 |
+| 67 | /api/operations/node-lease | Operations | v15.52 | 节点心跳与健康租约监控 |
+| 68 | /api/scalability/bottleneck-predictor | Scalability | v15.53 | K8s 可扩展性瓶颈预测器 |
+| 69 | /api/deployment/image-drift | Deployment | v15.54 | 部署镜像漂移与版本一致性检测 |
 
-**总计：132 个 OpenAPI 端点**
+**总计：135 个 OpenAPI 端点**

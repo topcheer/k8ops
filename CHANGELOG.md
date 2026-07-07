@@ -4,6 +4,39 @@
 
 ---
 
+## v15.54 (2026-07-07)
+
+### 新增
+- **部署镜像漂移与版本一致性检测** (`GET /api/deployment/image-drift`)
+  - 每工作负载：不同镜像版本列表 + Pod 数
+  - 检测：镜像漂移(high)、:latest(medium)、无摘要(low)
+  - 一致性评分 (0-100)
+  - 5 个单元测试
+
+## v15.53 (2026-07-07)
+
+### 新增
+- **K8s 可扩展性瓶颈预测器** (`GET /api/scalability/bottleneck-predictor`)
+  - 比较 7 种资源 vs K8s 限制（pods/node, total pods, services 等）
+  - 状态：healthy/warning/critical/bottleneck
+  - 风险评分 (0-100)
+  - 4 个单元测试
+
+## v15.52 (2026-07-07)
+
+### 新增
+- **节点心跳与健康租约监控** (`GET /api/operations/node-lease`)
+  - 通过 Lease 对象监控 kubelet 心跳新鲜度
+  - 检测：无 Lease(critical)、心跳 >2min(critical)、心跳 >40s(high)
+  - 健康评分 (0-100)
+  - 5 个单元测试
+
+## v15.51 (2026-07-07)
+
+### 文档
+- API.md 新增 3 个端点文档 (v15.48-v15.50)
+- CHANGELOG.md 更新 v15.48-v15.50 发布日志
+
 ## v15.50 (2026-07-07)
 
 ### 新增
@@ -351,8 +384,8 @@
 
 | 指标 | 数值 |
 |------|------|
-| OpenAPI 端点 | 132 |
-| 单元测试 | 866 |
+| OpenAPI 端点 | 135 |
+| 单元测试 | 880 |
 | 文档 | 12 篇 (7 种语言) |
 | i18n 文件 | 76 个 |
 | Release Assets | 17 个 |

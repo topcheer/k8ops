@@ -1259,7 +1259,29 @@ Detects pods stuck due to unsatisfiable affinity rules. Topology domain map from
 
 ## API Summary
 
-**Total: 132 OpenAPI endpoints** across 6 dimensions:
+### 67. Node Lease & Heartbeat Health Monitor (v15.52)
+
+**Path:** `GET /api/operations/node-lease`
+
+Monitors kubelet heartbeat freshness via Lease objects. Per-node: lease existence, heartbeat age, holder identity, kubelet version, active conditions. Detection: no lease (critical), very stale >2min (critical), stale >40s (high), NotReady (warning). Health score (0-100).
+
+### 68. K8s Scalability Bottleneck Predictor (v15.53)
+
+**Path:** `GET /api/scalability/bottleneck-predictor`
+
+Predicts which K8s resource hits its limit first. Compares 7 resources against K8s limits: pods/node (110), total pods (150k), services (5k), services/node (20), nodes (5k), namespaces (10k). Status: healthy/warning/critical/bottleneck. Risk score (0-100).
+
+### 69. Deployment Image Drift & Version Consistency Detector (v15.54)
+
+**Path:** `GET /api/deployment/image-drift?namespace=xxx`
+
+Detects image version drift within workloads. Per-workload: distinct image variants with pod counts, drift detection, latest tag usage, digest presence. Detection: image drift (high), latest tag (medium), no digest (low). Consistency score (0-100).
+
+---
+
+## API Summary
+
+**Total: 135 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict
 - **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity
 - **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention
