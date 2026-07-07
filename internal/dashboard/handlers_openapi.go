@@ -2442,6 +2442,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Eviction & Node Pressure History Tracker (v15.63+) ---
+	add("/api/operations/pod-evictions", "get", OpenAPIOperation{
+		Summary: "Pod eviction & node pressure history tracker", OperationID: "podEvictions", Tags: []string{"Operations", "Eviction", "Pressure"},
+		Description: "Tracks pod evictions and correlates with node pressure conditions. Scans for Failed pods with Evicted status. Per-pod: node, cause (memory/disk/pid/unknown), eviction time, message. Per-node: eviction count by cause, risk level. Per-namespace: eviction count. Detection: high eviction nodes (>=5), recent eviction spikes (>=3 in 24h). Health score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Pod eviction report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"evictedPods":     5,
+					"recentEvictions": 2,
+					"memoryEvictions": 3,
+					"diskEvictions":   2,
+					"healthScore":     75,
+				},
+				"recentEvictions": []interface{}{},
+				"byNode":          []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
