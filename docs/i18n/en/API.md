@@ -1215,14 +1215,32 @@ Tracks pod scheduling latency. Per-pod: creation-to-scheduled time, pending reas
 
 Simulates each node failing. Per-node: affected pods, can reschedule (resource/selector/taint check), unschedulable, single-replica workloads. Excludes DaemonSet/completed/system pods. Resilience score (0-100).
 
+### 61. Deployment Update Strategy & Rollback Readiness (v15.44)
+
+**Path:** `GET /api/deployment/update-strategy?namespace=xxx`
+
+Audits deployment update strategies for safe rollouts. Per-deployment: strategy type (RollingUpdate/Recreate), maxSurge/maxUnavailable, revisionHistoryLimit, progressDeadlineSeconds. Detection: Recreate (critical), maxUnavailable=100% (high), maxSurge=0, low rev history, no progress deadline. Readiness score (0-100).
+
+### 62. StatefulSet Health & Ordered Rollout Audit (v15.45)
+
+**Path:** `GET /api/product/statefulset-audit?namespace=xxx`
+
+Audits StatefulSet health. Per-STS: pod management policy (OrderedReady/Parallel), PVC retention (Retain/Delete), headless service existence, volumeClaimTemplates, partition canary. Detection: no headless svc (critical), stuck rollout (high), PVC Delete (high), paused canary (warning). Health score (0-100).
+
+### 63. Resource Contention & Throttling Detector (v15.46)
+
+**Path:** `GET /api/operations/resource-contention?namespace=xxx`
+
+Detects CPU throttling, memory pressure, and resource contention. Detection: node MemoryPressure/DiskPressure (critical), high-restart pods (CPU throttled), no CPU/mem limits, CPU limit <100m, mem limit <128Mi. Contention score (0-100).
+
 ---
 
 ## API Summary
 
-**Total: 126 OpenAPI endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency
+**Total: 129 OpenAPI endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention
 - **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security
 - **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim
 - **Infrastructure**: Auth, RBAC, health, version

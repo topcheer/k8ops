@@ -1712,6 +1712,79 @@ receivers:
 
 ---
 
+### 61. 部署更新策略与回滚就绪审计 (v15.44)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/deployment/update-strategy` | 审计部署更新策略 |
+| GET | `/api/deployment/update-strategy?namespace=xxx` | 按命名空间过滤 |
+
+**每部署分析：**
+
+| 检查项 | 说明 |
+|---------|------|
+| Strategy Type | RollingUpdate（安全）/ Recreate（停机）|
+| maxSurge / maxUnavailable | 滚动更新参数 |
+| revisionHistoryLimit | 回滚能力 |
+| progressDeadlineSeconds | 卡住部署检测 |
+
+**风险分类：** critical（Recreate 策略）、high（maxUnavailable=100%）、medium（其他违规）、low（干净的 RollingUpdate）
+
+**就绪评分 (0-100)：** Recreate(-15)、maxUnavailable=100%(-10)、maxSurge=0(-5)、低版本历史(-4)、无进度截止(-3)
+
+---
+
+### 62. StatefulSet 健康与有序滚动更新审计 (v15.45)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/product/statefulset-audit` | 审计 StatefulSet 健康 |
+| GET | `/api/product/statefulset-audit?namespace=xxx` | 按命名空间过滤 |
+
+**每 StatefulSet 分析：**
+
+| 检查项 | 说明 |
+|---------|------|
+| Pod Management Policy | OrderedReady（慢）/ Parallel（快）|
+| PVC Retention Policy | Retain（安全）/ Delete（数据丢失风险）|
+| Headless Service | 存在性（Pod DNS 解析依赖）|
+| VolumeClaimTemplates | 存在性（无则应改用 Deployment）|
+| Partition Canary | 分区金丝雀暂停状态 |
+
+**检测：** 无 headless service (critical)、滚动更新卡住 (high)、PVC Delete 策略 (high)、暂停金丝雀 (warning)
+
+**健康评分 (0-100)：** 无 headless(-15)、卡住(-8)、PVC delete(-5)、partition(-4)、无 PVC(-3)
+
+---
+
+### 63. 资源争用与限流检测器 (v15.46)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/resource-contention` | 检测资源争用与限流 |
+| GET | `/api/operations/resource-contention?namespace=xxx` | 按命名空间过滤 |
+
+**检测项：**
+
+| 问题 | 严重程度 | 影响 |
+|------|---------|------|
+| 节点 MemoryPressure/DiskPressure | critical | Pod 可能被 OOM/驱逐 |
+| 高重启 Pod（≥3 次）| warning | 可能 CPU 限流导致探针超时 |
+| 无 CPU 限制 | warning | 可耗尽邻居 Pod 资源 |
+| 无内存限制 | warning | OOM 可级联影响共存 Pod |
+| CPU 限制 <100m | warning | 负载下被限流 |
+| 内存限制 <128Mi | warning | 负载下 OOMKilled |
+
+**争用评分 (0-100)：** memory pressure(-12)、throttled(-6)、low CPU(-4)、no CPU(-2)、no memory(-3)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -1748,5 +1821,8 @@ receivers:
 | 58 | /api/security/batch-audit | Security | v15.40 | CronJob 与批处理作业安全审计 |
 | 59 | /api/operations/scheduling-latency | Operations | v15.41 | Pod 调度延迟分析器 |
 | 60 | /api/scalability/node-failure-sim | Scalability | v15.42 | 节点故障影响模拟器 |
+| 61 | /api/deployment/update-strategy | Deployment | v15.44 | 部署更新策略与回滚就绪审计 |
+| 62 | /api/product/statefulset-audit | Product | v15.45 | StatefulSet 健康与有序滚动更新审计 |
+| 63 | /api/operations/resource-contention | Operations | v15.46 | 资源争用与限流检测器 |
 
-**总计：126 个 OpenAPI 端点**
+**总计：129 个 OpenAPI 端点**

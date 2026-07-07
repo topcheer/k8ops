@@ -4,6 +4,39 @@
 
 ---
 
+## v15.46 (2026-07-07)
+
+### 新增
+- **资源争用与限流检测器** (`GET /api/operations/resource-contention`)
+  - 检测 CPU 限流模式、内存压力、资源争用
+  - 检测项：节点压力、高重启 Pod、无限制 Pod、低限制
+  - 争用评分 (0-100)
+  - 6 个单元测试
+
+## v15.45 (2026-07-06)
+
+### 新增
+- **StatefulSet 健康与有序滚动更新审计** (`GET /api/product/statefulset-audit`)
+  - 每STS：Pod管理策略、PVC保留策略、Headless Service、VolumeClaimTemplates、分区金丝雀
+  - 检测：无headless(critical)、卡住(high)、PVC Delete(high)、暂停金丝雀(warning)
+  - 健康评分 (0-100)
+  - 6 个单元测试
+
+## v15.44 (2026-07-06)
+
+### 新增
+- **部署更新策略与回滚就绪审计** (`GET /api/deployment/update-strategy`)
+  - 每部署：策略类型、maxSurge/maxUnavailable、revisionHistoryLimit、progressDeadlineSeconds
+  - 检测：Recreate(critical)、maxUnavailable=100%(high)、maxSurge=0、低版本历史、无进度截止
+  - 就绪评分 (0-100)
+  - 6 个单元测试
+
+## v15.43 (2026-07-06)
+
+### 文档
+- API.md 新增 5 个端点文档 (v15.38-v15.42)
+- CHANGELOG.md 更新 v15.38-v15.42 发布日志
+
 ## v15.42 (2026-07-06)
 
 ### 新增
@@ -288,8 +321,8 @@
 
 | 指标 | 数值 |
 |------|------|
-| OpenAPI 端点 | 126 |
-| 单元测试 | 830 |
+| OpenAPI 端点 | 129 |
+| 单元测试 | 848 |
 | 文档 | 12 篇 (7 种语言) |
 | i18n 文件 | 76 个 |
 | Release Assets | 17 个 |
