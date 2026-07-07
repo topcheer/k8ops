@@ -2296,6 +2296,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- K8s Scalability Bottleneck Predictor (v15.53+) ---
+	add("/api/scalability/bottleneck-predictor", "get", OpenAPIOperation{
+		Summary: "K8s scalability bottleneck predictor", OperationID: "scalabilityBottleneck", Tags: []string{"Scalability", "Capacity", "Limits"},
+		Description: "Predicts which Kubernetes resource will become the cluster's scalability bottleneck first. Compares actual usage against K8s recommended limits: max pods per node (110), total pods (150k), total services (5k), services per node (20, kube-proxy limit), total nodes (5k), namespaces (10k). Per-resource: current count, K8s limit, ratio (0-100%), status (healthy/warning/critical/bottleneck). Per-node: pod count, pod ratio, risk level. Identifies primary bottleneck type and ratio. Risk score (0-100, higher = safer).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Scalability bottleneck prediction", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNodes":      5,
+					"maxPodsPerNode":  45,
+					"avgPodsPerNode":  32,
+					"totalPods":       160,
+					"totalServices":   25,
+					"bottleneckType":  "max_pods_per_node",
+					"bottleneckRatio": 40.9,
+					"riskScore":       59,
+				},
+				"byResource":  []interface{}{},
+				"bottlenecks": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 

@@ -268,6 +268,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/ha-audit", s.cacheMiddleware(60*time.Second, s.handleHASPOFDetector))                            // HA & single-point-of-failure detector
 	mux.HandleFunc("/api/scalability/node-failure-sim", s.cacheMiddleware(60*time.Second, s.handleNodeFailureSim))                    // node failure impact simulator
 	mux.HandleFunc("/api/scalability/crd-explosion", s.cacheMiddleware(120*time.Second, s.handleCRDExplosion))                        // API object count & CRD explosion risk detector
+	mux.HandleFunc("/api/scalability/bottleneck-predictor", s.cacheMiddleware(120*time.Second, s.handleScalabilityBottleneck))        // K8s scalability bottleneck predictor
 	mux.HandleFunc("/api/deployment/image-hygiene", s.cacheMiddleware(60*time.Second, s.handleImageHygiene))                          // container image deployment hygiene analyzer
 	mux.HandleFunc("/api/deployment/rollout-health", s.cacheMiddleware(30*time.Second, s.handleRolloutHealth))                        // deployment rollout strategy & health analyzer
 	mux.HandleFunc("/api/deployment/probe-compliance", s.cacheMiddleware(60*time.Second, s.handleProbeCompliance))                    // health probe compliance auditor
