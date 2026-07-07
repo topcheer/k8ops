@@ -2213,6 +2213,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- API Object Count & CRD Explosion Risk (v15.48+) ---
+	add("/api/scalability/crd-explosion", "get", OpenAPIOperation{
+		Summary: "API object count & CRD explosion risk detector", OperationID: "crdExplosion", Tags: []string{"Scalability", "API", "Capacity"},
+		Description: "Counts API objects per resource type and detects CRD explosion risk. As clusters grow, excessive object counts (ConfigMaps, Secrets, CRDs) slow API server list/watch operations and increase etcd size. Per-resource-type: object count, risk level (>1000 critical, >500 high, >200 medium). Per-namespace: ConfigMap/Secret/Service/Pod counts, total objects, top 15 namespaces. Detection: very high object counts (>1000), high secret count per namespace (>100, encryption overhead), high ConfigMap count (>200, cleanup needed), excessive CRDs (>30, API overhead), largest namespace objects (>500, split recommended). Scalability score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("CRD explosion risk report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalCRDs":        25,
+					"totalConfigMaps":  350,
+					"totalSecrets":     180,
+					"highCountCRDs":    2,
+					"scalabilityScore": 78,
+				},
+				"byResourceType": []interface{}{},
+				"byNamespace":    []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
