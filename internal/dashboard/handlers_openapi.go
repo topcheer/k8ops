@@ -2400,6 +2400,26 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Revision History & Rollback Readiness (v15.60+) ---
+	add("/api/deployment/revision-history", "get", OpenAPIOperation{
+		Summary: "Deployment revision history & rollback readiness", OperationID: "revisionHistory", Tags: []string{"Deployment", "Rollback", "RevisionHistory"},
+		Description: "Analyzes deployment revision history depth and rollback readiness. Per-deployment: revisionHistoryLimit, ReplicaSet count, current/updated replicas, oldest ReplicaSet age. Detection: revisionHistoryLimit=0 (critical, cannot rollback), revisionHistoryLimit<5 (warning, limited rollback), high churn >10 ReplicaSets (info, frequent deploys), stale ReplicaSets >30 days (etcd waste). Rollback readiness score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Revision history report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalDeployments":  15,
+					"lowHistoryLimit":   3,
+					"noHistoryLimit":    1,
+					"rollbackReadiness": 82,
+				},
+				"byWorkload": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
