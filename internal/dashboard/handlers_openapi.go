@@ -2420,6 +2420,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- ConfigMap/Secret Size & Memory Pressure Auditor (v15.61+) ---
+	add("/api/product/configmap-size", "get", OpenAPIOperation{
+		Summary: "ConfigMap/Secret size & memory pressure auditor", OperationID: "configmapSize", Tags: []string{"Product", "ConfigMap", "Storage"},
+		Description: "Audits ConfigMap and Secret sizes for etcd pressure and kubelet memory issues. etcd has a 1.5MB max value size limit. Large ConfigMaps mounted as volumes increase kubelet memory and API server traffic. Per-resource: size in KB, key count, largest key, mount status. Per-namespace: total ConfigMap/Secret sizes. Detection: oversized ConfigMaps >1MB (warning), oversized Secrets >1MB (warning, encryption overhead), large mounted ConfigMaps (kubelet memory). Health score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("ConfigMap/Secret size report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalConfigMaps": 50,
+					"totalSecrets":    30,
+					"oversizedCMs":    2,
+					"largestCMSizeKB": 1500.0,
+					"totalCMSizeMB":   12.5,
+					"healthScore":     85,
+				},
+				"oversizedCMs": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 

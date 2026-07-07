@@ -259,6 +259,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/statefulset-audit", s.cacheMiddleware(60*time.Second, s.handleStatefulSetAudit))                     // StatefulSet health & ordered rollout audit
 	mux.HandleFunc("/api/product/affinity-conflict", s.cacheMiddleware(60*time.Second, s.handleAffinityConflict))                     // affinity & anti-affinity conflict detector
 	mux.HandleFunc("/api/product/taint-toleration", s.cacheMiddleware(60*time.Second, s.handleTaintToleration))                       // node taint & pod toleration impact analyzer
+	mux.HandleFunc("/api/product/configmap-size", s.cacheMiddleware(120*time.Second, s.handleConfigMapSize))                          // ConfigMap/Secret size & memory pressure auditor
 	mux.HandleFunc("/api/scalability/overcommit", s.cacheMiddleware(60*time.Second, s.handleOvercommitAnalysis))                      // resource over-commit & pressure
 	mux.HandleFunc("/api/scalability/autoscale-recommendations", s.cacheMiddleware(60*time.Second, s.handleAutoscaleRecommendations)) // HPA/VPA right-sizing
 	mux.HandleFunc("/api/scalability/pvc-analysis", s.cacheMiddleware(60*time.Second, s.handlePVCAnalysis))                           // PVC binding & storage performance
