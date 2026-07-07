@@ -1237,10 +1237,32 @@ Detects CPU throttling, memory pressure, and resource contention. Detection: nod
 
 ## API Summary
 
-**Total: 129 OpenAPI endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy
+### 64. API Object Count & CRD Explosion Risk (v15.48)
+
+**Path:** `GET /api/scalability/crd-explosion`
+
+Counts API objects per resource type. Per-resource: object count, risk level. Per-namespace: ConfigMap/Secret/Service/Pod counts. Detection: very high counts, excessive secrets, excessive CRDs. Scalability score (0-100).
+
+### 65. Secret/ConfigMap Reference Integrity Checker (v15.49)
+
+**Path:** `GET /api/deployment/ref-integrity?namespace=xxx`
+
+Verifies every Secret/ConfigMap reference exists. Checks volumes, envFrom, env valueFrom. Detection: broken refs (critical), optional missing refs. Integrity score (0-100).
+
+### 66. Affinity & Anti-Affinity Conflict Detector (v15.50)
+
+**Path:** `GET /api/product/affinity-conflict?namespace=xxx`
+
+Detects pods stuck due to unsatisfiable affinity rules. Topology domain map from node labels. Detection: unsatisfiable anti-affinity (critical), pending due to affinity (high). Health score (0-100).
+
+---
+
+## API Summary
+
+**Total: 132 OpenAPI endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity
 - **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention
 - **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security
-- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion
 - **Infrastructure**: Auth, RBAC, health, version

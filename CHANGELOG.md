@@ -4,6 +4,36 @@
 
 ---
 
+## v15.50 (2026-07-07)
+
+### 新增
+- **Pod 亲和性/反亲和性冲突检测** (`GET /api/product/affinity-conflict`)
+  - 拓扑域分析：hostname/zone/region 域映射
+  - 检测：不可满足反亲和性(critical)、因亲和性Pending(high)
+  - 7 个单元测试
+
+## v15.49 (2026-07-07)
+
+### 新增
+- **Secret/ConfigMap 引用完整性检查** (`GET /api/deployment/ref-integrity`)
+  - 检查 Deployment/StatefulSet/DaemonSet 的所有 Secret/ConfigMap 引用
+  - 来源：volume、envFrom、env valueFrom
+  - 5 个单元测试
+
+## v15.48 (2026-07-07)
+
+### 新增
+- **API 对象计数与 CRD 爆炸风险检测器** (`GET /api/scalability/crd-explosion`)
+  - 每资源类型：对象计数、风险级别
+  - 每命名空间：ConfigMap/Secret/Service/Pod 计数
+  - 6 个单元测试
+
+## v15.47 (2026-07-07)
+
+### 文档
+- API.md 新增 3 个端点文档 (v15.44-v15.46)
+- CHANGELOG.md 更新 v15.44-v15.46 发布日志
+
 ## v15.46 (2026-07-07)
 
 ### 新增
@@ -321,8 +351,8 @@
 
 | 指标 | 数值 |
 |------|------|
-| OpenAPI 端点 | 129 |
-| 单元测试 | 848 |
+| OpenAPI 端点 | 132 |
+| 单元测试 | 866 |
 | 文档 | 12 篇 (7 种语言) |
 | i18n 文件 | 76 个 |
 | Release Assets | 17 个 |

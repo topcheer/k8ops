@@ -1785,6 +1785,64 @@ receivers:
 
 ---
 
+### 64. API 对象计数与 CRD 爆炸风险检测器 (v15.48)
+
+**路径：** `GET /api/scalability/crd-explosion`
+
+随着集群增长，过多的对象计数（ConfigMaps、Secrets、CRDs）会拖慢 API server 的 list/watch 操作并增大 etcd 大小。
+
+**每资源类型分析：** 对象数、风险级别（>1000 critical, >500 high, >200 medium）
+
+**每命名空间分析：** ConfigMap/Secret/Service/Pod 计数、总对象数
+
+**检测项：** 对象计数 >1000（warning）、Secret >100/命名空间（warning）、ConfigMap >200/命名空间（info）、CRD 总数 >30（info）
+
+**可扩展性评分 (0-100)：** very high count(-10)、high count(-5)、excessive ConfigMaps(-5)、excessive Secrets(-5)、excessive CRDs(-5)
+
+---
+
+### 65. Secret/ConfigMap 引用完整性检查 (v15.49)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/deployment/ref-integrity` | 检查 Secret/ConfigMap 引用完整性 |
+| GET | `/api/deployment/ref-integrity?namespace=xxx` | 按命名空间过滤 |
+
+缺失的引用是部署后 CrashLoopBackOff 的第一大原因。
+
+**检查范围：** Deployment、StatefulSet、DaemonSet
+
+**检查所有引用来源：** volume mounts（configMap/secret）、envFrom（configMapRef/secretRef）、env valueFrom（configMapKeyRef/secretKeyRef）
+
+**检测项：** 引用不存在的 Secret/ConfigMap（critical，Pod 启动失败）、optional=true 但缺失（low）
+
+**完整性评分 (0-100)：** 每个损坏引用(-15)
+
+---
+
+### 66. Pod 亲和性/反亲和性冲突检测 (v15.50)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/product/affinity-conflict` | 检测亲和性/反亲和性冲突 |
+| GET | `/api/product/affinity-conflict?namespace=xxx` | 按命名空间过滤 |
+
+Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因之一。
+
+**每 Pod 分析：** 是否有亲和性/反亲和性、类型（required/preferred）、TopologyKey、匹配标签、Pending 原因
+
+**拓扑域分析：** 从节点标签构建域映射（hostname/zone/region），检查 required 反亲和性是否可满足
+
+**检测项：** 不可满足的反亲和性（critical，拓扑域太小）、因亲和性 Pending（high）、Required 硬反亲和性（medium）
+
+**健康评分 (0-100)：** conflicts(-15)、pending affinity(-8)、required anti-affinity(-2)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -1824,5 +1882,8 @@ receivers:
 | 61 | /api/deployment/update-strategy | Deployment | v15.44 | 部署更新策略与回滚就绪审计 |
 | 62 | /api/product/statefulset-audit | Product | v15.45 | StatefulSet 健康与有序滚动更新审计 |
 | 63 | /api/operations/resource-contention | Operations | v15.46 | 资源争用与限流检测器 |
+| 64 | /api/scalability/crd-explosion | Scalability | v15.48 | API 对象计数与 CRD 爆炸风险检测器 |
+| 65 | /api/deployment/ref-integrity | Deployment | v15.49 | Secret/ConfigMap 引用完整性检查 |
+| 66 | /api/product/affinity-conflict | Product | v15.50 | Pod 亲和性/反亲和性冲突检测 |
 
-**总计：129 个 OpenAPI 端点**
+**总计：132 个 OpenAPI 端点**
