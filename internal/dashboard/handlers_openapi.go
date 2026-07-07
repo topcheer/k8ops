@@ -2165,6 +2165,29 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- StatefulSet Health & Ordered Rollout Audit (v15.45+) ---
+	add("/api/product/statefulset-audit", "get", OpenAPIOperation{
+		Summary: "StatefulSet health & ordered rollout auditor", OperationID: "statefulSetAudit", Tags: []string{"Product", "StatefulSet", "Storage"},
+		Description: "Audits StatefulSet health and ordered rollout status. StatefulSets are critical for databases and stateful apps with unique challenges: ordered rollout, PVC retention, partition canary updates, headless service requirement. Per-StatefulSet: replica/ready/updated counts, current vs update revision, pod management policy (OrderedReady/Parallel), PVC retention policy (Retain/Delete), headless service existence, volume claim templates, partition canary status. Detection: missing headless service (critical, pod DNS fails), stuck rollouts (ready < replicas), PVC Delete retention (data loss on STS deletion), paused canary (partition > 0), no volumeClaimTemplates (should be Deployment), OrderedReady with large replicas (slow scaling). Health score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("StatefulSet health report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalStatefulSets": 8,
+					"healthy":           6,
+					"stuckRollout":      1,
+					"noHeadlessSvc":     1,
+					"pvcDelete":         2,
+					"healthScore":       72,
+				},
+				"byWorkload":    []interface{}{},
+				"stuckRollouts": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
