@@ -1941,6 +1941,42 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 72. 命名空间隔离与多租户审计 (v15.59)
+
+**路径：** `GET /api/scalability/namespace-isolation`
+
+审计命名空间隔离控制，确保多租户集群安全。
+
+**每命名空间分析：** NetworkPolicy 存在性、ResourceQuota 存在性、LimitRange 存在性、PSA 标签
+
+**隔离评分 (0-100)**
+
+---
+
+### 73. 部署版本历史与回滚就绪分析 (v15.60)
+
+**路径：** `GET /api/deployment/revision-history?namespace=xxx`
+
+**每部署分析：** revisionHistoryLimit、ReplicaSet 数量、最旧 RS 年龄
+
+**检测项：** rhl=0（critical）、rhl<5（warning）、>10 ReplicaSets（info）
+
+**回滚就绪评分 (0-100)**
+
+---
+
+### 74. ConfigMap/Secret 大小与内存压力审计 (v15.61)
+
+**路径：** `GET /api/product/configmap-size?namespace=xxx`
+
+**每资源分析：** 大小(KB)、键数量、最大键、是否被挂载
+
+**检测项：** >1MB ConfigMap（warning）、>1MB Secret（warning）
+
+**健康评分 (0-100)**
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -1988,5 +2024,8 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 69 | /api/deployment/image-drift | Deployment | v15.54 | 部署镜像漂移与版本一致性检测 |
 | 70 | /api/product/taint-toleration | Product | v15.56 | 节点污点与 Pod 容忍度影响分析 |
 | 71 | /api/operations/control-plane | Operations | v15.57 | 控制平面健康检查 |
+| 72 | /api/scalability/namespace-isolation | Scalability | v15.59 | 命名空间隔离与多租户审计 |
+| 73 | /api/deployment/revision-history | Deployment | v15.60 | 部署版本历史与回滚就绪 |
+| 74 | /api/product/configmap-size | Product | v15.61 | ConfigMap/Secret 大小与内存压力审计 |
 
-**总计：137 个 OpenAPI 端点**
+**总计：140 个 OpenAPI 端点**
