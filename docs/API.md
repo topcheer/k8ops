@@ -1907,6 +1907,40 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 70. 节点污点与 Pod 容忍度影响分析 (v15.56)
+
+**路径：** `GET /api/product/taint-toleration`
+
+分析节点污点和 Pod 容忍度，用于维护计划和节点池隔离。
+
+**每节点分析：** 污点列表（NoSchedule/NoExecute/PreferNoSchedule）、cordon 状态、风险级别
+
+**集群级污点摘要：** 每种唯一污点 → 受影响节点数
+
+**检测项：** NoExecute（critical，正在驱逐 Pod）、cordoned 节点（warning）、NoSchedule（阻塞调度）、宽泛容忍 key=Exists（warning，可在 master 节点运行）
+
+**影响评分 (0-100)：** NoExecute(-15)、cordoned(-8)、NoSchedule(-5)、broad tol(-3)
+
+---
+
+### 71. 控制平面健康检查 (v15.57)
+
+**路径：** `GET /api/operations/control-plane`
+
+通过检查 kube-system 中的控制平面组件 Pod，验证集群核心组件健康状态。
+
+**检查组件：** kube-apiserver、kube-scheduler、kube-controller-manager、etcd
+
+**每组件分析：** 就绪状态、重启次数、运行时长、kubelet 版本、风险级别
+
+**检测项：** 组件不就绪（critical）、重启 ≥5 次（high）、重启 ≥3 次（medium）、运行 <1h（medium）、缺失 etcd/apiserver（critical）
+
+**k3s/microk8s/kind 支持：** 无控制平面 Pod 时报告 info
+
+**健康评分 (0-100)：** unhealthy(-20)、restarts(-5)、missing etcd(-20)、missing apiserver(-20)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -1952,5 +1986,7 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 67 | /api/operations/node-lease | Operations | v15.52 | 节点心跳与健康租约监控 |
 | 68 | /api/scalability/bottleneck-predictor | Scalability | v15.53 | K8s 可扩展性瓶颈预测器 |
 | 69 | /api/deployment/image-drift | Deployment | v15.54 | 部署镜像漂移与版本一致性检测 |
+| 70 | /api/product/taint-toleration | Product | v15.56 | 节点污点与 Pod 容忍度影响分析 |
+| 71 | /api/operations/control-plane | Operations | v15.57 | 控制平面健康检查 |
 
-**总计：135 个 OpenAPI 端点**
+**总计：137 个 OpenAPI 端点**

@@ -1281,7 +1281,23 @@ Detects image version drift within workloads. Per-workload: distinct image varia
 
 ## API Summary
 
-**Total: 135 OpenAPI endpoints** across 6 dimensions:
+### 70. Node Taint & Pod Toleration Impact Analyzer (v15.56)
+
+**Path:** `GET /api/product/taint-toleration`
+
+Analyzes node taints and pod tolerations for maintenance planning. Per-node: taint list (NoSchedule/NoExecute), cordon status. Cluster-wide taint summary. Detection: NoExecute (critical, evicting pods), cordoned nodes (warning), broad tolerations key=Exists (warning). Impact score (0-100).
+
+### 71. Control Plane Health Checker (v15.57)
+
+**Path:** `GET /api/operations/control-plane`
+
+Verifies control plane component health (kube-apiserver, kube-scheduler, kube-controller-manager, etcd). Per-component: ready, restarts, uptime, risk. Detection: unhealthy (critical), excessive restarts (high), missing components (critical). k3s/microk8s/kind detection. Health score (0-100).
+
+---
+
+## API Summary
+
+**Total: 137 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict
 - **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity
 - **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention

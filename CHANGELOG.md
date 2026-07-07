@@ -4,6 +4,32 @@
 
 ---
 
+## v15.57 (2026-07-07)
+
+### 新增
+- **控制平面健康检查** (`GET /api/operations/control-plane`)
+  - 检查 kube-apiserver, kube-scheduler, kube-controller-manager, etcd
+  - 每组件：就绪状态、重启次数、运行时长
+  - k3s/microk8s/kind 检测
+  - 健康评分 (0-100)
+  - 7 个单元测试
+
+## v15.56 (2026-07-07)
+
+### 新增
+- **节点污点与 Pod 容忍度影响分析** (`GET /api/product/taint-toleration`)
+  - 每节点：污点列表、cordon 状态、风险级别
+  - 集群级污点摘要
+  - 检测：NoExecute(critical)、cordoned(warning)、宽泛容忍(warning)
+  - 影响评分 (0-100)
+  - 6 个单元测试
+
+## v15.55 (2026-07-07)
+
+### 文档
+- API.md 新增 3 个端点文档 (v15.52-v15.54)
+- CHANGELOG.md 更新 v15.52-v15.54 发布日志
+
 ## v15.54 (2026-07-07)
 
 ### 新增
@@ -384,8 +410,8 @@
 
 | 指标 | 数值 |
 |------|------|
-| OpenAPI 端点 | 135 |
-| 单元测试 | 880 |
+| OpenAPI 端点 | 137 |
+| 单元测试 | 893 |
 | 文档 | 12 篇 (7 种语言) |
 | i18n 文件 | 76 个 |
 | Release Assets | 17 个 |
