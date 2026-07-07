@@ -2232,6 +2232,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Secret/ConfigMap Reference Integrity Checker (v15.49+) ---
+	add("/api/deployment/ref-integrity", "get", OpenAPIOperation{
+		Summary: "Secret/ConfigMap reference integrity checker", OperationID: "refIntegrity", Tags: []string{"Deployment", "Validation", "CrashLoop"},
+		Description: "Verifies that every Secret and ConfigMap reference in Deployments, StatefulSets, and DaemonSets actually exists. Missing references are the #1 cause of CrashLoopBackOff after deployment. Checks: volume mounts (configMap/secret), envFrom (configMapRef/secretRef), env valueFrom (configMapKeyRef/secretKeyRef). For each reference: type, name, source (volume/envFrom/env), optional flag, existence status. Detection: broken references (critical, pod won't start), optional missing references (may be intentional). Integrity score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Reference integrity report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalWorkloads": 15,
+					"totalRefs":      45,
+					"brokenRefs":     2,
+					"optionalRefs":   3,
+					"integrityScore": 93,
+				},
+				"brokenRefs": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
