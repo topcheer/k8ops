@@ -2482,6 +2482,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- CSI Driver & Storage Capability Auditor (v15.67+) ---
+	add("/api/scalability/csi-audit", "get", OpenAPIOperation{
+		Summary: "CSI driver & storage capability auditor", OperationID: "csiAudit", Tags: []string{"Scalability", "Storage", "CSI"},
+		Description: "Audits CSI drivers and StorageClass capabilities. Per-StorageClass: provisioner, default flag, binding mode, volume expansion support, reclaim policy, risk level. Per-CSIDriver: attach required, pod info on mount, fsGroup policy, snapshot support. Detection: no default StorageClass (warning), multiple defaults (warning), missing CSI driver for provisioner (warning), no expansion support (info), Delete reclaim policy (info), no VolumeSnapshotClass (info). Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("CSI audit report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalStorageClasses": 3,
+					"defaultSCCount":      1,
+					"expandableSCs":       2,
+					"totalCSIDrivers":     1,
+					"healthScore":         85,
+				},
+				"byStorageClass": []interface{}{},
+				"csiDrivers":     []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
