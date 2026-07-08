@@ -1319,10 +1319,26 @@ Audits CSI drivers and StorageClass capabilities. Per-SC: provisioner, default, 
 
 ## API Summary
 
-**Total: 143 OpenAPI endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history
+### 78. Deployment Disruption & Maintenance Impact Analyzer (v15.69)
+
+**Path:** `GET /api/deployment/disruption-impact`
+
+Analyzes Deployment/StatefulSet + PDB interaction for maintenance readiness. Per-workload: PDB presence, minAvailable/maxUnavailable, evictable pods, block-drain flag. Maintenance readiness score (0-100).
+
+### 79. Batch Job Execution Health & Completion Analyzer (v15.70)
+
+**Path:** `GET /api/product/job-health?namespace=xxx`
+
+Analyzes batch Job execution health. Per-job: status, duration, completions, backoffLimit, parent CronJob. Detection: failed jobs, long-running >24h, suspended. Health score (0-100).
+
+---
+
+## API Summary
+
+**Total: 145 OpenAPI endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact
 - **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions
 - **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy
-- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit
 - **Infrastructure**: Auth, RBAC, health, version

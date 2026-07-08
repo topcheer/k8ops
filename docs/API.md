@@ -2030,6 +2030,39 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 78. 部署中断与维护影响分析 (v15.69)
+
+**路径：** `GET /api/deployment/disruption-impact`
+
+分析 Deployment/StatefulSet 与 PodDisruptionBudget 的交互，预测哪些工作负载会阻塞节点维护。
+
+**每工作负载分析：** PDB 存在性、minAvailable/maxUnavailable、可驱逐 Pod 数、是否阻塞 drain
+
+**检测项：** PDB 阻塞所有驱逐（critical）、无 PDB（warning）、危险 PDB（warning）
+
+**维护就绪评分 (0-100)：** block drain(-15)、risky PDB(-5)、no PDB(-3)
+
+---
+
+### 79. 批处理 Job 执行健康分析 (v15.70)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/product/job-health` | 批处理 Job 执行健康 |
+| GET | `/api/product/job-health?namespace=xxx` | 按命名空间过滤 |
+
+分析 Kubernetes Batch Job 的执行状态。
+
+**每 Job 分析：** 状态、运行时长、完成数、成功/失败数、backoffLimit、父 CronJob
+
+**检测项：** Job 失败（warning）、运行 >24h（warning）、已暂停（info）、无 backoffLimit（info）
+
+**健康评分 (0-100)：** failed(-10)、longRunning(-8)、noBackoff(-2)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -2083,5 +2116,7 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 75 | /api/operations/pod-evictions | Operations | v15.63 | Pod 驱逐与节点压力历史追踪 |
 | 76 | /api/security/audit-policy | Security | v15.65 | API Server 审计日志配置检查 |
 | 77 | /api/scalability/csi-audit | Scalability | v15.67 | CSI 驱动与存储能力审计 |
+| 78 | /api/deployment/disruption-impact | Deployment | v15.69 | 部署中断与维护影响分析 |
+| 79 | /api/product/job-health | Product | v15.70 | 批处理 Job 执行健康分析 |
 
-**总计：143 个 OpenAPI 端点**
+**总计：145 个 OpenAPI 端点**

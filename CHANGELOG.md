@@ -4,6 +4,30 @@
 
 ---
 
+## v15.70 (2026-07-07)
+
+### 新增
+- **批处理 Job 执行健康分析** (`GET /api/product/job-health`)
+  - 每Job：状态、运行时长、完成数、backoffLimit
+  - 检测：失败Job(warning)、运行>24h(warning)、暂停(info)
+  - 健康评分 (0-100)
+  - 6 个单元测试
+
+## v15.69 (2026-07-07)
+
+### 新增
+- **部署中断与维护影响分析** (`GET /api/deployment/disruption-impact`)
+  - 分析 Deployment/StatefulSet + PDB 交互
+  - 检测：阻塞 drain(critical)、无 PDB(warning)、危险 PDB
+  - 维护就绪评分 (0-100)
+  - 6 个单元测试
+
+## v15.68 (2026-07-07)
+
+### 文档
+- API.md 新增 1 个端点文档 (v15.66-v15.67)
+- CHANGELOG.md 更新
+
 ## v15.67 (2026-07-07)
 
 ### 新增
@@ -480,8 +504,8 @@
 
 | 指标 | 数值 |
 |------|------|
-| OpenAPI 端点 | 143 |
-| 单元测试 | 926 |
+| OpenAPI 端点 | 145 |
+| 单元测试 | 938 |
 | 文档 | 12 篇 (7 种语言) |
 | i18n 文件 | 76 个 |
 | Release Assets | 17 个 |
