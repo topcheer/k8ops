@@ -2647,6 +2647,26 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Container Host Namespace & Privilege Exposure Auditor (v15.83+) ---
+	add("/api/security/host-namespace", "get", OpenAPIOperation{
+		Summary: "Container host namespace & privilege exposure auditor", OperationID: "hostNamespace", Tags: []string{"Security", "Namespace", "Privilege"},
+		Description: "Audits containers for host namespace exposure and privilege escalation. Per-pod: hostNetwork, hostPID, hostIPC, privileged containers, hostPath mounts, added capabilities, runAsRoot. Risk levels: critical (privileged+hostNS), high (privileged or hostNS), medium (minor exposures). Exposure safety score (0-100, higher=safer).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Host namespace exposure report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"hostNetworkPods":      2,
+					"privilegedContainers": 1,
+					"hostPathMounts":       3,
+					"exposureScore":        78,
+				},
+				"exposedPods": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
