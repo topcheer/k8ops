@@ -2703,6 +2703,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Container Ephemeral Storage & emptyDir Limit Compliance (v15.88+) ---
+	add("/api/deployment/ephemeral-storage", "get", OpenAPIOperation{
+		Summary: "Ephemeral storage & emptyDir limit compliance checker", OperationID: "ephemeralStorage", Tags: []string{"Deployment", "Storage", "Compliance"},
+		Description: "Checks container ephemeral storage limit compliance. Per-pod: ephemeral-storage limit presence, emptyDir volume count and size limits, unbounded emptyDir detection. Without limits, pods can fill node disk and trigger DiskPressure evictions. Compliance score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Ephemeral storage compliance report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":         50,
+					"hasEphemeralLimit": 40,
+					"noEphemeralLimit":  10,
+					"unboundedTmpfs":    3,
+					"complianceScore":   85,
+				},
+				"byWorkload": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
