@@ -2612,6 +2612,23 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Workload Maturity & Best Practices Scorer (v15.79+) ---
+	add("/api/deployment/workload-maturity", "get", OpenAPIOperation{
+		Summary: "Workload maturity & best practices scorer", OperationID: "workloadMaturity", Tags: []string{"Deployment", "BestPractices", "Maturity"},
+		Description: "Scores each Deployment against K8s best practices checklist (8 checks, weights sum to 100): resource requests (15), probes (15), multi-replica (15), PDB (10), anti-affinity (15), security context (10), revision history (10), labels (10). Per-workload: maturity score 0-100, risk level. Cluster avg maturity score.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Workload maturity report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalWorkloads":   15,
+					"hasResources":     12,
+					"hasProbes":        10,
+					"avgMaturityScore": 72.5,
+				},
+				"byWorkload": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
