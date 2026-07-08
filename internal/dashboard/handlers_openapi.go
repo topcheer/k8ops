@@ -2595,6 +2595,23 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- HPA Health & Scaling Activity Analyzer (v15.77+) ---
+	add("/api/product/hpa-health", "get", OpenAPIOperation{
+		Summary: "HPA health & scaling activity analyzer", OperationID: "hpaHealth", Tags: []string{"Product", "HPA", "Autoscaling"},
+		Description: "Analyzes HorizontalPodAutoscaler health and scaling activity. Per-HPA: target ref, min/max/current/desired replicas, scaling active status, metrics count, conditions. Detection: at maxReplicas (warning, may be under-provisioned), no metrics (warning, cannot auto-scale), scaling inactive (info, check metrics server). Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("HPA health report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalHPAs":     5,
+					"atMaxReplicas": 1,
+					"scalingActive": 4,
+					"healthScore":   85,
+				},
+				"byHPA": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
