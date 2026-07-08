@@ -2520,6 +2520,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Batch Job Execution Health & Completion Analyzer (v15.70+) ---
+	add("/api/product/job-health", "get", OpenAPIOperation{
+		Summary: "Batch job execution health & completion analyzer", OperationID: "jobHealth", Tags: []string{"Product", "Batch", "Jobs"},
+		Description: "Analyzes batch Job execution health. Per-job: status (Running/Complete/Failed/Suspended/Pending), duration, completions, succeeded/failed counts, backoffLimit, parent CronJob. Detection: failed jobs (warning), long-running >24h (warning, may be stuck), suspended jobs (info), no backoffLimit (info). Health score (0-100).",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter by namespace (empty = all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Job health report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalJobs":     8,
+					"runningJobs":   2,
+					"completedJobs": 5,
+					"failedJobs":    1,
+					"healthScore":   85,
+				},
+				"byJob":      []interface{}{},
+				"failedJobs": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
