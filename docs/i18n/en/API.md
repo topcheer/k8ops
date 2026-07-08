@@ -1357,8 +1357,18 @@ Checks proximity to official K8s limits: nodes(5000), pods(150000), services(500
 
 ## API Summary
 
-**Total: 148 OpenAPI endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health
+### 83. HPA Health & Scaling Activity Analyzer (v15.77)
+
+**Path:** `GET /api/product/hpa-health`
+
+Analyzes HPA health and scaling activity. Per-HPA: replicas, scaling active, metrics count, conditions. Detection: at maxReplicas (warning), no metrics (warning), scaling inactive (info). Health score (0-100).
+
+---
+
+## API Summary
+
+**Total: 149 OpenAPI endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health
 - **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact
 - **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency
 - **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest

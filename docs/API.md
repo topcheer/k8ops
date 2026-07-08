@@ -2107,6 +2107,20 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 83. HPA 健康与缩放活动分析 (v15.77)
+
+**路径：** `GET /api/product/hpa-health`
+
+分析 HorizontalPodAutoscaler 健康状态和缩放活动。
+
+**每 HPA 分析：** 最小/最大副本数、当前/期望副本、缩放活跃状态、指标数量、条件状态
+
+**检测项：** 达到最大副本(warning)、无指标(warning)、缩放未激活(info)
+
+**健康评分 (0-100)：** no metrics(-15)、at max(-5)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -2165,5 +2179,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 80 | /api/operations/api-latency | Operations | v15.72 | API 服务器响应速度与 Pod 启动延迟监控 |
 | 81 | /api/security/encryption-at-rest | Security | v15.74 | Secret 静态加密配置检查 |
 | 82 | /api/scalability/scale-limits | Scalability | v15.75 | 集群扩展性与阈值监控 |
+| 83 | /api/product/hpa-health | Product | v15.77 | HPA 健康与缩放活动分析 |
 
-**总计：148 个 OpenAPI 端点**
+**总计：149 个 OpenAPI 端点**
