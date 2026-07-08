@@ -2560,6 +2560,23 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Secret Encryption at Rest Configuration Checker (v15.74+) ---
+	add("/api/security/encryption-at-rest", "get", OpenAPIOperation{
+		Summary: "Secret encryption at rest configuration checker", OperationID: "encryptionAtRest", Tags: []string{"Security", "Encryption", "Compliance"},
+		Description: "Verifies if Kubernetes Secrets are encrypted at rest in etcd. Checks kube-apiserver for --encryption-provider-config flag. Detects k3s environments. Without encryption, anyone with etcd access can read all passwords, tokens, and certificates in plaintext. Findings categorized as configuration/provider/coverage/access. Security score (0-100). Required for PCI-DSS, SOC2, HIPAA compliance.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Encryption at rest report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"encryptionEnabled": true,
+					"encryptionType":    "aescbc",
+					"providerCount":     1,
+					"securityScore":     100,
+				},
+				"findings": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
