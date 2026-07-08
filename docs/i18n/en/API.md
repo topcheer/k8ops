@@ -1369,14 +1369,20 @@ Analyzes HPA health and scaling activity. Per-HPA: replicas, scaling active, met
 
 Scores each Deployment against K8s best practices checklist (8 checks, weights sum to 100): resource requests (15), probes (15), multi-replica (15), PDB (10), anti-affinity (15), security context (10), revision history (10), labels (10). Per-workload: maturity score 0-100, risk level. Cluster avg maturity score.
 
+### 85. Volume Mount & Attach Error Tracker (v15.81)
+
+**Path:** `GET /api/operations/volume-mount-errors`
+
+Tracks pods stuck in Pending/ContainerCreating due to volume mount/attach failures. Error classification: mount_fail, attach_fail, provisioning, timeout. Per-pod: error type, message, pending duration, risk level. Health score (0-100).
+
 ---
 
 ## API Summary
 
-**Total: 150 OpenAPI endpoints** across 6 dimensions:
+**Total: 151 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health
 - **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors
 - **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest
 - **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits
 - **Infrastructure**: Auth, RBAC, health, version

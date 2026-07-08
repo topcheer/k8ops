@@ -2150,6 +2150,24 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 85. 卷挂载与附加错误追踪 (v15.81)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/operations/volume-mount-errors` | 卷挂载与附加错误追踪 |
+
+追踪因卷挂载/附加失败而卡在 Pending/ContainerCreating 状态的 Pod。
+
+**每 Pod 分析：** 错误类型（mount_fail/attach_fail/provisioning/timeout）、错误消息、卡住时长、风险级别
+
+**错误分类统计：** mount failures、attach/detach failures、provisioning errors、timeouts
+
+**健康评分 (0-100)：** stuck(-10)、mount fail(-3)、attach fail(-3)、provisioning(-5)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -2210,5 +2228,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 82 | /api/scalability/scale-limits | Scalability | v15.75 | 集群扩展性与阈值监控 |
 | 83 | /api/product/hpa-health | Product | v15.77 | HPA 健康与缩放活动分析 |
 | 84 | /api/deployment/workload-maturity | Deployment | v15.79 | 工作负载成熟度与最佳实践评分 |
+| 85 | /api/operations/volume-mount-errors | Operations | v15.81 | 卷挂载与附加错误追踪 |
 
-**总计：150 个 OpenAPI 端点**
+**总计：151 个 OpenAPI 端点**
