@@ -2501,6 +2501,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Disruption & Maintenance Impact Analyzer (v15.69+) ---
+	add("/api/deployment/disruption-impact", "get", OpenAPIOperation{
+		Summary: "Deployment PDB disruption & maintenance impact analyzer", OperationID: "disruptionImpact", Tags: []string{"Deployment", "PDB", "Maintenance"},
+		Description: "Analyzes how Deployments/StatefulSets interact with PodDisruptionBudgets during voluntary disruptions (node drains, cluster upgrades). Per-workload: PDB presence, minAvailable/maxUnavailable, evictable pod count, will-block-drain flag. Detection: blocking PDBs (minAvailable=replicas, critical — blocks all evictions), no PDB (warning — unprotected during maintenance), risky PDBs (minAvailable >= replicas). Maintenance readiness score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Disruption impact report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalWorkloads":   15,
+					"withPDB":          12,
+					"noPDB":            3,
+					"blockDrain":       2,
+					"maintenanceScore": 72,
+				},
+				"blockingWorkloads": []interface{}{},
+				"safeWorkloads":     []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
