@@ -2684,6 +2684,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Disaster Recovery Readiness & Backup Compliance Auditor (v15.86+) ---
+	add("/api/scalability/dr-readiness", "get", OpenAPIOperation{
+		Summary: "Disaster recovery readiness & backup compliance auditor", OperationID: "drReadiness", Tags: []string{"Scalability", "DR", "Backup"},
+		Description: "Audits cluster disaster recovery readiness. Checks: Velero/backup controller presence, namespace backup label coverage, CSI snapshot controller, multi-AZ topology, PVC data protection. Per-namespace: protected vs unprotected. Findings categorized as backup/snapshot/topology/recovery. DR readiness score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("DR readiness report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNamespaces": 8,
+					"protectedNS":     5,
+					"hasVelero":       true,
+					"multiAZ":         true,
+					"readinessScore":  85,
+				},
+				"protectedNamespaces":   []interface{}{},
+				"unprotectedNamespaces": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
