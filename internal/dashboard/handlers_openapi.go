@@ -2629,6 +2629,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Volume Mount & Attach Error Tracker (v15.81+) ---
+	add("/api/operations/volume-mount-errors", "get", OpenAPIOperation{
+		Summary: "Volume mount & attach error tracker", OperationID: "volumeMountErrors", Tags: []string{"Operations", "Storage", "Volumes"},
+		Description: "Tracks pods stuck in Pending/ContainerCreating due to volume mount/attach failures. Per-pod: error type (mount_fail, attach_fail, provisioning, timeout), error message, pending duration, risk level. By-error-type: mount failures, attach/detach failures, provisioning errors, timeouts. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Volume mount error report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"stuckPods":          2,
+					"mountFailErrors":    1,
+					"attachFailErrors":   1,
+					"provisioningErrors": 0,
+					"healthScore":        85,
+				},
+				"errorPods": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
