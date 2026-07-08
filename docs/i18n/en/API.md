@@ -1335,10 +1335,20 @@ Analyzes batch Job execution health. Per-job: status, duration, completions, bac
 
 ## API Summary
 
-**Total: 145 OpenAPI endpoints** across 6 dimensions:
+### 80. API Server Responsiveness & Pod Start Latency Monitor (v15.72)
+
+**Path:** `GET /api/operations/api-latency`
+
+Monitors API server responsiveness and pod start latency. Detection: slow scheduling >2min, not-ready pods, slow container start. Responsiveness score (0-100).
+
+---
+
+## API Summary
+
+**Total: 146 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health
 - **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency
 - **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy
 - **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit
 - **Infrastructure**: Auth, RBAC, health, version

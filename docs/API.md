@@ -2063,6 +2063,22 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 80. API 服务器响应速度与 Pod 启动延迟监控 (v15.72)
+
+**路径：** `GET /api/operations/api-latency`
+
+监控 Kubernetes API 服务器的响应能力以及 Pod 的启动速度。
+
+**监控项：** API 响应性、等待 >2 分钟的 Pod（调度慢）、运行中不就绪的 Pod、容器启动延迟 >1 分钟
+
+**每 Pod 分析：** 挂起时间、容器启动延迟、风险级别
+
+**检测项：** API 无响应（critical）、调度慢 >5min（warning）、容器启动慢（info）
+
+**响应评分 (0-100)：** slow start(-8)、not ready(-5)、container wait(-3)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -2118,5 +2134,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 77 | /api/scalability/csi-audit | Scalability | v15.67 | CSI 驱动与存储能力审计 |
 | 78 | /api/deployment/disruption-impact | Deployment | v15.69 | 部署中断与维护影响分析 |
 | 79 | /api/product/job-health | Product | v15.70 | 批处理 Job 执行健康分析 |
+| 80 | /api/operations/api-latency | Operations | v15.72 | API 服务器响应速度与 Pod 启动延迟监控 |
 
-**总计：145 个 OpenAPI 端点**
+**总计：146 个 OpenAPI 端点**
