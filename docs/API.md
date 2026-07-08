@@ -2079,6 +2079,34 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 81. Secret 静态加密配置检查 (v15.74)
+
+**路径：** `GET /api/security/encryption-at-rest`
+
+验证 Kubernetes Secret 是否在 etcd 中被加密。检查 kube-apiserver 是否配置了 --encryption-provider-config。检测 k3s 环境。
+
+**检查项：** 加密是否启用、加密类型（aescbc/aesgcm/secretbox/none）、提供者数量、identity provider（plaintext fallback）
+
+**检测项：** 加密未启用（critical）、有 identity provider（warning）
+
+**安全评分 (0-100)：** enabled(+60)、no identity(+15)、provider(+15)、config(+10)
+
+---
+
+### 82. 集群扩展性与阈值监控 (v15.75)
+
+**路径：** `GET /api/scalability/scale-limits`
+
+检查集群与 Kubernetes 官方扩展限制的接近程度。
+
+**检查的 K8s 官方限制：** Nodes(5000)、Pods(150000)、Pods/node(110)、Services(5000)、Namespaces(10000)
+
+**状态阈值：** safe(<60%)、warning(60-80%)、critical(≥80%)
+
+**扩展评分 (0-100)：** critical(-20)、warning(-10)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -2135,5 +2163,7 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 78 | /api/deployment/disruption-impact | Deployment | v15.69 | 部署中断与维护影响分析 |
 | 79 | /api/product/job-health | Product | v15.70 | 批处理 Job 执行健康分析 |
 | 80 | /api/operations/api-latency | Operations | v15.72 | API 服务器响应速度与 Pod 启动延迟监控 |
+| 81 | /api/security/encryption-at-rest | Security | v15.74 | Secret 静态加密配置检查 |
+| 82 | /api/scalability/scale-limits | Scalability | v15.75 | 集群扩展性与阈值监控 |
 
-**总计：146 个 OpenAPI 端点**
+**总计：148 个 OpenAPI 端点**

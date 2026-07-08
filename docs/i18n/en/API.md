@@ -1341,14 +1341,26 @@ Analyzes batch Job execution health. Per-job: status, duration, completions, bac
 
 Monitors API server responsiveness and pod start latency. Detection: slow scheduling >2min, not-ready pods, slow container start. Responsiveness score (0-100).
 
+### 81. Secret Encryption at Rest Configuration Checker (v15.74)
+
+**Path:** `GET /api/security/encryption-at-rest`
+
+Verifies if Secrets are encrypted in etcd. Checks kube-apiserver --encryption-provider-config. Detects k3s. Security score (0-100).
+
+### 82. Cluster Scale Limits & Threshold Monitor (v15.75)
+
+**Path:** `GET /api/scalability/scale-limits`
+
+Checks proximity to official K8s limits: nodes(5000), pods(150000), services(5000), namespaces(10000). Pod capacity utilization. Scale score (0-100).
+
 ---
 
 ## API Summary
 
-**Total: 146 OpenAPI endpoints** across 6 dimensions:
+**Total: 148 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health
 - **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact
 - **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency
-- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy
-- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit
+- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits
 - **Infrastructure**: Auth, RBAC, health, version
