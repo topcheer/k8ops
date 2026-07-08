@@ -2121,6 +2121,35 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 84. 工作负载成熟度与最佳实践评分 (v15.79)
+
+**路径：**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/deployment/workload-maturity` | 工作负载成熟度评分 |
+
+综合评分每个 Deployment 是否符合 K8s 最佳实践。
+
+**8 项检查（权重总和=100）：**
+
+| 检查项 | 权重 |
+|--------|------|
+| 资源请求 | 15 |
+| 探针 | 15 |
+| 多副本 | 15 |
+| 反亲和性 | 15 |
+| PDB | 10 |
+| 安全上下文 | 10 |
+| 版本历史 | 10 |
+| 标签 | 10 |
+
+**每工作负载：** 成熟度评分 (0-100)、风险级别
+
+**集群级：** 平均成熟度评分
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -2180,5 +2209,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 81 | /api/security/encryption-at-rest | Security | v15.74 | Secret 静态加密配置检查 |
 | 82 | /api/scalability/scale-limits | Scalability | v15.75 | 集群扩展性与阈值监控 |
 | 83 | /api/product/hpa-health | Product | v15.77 | HPA 健康与缩放活动分析 |
+| 84 | /api/deployment/workload-maturity | Deployment | v15.79 | 工作负载成熟度与最佳实践评分 |
 
-**总计：149 个 OpenAPI 端点**
+**总计：150 个 OpenAPI 端点**

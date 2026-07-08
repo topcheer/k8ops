@@ -1363,13 +1363,19 @@ Checks proximity to official K8s limits: nodes(5000), pods(150000), services(500
 
 Analyzes HPA health and scaling activity. Per-HPA: replicas, scaling active, metrics count, conditions. Detection: at maxReplicas (warning), no metrics (warning), scaling inactive (info). Health score (0-100).
 
+### 84. Workload Maturity & Best Practices Scorer (v15.79)
+
+**Path:** `GET /api/deployment/workload-maturity`
+
+Scores each Deployment against K8s best practices checklist (8 checks, weights sum to 100): resource requests (15), probes (15), multi-replica (15), PDB (10), anti-affinity (15), security context (10), revision history (10), labels (10). Per-workload: maturity score 0-100, risk level. Cluster avg maturity score.
+
 ---
 
 ## API Summary
 
-**Total: 149 OpenAPI endpoints** across 6 dimensions:
+**Total: 150 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity
 - **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency
 - **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest
 - **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits
