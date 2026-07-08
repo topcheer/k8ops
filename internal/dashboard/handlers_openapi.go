@@ -2577,6 +2577,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Cluster Scale Limits & Threshold Monitor (v15.75+) ---
+	add("/api/scalability/scale-limits", "get", OpenAPIOperation{
+		Summary: "Cluster scalability limits & threshold monitor", OperationID: "scaleLimits", Tags: []string{"Scalability", "Limits", "Capacity"},
+		Description: "Checks cluster proximity to official Kubernetes scalability limits. Per-limit: nodes (5000), pods (150000), pods-per-node, services (5000), namespaces (10000), ConfigMaps, Secrets, pod capacity utilization. Status: safe (<60%), warning (60-80%), critical (>=80%). Scale score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Scale limits report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"nodeCount":      5,
+					"podCount":       120,
+					"totalCapacity":  550,
+					"utilizationPct": 21,
+					"scaleScore":     100,
+				},
+				"limits": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 

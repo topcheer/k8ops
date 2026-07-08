@@ -279,6 +279,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/bottleneck-predictor", s.cacheMiddleware(120*time.Second, s.handleScalabilityBottleneck))        // K8s scalability bottleneck predictor
 	mux.HandleFunc("/api/scalability/namespace-isolation", s.cacheMiddleware(120*time.Second, s.handleNamespaceIsolation))            // namespace isolation & multi-tenancy audit
 	mux.HandleFunc("/api/scalability/csi-audit", s.cacheMiddleware(120*time.Second, s.handleCSIAudit))                                // CSI driver & storage capability auditor
+	mux.HandleFunc("/api/scalability/scale-limits", s.cacheMiddleware(60*time.Second, s.handleScaleLimits))                           // cluster scalability limits & threshold monitor
 	mux.HandleFunc("/api/deployment/image-hygiene", s.cacheMiddleware(60*time.Second, s.handleImageHygiene))                          // container image deployment hygiene analyzer
 	mux.HandleFunc("/api/deployment/revision-history", s.cacheMiddleware(60*time.Second, s.handleRevisionHistory))                    // deployment revision history & rollback readiness
 	mux.HandleFunc("/api/deployment/disruption-impact", s.cacheMiddleware(60*time.Second, s.handleDisruptionImpact))                  // deployment PDB disruption & maintenance impact
