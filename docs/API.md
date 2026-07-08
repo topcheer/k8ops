@@ -2166,6 +2166,24 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 **健康评分 (0-100)：** stuck(-10)、mount fail(-3)、attach fail(-3)、provisioning(-5)
 
+### 86. GET /api/security/host-namespace — 容器主机命名空间与特权暴露审计
+
+审计容器的宿主机命名空间暴露和特权升级风险。
+
+**每 Pod 分析：** hostNetwork、hostPID、hostIPC、privileged、hostPath、capAdd、runAsRoot
+
+**风险级别：** critical (privileged+hostNS)、high (privileged/hostNS)、medium (少量暴露)
+
+**暴露安全评分 (0-100，越高越安全)：** privileged(-10)、hostNetwork(-5)、hostPID(-5)、hostIPC(-3)、hostPath(-3)、capAdd(-3)、runAsRoot(-2)
+
+### 87. GET /api/product/api-deprecation — 已废弃 API 版本与升级就绪检查
+
+通过 API discovery 检测集群中仍在使用的已废弃/已移除的 K8s API 版本。
+
+**覆盖范围：** extensions/v1beta1、apps/v1beta1/v1beta2、networking v1beta1、batch v1beta1、autoscaling v2beta1/v2beta2、policy/v1beta1 (PSP)、storage v1beta1 — 共 18 种
+
+**升级就绪评分 (0-100)：** removed(-30)、deprecated(-15)
+
 ---
 
 ## API 端点总览
@@ -2229,5 +2247,7 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 83 | /api/product/hpa-health | Product | v15.77 | HPA 健康与缩放活动分析 |
 | 84 | /api/deployment/workload-maturity | Deployment | v15.79 | 工作负载成熟度与最佳实践评分 |
 | 85 | /api/operations/volume-mount-errors | Operations | v15.81 | 卷挂载与附加错误追踪 |
+| 86 | /api/security/host-namespace | Security | v15.83 | 容器主机命名空间与特权暴露审计 |
+| 87 | /api/product/api-deprecation | Product | v15.84 | 已废弃 API 版本与升级就绪检查 |
 
-**总计：151 个 OpenAPI 端点**
+**总计：153 个 OpenAPI 端点**

@@ -4,6 +4,21 @@
 
 ---
 
+## v15.84 (2026-07-08)
+
+### 新功能
+- **Product**: 已废弃 API 版本与升级就绪检查 (`GET /api/product/api-deprecation`)
+  - 通过 API discovery 检测集群中仍在使用的已废弃/已移除的 K8s API 版本
+  - 覆盖 18 种废弃 API（extensions、apps/v1beta1/v1beta2、networking、batch、autoscaling、PSP）
+  - 升级就绪评分 (0-100)
+  - 5 个单元测试
+
+### v15.83
+- **Security**: 容器主机命名空间与特权暴露审计 (`GET /api/security/host-namespace`)
+  - 审计 hostNetwork、hostPID、hostIPC、privileged、hostPath、capAdd、runAsRoot
+  - 暴露安全评分 (0-100)
+  - 6 个单元测试
+
 ## v15.81 (2026-07-08)
 
 ### 新增
@@ -589,8 +604,8 @@
 
 | 指标 | 数值 |
 |------|------|
-| OpenAPI 端点 | 151 |
-| 单元测试 | 974 |
+| OpenAPI 端点 | 153 |
+| 单元测试 | 985 |
 | 文档 | 12 篇 (7 种语言) |
 | i18n 文件 | 76 个 |
 | Release Assets | 17 个 |
