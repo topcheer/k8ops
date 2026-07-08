@@ -2012,6 +2012,24 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 77. CSI 驱动与存储能力审计 (v15.67)
+
+**路径：** `GET /api/scalability/csi-audit`
+
+审计存储类和 CSI 驱动的能力配置。
+
+**每 StorageClass 分析：** provisioner、是否默认、绑定模式（Immediate/WaitForFirstConsumer）、是否支持卷扩展、回收策略（Delete/Retain）
+
+**每 CSIDriver 分析：** attach required、podInfoOnMount、fsGroup policy
+
+**检测项：** 无默认 SC（warning）、多个默认 SC（warning）、缺失 CSI 驱动（warning）、不支持扩展（info）、Delete 回收策略（info）
+
+**健康评分 (0-100)：** no default(-15)、multiple default(-10)、no CSI driver(-20)、non-expandable(-2/SC)
+
+**合规评分 (0-100)：** enabled(+40)、policy(+25)、sensitive(+15)、retention(+10)、backup(+5)、both(+5)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -2064,5 +2082,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 74 | /api/product/configmap-size | Product | v15.61 | ConfigMap/Secret 大小与内存压力审计 |
 | 75 | /api/operations/pod-evictions | Operations | v15.63 | Pod 驱逐与节点压力历史追踪 |
 | 76 | /api/security/audit-policy | Security | v15.65 | API Server 审计日志配置检查 |
+| 77 | /api/scalability/csi-audit | Scalability | v15.67 | CSI 驱动与存储能力审计 |
 
-**总计：142 个 OpenAPI 端点**
+**总计：143 个 OpenAPI 端点**

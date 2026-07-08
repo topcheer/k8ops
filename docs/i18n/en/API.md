@@ -1309,11 +1309,17 @@ Tracks evicted pods with cause classification (memory/disk/pid/unknown). Per-nod
 
 Verifies audit logging configuration for compliance. Checks: audit enabled, policy file, log retention, sensitive resource coverage. Detects k3s/microk8s. Compliance score (0-100) for PCI-DSS/SOC2/HIPAA.
 
+### 77. CSI Driver & Storage Capability Auditor (v15.67)
+
+**Path:** `GET /api/scalability/csi-audit`
+
+Audits CSI drivers and StorageClass capabilities. Per-SC: provisioner, default, binding mode, expansion, reclaim policy. Per-CSIDriver: attach required, fsGroup policy. Detection: no default SC, missing CSI driver, no expansion, Delete policy. Health score (0-100).
+
 ---
 
 ## API Summary
 
-**Total: 142 OpenAPI endpoints** across 6 dimensions:
+**Total: 143 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size
 - **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history
 - **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions

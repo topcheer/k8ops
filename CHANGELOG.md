@@ -4,6 +4,22 @@
 
 ---
 
+## v15.67 (2026-07-07)
+
+### 新增
+- **CSI 驱动与存储能力审计** (`GET /api/scalability/csi-audit`)
+  - 每 StorageClass：provisioner、默认、绑定模式、扩展、回收策略
+  - 每 CSIDriver：attach required、fsGroup policy
+  - 检测：无默认 SC、缺失 CSI 驱动、无扩展支持
+  - 健康评分 (0-100)
+  - 6 个单元测试
+
+## v15.66 (2026-07-07)
+
+### 文档
+- API.md 新增 v15.64-v15.65 端点文档
+- CHANGELOG.md 更新 v15.64-v15.65 发布日志
+
 ## v15.65 (2026-07-07)
 
 ### 新增
@@ -464,8 +480,8 @@
 
 | 指标 | 数值 |
 |------|------|
-| OpenAPI 端点 | 142 |
-| 单元测试 | 920 |
+| OpenAPI 端点 | 143 |
+| 单元测试 | 926 |
 | 文档 | 12 篇 (7 种语言) |
 | i18n 文件 | 76 个 |
 | Release Assets | 17 个 |
