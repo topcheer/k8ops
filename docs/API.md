@@ -2249,5 +2249,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 85 | /api/operations/volume-mount-errors | Operations | v15.81 | 卷挂载与附加错误追踪 |
 | 86 | /api/security/host-namespace | Security | v15.83 | 容器主机命名空间与特权暴露审计 |
 | 87 | /api/product/api-deprecation | Product | v15.84 | 已废弃 API 版本与升级就绪检查 |
+| 88 | /api/scalability/dr-readiness | Scalability | v15.86 | 灾难恢复就绪与备份合规审计 |
 
-**总计：153 个 OpenAPI 端点**
+**总计：154 个 OpenAPI 端点**
