@@ -2667,6 +2667,23 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deprecated API Version & Upgrade Readiness Checker (v15.84+) ---
+	add("/api/product/api-deprecation", "get", OpenAPIOperation{
+		Summary: "Deprecated API version & upgrade readiness checker", OperationID: "apiDeprecation", Tags: []string{"Product", "Upgrade", "API"},
+		Description: "Checks for deprecated/removed Kubernetes API versions via API discovery. Detects: extensions/v1beta1, apps/v1beta1/v1beta2, networking.k8s.io/v1beta1, batch/v1beta1, autoscaling/v2beta1/v2beta2, policy/v1beta1 (PSP). Per-API: resource, old/new version, removedIn version, status. Upgrade readiness score (0-100). Removed APIs block cluster upgrades.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("API deprecation report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"deprecatedCount": 0,
+					"removedCount":    0,
+					"readyForUpgrade": true,
+					"readinessScore":  100,
+				},
+				"clusterVersion": "v1.28.3",
+			}),
+		},
+	})
+
 	return spec
 }
 

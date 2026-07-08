@@ -268,6 +268,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/configmap-size", s.cacheMiddleware(120*time.Second, s.handleConfigMapSize))                          // ConfigMap/Secret size & memory pressure auditor
 	mux.HandleFunc("/api/product/job-health", s.cacheMiddleware(60*time.Second, s.handleJobHealth))                                   // batch job execution health & completion analyzer
 	mux.HandleFunc("/api/product/hpa-health", s.cacheMiddleware(60*time.Second, s.handleHPAHealth))                                   // HPA health & scaling activity analyzer
+	mux.HandleFunc("/api/product/api-deprecation", s.cacheMiddleware(120*time.Second, s.handleDeprecatedAPI))                         // deprecated API version & upgrade readiness checker
 	mux.HandleFunc("/api/scalability/overcommit", s.cacheMiddleware(60*time.Second, s.handleOvercommitAnalysis))                      // resource over-commit & pressure
 	mux.HandleFunc("/api/scalability/autoscale-recommendations", s.cacheMiddleware(60*time.Second, s.handleAutoscaleRecommendations)) // HPA/VPA right-sizing
 	mux.HandleFunc("/api/scalability/pvc-analysis", s.cacheMiddleware(60*time.Second, s.handlePVCAnalysis))                           // PVC binding & storage performance
