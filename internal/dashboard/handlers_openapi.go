@@ -2542,6 +2542,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- API Server Responsiveness & Pod Start Latency Monitor (v15.72+) ---
+	add("/api/operations/api-latency", "get", OpenAPIOperation{
+		Summary: "API server responsiveness & pod start latency monitor", OperationID: "apiLatency", Tags: []string{"Operations", "Latency", "API"},
+		Description: "Monitors API server responsiveness and pod start latency. Checks: API server responsiveness (can list pods), pending pods >2min (slow scheduling), not-ready running pods (probe failures), container start delay >1min (image pull slowness). Per-pod: pending minutes, container start delay, risk level. Responsiveness score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("API latency report", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":           50,
+					"longStartingPods":    2,
+					"notReadyPods":        1,
+					"apiResponsive":       true,
+					"responsivenessScore": 85,
+				},
+				"recentSlowPods": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
