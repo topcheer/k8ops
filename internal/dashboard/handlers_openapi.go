@@ -2745,6 +2745,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Security Admission Enforcement Auditor (v15.91+) ---
+	add("/api/security/psa-audit", "get", OpenAPIOperation{
+		Summary: "Pod Security Admission (PSA) enforcement auditor", OperationID: "psaAudit", Tags: []string{"Security", "Compliance", "PodSecurity"},
+		Description: "Audits namespace-level Pod Security Admission (PSA) enforcement configuration. Checks pod-security.kubernetes.io/enforce, audit, and warn labels. Per-namespace: enforcement level (privileged/baseline/restricted/none), audit mode, warn mode, version pinning. Detects pods violating their namespace PSA policy (privileged containers, host namespaces, dangerous capabilities, root user, missing seccomp). Enforcement score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("PSA enforcement analysis", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNamespaces":    15,
+					"userNamespaces":     10,
+					"enforced":           7,
+					"notEnforced":        8,
+					"restrictedEnforced": 5,
+					"baselineEnforced":   2,
+					"violationCount":     3,
+					"enforcementScore":   72,
+				},
+				"namespaces": []interface{}{},
+				"violations": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
