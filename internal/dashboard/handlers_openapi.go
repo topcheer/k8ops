@@ -2834,6 +2834,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Kubelet & Container Runtime Health Monitor (v15.96+) ---
+	add("/api/operations/kubelet-health", "get", OpenAPIOperation{
+		Summary: "Kubelet & container runtime health monitor", OperationID: "kubeletHealth", Tags: []string{"Operations", "NodeHealth", "Runtime"},
+		Description: "Monitors kubelet and container runtime health across all nodes. Per-node: kubelet version, container runtime version, OS image, kernel, architecture, last heartbeat time and age, active conditions (NotReady, DiskPressure, MemoryPressure, PIDPressure, NetworkUnavailable). Detects: version skew (different kubelet versions across nodes), runtime skew, stale heartbeats (>60s), nodes with active conditions. Runtime and OS distribution tracking. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Kubelet health analysis", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNodes":        5,
+					"healthyNodes":      4,
+					"unhealthyNodes":    1,
+					"versionSkew":       1,
+					"oldHeartbeatNodes": 0,
+					"healthScore":       82,
+				},
+				"byNode":          []interface{}{},
+				"unhealthyNodes":  []interface{}{},
+				"runtimeVersions": map[string]int{},
+				"issues":          []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
