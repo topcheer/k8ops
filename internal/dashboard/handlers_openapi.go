@@ -2812,6 +2812,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- ConfigMap/Secret Config Sync & Staleness Detector (v15.95+) ---
+	add("/api/deployment/config-sync", "get", OpenAPIOperation{
+		Summary: "ConfigMap/Secret config sync & staleness detector", OperationID: "configSync", Tags: []string{"Deployment", "Configuration", "Reliability"},
+		Description: "Detects pods running with stale configuration after ConfigMap/Secret updates. Identifies env var refs (env/envFrom) that do NOT auto-update on config changes, subPath volume mounts that don't auto-update, and workloads missing Reloader annotations. Cross-references pod start time with ConfigMap/Secret creation timestamps to find stale consumers. Staleness score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Config sync analysis", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":         120,
+					"podsWithConfigRef": 80,
+					"envVarRefs":        35,
+					"volumeRefs":        55,
+					"stalePodCount":     8,
+					"stalenessScore":    72,
+				},
+				"stalePods":     []interface{}{},
+				"subPathMounts": []interface{}{},
+				"noReloader":    []interface{}{},
+				"byConfigMap":   []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 

@@ -294,6 +294,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/disruption-impact", s.cacheMiddleware(60*time.Second, s.handleDisruptionImpact))                  // deployment PDB disruption & maintenance impact
 	mux.HandleFunc("/api/deployment/workload-maturity", s.cacheMiddleware(60*time.Second, s.handleWorkloadMaturity))                  // workload maturity & best practices scorer
 	mux.HandleFunc("/api/deployment/ephemeral-storage", s.cacheMiddleware(60*time.Second, s.handleEphemeralStorage))                  // ephemeral storage & emptyDir limit compliance
+	mux.HandleFunc("/api/deployment/config-sync", s.cacheMiddleware(60*time.Second, s.handleConfigSync))                              // ConfigMap/Secret config sync & staleness detector
 	mux.HandleFunc("/api/deployment/rollout-health", s.cacheMiddleware(30*time.Second, s.handleRolloutHealth))                        // deployment rollout strategy & health analyzer
 	mux.HandleFunc("/api/deployment/probe-compliance", s.cacheMiddleware(60*time.Second, s.handleProbeCompliance))                    // health probe compliance auditor
 	mux.HandleFunc("/api/deployment/resource-limits", s.cacheMiddleware(60*time.Second, s.handleResourceLimitsAudit))                 // resource limit & enforcement gap audit
