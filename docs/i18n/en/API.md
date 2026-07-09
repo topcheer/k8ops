@@ -1377,12 +1377,24 @@ Tracks pods stuck in Pending/ContainerCreating due to volume mount/attach failur
 
 ---
 
+### 88. GET /api/deployment/ephemeral-storage — Container Ephemeral Storage & emptyDir Limit Compliance
+
+Checks container ephemeral-storage limits and emptyDir volume configuration compliance. Per-pod: ephemeral-storage limit presence, emptyDir volume count and size limits, unbounded emptyDir detection. Without limits, pods can fill node disk and trigger DiskPressure evictions. Compliance score (0-100).
+
+---
+
+### 89. GET /api/operations/pod-startup — Pod Startup Lifecycle & Bottleneck Analyzer
+
+Analyzes the full pod startup lifecycle from creation to ready. Breaks down startup time into phases: scheduling delay, init container duration, image pull & container creation, and readiness probe delay. Identifies slow-starting pods (>120s), pods stuck in Pending/ContainerCreating, and categorizes bottlenecks (scheduling, image_pull, init_container, probe, volume). Per-workload-type statistics. Cluster startup health score (0-100).
+
+---
+
 ## API Summary
 
-**Total: 154 OpenAPI endpoints** across 6 dimensions:
+**Total: 156 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle
 - **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace
 - **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness
 - **Infrastructure**: Auth, RBAC, health, version

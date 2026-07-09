@@ -2166,6 +2166,36 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 **健康评分 (0-100)：** stuck(-10)、mount fail(-3)、attach fail(-3)、provisioning(-5)
 
+### 88. GET /api/deployment/ephemeral-storage — 容器临时存储与 emptyDir 限制合规
+
+检查容器的临时存储（ephemeral-storage）限制和 emptyDir 卷配置合规性。
+
+**每 Pod 分析：** ephemeral-storage 限制是否存在、emptyDir 卷数量及大小限制、无限制 emptyDir 检测
+
+**违规检测：** 无 ephemeral-storage 限制、无大小限制的 emptyDir（无限制消耗节点磁盘）
+
+**合规评分 (0-100)：** 无限制(-10/per pod)、无 emptyDir limit(-5/per volume)
+
+---
+
+### 89. GET /api/operations/pod-startup — Pod 启动生命周期与瓶颈分析
+
+分析 Pod 从创建到就绪的完整启动生命周期，识别启动瓶颈。
+
+**启动阶段分解：** 调度延迟、init 容器耗时、镜像拉取/容器创建耗时、就绪探针延迟
+
+**慢启动 Pod (>120s)：** 总启动时间、各阶段耗时明细、风险级别 (medium/high)
+
+**卡住 Pod：** Pending/ContainerCreating 状态、等待原因、消息、卡住时长
+
+**瓶颈分类：** scheduling (>30s)、image_pull (>60s)、init_container (>30s)、probe (>60s)、volume
+
+**按工作负载统计：** 每种工作负载类型（Deployment/StatefulSet/DaemonSet/Job 等）的平均/最大启动时间、init 容器比例
+
+**健康评分 (0-100)：** stuck(-5/per pod)、slow(-3/per pod)、avg>60s(-)、failed(-3/per pod)
+
+---
+
 ### 86. GET /api/security/host-namespace — 容器主机命名空间与特权暴露审计
 
 审计容器的宿主机命名空间暴露和特权升级风险。
@@ -2250,5 +2280,7 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 86 | /api/security/host-namespace | Security | v15.83 | 容器主机命名空间与特权暴露审计 |
 | 87 | /api/product/api-deprecation | Product | v15.84 | 已废弃 API 版本与升级就绪检查 |
 | 88 | /api/scalability/dr-readiness | Scalability | v15.86 | 灾难恢复就绪与备份合规审计 |
+| 89 | /api/deployment/ephemeral-storage | Deployment | v15.88 | 容器临时存储与 emptyDir 限制合规 |
+| 90 | /api/operations/pod-startup | Operations | v15.89 | Pod 启动生命周期与瓶颈分析 |
 
-**总计：154 个 OpenAPI 端点**
+**总计：156 个 OpenAPI 端点**

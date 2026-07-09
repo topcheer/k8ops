@@ -4,7 +4,33 @@
 
 ---
 
-## v15.86 (2026-07-08)
+## v15.89 (2026-07-09)
+
+### Pod 启动生命周期与瓶颈分析 (维度3: 运维与可观测性)
+
+**新增 API：**
+- `GET /api/operations/pod-startup` — Pod 启动生命周期与瓶颈分析
+  - 启动阶段分解：调度延迟、init 容器耗时、镜像拉取、就绪探针延迟
+  - 慢启动 Pod 识别 (>120s)，按阶段拆分耗时
+  - 卡住 Pod 追踪（Pending/ContainerCreating）
+  - 瓶颈分类：scheduling、image_pull、init_container、probe、volume
+  - 按工作负载类型统计启动时间
+  - 集群启动健康评分 (0-100)
+  - 8 个单元测试
+
+## v15.88 (2026-07-09)
+
+### 容器临时存储与 emptyDir 限制合规 (维度2: 部署与发布)
+
+**新增 API：**
+- `GET /api/deployment/ephemeral-storage` — 容器临时存储与 emptyDir 限制合规检查
+  - 检查项：ephemeral-storage 限制、emptyDir 卷数量及大小限制、无限制 emptyDir 检测
+  - 合规评分 (0-100)
+  - 5 个单元测试
+
+### 统计
+- OpenAPI 端点：154 → 156
+- 单元测试：990 → 1003
 
 ### 灾难恢复就绪与备份合规审计 (维度6: 可扩展性与高可用)
 
