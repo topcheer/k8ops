@@ -2767,6 +2767,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod QoS & Priority Class Distribution Auditor (v15.92+) ---
+	add("/api/product/qos-priority", "get", OpenAPIOperation{
+		Summary: "Pod QoS & Priority Class distribution auditor", OperationID: "qosPriority", Tags: []string{"Product", "Scheduling", "ResourceManagement"},
+		Description: "Analyzes Pod Quality of Service (QoS) class distribution (Guaranteed/Burstable/BestEffort) and PriorityClass usage across the cluster. Per-namespace and per-workload-type QoS breakdown. Detects misconfigurations: BestEffort in user namespaces, single-replica Deployments without PriorityClass, Guaranteed QoS with low priority, pods with no resource requests. Identifies pods at high eviction risk (BestEffort + low priority). Lists all PriorityClasses with pod counts. QoS health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("QoS distribution analysis", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":         120,
+					"guaranteedPods":    30,
+					"burstablePods":     70,
+					"bestEffortPods":    20,
+					"withPriorityClass": 80,
+					"qosScore":          72,
+				},
+				"byNamespace":  []interface{}{},
+				"byWorkload":   []interface{}{},
+				"misconfigs":   []interface{}{},
+				"evictionRisk": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
