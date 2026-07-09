@@ -2721,6 +2721,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Startup Lifecycle & Bottleneck Analyzer (v15.89+) ---
+	add("/api/operations/pod-startup", "get", OpenAPIOperation{
+		Summary: "Pod startup lifecycle & bottleneck analyzer", OperationID: "podStartup", Tags: []string{"Operations", "Performance", "PodLifecycle"},
+		Description: "Analyzes the full pod startup lifecycle from creation to ready. Breaks down startup time into phases: scheduling delay, init container duration, image pull & container creation, and readiness probe delay. Identifies slow-starting pods (>120s), pods stuck in Pending/ContainerCreating, and categorizes bottlenecks (scheduling, image_pull, init_container, probe, volume). Provides per-workload-type statistics and a cluster startup health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Pod startup lifecycle analysis", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":         120,
+					"runningPods":       115,
+					"pendingPods":       3,
+					"avgStartupSeconds": 28.5,
+					"maxStartupSeconds": 180.0,
+					"slowStartupCount":  2,
+					"stuckCount":        3,
+					"healthScore":       82,
+				},
+				"slowPods":    []interface{}{},
+				"stuckPods":   []interface{}{},
+				"bottlenecks": []interface{}{},
+				"byWorkload":  []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
