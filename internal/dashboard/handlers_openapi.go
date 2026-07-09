@@ -2789,6 +2789,29 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Resource Fragmentation & Bin-Packing Efficiency Analyzer (v15.93+) ---
+	add("/api/scalability/fragmentation", "get", OpenAPIOperation{
+		Summary: "Resource fragmentation & bin-packing efficiency analyzer", OperationID: "fragmentation", Tags: []string{"Scalability", "Capacity", "Scheduling"},
+		Description: "Analyzes resource fragmentation and bin-packing efficiency across nodes. Per-node: allocatable vs requested vs available CPU/memory/pod slots, efficiency ratios, fragmentation score. Identifies fragmented nodes (resources available but unusable due to pod limit or resource imbalance). Counts stranded resources (CPU/memory that can't be scheduled). Simulates whether pods of common sizes (small/medium/large/xlarge) can be scheduled. Bin-packing score (0-100) and fragmentation score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Fragmentation analysis", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNodes":         5,
+					"schedulableNodes":   5,
+					"avgCpuEfficiency":   65.5,
+					"avgMemEfficiency":   58.2,
+					"fragmentedNodes":    2,
+					"strandedCPUMilli":   2000,
+					"binPackingScore":    62,
+					"fragmentationScore": 71,
+				},
+				"byNode":          []interface{}{},
+				"fragmentedNodes": []interface{}{},
+				"podSimulations":  []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
