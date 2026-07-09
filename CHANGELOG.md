@@ -4,6 +4,42 @@
 
 ---
 
+## v15.91-v15.93 (2026-07-09)
+
+### v15.91: Pod Security Admission (PSA) 强制执行审计 (维度4: 安全与合规)
+
+**新增 API：**
+- `GET /api/security/psa-audit` — Pod Security Admission 强制执行审计
+  - 检查 pod-security.kubernetes.io/enforce/audit/warn 标签
+  - Baseline 违规：privileged、hostNetwork/PID/IPC、hostPath、危险 caps
+  - Restricted 违规：以 root 运行、特权升级、未丢弃 caps、缺少 seccomp
+  - 强制执行评分 (0-100)
+  - 8 个单元测试
+
+### v15.92: Pod QoS 与 PriorityClass 分布审计 (维度1: 产品功能)
+
+**新增 API：**
+- `GET /api/product/qos-priority` — Pod QoS 与 PriorityClass 分布审计
+  - QoS 分布：Guaranteed、Burstable、BestEffort
+  - PriorityClass 使用分析：system-critical、high、medium、low
+  - 配置错误检测与驱逐风险分析
+  - QoS 健康评分 (0-100)
+  - 6 个单元测试
+
+### v15.93: 资源碎片化与装箱效率分析 (维度6: 可扩展性与高可用)
+
+**新增 API：**
+- `GET /api/scalability/fragmentation` — 资源碎片化与装箱效率分析
+  - 每节点 CPU/内存/Pod 槽位利用率和效率
+  - 碎片化评分和滞留资源检测
+  - Pod 大小模拟（small/medium/large/xlarge）
+  - Bin-packing 评分 (0-100) 和碎片化评分 (0-100)
+  - 5 个单元测试
+
+### 统计
+- OpenAPI 端点：156 → 159
+- 单元测试：1003 → 1022
+
 ## v15.89 (2026-07-09)
 
 ### Pod 启动生命周期与瓶颈分析 (维度3: 运维与可观测性)

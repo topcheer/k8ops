@@ -2196,6 +2196,65 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 91. GET /api/security/psa-audit — Pod Security Admission 强制执行审计
+
+审计命名空间级别的 Pod Security Admission (PSA) 强制执行配置。
+
+**每命名空间分析：** enforce 级别 (privileged/baseline/restricted/none)、audit 级别、warn 级别、版本绑定
+
+**违规检测：**
+- Baseline 违规：privileged、hostNetwork/PID/IPC、hostPath、危险 capabilities、hostPort
+- Restricted 违规：以 root 运行、特权升级、未丢弃 capabilities、缺少 seccomp
+
+**风险评级：** critical (无强制执行)、high (privileged)、medium (baseline 有违规)、low (restricted 干净)
+
+**强制执行评分 (0-100)：** enforced(+40)、restricted(+25)、baseline(+10)、audit(+10)、warn(+5)、violation(-10)、privileged(-10)
+
+---
+
+### 92. GET /api/product/qos-priority — Pod QoS 与 PriorityClass 分布审计
+
+分析 Pod Quality of Service (QoS) 级别分布和 PriorityClass 使用情况。
+
+**QoS 分布：** Guaranteed（请求=限制）、Burstable（有请求无限制）、BestEffort（无请求无限制）
+
+**PriorityClass 分析：** system-critical (>=2000000000)、high (>=1000000)、medium (>=1000)、low (<1000)
+
+**配置错误检测：**
+- 用户命名空间中的 BestEffort Pod（高驱逐风险）
+- 单副本 Deployment 无 PriorityClass（可能被抢占）
+- Guaranteed QoS 配合低优先级（资源浪费）
+- 无资源请求的 Pod
+
+**驱逐风险分析：** BestEffort > Burstable > Guaranteed（节点压力下驱逐顺序）
+
+**PriorityClass 清单：** 名称、值、是否全局默认、抢占策略、关联 Pod 数
+
+**健康评分 (0-100)：** BestEffort 比例(-30)、无 PriorityClass(-15)、无请求(-20)、无限制(-15)、配置错误(-10)
+
+---
+
+### 93. GET /api/scalability/fragmentation — 资源碎片化与装箱效率分析
+
+分析集群节点的资源碎片化和 bin-packing（装箱）效率。
+
+**每节点分析：** 可分配 CPU/内存/Pod 槽位、已请求量、可用量、效率比率（请求/可分配 %）
+
+**碎片化检测：**
+- Pod 槽位压力：有资源但无 Pod 槽位（max-pods 限制）
+- 资源不平衡：CPU 可用但内存不足，或反之
+- 碎片化评分 (0-100)，越高表示越碎片化
+
+**滞留资源检测：** 可用但无法调度的 CPU 和内存（因 Pod 限制或资源不平衡）
+
+**Pod 大小模拟：** 测试标准 Pod 大小（small 100m/128Mi、medium 500m/512Mi、large 1c/2Gi、xlarge 4c/8Gi）在集群中的可调度性
+
+**评分：**
+- Bin-packing 评分 (0-100)：100 = 最优资源利用率
+- 碎片化评分 (0-100)：100 = 无碎片化
+
+---
+
 ### 86. GET /api/security/host-namespace — 容器主机命名空间与特权暴露审计
 
 审计容器的宿主机命名空间暴露和特权升级风险。
@@ -2282,5 +2341,8 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 88 | /api/scalability/dr-readiness | Scalability | v15.86 | 灾难恢复就绪与备份合规审计 |
 | 89 | /api/deployment/ephemeral-storage | Deployment | v15.88 | 容器临时存储与 emptyDir 限制合规 |
 | 90 | /api/operations/pod-startup | Operations | v15.89 | Pod 启动生命周期与瓶颈分析 |
+| 91 | /api/security/psa-audit | Security | v15.91 | Pod Security Admission 强制执行审计 |
+| 92 | /api/product/qos-priority | Product | v15.92 | Pod QoS 与 PriorityClass 分布审计 |
+| 93 | /api/scalability/fragmentation | Scalability | v15.93 | 资源碎片化与装箱效率分析 |
 
-**总计：156 个 OpenAPI 端点**
+**总计：159 个 OpenAPI 端点**

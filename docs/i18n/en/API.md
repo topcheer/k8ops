@@ -1389,12 +1389,30 @@ Analyzes the full pod startup lifecycle from creation to ready. Breaks down star
 
 ---
 
+### 91. GET /api/security/psa-audit — Pod Security Admission (PSA) Enforcement Auditor
+
+Audits namespace-level Pod Security Admission enforcement configuration. Checks pod-security.kubernetes.io/enforce, audit, and warn labels. Per-namespace: enforcement level (privileged/baseline/restricted/none), audit mode, warn mode, version pinning. Detects pods violating their namespace PSA policy (privileged containers, host namespaces, dangerous capabilities, root user, missing seccomp). Enforcement score (0-100).
+
+---
+
+### 92. GET /api/product/qos-priority — Pod QoS & Priority Class Distribution Auditor
+
+Analyzes Pod Quality of Service (QoS) class distribution (Guaranteed/Burstable/BestEffort) and PriorityClass usage. Per-namespace and per-workload-type QoS breakdown. Misconfiguration detection: BestEffort in user namespaces, single-replica Deployments without PriorityClass, Guaranteed QoS with low priority. Eviction risk analysis. PriorityClass inventory with pod counts. QoS health score (0-100).
+
+---
+
+### 93. GET /api/scalability/fragmentation — Resource Fragmentation & Bin-Packing Efficiency Analyzer
+
+Analyzes resource fragmentation and bin-packing efficiency across nodes. Per-node: allocatable vs requested vs available CPU/memory/pod slots, efficiency ratios, fragmentation score. Identifies fragmented nodes and stranded resources. Simulates whether pods of common sizes (small/medium/large/xlarge) can be scheduled. Bin-packing score (0-100) and fragmentation score (0-100).
+
+---
+
 ## API Summary
 
-**Total: 156 OpenAPI endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation
+**Total: 159 OpenAPI endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class
 - **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage
 - **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle
-- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace
-- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness
+- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation
 - **Infrastructure**: Auth, RBAC, health, version
