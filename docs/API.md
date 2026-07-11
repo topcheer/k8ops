@@ -2325,6 +2325,56 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 100. GET /api/scalability/ip-cidr-utilization — IP 地址与 Pod CIDR 利用率监控
+
+分析集群节点的 IP 地址和 Pod CIDR 利用率。
+
+**每节点分析：** Pod CIDR、CIDR 容量（地址数）、已用 Pod IP 数、利用率百分比、剩余容量
+
+**容量预警：** 节点接近耗尽（>80%）或已耗尽（100%）
+
+**双栈检测：** IPv4/IPv6 双栈节点识别
+
+**集群范围：** 总体 IP 利用率、服务 IP 范围检测
+
+**健康评分 (0-100)：** 利用率>80%(-)、耗尽节点(-10/per)、接近耗尽(-5/per)
+
+---
+
+### 101. GET /api/deployment/sidecar-audit — Sidecar 容器开销与注入审计
+
+审计 Pod 中的 sidecar 容器及其资源开销。
+
+**Sidecar 识别：** Istio Proxy、Linkerd、Vault Agent、Fluentd、Datadog 等已知模式
+
+**资源开销分析：** 每 Pod 和每命名空间的 sidecar CPU/内存请求占比
+
+**高开销检测：** sidecar 资源占比 >30% 的 Pod
+
+**注入方式检测：** 自动注入（Istio/Linkerd 注解）vs 手动添加
+
+**异常检测：** 所有容器都是 sidecar 的 Pod（无应用容器）
+
+**健康评分 (0-100)：** CPU 开销>30%(-25)、内存开销>30%(-20)、仅注入(-15)
+
+---
+
+### 102. GET /api/operations/dns-health — DNS 解析健康与 CoreDNS 监控
+
+监控集群 DNS 解析健康和 CoreDNS 性能。
+
+**CoreDNS Pod 状态：** 就绪状态、版本、重启次数
+
+**CoreDNS ConfigMap 分析：** cache、health、ready、prometheus 插件缺失检测
+
+**Pod DNS 策略检测：** Default（继承节点）vs ClusterFirst（集群内解析）
+
+**每命名空间 DNS 策略统计**
+
+**健康评分 (0-100)：** 无 CoreDNS(0)、CoreDNS 未就绪(-40)、无 ConfigMap(-20)、错误策略(-20)
+
+---
+
 ### 86. GET /api/security/host-namespace — 容器主机命名空间与特权暴露审计
 
 审计容器的宿主机命名空间暴露和特权升级风险。
@@ -2418,5 +2468,8 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 95 | /api/operations/kubelet-health | Operations | v15.96 | Kubelet 与容器运行时健康监控 |
 | 96 | /api/security/mac-audit | Security | v15.98 | AppArmor 与 SELinux MAC 合规审计 |
 | 97 | /api/product/service-connectivity | Product | v15.99 | 服务端点与连通性健康审计 |
+| 98 | /api/scalability/ip-cidr-utilization | Scalability | v16.01 | IP 地址与 Pod CIDR 利用率监控 |
+| 99 | /api/deployment/sidecar-audit | Deployment | v16.02 | Sidecar 容器开销与注入审计 |
+| 100 | /api/operations/dns-health | Operations | v16.03 | DNS 解析健康与 CoreDNS 监控 |
 
-**总计：163 个 OpenAPI 端点**
+**总计：166 个 OpenAPI 端点**

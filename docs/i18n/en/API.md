@@ -1431,12 +1431,30 @@ Audits Service endpoint health. Zero-endpoint detection, not-ready endpoint dete
 
 ---
 
+### 100. GET /api/scalability/ip-cidr-utilization — IP Address & Pod CIDR Utilization Monitor
+
+Analyzes IP address and Pod CIDR utilization across nodes. Per-node: CIDR capacity, used IPs, utilization %, remaining capacity. Near-full/full node detection. Dual-stack detection. Cluster-wide utilization. Service IP range detection. Health score (0-100).
+
+---
+
+### 101. GET /api/deployment/sidecar-audit — Sidecar Container Overhead & Injection Auditor
+
+Audits sidecar containers (Istio, Linkerd, Vault, Fluentd, Datadog, etc.). CPU/memory overhead per pod and namespace. High-overhead detection (>30%). Injection method (auto vs manual). Injected-only pod detection. Health score (0-100).
+
+---
+
+### 102. GET /api/operations/dns-health — DNS Resolution Health & CoreDNS Monitor
+
+Monitors DNS resolution health. CoreDNS pod readiness, version, restart tracking. ConfigMap analysis (cache, health, ready, prometheus plugins). Pod DNS policy detection. Per-namespace stats. Health score (0-100).
+
+---
+
 ## API Summary
 
-**Total: 163 OpenAPI endpoints** across 6 dimensions:
+**Total: 166 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health
 - **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit
-- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization
 - **Infrastructure**: Auth, RBAC, health, version

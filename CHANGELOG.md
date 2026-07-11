@@ -4,6 +4,39 @@
 
 ---
 
+## v16.01-v16.03 (2026-07-11)
+
+### v16.01: IP 地址与 Pod CIDR 利用率监控 (维度6: 可扩展性与高可用)
+
+**新增 API：**
+- `GET /api/scalability/ip-cidr-utilization` — IP 地址与 Pod CIDR 利用率监控
+  - 每节点 CIDR 容量、利用率、剩余容量
+  - 双栈检测、节点接近/已耗尽预警
+  - 集群范围 IP 利用率、服务 IP 范围检测
+  - 3 个单元测试
+
+### v16.02: Sidecar 容器开销与注入审计 (维度2: 部署与发布)
+
+**新增 API：**
+- `GET /api/deployment/sidecar-audit` — Sidecar 容器开销与注入审计
+  - 识别已知 sidecar：Istio、Linkerd、Vault、Fluentd、Datadog 等
+  - CPU/内存开销计算（每 Pod 和命名空间）
+  - 高开销检测 (>30%)、仅注入 Pod 检测
+  - 4 个单元测试
+
+### v16.03: DNS 解析健康与 CoreDNS 监控 (维度3: 运维与可观测性)
+
+**新增 API：**
+- `GET /api/operations/dns-health` — DNS 解析健康与 CoreDNS 监控
+  - CoreDNS Pod 就绪状态、版本、重启追踪
+  - ConfigMap 分析（cache/health/ready/prometheus 插件缺失）
+  - Pod DNS 策略检测
+  - 4 个单元测试
+
+### 统计
+- OpenAPI 端点：163 → 166
+- 单元测试：1040 → 1051
+
 ## v15.98-v15.99 (2026-07-11)
 
 ### v15.98: AppArmor & SELinux MAC 合规审计 (维度4: 安全与合规)
