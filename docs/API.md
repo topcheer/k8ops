@@ -2255,6 +2255,45 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 95. GET /api/deployment/config-sync — ConfigMap/Secret 配置同步与陈旧检测
+
+检测 ConfigMap/Secret 更新后仍在使用旧配置的 Pod。
+
+**引用方式分析：**
+- env/envFrom 引用：ConfigMap/Secret 更改后**不自动更新**
+- volume 挂载：ConfigMap/Secret 更改后**自动更新**（Kubelet 定期刷新）
+- subPath 挂载：**不自动更新**（即使作为 volume 挂载）
+
+**陈旧 Pod 检测：** 交叉比对 Pod 启动时间与 ConfigMap/Secret 创建时间
+
+**Reloader 缺失检测：** 使用 env var 引用但缺少 Reloader 注解的工作负载
+
+**不可变配置检测：** 检查 immutable: true 的 ConfigMap/Secret
+
+**陈旧评分 (0-100)：** 陈旧 Pod(-35)、env 引用比例(-20)、subPath(-15)、缺少 Reloader(-20)
+
+---
+
+### 96. GET /api/operations/kubelet-health — Kubelet 与容器运行时健康监控
+
+监控所有节点的 kubelet 和容器运行时健康状况。
+
+**每节点分析：** kubelet 版本、运行时版本、OS 镜像、内核版本、架构
+
+**心跳检测：** 最后心跳时间与新旧度（>60s 警告、>120s 高危、>300s 严重）
+
+**条件追踪：** NotReady、DiskPressure、MemoryPressure、PIDPressure、NetworkUnavailable
+
+**版本偏差检测：** 不同 kubelet 版本（major.minor 级别差异）
+
+**运行时偏差检测：** 不同容器运行时版本
+
+**分布统计：** 运行时类型分布（containerd/docker/cri-o）、OS 镜像分布
+
+**健康评分 (0-100)：** 不健康节点(-50)、版本偏差(-15)、运行时偏差(-10)、心跳陈旧(-15)
+
+---
+
 ### 86. GET /api/security/host-namespace — 容器主机命名空间与特权暴露审计
 
 审计容器的宿主机命名空间暴露和特权升级风险。
@@ -2344,5 +2383,7 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 91 | /api/security/psa-audit | Security | v15.91 | Pod Security Admission 强制执行审计 |
 | 92 | /api/product/qos-priority | Product | v15.92 | Pod QoS 与 PriorityClass 分布审计 |
 | 93 | /api/scalability/fragmentation | Scalability | v15.93 | 资源碎片化与装箱效率分析 |
+| 94 | /api/deployment/config-sync | Deployment | v15.95 | ConfigMap/Secret 配置同步与陈旧检测 |
+| 95 | /api/operations/kubelet-health | Operations | v15.96 | Kubelet 与容器运行时健康监控 |
 
-**总计：159 个 OpenAPI 端点**
+**总计：161 个 OpenAPI 端点**

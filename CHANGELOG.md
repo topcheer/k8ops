@@ -4,6 +4,34 @@
 
 ---
 
+## v15.95-v15.96 (2026-07-09)
+
+### v15.95: ConfigMap/Secret 配置同步与陈旧检测 (维度2: 部署与发布)
+
+**新增 API：**
+- `GET /api/deployment/config-sync` — ConfigMap/Secret 配置同步与陈旧检测
+  - 检测使用陈旧配置的 Pod（env/envFrom 引用不自动更新）
+  - subPath 挂载检测（不自动更新）
+  - 工作负载 Reloader 注解缺失检测
+  - 不可变 ConfigMap/Secret 检测
+  - 陈旧评分 (0-100)
+  - 5 个单元测试
+
+### v15.96: Kubelet 与容器运行时健康监控 (维度3: 运维与可观测性)
+
+**新增 API：**
+- `GET /api/operations/kubelet-health` — Kubelet 与容器运行时健康监控
+  - 每节点 kubelet 版本、运行时版本、OS 镜像、心跳新旧度
+  - 版本偏差和运行时偏差检测
+  - 条件追踪：NotReady、DiskPressure、MemoryPressure、PIDPressure
+  - 运行时分布统计（containerd/docker/cri-o）
+  - 健康评分 (0-100)
+  - 7 个单元测试
+
+### 统计
+- OpenAPI 端点：159 → 161
+- 单元测试：1022 → 1034
+
 ## v15.91-v15.93 (2026-07-09)
 
 ### v15.91: Pod Security Admission (PSA) 强制执行审计 (维度4: 安全与合规)
