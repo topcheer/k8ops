@@ -2856,6 +2856,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- AppArmor & SELinux MAC Compliance Auditor (v15.98+) ---
+	add("/api/security/mac-audit", "get", OpenAPIOperation{
+		Summary: "AppArmor & SELinux MAC compliance auditor", OperationID: "macAudit", Tags: []string{"Security", "Compliance", "MAC"},
+		Description: "Audits AppArmor and SELinux mandatory access control configuration across pods. Detects pods with unconfined AppArmor, permissive SELinux types, and missing MAC profiles in user namespaces. Checks node AppArmor/SELinux capability. Per-namespace compliance rates. Compliance score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("MAC compliance analysis", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":          120,
+					"withAppArmor":       80,
+					"withSELinux":        40,
+					"unconfinedAppArmor": 2,
+					"complianceScore":    65,
+				},
+				"byNamespace":      []interface{}{},
+				"nonCompliantPods": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 

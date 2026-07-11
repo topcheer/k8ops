@@ -254,6 +254,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/seccomp-audit", s.cacheMiddleware(120*time.Second, s.handleSeccompAudit))                           // seccomp profile & PSS restricted compliance
 	mux.HandleFunc("/api/security/batch-audit", s.cacheMiddleware(120*time.Second, s.handleBatchSecurity))                            // CronJob & batch job security audit
 	mux.HandleFunc("/api/security/psa-audit", s.cacheMiddleware(120*time.Second, s.handlePSAAudit))                                   // pod security admission enforcement auditor
+	mux.HandleFunc("/api/security/mac-audit", s.cacheMiddleware(120*time.Second, s.handleMACAudit))                                   // AppArmor & SELinux MAC compliance auditor
 	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                                   // resource dependency graph & blast radius
 	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpread))                                 // topology spread compliance
 	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                               // workload staleness & release cadence
