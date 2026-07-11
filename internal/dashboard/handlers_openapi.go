@@ -2875,6 +2875,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Service Endpoint & Connectivity Health Auditor (v15.99+) ---
+	add("/api/product/service-connectivity", "get", OpenAPIOperation{
+		Summary: "Service endpoint & connectivity health auditor", OperationID: "serviceConnectivity", Tags: []string{"Product", "Networking", "ServiceHealth"},
+		Description: "Audits Service endpoint health and connectivity. Per-service: endpoint count, ready endpoints, selector matching. Detects zero-endpoint services, services with no ready endpoints, and selector gaps (selectors matching no pods). Service type distribution (ClusterIP/NodePort/LoadBalancer/Headless/ExternalName). Per-namespace health. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Service connectivity analysis", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalServices":     50,
+					"healthyServices":   45,
+					"zeroEndpoints":     3,
+					"notReadyEndpoints": 2,
+					"healthScore":       85,
+				},
+				"unhealthyServices": []interface{}{},
+				"byType":            []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
