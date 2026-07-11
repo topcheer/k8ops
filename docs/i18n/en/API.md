@@ -1449,12 +1449,24 @@ Monitors DNS resolution health. CoreDNS pod readiness, version, restart tracking
 
 ---
 
+### 103. GET /api/security/forensics — Pod Security Forensics & Incident Evidence Collector
+
+Collects pod security forensics. Container exit code analysis (OOMKilled, SIGKILL, SIGSEGV). Privileged container escape detection. Container/image hash mismatch (tampering). Recent termination records. Forensics score (0-100).
+
+---
+
+### 104. GET /api/product/topology-spread — Pod Topology Spread Constraint Validator
+
+Validates topology spread constraints across Deployments/StatefulSets/DaemonSets. Detects multi-replica workloads without spread constraints. Validates maxSkew/topologyKey/whenUnsatisfiable. Actual pod distribution across zone/hostname domains. Health score (0-100).
+
+---
+
 ## API Summary
 
-**Total: 166 OpenAPI endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity
+**Total: 168 OpenAPI endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread
 - **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit
 - **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health
-- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit
+- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit, forensics
 - **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization
 - **Infrastructure**: Auth, RBAC, health, version

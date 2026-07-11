@@ -2375,6 +2375,42 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 103. GET /api/security/forensics — Pod 安全取证与事件证据收集
+
+收集 Pod 安全取证信息和事件证据。
+
+**容器退出码分析：** OOMKilled(137)、SIGKILL(137)、SIGTERM(143)、SIGSEGV(139) 等，附带人类可读解释
+
+**检测项：**
+- OOMKill 检测与统计
+- SIGKILL 终止追踪
+- 特权容器逃逸检测（特权容器 + 终止历史）
+- 容器/镜像哈希不匹配检测（可能的镜像篡改）
+- 高重启次数 Pod 标记
+
+**最近终止记录：** 容器名、退出码、原因、信号、完成时间、运行时长
+
+**取证评分 (0-100)：** OOMKill(-5/per)、SIGKILL(-3/per)、退出错误(-4/per)、特权逃逸(-10/per)、哈希不匹配(-3/per)
+
+---
+
+### 104. GET /api/product/topology-spread — Pod 拓扑分布约束验证
+
+验证工作负载的拓扑分布约束配置和实际 Pod 分布情况。
+
+**覆盖工作负载：** Deployment、StatefulSet、DaemonSet
+
+**验证项：**
+- 检测多副本工作负载缺少分布约束
+- 验证 maxSkew、topologyKey、whenUnsatisfiable 设置
+- ScheduleAnyway vs DoNotSchedule 策略检查
+
+**实际分布分析：** 按 topology.kubernetes.io/zone 和 kubernetes.io/hostname 域计算 Pod 分布和域偏差
+
+**健康评分 (0-100)：** 无约束比例(-40)、违规数量(-5/per)
+
+---
+
 ### 86. GET /api/security/host-namespace — 容器主机命名空间与特权暴露审计
 
 审计容器的宿主机命名空间暴露和特权升级风险。
@@ -2471,5 +2507,7 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 98 | /api/scalability/ip-cidr-utilization | Scalability | v16.01 | IP 地址与 Pod CIDR 利用率监控 |
 | 99 | /api/deployment/sidecar-audit | Deployment | v16.02 | Sidecar 容器开销与注入审计 |
 | 100 | /api/operations/dns-health | Operations | v16.03 | DNS 解析健康与 CoreDNS 监控 |
+| 101 | /api/security/forensics | Security | v16.05 | Pod 安全取证与事件证据收集 |
+| 102 | /api/product/topology-spread | Product | v16.06 | Pod 拓扑分布约束验证 |
 
-**总计：166 个 OpenAPI 端点**
+**总计：168 个 OpenAPI 端点**
