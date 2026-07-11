@@ -2931,6 +2931,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- DNS Resolution Health & CoreDNS Monitor (v16.03+) ---
+	add("/api/operations/dns-health", "get", OpenAPIOperation{
+		Summary: "DNS resolution health & CoreDNS monitor", OperationID: "dnsHealth", Tags: []string{"Operations", "DNS", "Networking"},
+		Description: "Monitors DNS resolution health and CoreDNS performance. Checks CoreDNS pod readiness, version, ConfigMap (Corefile) for missing plugins (cache, health, ready, prometheus). Detects pods with incorrect DNS policy (Default instead of ClusterFirst). Per-namespace DNS policy statistics. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("DNS health analysis", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"coreDNSFound":   2,
+					"coreDNSReady":   2,
+					"configMapFound": true,
+					"podsMissingDNS": 3,
+					"healthScore":    85,
+				},
+				"coreDNSPods": []interface{}{},
+				"issues":      []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 

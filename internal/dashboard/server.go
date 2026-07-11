@@ -235,6 +235,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/volume-mount-errors", s.cacheMiddleware(30*time.Second, s.handleVolumeMountErrors))               // volume mount & attach error tracker
 	mux.HandleFunc("/api/operations/pod-startup", s.cacheMiddleware(30*time.Second, s.handlePodStartup))                              // pod startup lifecycle & bottleneck analyzer
 	mux.HandleFunc("/api/operations/kubelet-health", s.cacheMiddleware(30*time.Second, s.handleKubeletHealth))                        // kubelet & container runtime health monitor
+	mux.HandleFunc("/api/operations/dns-health", s.cacheMiddleware(30*time.Second, s.handleDNSHealth))                                // DNS resolution health & CoreDNS monitor
 	mux.HandleFunc("/api/networking/health", s.cacheMiddleware(30*time.Second, s.handleNetworkingHealth))                             // service & endpoint health
 	mux.HandleFunc("/api/storage/health", s.cacheMiddleware(60*time.Second, s.handleStorageHealth))                                   // PV/PVC storage health
 	mux.HandleFunc("/api/deployments/audit", s.cacheMiddleware(60*time.Second, s.handleDeployAudit))                                  // deployment config audit

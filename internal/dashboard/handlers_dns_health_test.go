@@ -7,227 +7,107 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func TestIsCoreDNSPod(t *testing.T) {
-	// CoreDNS in kube-system
-	pod1 := &corev1.Pod{
-		ObjectMeta: metav1.ObjectMeta{Name: "coredns-1", Namespace: "kube-system"},
-		Spec: corev1.PodSpec{Containers: []corev1.Container{
-			{Image: "registry.k8s.io/coredns:v1.11.1"},
-		}},
-	}
-	if !isCoreDNSPod(pod1) {
-		t.Error("Expected true for coredns image in kube-system")
-	}
-
-	// Non-coredns pod
-	pod2 := &corev1.Pod{
-		ObjectMeta: metav1.ObjectMeta{Name: "app", Namespace: "default"},
-		Spec: corev1.PodSpec{Containers: []corev1.Container{
-			{Image: "nginx"},
-		}},
-	}
-	if isCoreDNSPod(pod2) {
-		t.Error("Expected false for nginx pod")
-	}
-
-	// Coredns in wrong namespace
-	pod3 := &corev1.Pod{
-		ObjectMeta: metav1.ObjectMeta{Name: "coredns", Namespace: "default"},
-		Spec: corev1.PodSpec{Containers: []corev1.Container{
-			{Image: "coredns:v1.10"},
-		}},
-	}
-	if isCoreDNSPod(pod3) {
-		t.Error("Expected false for coredns in default namespace")
-	}
-}
-
-func TestExtractCoreDNSVersion(t *testing.T) {
+func TestDNSHealthScore(t *testing.T) {
 	tests := []struct {
-		image  string
-		expect string
+		name     string
+		summary  DNSHealthSummary
+		minScore int
+		maxScore int
 	}{
-		{"registry.k8s.io/coredns:v1.11.1", "v1.11.1"},
-		{"coredns:1.10.1", "1.10.1"},
-		{"coredns", ""},
-		{"ghcr.io/coredns/coredns:v1.12.0@sha256:abc", "v1.12.0"},
+		{"healthy", DNSHealthSummary{CoreDNSFound: 2, CoreDNSReady: 2, ConfigMapFound: true}, 90, 100},
+		{"no coredns", DNSHealthSummary{CoreDNSFound: 0}, 0, 0},
+		{"partial unhealthy", DNSHealthSummary{CoreDNSFound: 2, CoreDNSReady: 1, CoreDNSNotReady: 1, ConfigMapFound: true, PodsMissingDNS: 3}, 55, 80},
+		{"no configmap", DNSHealthSummary{CoreDNSFound: 1, CoreDNSReady: 1, ConfigMapFound: false}, 60, 80},
 	}
-
 	for _, tt := range tests {
-		got := extractCoreDNSVersion(tt.image)
-		if got != tt.expect {
-			t.Errorf("extractCoreDNSVersion(%q) = %q, want %q", tt.image, got, tt.expect)
-		}
-	}
-}
-
-func TestExtractDNSForwarders(t *testing.T) {
-	corefile := `. {
-    errors
-    health
-    ready
-    kubernetes cluster.local in-addr.arpa ip6.arpa {
-        pods insecure
-        fallthrough in-addr.arpa ip6.arpa
-    }
-    forward . 8.8.8.8 1.1.1.1
-    cache 30
-    loop
-    reload
-    loadbalance
-}`
-
-	forwarders := extractDNSForwarders(corefile)
-	if len(forwarders) != 2 {
-		t.Fatalf("Expected 2 forwarders, got %d: %v", len(forwarders), forwarders)
-	}
-	if forwarders[0] != "8.8.8.8" || forwarders[1] != "1.1.1.1" {
-		t.Errorf("Expected [8.8.8.8, 1.1.1.1], got %v", forwarders)
-	}
-}
-
-func TestExtractDNSForwardersEmpty(t *testing.T) {
-	corefile := `. {
-    errors
-    kubernetes cluster.local
-}`
-	forwarders := extractDNSForwarders(corefile)
-	if len(forwarders) != 0 {
-		t.Errorf("Expected 0 forwarders, got %d", len(forwarders))
-	}
-}
-
-func TestExtractCoreDNSPlugins(t *testing.T) {
-	corefile := `. {
-    errors
-    health
-    ready
-    kubernetes cluster.local {
-        fallthrough
-    }
-    forward . 8.8.8.8
-    cache 30
-    loop
-    reload
-    loadbalance
-}`
-	plugins := extractCoreDNSPlugins(corefile)
-
-	expected := []string{"errors", "health", "ready", "kubernetes", "forward", "cache", "loop", "reload", "loadbalance"}
-	if len(plugins) != len(expected) {
-		t.Fatalf("Expected %d plugins, got %d: %v", len(expected), len(plugins), plugins)
-	}
-	for _, e := range expected {
-		found := false
-		for _, p := range plugins {
-			if p == e {
-				found = true
+		t.Run(tt.name, func(t *testing.T) {
+			score := dnsHealthScore(tt.summary)
+			if score < tt.minScore || score > tt.maxScore {
+				t.Errorf("score = %d, want [%d, %d]", score, tt.minScore, tt.maxScore)
 			}
-		}
-		if !found {
-			t.Errorf("Expected plugin %q not found in %v", e, plugins)
-		}
+		})
 	}
 }
 
-func TestCalculateDNSHealthScore(t *testing.T) {
-	// Perfect
-	s := DNSHealthSummary{CoreDNSPods: 2, CoreDNSReady: 2}
-	if score := calculateDNSHealthScore(s, true); score != 100 {
-		t.Errorf("Expected 100 for healthy, got %d", score)
+func TestIsCoreDNSPod(t *testing.T) {
+	tests := []struct {
+		name string
+		pod  *corev1.Pod
+		want bool
+	}{
+		{
+			"coredns pod",
+			&corev1.Pod{
+				ObjectMeta: metav1.ObjectMeta{Name: "coredns-abc"},
+				Spec: corev1.PodSpec{Containers: []corev1.Container{
+					{Image: "registry.k8s.io/coredns:v1.10.1"},
+				}},
+			},
+			true,
+		},
+		{
+			"normal pod",
+			&corev1.Pod{
+				ObjectMeta: metav1.ObjectMeta{Name: "app-pod"},
+				Spec: corev1.PodSpec{Containers: []corev1.Container{
+					{Image: "nginx:latest"},
+				}},
+			},
+			false,
+		},
 	}
-
-	// No CoreDNS
-	s = DNSHealthSummary{CoreDNSPods: 0}
-	if score := calculateDNSHealthScore(s, false); score != 0 {
-		t.Errorf("Expected 0 for no coredns, got %d", score)
-	}
-
-	// Not all ready
-	s = DNSHealthSummary{CoreDNSPods: 2, CoreDNSReady: 1, HeadlessNoEP: 3}
-	// 100 - 40 - 9 = 51
-	score := calculateDNSHealthScore(s, false)
-	if score != 51 {
-		t.Errorf("Expected 51 for unhealthy, got %d", score)
-	}
-}
-
-func TestGenerateDNSRecommendations(t *testing.T) {
-	s := DNSHealthSummary{
-		CoreDNSPods:  1,
-		CoreDNSReady: 1,
-		HeadlessNoEP: 2,
-		NDotsIssues:  3,
-		HealthScore:  40,
-	}
-	coredns := CoreDNSStatus{HasCorefile: true, Forwarders: nil, Plugins: []string{"errors"}}
-	dnsConfig := DNSConfigAnalysis{HasNodeLocalDNS: false}
-
-	recs := generateDNSRecommendations(s, coredns, dnsConfig)
-
-	if len(recs) < 4 {
-		t.Errorf("Expected at least 4 recommendations, got %d", len(recs))
-	}
-
-	foundSingleCoreDNS := false
-	foundHeadless := false
-	foundNodeLocal := false
-	foundNoForwarders := false
-	for _, r := range recs {
-		if containsSubstr(r, "at least 2") {
-			foundSingleCoreDNS = true
-		}
-		if containsSubstr(r, "headless") {
-			foundHeadless = true
-		}
-		if containsSubstr(r, "NodeLocal") {
-			foundNodeLocal = true
-		}
-		if containsSubstr(r, "forwarders") {
-			foundNoForwarders = true
-		}
-	}
-	if !foundSingleCoreDNS {
-		t.Error("Expected recommendation about single CoreDNS replica")
-	}
-	if !foundHeadless {
-		t.Error("Expected recommendation about headless services")
-	}
-	if !foundNodeLocal {
-		t.Error("Expected recommendation about NodeLocal DNS")
-	}
-	if !foundNoForwarders {
-		t.Error("Expected recommendation about missing forwarders")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := isCoreDNSPod(tt.pod); got != tt.want {
+				t.Errorf("isCoreDNSPod() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
 
-func TestGenerateDNSRecommendationsClean(t *testing.T) {
-	s := DNSHealthSummary{
-		CoreDNSPods:  2,
-		CoreDNSReady: 2,
-		HealthScore:  100,
-	}
-	coredns := CoreDNSStatus{
-		HasCorefile: true,
-		Forwarders:  []string{"8.8.8.8"},
-		Plugins:     []string{"errors", "ready", "forward"},
-	}
-	dnsConfig := DNSConfigAnalysis{HasNodeLocalDNS: true}
+func TestAnalyzeDNSConfig(t *testing.T) {
+	t.Run("missing Corefile", func(t *testing.T) {
+		cm := &corev1.ConfigMap{Data: map[string]string{}}
+		issues := analyzeDNSConfig(cm)
+		if len(issues) == 0 {
+			t.Error("expected issues for missing Corefile")
+		}
+	})
 
-	recs := generateDNSRecommendations(s, coredns, dnsConfig)
-	if len(recs) != 0 {
-		t.Errorf("Expected 0 recommendations for clean, got %d", len(recs))
-	}
+	t.Run("full config", func(t *testing.T) {
+		cm := &corev1.ConfigMap{Data: map[string]string{
+			"Corefile": ".:53 {\n  cache 30\n  ready\n  health\n  prometheus :9153\n  kubernetes cluster.local\n}",
+		}}
+		issues := analyzeDNSConfig(cm)
+		if len(issues) != 0 {
+			t.Errorf("expected 0 issues for complete config, got %d", len(issues))
+		}
+	})
+
+	t.Run("missing plugins", func(t *testing.T) {
+		cm := &corev1.ConfigMap{Data: map[string]string{
+			"Corefile": ".:53 {\n  kubernetes cluster.local\n}",
+		}}
+		issues := analyzeDNSConfig(cm)
+		if len(issues) < 3 {
+			t.Errorf("expected at least 3 issues, got %d", len(issues))
+		}
+	})
 }
 
-func TestDNSIssueRank(t *testing.T) {
-	if dnsIssueRank("critical") != 0 {
-		t.Error("Expected 0 for critical")
-	}
-	if dnsIssueRank("warning") != 1 {
-		t.Error("Expected 1 for warning")
-	}
-	if dnsIssueRank("info") != 2 {
-		t.Error("Expected 2 for info")
-	}
+func TestDNSHealthRecommendations(t *testing.T) {
+	t.Run("healthy", func(t *testing.T) {
+		r := &DNSHealthResult{Summary: DNSHealthSummary{CoreDNSFound: 2, CoreDNSReady: 2, ConfigMapFound: true}}
+		recs := dnsHealthRecommendations(r)
+		if len(recs) == 0 {
+			t.Error("expected at least one recommendation")
+		}
+	})
+	t.Run("critical no dns", func(t *testing.T) {
+		r := &DNSHealthResult{Summary: DNSHealthSummary{CoreDNSFound: 0}}
+		recs := dnsHealthRecommendations(r)
+		if len(recs) == 0 {
+			t.Error("expected at least one recommendation")
+		}
+	})
 }
