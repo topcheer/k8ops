@@ -292,6 +292,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/scale-limits", s.cacheMiddleware(60*time.Second, s.handleScaleLimits))                           // cluster scalability limits & threshold monitor
 	mux.HandleFunc("/api/scalability/dr-readiness", s.cacheMiddleware(120*time.Second, s.handleDRReadiness))                          // disaster recovery readiness & backup compliance auditor
 	mux.HandleFunc("/api/scalability/fragmentation", s.cacheMiddleware(60*time.Second, s.handleFragmentation))                        // resource fragmentation & bin-packing efficiency analyzer
+	mux.HandleFunc("/api/scalability/ip-cidr-utilization", s.cacheMiddleware(60*time.Second, s.handleIPCIDRAudit))                    // IP address & Pod CIDR utilization monitor
 	mux.HandleFunc("/api/deployment/image-hygiene", s.cacheMiddleware(60*time.Second, s.handleImageHygiene))                          // container image deployment hygiene analyzer
 	mux.HandleFunc("/api/deployment/revision-history", s.cacheMiddleware(60*time.Second, s.handleRevisionHistory))                    // deployment revision history & rollback readiness
 	mux.HandleFunc("/api/deployment/disruption-impact", s.cacheMiddleware(60*time.Second, s.handleDisruptionImpact))                  // deployment PDB disruption & maintenance impact

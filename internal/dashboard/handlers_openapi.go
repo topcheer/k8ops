@@ -2894,6 +2894,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- IP Address & Pod CIDR Utilization Monitor (v16.01+) ---
+	add("/api/scalability/ip-cidr-utilization", "get", OpenAPIOperation{
+		Summary: "IP address & Pod CIDR utilization monitor", OperationID: "ipCidrUtilization", Tags: []string{"Scalability", "Networking", "Capacity"},
+		Description: "Monitors Pod CIDR utilization and IP address capacity across nodes. Per-node: Pod CIDR range, address capacity, pods on node, utilization percentage, remaining IPs, dual-stack detection. Identifies nodes at/near IP exhaustion. Estimates cluster-wide Pod IP utilization. Service IP range detection. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("IP CIDR utilization analysis", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalNodes":            5,
+					"totalPodIPsUsed":       120,
+					"totalPodCIDRCap":       1280,
+					"overallUtilizationPct": 9.4,
+					"healthScore":           95,
+				},
+				"byNode": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
