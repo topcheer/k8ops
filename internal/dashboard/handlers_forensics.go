@@ -334,11 +334,12 @@ func exitCodeMeaning(code int32) string {
 // extractContainerHash extracts the hash from a container ID string.
 func extractContainerHash(containerID string) string {
 	// Format: containerd://sha256:abc123...
-	parts := strings.SplitN(containerID, ":", 2)
-	if len(parts) < 2 {
+	// We want just the hash after the last colon
+	idx := strings.LastIndex(containerID, ":")
+	if idx < 0 {
 		return containerID
 	}
-	return parts[len(parts)-1]
+	return containerID[idx+1:]
 }
 
 // extractImageHash extracts the hash from an image ID string.

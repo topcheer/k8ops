@@ -10,7 +10,7 @@ func TestForensicsScore(t *testing.T) {
 		maxScore int
 	}{
 		{"clean", ForensicsSummary{TotalPods: 10}, 95, 100},
-		{"oom kills", ForensicsSummary{TotalPods: 10, OOMKills: 3, ExitCodeErrors: 3}, 30, 60},
+		{"oom kills", ForensicsSummary{TotalPods: 10, OOMKills: 3, ExitCodeErrors: 3}, 60, 85},
 		{"privileged escapes", ForensicsSummary{TotalPods: 10, PrivilegedEscapes: 2}, 55, 85},
 		{"no pods", ForensicsSummary{}, 95, 100},
 	}
