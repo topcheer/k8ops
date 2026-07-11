@@ -2972,6 +2972,17 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Topology Spread Constraint Validator (v16.06+) ---
+	add("/api/product/topology-spread", "get", OpenAPIOperation{
+		Summary: "Pod topology spread constraint validator", OperationID: "topologySpread", Tags: []string{"Product", "Scheduling", "HA"},
+		Description: "Validates topology spread constraints across Deployments, StatefulSets, and DaemonSets. Detects multi-replica workloads without spread constraints. Validates maxSkew, topologyKey, and whenUnsatisfiable settings. Analyzes actual pod distribution across zone and hostname domains. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Topology spread analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalWorkloads": 15, "withSpread": 8, "withoutSpread": 7, "healthScore": 65},
+			}),
+		},
+	})
+
 	return spec
 }
 

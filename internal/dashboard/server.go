@@ -223,7 +223,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/oom-tracker", s.cacheMiddleware(30*time.Second, s.handleOOMTracker))                              // container OOM kill tracker
 	mux.HandleFunc("/api/operations/crashloop", s.cacheMiddleware(30*time.Second, s.handleCrashLoop))                                 // CrashLoopBackOff detector & crash pattern analyzer
 	mux.HandleFunc("/api/operations/pdb-audit", s.cacheMiddleware(60*time.Second, s.handlePDBAudit))                                  // PDB compliance & voluntary disruption risk
-	mux.HandleFunc("/api/operations/topology-distribution", s.cacheMiddleware(60*time.Second, s.handleTSAudit))                       // topology spread & pod distribution audit
+	mux.HandleFunc("/api/operations/topology-distribution", s.cacheMiddleware(60*time.Second, s.handleTopologySpread))                // topology spread & pod distribution audit
 	mux.HandleFunc("/api/operations/image-pull-failures", s.cacheMiddleware(30*time.Second, s.handleImagePullFailures))               // image pull & container start failure tracker
 	mux.HandleFunc("/api/operations/restart-reasons", s.cacheMiddleware(30*time.Second, s.handleRestartReasons))                      // pod restart reason analyzer
 	mux.HandleFunc("/api/operations/scheduling-latency", s.cacheMiddleware(30*time.Second, s.handleSchedulingLatency))                // pod scheduling latency analyzer
@@ -258,7 +258,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/mac-audit", s.cacheMiddleware(120*time.Second, s.handleMACAudit))                                   // AppArmor & SELinux MAC compliance auditor
 	mux.HandleFunc("/api/security/forensics", s.cacheMiddleware(30*time.Second, s.handleForensics))                                   // pod security forensics & incident evidence collector
 	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                                   // resource dependency graph & blast radius
-	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpread))                                 // topology spread compliance
+	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))                            // topology spread compliance
 	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                               // workload staleness & release cadence
 	mux.HandleFunc("/api/product/ingress-health", s.cacheMiddleware(60*time.Second, s.handleIngressHealth))                           // ingress traffic routing health
 	mux.HandleFunc("/api/product/namespaces/lifecycle", s.cacheMiddleware(60*time.Second, s.handleNamespaceLifecycle))                // namespace governance & lifecycle
@@ -277,6 +277,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/api-deprecation", s.cacheMiddleware(120*time.Second, s.handleDeprecatedAPI))                         // deprecated API version & upgrade readiness checker
 	mux.HandleFunc("/api/product/qos-priority", s.cacheMiddleware(60*time.Second, s.handleQoSAudit))                                  // pod QoS & priority class distribution auditor
 	mux.HandleFunc("/api/product/service-connectivity", s.cacheMiddleware(60*time.Second, s.handleServiceConnectivity))               // service endpoint & connectivity health auditor
+	mux.HandleFunc("/api/product/topology-spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))                    // topology spread constraint validator
 	mux.HandleFunc("/api/scalability/overcommit", s.cacheMiddleware(60*time.Second, s.handleOvercommitAnalysis))                      // resource over-commit & pressure
 	mux.HandleFunc("/api/scalability/autoscale-recommendations", s.cacheMiddleware(60*time.Second, s.handleAutoscaleRecommendations)) // HPA/VPA right-sizing
 	mux.HandleFunc("/api/scalability/pvc-analysis", s.cacheMiddleware(60*time.Second, s.handlePVCAnalysis))                           // PVC binding & storage performance
