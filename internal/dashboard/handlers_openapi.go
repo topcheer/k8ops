@@ -2950,6 +2950,28 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Security Forensics & Incident Evidence Collector (v16.05+) ---
+	add("/api/security/forensics", "get", OpenAPIOperation{
+		Summary: "Pod security forensics & incident evidence collector", OperationID: "forensics", Tags: []string{"Security", "Forensics", "IncidentResponse"},
+		Description: "Collects pod security forensics and incident evidence. Analyzes container exit codes, OOMKills, SIGKILL terminations, privileged container escapes, and container/image hash mismatches. Recent termination records with reasons, signals, and durations. Exit code distribution analysis. Per-pod suspicious activity flagging. Forensics health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Forensics analysis", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":           120,
+					"podsWithIssues":      5,
+					"oomKills":            2,
+					"sigkillTerminations": 1,
+					"exitCodeErrors":      4,
+					"hashMismatches":      0,
+					"forensicsScore":      82,
+				},
+				"suspiciousPods":     []interface{}{},
+				"exitCodeAnalysis":   []interface{}{},
+				"recentTerminations": []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
