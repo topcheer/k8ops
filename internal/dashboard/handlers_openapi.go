@@ -2912,6 +2912,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Sidecar Container Overhead & Injection Auditor (v16.02+) ---
+	add("/api/deployment/sidecar-audit", "get", OpenAPIOperation{
+		Summary: "Sidecar container overhead & injection auditor", OperationID: "sidecarAudit", Tags: []string{"Deployment", "Resources", "Efficiency"},
+		Description: "Analyzes sidecar containers across pods. Detects known sidecar patterns (Istio, Linkerd, Vault, Fluentd, etc.), calculates CPU/memory overhead per pod and namespace. Identifies high-overhead pods (>30% sidecar resources), injected-only pods (no app container). Per-type and per-namespace statistics. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Sidecar analysis", map[string]interface{}{
+				"summary": map[string]interface{}{
+					"totalPods":        120,
+					"podsWithSidecars": 60,
+					"totalSidecars":    75,
+					"cpuOverheadPct":   18.5,
+					"healthScore":      78,
+				},
+				"bySidecarType": []interface{}{},
+				"byNamespace":   []interface{}{},
+			}),
+		},
+	})
+
 	return spec
 }
 
