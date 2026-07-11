@@ -4,6 +4,33 @@
 
 ---
 
+## v15.98-v15.99 (2026-07-11)
+
+### v15.98: AppArmor & SELinux MAC 合规审计 (维度4: 安全与合规)
+
+**新增 API：**
+- `GET /api/security/mac-audit` — AppArmor 与 SELinux 强制访问控制审计
+  - AppArmor: unconfined 检测、缺失 profile 检测
+  - SELinux: permissive/unconfined 类型检测、缺失上下文检测
+  - 节点能力检测
+  - 合规评分 (0-100)
+  - 2 个单元测试
+
+### v15.99: 服务端点与连通性健康审计 (维度1: 产品功能)
+
+**新增 API：**
+- `GET /api/product/service-connectivity` — 服务端点与连通性健康审计
+  - 零端点检测、无就绪端点检测
+  - 选择器间隙检测（selector 不匹配任何 Pod）
+  - 服务类型分布
+  - 每命名空间健康统计
+  - 健康评分 (0-100)
+  - 4 个单元测试
+
+### 统计
+- OpenAPI 端点：161 → 163
+- 单元测试：1034 → 1040
+
 ## v15.95-v15.96 (2026-07-09)
 
 ### v15.95: ConfigMap/Secret 配置同步与陈旧检测 (维度2: 部署与发布)

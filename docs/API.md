@@ -2294,6 +2294,37 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 98. GET /api/security/mac-audit — AppArmor 与 SELinux 强制访问控制审计
+
+审计 Pod 的 AppArmor 和 SELinux 强制访问控制（MAC）配置。
+
+**AppArmor 审计：** 检测 unconfined profile、缺失 profile 的用户命名空间 Pod
+
+**SELinux 审计：** 检测 permissive/unconfined 类型、缺失 SELinux 上下文的 Pod
+
+**节点能力检测：** 检查节点是否支持 AppArmor/SELinux
+
+**合规评分 (0-100)：** AppArmor 覆盖率(+40)、SELinux 覆盖率(+20)、unconfined(-20)、缺失(-25)
+
+---
+
+### 99. GET /api/product/service-connectivity — 服务端点与连通性健康审计
+
+审计 Service 端点健康和连通性。
+
+**检测项：**
+- 零端点服务（无后端 Pod）
+- 无就绪端点（Pod 存在但未就绪）
+- 选择器间隙（selector 不匹配任何 Pod）
+
+**类型分布：** ClusterIP、NodePort、LoadBalancer、Headless、ExternalName
+
+**每命名空间健康统计**
+
+**健康评分 (0-100)**
+
+---
+
 ### 86. GET /api/security/host-namespace — 容器主机命名空间与特权暴露审计
 
 审计容器的宿主机命名空间暴露和特权升级风险。
@@ -2385,5 +2416,7 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 93 | /api/scalability/fragmentation | Scalability | v15.93 | 资源碎片化与装箱效率分析 |
 | 94 | /api/deployment/config-sync | Deployment | v15.95 | ConfigMap/Secret 配置同步与陈旧检测 |
 | 95 | /api/operations/kubelet-health | Operations | v15.96 | Kubelet 与容器运行时健康监控 |
+| 96 | /api/security/mac-audit | Security | v15.98 | AppArmor 与 SELinux MAC 合规审计 |
+| 97 | /api/product/service-connectivity | Product | v15.99 | 服务端点与连通性健康审计 |
 
-**总计：161 个 OpenAPI 端点**
+**总计：163 个 OpenAPI 端点**
