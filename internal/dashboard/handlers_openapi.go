@@ -3020,6 +3020,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- RBAC Overprivilege & Wildcard Permission Auditor (v16.12+) ---
+	add("/api/security/rbac-audit", "get", OpenAPIOperation{
+		Summary:     "RBAC overprivilege & wildcard permission auditor",
+		OperationID: "rbacAudit",
+		Tags:        []string{"Security", "RBAC", "Compliance"},
+		Description: "Audits RBAC roles for overprivilege. Detects wildcard verbs/resources, excessive cluster-admin bindings, and least-privilege violations. Per-role severity classification. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("RBAC audit analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"overprivilegedCount": 3, "clusterAdminBindings": 1, "healthScore": 65},
+			}),
+		},
+	})
+
 	return spec
 }
 
