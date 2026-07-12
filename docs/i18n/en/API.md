@@ -1491,12 +1491,24 @@ Audits PVC backup and snapshot compliance. Detects unprotected PVCs in use, crit
 
 ---
 
+### 110. GET /api/deployment/scale-readiness — Deployment Scale Readiness & Autoscaling Gap Detector
+
+Analyzes deployment and StatefulSet scale readiness. Detects missing HPA, PDB, resource requests for multi-replica workloads. Single-replica detection. Identifies fully scale-ready workloads. Health score (0-100).
+
+---
+
+### 111. GET /api/operations/etcd-health — etcd Health & Database Pressure Monitor
+
+Monitors etcd pod health and database pressure. etcd pod readiness, version, restart tracking. Large ConfigMap/Secret detection (>100KB/500KB/1MB). Single etcd instance detection (no HA quorum). Pressure and health scores (0-100).
+
+---
+
 ## API Summary
 
-**Total: 173 OpenAPI endpoints** across 6 dimensions:
+**Total: 175 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor, etcd health
 - **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit, forensics, RBAC audit
 - **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization, node topology
 - **Infrastructure**: Auth, RBAC, health, version

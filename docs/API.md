@@ -2493,6 +2493,38 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 110. GET /api/deployment/scale-readiness — 部署扩缩容就绪与自动伸缩差距检测
+
+分析 Deployment 和 StatefulSet 的扩缩容就绪状态。
+
+**检测项：**
+- 多副本工作负载缺少 HPA（无法基于负载自动伸缩）
+- 多副本工作负载缺少 PDB（自愿中断可能导致停机）
+- 缺少资源请求（无法安全自动伸缩）
+- 单副本工作负载（无高可用）
+
+**完全就绪识别：** 同时拥有 HPA + PDB + 资源请求的工作负载
+
+**健康评分 (0-100)：** 无资源(-10/per)、无 HPA(-25%)、无 PDB(-25%)、单副本(-3/per)
+
+---
+
+### 111. GET /api/operations/etcd-health — etcd 健康与数据库压力监控
+
+监控 etcd Pod 健康和数据库压力。
+
+**etcd Pod 状态：** 就绪状态、版本、重启次数
+
+**大型对象检测：** >100KB（中等）、>500KB（高）、>1MB（严重）的 ConfigMap 和 Secret
+
+**单实例检测：** 仅 1 个 etcd 实例（无 HA 仲裁）
+
+**压力评分 (0-100)：** 大型对象数量(-5/per)
+
+**健康评分 (0-100)：** 未就绪(-50%)、单实例(-20)、大型对象(-3/per)
+
+---
+
 ### 86. GET /api/security/host-namespace — 容器主机命名空间与特权暴露审计
 
 审计容器的宿主机命名空间暴露和特权升级风险。
@@ -2596,5 +2628,7 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 105 | /api/scalability/node-topology | Scalability | v16.11 | 节点拓扑分布与多可用区容错分析 |
 | 106 | /api/security/rbac-audit | Security | v16.12 | RBAC 权限过大与通配符审计 |
 | 107 | /api/product/backup-compliance | Product | v16.13 | 卷快照与 PVC 备份合规审计 |
+| 108 | /api/deployment/scale-readiness | Deployment | v16.15 | 部署扩缩容就绪与自动伸缩差距检测 |
+| 109 | /api/operations/etcd-health | Operations | v16.16 | etcd 健康与数据库压力监控 |
 
-**总计：173 个 OpenAPI 端点**
+**总计：175 个 OpenAPI 端点**
