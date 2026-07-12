@@ -262,6 +262,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/forensics", s.cacheMiddleware(30*time.Second, s.handleForensics))                                   // pod security forensics & incident evidence collector
 	mux.HandleFunc("/api/security/rbac-audit", s.cacheMiddleware(120*time.Second, s.handleRBACOverprivilege))                         // RBAC overprivilege & wildcard permission auditor
 	mux.HandleFunc("/api/security/secret-scan", s.cacheMiddleware(120*time.Second, s.handleSecretScan))                               // secret data exposure & env var credential leak scanner
+	mux.HandleFunc("/api/security/sec-drift", s.cacheMiddleware(120*time.Second, s.handleSecDrift))                                   // security context drift & runtime policy compliance auditor
 	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                                   // resource dependency graph & blast radius
 	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))                            // topology spread compliance
 	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                               // workload staleness & release cadence

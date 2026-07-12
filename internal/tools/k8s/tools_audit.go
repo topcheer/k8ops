@@ -118,6 +118,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:forensics", "/api/security/forensics", "Pod security forensics & incident evidence collector"},
 	{"security:rbac-audit", "/api/security/rbac-audit", "RBAC overprivilege & wildcard permission auditor"},
 	{"security:secret-scan", "/api/security/secret-scan", "Secret data exposure & env var credential leak scanner"},
+	{"security:sec-drift", "/api/security/sec-drift", "Security context drift & runtime policy compliance auditor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

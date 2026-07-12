@@ -3137,6 +3137,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Security Context Drift & Runtime Policy Compliance Auditor (v16.25) ---
+	add("/api/security/sec-drift", "get", OpenAPIOperation{
+		Summary:     "Security context drift & runtime policy compliance auditor",
+		OperationID: "secDrift",
+		Tags:        []string{"Security", "Compliance", "Runtime"},
+		Description: "Audits security context drift and runtime policy compliance. Detects missing runAsNonRoot, readOnlyRootFilesystem, allowPrivilegeEscalation, capability drops, privileged containers, dangerous capabilities (SYS_ADMIN, NET_ADMIN, etc.). Per-namespace and per-workload analysis. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Security context drift analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalPods": 50, "privileged": 2, "healthScore": 78},
+			}),
+		},
+	})
+
 	return spec
 }
 
