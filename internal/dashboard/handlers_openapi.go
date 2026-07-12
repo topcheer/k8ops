@@ -3111,6 +3111,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Multi-Tenant Resource Pressure & Quota Competition Auditor (v16.22) ---
+	add("/api/scalability/tenant-pressure", "get", OpenAPIOperation{
+		Summary:     "Multi-tenant resource pressure & quota competition auditor",
+		OperationID: "tenantPressure",
+		Tags:        []string{"Scalability", "MultiTenancy", "Quota"},
+		Description: "Audits multi-tenant resource pressure and quota competition. Detects saturated quotas (>80%), critical quotas (>95%), unbounded namespaces (no quota + no LimitRange), resource hotspots. Per-namespace analysis with health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Tenant pressure analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalNamespaces": 20, "saturatedQuotas": 3, "healthScore": 82},
+			}),
+		},
+	})
+
 	return spec
 }
 
