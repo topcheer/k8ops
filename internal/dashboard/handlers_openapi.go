@@ -2994,6 +2994,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Certificate Signing Request (CSR) Monitor (v16.09+) ---
+	add("/api/operations/csr-monitor", "get", OpenAPIOperation{
+		Summary:     "Certificate signing request & node bootstrap cert monitor",
+		OperationID: "csrMonitor",
+		Tags:        []string{"Operations", "Certificates", "NodeBootstrap"},
+		Description: "Monitors Certificate Signing Requests (CSRs). Tracks pending, approved, denied, expired, and stale CSRs. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("CSR analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"total": 15, "pending": 2, "healthScore": 75},
+			}),
+		},
+	})
+
 	return spec
 }
 
