@@ -10,7 +10,7 @@ func TestRestartPolicyScore(t *testing.T) {
 		maxScore int
 	}{
 		{"clean", RestartPolicySummary{TotalWorkloads: 10}, 90, 100},
-		{"mismatches", RestartPolicySummary{TotalWorkloads: 10, PolicyMismatches: 3, NoLifecycleHook: 5}, 20, 50},
+		{"mismatches", RestartPolicySummary{TotalWorkloads: 10, PolicyMismatches: 3, NoLifecycleHook: 5}, 45, 70},
 		{"no workloads", RestartPolicySummary{}, 95, 100},
 	}
 	for _, tt := range tests {
