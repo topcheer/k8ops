@@ -3046,6 +3046,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Scale Readiness & Autoscaling Gap Detector (v16.15+) ---
+	add("/api/deployment/scale-readiness", "get", OpenAPIOperation{
+		Summary:     "Deployment scale readiness & autoscaling gap detector",
+		OperationID: "scaleReadiness",
+		Tags:        []string{"Deployment", "Autoscaling", "HA"},
+		Description: "Analyzes deployment and StatefulSet scale readiness. Detects: missing HPA, missing PDB, missing resource requests, single-replica workloads. Identifies workloads fully ready to scale (HPA + PDB + resources). Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Scale readiness analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalWorkloads": 20, "canScale": 12, "healthScore": 70},
+			}),
+		},
+	})
+
 	return spec
 }
 
