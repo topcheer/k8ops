@@ -2983,6 +2983,17 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Container Restart Policy & Lifecycle Auditor (v16.08+) ---
+	add("/api/deployment/restart-policy", "get", OpenAPIOperation{
+		Summary: "Restart policy & lifecycle hook auditor", OperationID: "restartPolicy", Tags: []string{"Deployment", "Lifecycle", "Reliability"},
+		Description: "Audits container restart policies and lifecycle hooks. Detects policy mismatches (e.g. Job with Always, Deployment with Never). Tracks postStart/preStop hook coverage. Per-namespace statistics. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Restart policy analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalWorkloads": 50, "policyMismatches": 2, "noLifecycleHook": 15, "healthScore": 80},
+			}),
+		},
+	})
+
 	return spec
 }
 
