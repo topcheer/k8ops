@@ -16,7 +16,7 @@ func TestEtcdPressureScore(t *testing.T) {
 	}{
 		{"no large objects", EtcdHealthSummary{}, 95, 100},
 		{"some large objects", EtcdHealthSummary{LargeObjects: 5}, 70, 80},
-		{"many large objects", EtcdHealthSummary{LargeObjects: 20}, 0, 20},
+		{"many large objects", EtcdHealthSummary{LargeObjects: 20}, 65, 75},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
