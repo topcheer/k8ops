@@ -3007,6 +3007,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Node Topology Distribution & Multi-AZ Analyzer (v16.11+) ---
+	add("/api/scalability/node-topology", "get", OpenAPIOperation{
+		Summary:     "Node topology distribution & multi-AZ fault tolerance analyzer",
+		OperationID: "nodeTopology",
+		Tags:        []string{"Scalability", "HA", "Topology"},
+		Description: "Analyzes node distribution across availability zones and regions. Per-zone: node count, CPU/memory allocation, pod count. Detects single-zone clusters, zone imbalance, and missing zone labels. Multi-AZ fault tolerance assessment. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Node topology analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalNodes": 5, "totalZones": 2, "healthScore": 75},
+			}),
+		},
+	})
+
 	return spec
 }
 
