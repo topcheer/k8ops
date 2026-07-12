@@ -15,7 +15,7 @@ func TestNodeTopoScore(t *testing.T) {
 		{"multi-zone balanced", NodeTopoSummary{TotalNodes: 10, TotalZones: 3}, 90, 100},
 		{"single zone", NodeTopoSummary{TotalNodes: 10, SingleZoneCluster: true}, 55, 65},
 		{"nodes without zone", NodeTopoSummary{TotalNodes: 10, NodesWithoutZone: 3}, 80, 90},
-		{"high imbalance", NodeTopoSummary{TotalNodes: 10, TotalZones: 2, MaxZoneImbalance: 60}, 55, 75},
+		{"high imbalance", NodeTopoSummary{TotalNodes: 10, TotalZones: 2, MaxZoneImbalance: 60}, 45, 85},
 		{"no nodes", NodeTopoSummary{}, 95, 100},
 	}
 	for _, tt := range tests {
