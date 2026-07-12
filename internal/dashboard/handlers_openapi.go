@@ -3085,6 +3085,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Init Container Reliability & Startup Dependency Auditor (v16.19+) ---
+	add("/api/product/init-container-audit", "get", OpenAPIOperation{
+		Summary:     "Init container reliability & startup dependency auditor",
+		OperationID: "initContainerAudit",
+		Tags:        []string{"Product", "InitContainers", "Reliability"},
+		Description: "Audits init container reliability and startup dependencies. Detects missing resource requests/limits, excessive init containers (>5), RestartPolicy=Always sidecar behavior. Per-namespace and per-workload analysis. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Init container audit analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalPods": 50, "podsWithInit": 15, "totalInitContainers": 20, "healthScore": 80},
+			}),
+		},
+	})
+
 	return spec
 }
 
