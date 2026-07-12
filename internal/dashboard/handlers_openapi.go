@@ -3098,6 +3098,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Replica Availability & Ready Pod Ratio Monitor (v16.21) ---
+	add("/api/deployment/replica-availability", "get", OpenAPIOperation{
+		Summary:     "Deployment replica availability & ready pod ratio monitor",
+		OperationID: "replicaAvailability",
+		Tags:        []string{"Deployment", "Availability", "Replicas"},
+		Description: "Monitors replica availability across Deployments, StatefulSets, and DaemonSets. Detects ready/desired gaps, zero-ready workloads, stale replicas during rollouts. Per-namespace analysis. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Replica availability analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalWorkloads": 30, "healthyWorkloads": 25, "gapWorkloads": 5, "healthScore": 85},
+			}),
+		},
+	})
+
 	return spec
 }
 

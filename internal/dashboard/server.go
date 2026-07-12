@@ -310,15 +310,16 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/ephemeral-storage", s.cacheMiddleware(60*time.Second, s.handleEphemeralStorage))                  // ephemeral storage & emptyDir limit compliance
 	mux.HandleFunc("/api/deployment/config-sync", s.cacheMiddleware(60*time.Second, s.handleConfigSync))                              // ConfigMap/Secret config sync & staleness detector
 	mux.HandleFunc("/api/deployment/sidecar-audit", s.cacheMiddleware(60*time.Second, s.handleSidecarAudit))
-	mux.HandleFunc("/api/deployment/restart-policy", s.cacheMiddleware(60*time.Second, s.handleRestartPolicy))        // restart policy & lifecycle hook auditor                          // sidecar container overhead & injection auditor
-	mux.HandleFunc("/api/deployment/scale-readiness", s.cacheMiddleware(60*time.Second, s.handleScaleReadiness))      // deployment scale readiness & autoscaling gap detector
-	mux.HandleFunc("/api/deployment/rollout-health", s.cacheMiddleware(30*time.Second, s.handleRolloutHealth))        // deployment rollout strategy & health analyzer
-	mux.HandleFunc("/api/deployment/probe-compliance", s.cacheMiddleware(60*time.Second, s.handleProbeCompliance))    // health probe compliance auditor
-	mux.HandleFunc("/api/deployment/resource-limits", s.cacheMiddleware(60*time.Second, s.handleResourceLimitsAudit)) // resource limit & enforcement gap audit
-	mux.HandleFunc("/api/deployment/graceful-shutdown", s.cacheMiddleware(60*time.Second, s.handleGracefulShutdown))  // graceful shutdown & termination compliance
-	mux.HandleFunc("/api/deployment/update-strategy", s.cacheMiddleware(60*time.Second, s.handleUpdateStrategy))      // deployment update strategy & rollback readiness
-	mux.HandleFunc("/api/deployment/ref-integrity", s.cacheMiddleware(60*time.Second, s.handleRefIntegrity))          // Secret/ConfigMap reference integrity checker
-	mux.HandleFunc("/api/deployment/image-drift", s.cacheMiddleware(60*time.Second, s.handleImageDrift))              // deployment image drift & version consistency detector
+	mux.HandleFunc("/api/deployment/restart-policy", s.cacheMiddleware(60*time.Second, s.handleRestartPolicy))             // restart policy & lifecycle hook auditor                          // sidecar container overhead & injection auditor
+	mux.HandleFunc("/api/deployment/scale-readiness", s.cacheMiddleware(60*time.Second, s.handleScaleReadiness))           // deployment scale readiness & autoscaling gap detector
+	mux.HandleFunc("/api/deployment/rollout-health", s.cacheMiddleware(30*time.Second, s.handleRolloutHealth))             // deployment rollout strategy & health analyzer
+	mux.HandleFunc("/api/deployment/probe-compliance", s.cacheMiddleware(60*time.Second, s.handleProbeCompliance))         // health probe compliance auditor
+	mux.HandleFunc("/api/deployment/resource-limits", s.cacheMiddleware(60*time.Second, s.handleResourceLimitsAudit))      // resource limit & enforcement gap audit
+	mux.HandleFunc("/api/deployment/graceful-shutdown", s.cacheMiddleware(60*time.Second, s.handleGracefulShutdown))       // graceful shutdown & termination compliance
+	mux.HandleFunc("/api/deployment/update-strategy", s.cacheMiddleware(60*time.Second, s.handleUpdateStrategy))           // deployment update strategy & rollback readiness
+	mux.HandleFunc("/api/deployment/ref-integrity", s.cacheMiddleware(60*time.Second, s.handleRefIntegrity))               // Secret/ConfigMap reference integrity checker
+	mux.HandleFunc("/api/deployment/image-drift", s.cacheMiddleware(60*time.Second, s.handleImageDrift))                   // deployment image drift & version consistency detector
+	mux.HandleFunc("/api/deployment/replica-availability", s.cacheMiddleware(30*time.Second, s.handleReplicaAvailability)) // deployment replica availability & ready pod ratio monitor
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))
