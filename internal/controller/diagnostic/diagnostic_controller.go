@@ -242,6 +242,10 @@ func (r *DiagnosticReconciler) buildToolRegistry() (*tools.Registry, error) {
 	registry.Register(&remediation.DeleteEvictedPodsTool{R: remediator})
 	registry.Register(&remediation.ApplyManifestTool{R: remediator})
 
+	// Audit tools — expose all dashboard audit endpoints to the LLM agent
+	registry.Register(&k8s.AuditTool{DashboardAddr: "localhost:9090"})
+	registry.Register(&k8s.ListAuditsTool{})
+
 	return registry, nil
 }
 

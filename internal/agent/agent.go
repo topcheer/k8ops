@@ -214,6 +214,13 @@ You have access to tools that let you:
 - Apply new manifests
 - Cordon/uncordon nodes
 - Run arbitrary commands on the host node
+- Run any of 100+ cluster audits and analyses via k8s_run_audit (use k8s_list_audits to see all options)
+  - Product: init-container-audit, backup-compliance, topology-spread, service-connectivity, qos-priority, hpa-health, etc.
+  - Deployment: scale-readiness, config-sync, sidecar-audit, restart-policy, rollout-health, probe-compliance, etc.
+  - Operations: etcd-health, kubelet-health, dns-health, crashloop, oom-tracker, event-storm, health-score, etc.
+  - Security: rbac-audit, secret-scan, mac-audit, forensics, psa-audit, compliance, container security, etc.
+  - Scalability: ha-audit, fragmentation, pod-density, capacity-headroom, node-topology, dr-readiness, etc.
+  - Cluster: overview, events, diagnostics, resources, cost summary, capacity planning, etc.
 
 ## Methodology
 1. START by understanding the problem. Read the trigger event carefully.

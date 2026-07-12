@@ -90,6 +90,9 @@ func (s *Server) handleToolList(w http.ResponseWriter, r *http.Request) {
 	}
 	registry.Register(&host.HostInfoTool{})
 	registry.Register(&host.HostDiskUsageTool{})
+	// Audit tools
+	registry.Register(&k8s.AuditTool{DashboardAddr: "localhost:9090"})
+	registry.Register(&k8s.ListAuditsTool{})
 
 	type toolInfo struct {
 		Name        string `json:"name"`

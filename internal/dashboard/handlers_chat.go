@@ -190,6 +190,9 @@ func (s *Server) buildImpersonatedRegistry(r *http.Request) *tools.Registry {
 		&host.HostNetworkTool{},
 		&host.HostProcessTool{},
 		&host.HostDmesgTool{},
+		// Audit tools — expose all dashboard audit endpoints to the LLM agent
+		&k8s.AuditTool{DashboardAddr: "localhost:9090"},
+		&k8s.ListAuditsTool{},
 	} {
 		registry.Register(t)
 	}

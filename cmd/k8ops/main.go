@@ -312,5 +312,8 @@ func buildRegistry(kubeClient *k8s.KubeClient, remediator *remediation.Remediato
 	registry.Register(&remediation.CordonNodeTool{R: remediator})
 	registry.Register(&remediation.DeleteEvictedPodsTool{R: remediator})
 	registry.Register(&remediation.ApplyManifestTool{R: remediator})
+	// Audit tools — expose all dashboard audit endpoints to the LLM agent
+	registry.Register(&k8s.AuditTool{DashboardAddr: "localhost:9090"})
+	registry.Register(&k8s.ListAuditsTool{})
 	return registry
 }
