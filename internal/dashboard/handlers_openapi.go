@@ -3150,6 +3150,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- HPA Target Utilization Gap & Scaling Behavior Auditor (v16.26) ---
+	add("/api/product/hpa-gap", "get", OpenAPIOperation{
+		Summary:     "HPA target utilization gap & scaling behavior auditor",
+		OperationID: "hpaGap",
+		Tags:        []string{"Product", "HPA", "Autoscaling"},
+		Description: "Audits HPA target utilization gaps, scaling behavior, and cooldown configuration. Detects targets too high (>90%), too low (<30%), missing metrics, minReplicas==maxReplicas, missing scaleDown behavior, and high utilization gaps. Per-namespace analysis. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("HPA gap analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalHPAs": 10, "highGapHPAs": 2, "healthScore": 82},
+			}),
+		},
+	})
+
 	return spec
 }
 

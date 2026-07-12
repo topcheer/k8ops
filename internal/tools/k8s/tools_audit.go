@@ -44,6 +44,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:topology-spread", "/api/product/topology-spread", "Topology spread constraint validator"},
 	{"product:backup-compliance", "/api/product/backup-compliance", "Volume snapshot & PVC backup compliance auditor"},
 	{"product:init-container-audit", "/api/product/init-container-audit", "Init container reliability & startup dependency auditor"},
+	{"product:hpa-gap", "/api/product/hpa-gap", "HPA target utilization gap & scaling behavior auditor"},
 
 	// --- Deployment ---
 	{"deployment:image-hygiene", "/api/deployment/image-hygiene", "Container image deployment hygiene analyzer"},
