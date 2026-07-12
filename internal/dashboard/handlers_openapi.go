@@ -3072,6 +3072,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Secret Data Exposure & Credential Leak Scanner (v16.18+) ---
+	add("/api/security/secret-scan", "get", OpenAPIOperation{
+		Summary:     "Secret data exposure & credential leak scanner",
+		OperationID: "secretScan",
+		Tags:        []string{"Security", "Secrets", "DataProtection"},
+		Description: "Scans for secret data exposure and environment variable credential leaks. Detects inline credential values in env vars, sensitive secrets exposed as env vars, stale secrets (>90 days), and unreferenced secrets. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Secret exposure analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalSecrets": 30, "exposedPlainSecrets": 5, "healthScore": 75},
+			}),
+		},
+	})
+
 	return spec
 }
 

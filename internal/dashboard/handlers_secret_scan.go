@@ -7,53 +7,64 @@ import (
 	"strings"
 	"time"
 
-	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// SecretExposureReport summarizes secret usage and exposure risks.
-type SecretExposureReport struct {
-	Summary  SecretExposureSummary `json:"summary"`
-	Secrets  []SecretInfo          `json:"secrets"`
-	Exposed  []ExposedEnvVar       `json:"exposedEnvVars"`
-	Findings []SecurityFinding     `json:"findings"`
+// SecretExpResult is the secret data exposure & environment variable credential leak scan.
+type SecretExpResult struct {
+	ScannedAt       time.Time          `json:"scannedAt"`
+	Summary         SecretExpSummary   `json:"summary"`
+	ExposedSecrets  []SecretScanEntry  `json:"exposedSecrets"`
+	EnvVarLeaks     []EnvLeakEntry     `json:"envVarLeaks"`
+	ByNamespace     []SecretScanNSStat `json:"byNamespace"`
+	Recommendations []string           `json:"recommendations"`
 }
 
-// SecretExposureSummary holds aggregate stats.
-type SecretExposureSummary struct {
-	TotalSecrets   int            `json:"totalSecrets"`
-	ByType         map[string]int `json:"byType"`
-	UnusedSecrets  int            `json:"unusedSecrets"`
-	ExposedEnvVars int            `json:"exposedEnvVars"`
-	NeedsRotation  int            `json:"needsRotation"`
+// SecretExpSummary aggregates secret exposure statistics.
+type SecretExpSummary struct {
+	TotalSecrets        int `json:"totalSecrets"`
+	SecretsMounted      int `json:"secretsMounted"`      // mounted as volumes
+	SecretsAsEnv        int `json:"secretsAsEnv"`        // used as environment variables
+	SecretsAsEnvPlain   int `json:"secretsAsEnvPlain"`   // SecretKeyRef without envFrom
+	ExposedPlainSecrets int `json:"exposedPlainSecrets"` // secrets with sensitive keys mounted as env
+	StaleSecrets        int `json:"staleSecrets"`        // secrets older than 90 days
+	UnreferencedSecrets int `json:"unreferencedSecrets"` // not mounted or env-referenced
+	HealthScore         int `json:"healthScore"`
 }
 
-// SecretInfo describes a Kubernetes Secret.
-type SecretInfo struct {
-	Name       string   `json:"name"`
-	Namespace  string   `json:"namespace"`
-	Type       string   `json:"type"`
-	DataKeys   []string `json:"dataKeys"`
-	KeyCount   int      `json:"keyCount"`
-	CreatedAt  string   `json:"createdAt"`
-	Age        string   `json:"age"`
-	UsedByPods int      `json:"usedByPods"`
-}
-
-// ExposedEnvVar represents a potentially sensitive env var that is
-// hardcoded in a pod spec instead of using a Secret reference.
-type ExposedEnvVar struct {
-	Pod       string `json:"pod"`
+// SecretScanEntry describes a potentially exposed secret.
+type SecretScanEntry struct {
+	Name      string `json:"name"`
 	Namespace string `json:"namespace"`
-	Container string `json:"container"`
-	EnvVar    string `json:"envVar"`
-	Severity  string `json:"severity"`
-	Detail    string `json:"detail"`
+	Type      string `json:"type"`
+	MountType string `json:"mountType"` // volume, env, envFrom
+	Age       string `json:"age"`
+	RiskLevel string `json:"riskLevel"`
 }
 
-// handleSecretExposure scans for secret exposure risks.
-// GET /api/security/secrets
-func (s *Server) handleSecretExposure(w http.ResponseWriter, r *http.Request) {
+// EnvLeakEntry describes a credential detected in environment variables.
+type EnvLeakEntry struct {
+	PodName      string `json:"podName"`
+	Namespace    string `json:"namespace"`
+	Container    string `json:"container"`
+	EnvVarName   string `json:"envVarName"`
+	HasValue     bool   `json:"hasValue"`     // inline value (not from SecretKeyRef)
+	DetectedType string `json:"detectedType"` // password, token, key, etc.
+	Severity     string `json:"severity"`
+}
+
+// SecretScanNSStat shows secret exposure per namespace.
+type SecretScanNSStat struct {
+	Namespace      string `json:"namespace"`
+	TotalSecrets   int    `json:"totalSecrets"`
+	ExposedSecrets int    `json:"exposedSecrets"`
+	EnvVarLeaks    int    `json:"envVarLeaks"`
+	IsSystem       bool   `json:"isSystem"`
+}
+
+// handleSecretScan scans for secret data exposure and environment variable credential leaks.
+// GET /api/security/secret-scan
+func (s *Server) handleSecretScan(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	rc := s.clientsFromReq(r)
 	if rc == nil || rc.clientset == nil {
@@ -61,223 +72,314 @@ func (s *Server) handleSecretExposure(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	secrets, err := rc.clientset.CoreV1().Secrets("").List(ctx, metav1.ListOptions{})
-	if err != nil {
-		writeK8sError(w, err)
-		return
-	}
+	secrets, _ := rc.clientset.CoreV1().Secrets("").List(ctx, metav1.ListOptions{})
+	pods, _ := rc.clientset.CoreV1().Pods("").List(ctx, metav1.ListOptions{})
 
-	pods, err := rc.clientset.CoreV1().Pods("").List(ctx, metav1.ListOptions{})
-	if err != nil {
-		writeK8sError(w, err)
-		return
-	}
+	// Build secret reference map: ns/name -> referenced (by volume or env)
+	secretRefs := map[string]bool{}
+	envSecretRefs := map[string]bool{}
 
-	report := analyzeSecretExposure(secrets.Items, pods.Items)
-
-	writeJSON(w, report)
-}
-
-// sensitiveKeyPatterns are lowercase substrings that suggest a secret value.
-var sensitiveKeyPatterns = []string{
-	"password", "passwd", "pwd",
-	"token", "apikey", "api_key", "api-key",
-	"secret", "credential",
-	"private_key", "privatekey",
-	"access_key", "accesskey",
-	"auth", "bearer",
-}
-
-// sensitiveEnvPatterns are env var names that look hardcoded secrets.
-var sensitiveEnvPatterns = sensitiveKeyPatterns
-
-// analyzeSecretExposure inspects secrets and pods for exposure risks.
-func analyzeSecretExposure(secrets []corev1.Secret, pods []corev1.Pod) SecretExposureReport {
-	report := SecretExposureReport{
-		Summary: SecretExposureSummary{
-			ByType: map[string]int{},
-		},
-	}
-
-	// 1. Build secret info and usage map
-	secretUsage := map[string]int{} // "ns/name" -> pod count
-
-	for _, sec := range secrets {
-		if isSystemNamespace(sec.Namespace) {
-			continue
-		}
-
-		keys := make([]string, 0, len(sec.Data))
-		for k := range sec.Data {
-			keys = append(keys, k)
-		}
-		sort.Strings(keys)
-
-		report.Summary.TotalSecrets++
-		report.Summary.ByType[string(sec.Type)]++
-
-		// Check for rotation needs (>90 days old)
-		age := time.Since(sec.CreationTimestamp.Time)
-		needsRotation := age > 90*24*time.Hour
-
-		if needsRotation {
-			report.Summary.NeedsRotation++
-		}
-
-		info := SecretInfo{
-			Name:      sec.Name,
-			Namespace: sec.Namespace,
-			Type:      string(sec.Type),
-			DataKeys:  keys,
-			KeyCount:  len(keys),
-			CreatedAt: sec.CreationTimestamp.Format(time.RFC3339),
-			Age:       formatDuration(age),
-		}
-		report.Secrets = append(report.Secrets, info)
-
-		// Flag Opaque secrets with sensitive key names
-		if sec.Type == corev1.SecretTypeOpaque {
-			for _, k := range keys {
-				lk := strings.ToLower(k)
-				for _, pat := range sensitiveKeyPatterns {
-					if strings.Contains(lk, pat) {
-						report.Findings = append(report.Findings, SecurityFinding{
-							Severity:  "medium",
-							Category:  "Secrets",
-							Resource:  fmt.Sprintf("%s/secret/%s", sec.Namespace, sec.Name),
-							Namespace: sec.Namespace,
-							Detail:    fmt.Sprintf("Secret %q contains key %q that looks sensitive — ensure it's not logged or exposed", sec.Name, k),
-							Fix:       "Use external secret management (Vault, Sealed Secrets) for production credentials",
-						})
-						break
-					}
-				}
+	for _, pod := range pods.Items {
+		// Check volume mounts
+		for _, vol := range pod.Spec.Volumes {
+			if vol.Secret != nil && vol.Secret.SecretName != "" {
+				key := fmt.Sprintf("%s/%s", pod.Namespace, vol.Secret.SecretName)
+				secretRefs[key] = true
 			}
 		}
 
-		// Rotation finding
-		if needsRotation {
-			report.Findings = append(report.Findings, SecurityFinding{
-				Severity:  "low",
-				Category:  "Secrets",
-				Resource:  fmt.Sprintf("%s/secret/%s", sec.Namespace, sec.Name),
-				Namespace: sec.Namespace,
-				Detail:    fmt.Sprintf("Secret %q is %d days old — consider rotating", sec.Name, int(age.Hours()/24)),
-				Fix:       "Rotate secrets periodically (recommended: every 90 days)",
-			})
-		}
-	}
-
-	// 2. Scan pods for hardcoded sensitive env vars
-	for _, pod := range pods {
-		if pod.Status.Phase == corev1.PodSucceeded || pod.Status.Phase == corev1.PodFailed {
-			continue
-		}
-		if isSystemNamespace(pod.Namespace) {
-			continue
-		}
-
+		// Check env vars and envFrom
 		for _, c := range pod.Spec.Containers {
 			for _, env := range c.Env {
-				// Skip env vars using secretKeyRef or configMapKeyRef
-				if env.ValueFrom != nil {
-					if env.ValueFrom.SecretKeyRef != nil {
-						// Track secret usage
-						key := fmt.Sprintf("%s/%s", pod.Namespace, env.ValueFrom.SecretKeyRef.Name)
-						secretUsage[key]++
-						continue
+				if env.ValueFrom != nil && env.ValueFrom.SecretKeyRef != nil {
+					key := fmt.Sprintf("%s/%s", pod.Namespace, env.ValueFrom.SecretKeyRef.Name)
+					secretRefs[key] = true
+					envSecretRefs[key] = true
+
+					// Check if env var name looks like a credential
+					if isCredentialEnvVar(env.Name) {
+						result_EnvVarLeaks = append(result_EnvVarLeaks, EnvLeakEntry{
+							PodName:      pod.Name,
+							Namespace:    pod.Namespace,
+							Container:    c.Name,
+							EnvVarName:   env.Name,
+							HasValue:     false,
+							DetectedType: classifyCredential(env.Name),
+							Severity:     "medium",
+						})
 					}
-					continue
 				}
 
-				// Check if env var name looks sensitive and has a hardcoded value
-				envLower := strings.ToLower(env.Name)
-				for _, pat := range sensitiveEnvPatterns {
-					if strings.Contains(envLower, pat) && env.Value != "" {
-						// Determine severity based on value characteristics
-						sev := "high"
-						detail := fmt.Sprintf("Container %q has hardcoded %q env var (should use Secret)", c.Name, env.Name)
-
-						// Check if value looks like a real secret (not a placeholder)
-						val := env.Value
-						if strings.Contains(val, "XXXX") || strings.Contains(val, "CHANGE") ||
-							strings.Contains(val, "your-") || strings.Contains(val, "example") {
-							sev = "low"
-							detail = fmt.Sprintf("Container %q has %q env var with placeholder value", c.Name, env.Name)
-						}
-
-						report.Exposed = append(report.Exposed, ExposedEnvVar{
-							Pod:       pod.Name,
-							Namespace: pod.Namespace,
-							Container: c.Name,
-							EnvVar:    env.Name,
-							Severity:  sev,
-							Detail:    detail,
-						})
-						report.Summary.ExposedEnvVars++
-
-						// Also add as finding
-						report.Findings = append(report.Findings, SecurityFinding{
-							Severity:  sev,
-							Category:  "Secrets",
-							Resource:  fmt.Sprintf("%s/pod/%s/container/%s", pod.Namespace, pod.Name, c.Name),
-							Namespace: pod.Namespace,
-							Detail:    detail,
-							Fix:       "Move this value to a Kubernetes Secret and reference via secretKeyRef",
-						})
-						break
-					}
+				// Check for inline credential values (not from secret)
+				if env.Value != "" && isCredentialValue(env.Name, env.Value) {
+					result_EnvVarLeaks = append(result_EnvVarLeaks, EnvLeakEntry{
+						PodName:      pod.Name,
+						Namespace:    pod.Namespace,
+						Container:    c.Name,
+						EnvVarName:   env.Name,
+						HasValue:     true,
+						DetectedType: classifyCredential(env.Name),
+						Severity:     "high",
+					})
 				}
 			}
 
-			// Check envFrom for secret refs (track usage)
+			// Check envFrom
 			for _, ef := range c.EnvFrom {
-				if ef.SecretRef != nil {
+				if ef.SecretRef != nil && ef.SecretRef.Name != "" {
 					key := fmt.Sprintf("%s/%s", pod.Namespace, ef.SecretRef.Name)
-					secretUsage[key]++
+					secretRefs[key] = true
+					envSecretRefs[key] = true
 				}
 			}
 		}
+	}
 
-		// Check volumes for secret references
-		for _, vol := range pod.Spec.Volumes {
-			if vol.Secret != nil {
-				key := fmt.Sprintf("%s/%s", pod.Namespace, vol.Secret.SecretName)
-				secretUsage[key]++
+	now := time.Now()
+	result := SecretExpResult{ScannedAt: now}
+	result.Summary.TotalSecrets = len(secrets.Items)
+	nsStats := map[string]*SecretScanNSStat{}
+
+	// Pre-declare the env var leaks slice properly
+	result.EnvVarLeaks = result_EnvVarLeaks
+	result_EnvVarLeaks = nil
+
+	for _, sec := range secrets.Items {
+		nsStat, ok := nsStats[sec.Namespace]
+		if !ok {
+			nsStat = &SecretScanNSStat{Namespace: sec.Namespace, IsSystem: isSystemNamespace(sec.Namespace)}
+			nsStats[sec.Namespace] = nsStat
+		}
+		nsStat.TotalSecrets++
+
+		key := fmt.Sprintf("%s/%s", sec.Namespace, sec.Name)
+		isReferenced := secretRefs[key]
+		isEnvRef := envSecretRefs[key]
+
+		age := now.Sub(sec.CreationTimestamp.Time)
+		isStale := age > 90*24*time.Hour
+
+		if isEnvRef {
+			result.Summary.SecretsAsEnv++
+			result.Summary.SecretsAsEnvPlain++
+		}
+		if isReferenced && !isEnvRef {
+			result.Summary.SecretsMounted++
+		}
+
+		if isStale {
+			result.Summary.StaleSecrets++
+		}
+
+		if !isReferenced {
+			result.Summary.UnreferencedSecrets++
+		}
+
+		// Check for sensitive keys exposed as env vars
+		if isEnvRef {
+			hasSensitiveKey := false
+			for k := range sec.Data {
+				if isSensitiveKey(k) {
+					hasSensitiveKey = true
+					break
+				}
+			}
+			if hasSensitiveKey {
+				result.Summary.ExposedPlainSecrets++
+				nsStat.ExposedSecrets++
+				risk := "medium"
+				if isStale {
+					risk = "high"
+				}
+				result.ExposedSecrets = append(result.ExposedSecrets, SecretScanEntry{
+					Name:      sec.Name,
+					Namespace: sec.Namespace,
+					Type:      string(sec.Type),
+					MountType: "env",
+					Age:       formatDuration(age),
+					RiskLevel: risk,
+				})
 			}
 		}
+	}
 
-		// Check imagePullSecrets
-		for _, ips := range pod.Spec.ImagePullSecrets {
-			key := fmt.Sprintf("%s/%s", pod.Namespace, ips.Name)
-			secretUsage[key]++
+	// Update namespace leak counts
+	for _, leak := range result.EnvVarLeaks {
+		nsStat, ok := nsStats[leak.Namespace]
+		if ok {
+			nsStat.EnvVarLeaks++
+		} else {
+			nsStats[leak.Namespace] = &SecretScanNSStat{
+				Namespace:   leak.Namespace,
+				EnvVarLeaks: 1,
+			}
 		}
 	}
 
-	// 3. Update usedByPods count and find unused secrets
-	for i := range report.Secrets {
-		key := fmt.Sprintf("%s/%s", report.Secrets[i].Namespace, report.Secrets[i].Name)
-		report.Secrets[i].UsedByPods = secretUsage[key]
-		if secretUsage[key] == 0 {
-			report.Summary.UnusedSecrets++
-		}
+	// Build namespace stats
+	for _, ns := range nsStats {
+		result.ByNamespace = append(result.ByNamespace, *ns)
+	}
+	sort.Slice(result.ByNamespace, func(i, j int) bool {
+		return result.ByNamespace[i].ExposedSecrets+result.ByNamespace[i].EnvVarLeaks >
+			result.ByNamespace[j].ExposedSecrets+result.ByNamespace[j].EnvVarLeaks
+	})
+
+	// Sort exposed secrets by risk
+	sort.Slice(result.ExposedSecrets, func(i, j int) bool {
+		riskOrder := map[string]int{"high": 0, "medium": 1, "low": 2}
+		return riskOrder[result.ExposedSecrets[i].RiskLevel] < riskOrder[result.ExposedSecrets[j].RiskLevel]
+	})
+	if len(result.ExposedSecrets) > 30 {
+		result.ExposedSecrets = result.ExposedSecrets[:30]
 	}
 
-	// Sort secrets: unused first, then by age
-	sort.Slice(report.Secrets, func(i, j int) bool {
-		if (report.Secrets[i].UsedByPods == 0) != (report.Secrets[j].UsedByPods == 0) {
-			return report.Secrets[i].UsedByPods == 0
+	// Sort env var leaks by severity (inline first)
+	sort.Slice(result.EnvVarLeaks, func(i, j int) bool {
+		if result.EnvVarLeaks[i].HasValue != result.EnvVarLeaks[j].HasValue {
+			return result.EnvVarLeaks[i].HasValue
 		}
-		return report.Secrets[i].Age > report.Secrets[j].Age
+		return result.EnvVarLeaks[i].Severity < result.EnvVarLeaks[j].Severity
 	})
+	if len(result.EnvVarLeaks) > 30 {
+		result.EnvVarLeaks = result.EnvVarLeaks[:30]
+	}
 
-	// Sort findings by severity
-	sevOrder := map[string]int{"critical": 0, "high": 1, "medium": 2, "low": 3, "info": 4}
-	sort.Slice(report.Findings, func(i, j int) bool {
-		return sevOrder[report.Findings[i].Severity] < sevOrder[report.Findings[j].Severity]
-	})
+	result.Summary.HealthScore = secretScanScore(result.Summary)
+	result.Recommendations = secretScanRecommendations(&result)
 
-	return report
+	writeJSON(w, result)
 }
 
-// formatDuration is defined in server.go — reused.
+// Package-level temp slice for collecting env var leaks during pod iteration.
+var result_EnvVarLeaks []EnvLeakEntry
+
+// isCredentialEnvVar checks if an env var name looks like a credential.
+func isCredentialEnvVar(name string) bool {
+	lower := strings.ToLower(name)
+	credentialPatterns := []string{"password", "passwd", "pwd", "token", "secret", "api_key", "apikey", "access_key", "private_key", "credential", "auth"}
+	for _, p := range credentialPatterns {
+		if strings.Contains(lower, p) {
+			return true
+		}
+	}
+	return false
+}
+
+// isCredentialValue checks if an env var has an inline value that looks like a credential.
+func isCredentialValue(name, value string) bool {
+	if !isCredentialEnvVar(name) {
+		return false
+	}
+	// Only flag if the value is non-empty and looks like a real credential
+	return len(value) > 0
+}
+
+// classifyCredential returns the type of credential detected.
+func classifyCredential(name string) string {
+	lower := strings.ToLower(name)
+	if strings.Contains(lower, "password") || strings.Contains(lower, "passwd") || strings.Contains(lower, "pwd") {
+		return "password"
+	}
+	if strings.Contains(lower, "token") {
+		return "token"
+	}
+	if strings.Contains(lower, "api_key") || strings.Contains(lower, "apikey") {
+		return "api_key"
+	}
+	if strings.Contains(lower, "private_key") || strings.Contains(lower, "privatekey") {
+		return "private_key"
+	}
+	if strings.Contains(lower, "access_key") || strings.Contains(lower, "accesskey") {
+		return "access_key"
+	}
+	if strings.Contains(lower, "credential") {
+		return "credential"
+	}
+	return "secret"
+}
+
+// isSensitiveKey checks if a Secret data key looks sensitive.
+func isSensitiveKey(key string) bool {
+	lower := strings.ToLower(key)
+	sensitive := []string{"password", "passwd", "pwd", "token", "secret", "key", "credential", "cert", "private", "auth", "pass"}
+	for _, s := range sensitive {
+		if strings.Contains(lower, s) {
+			return true
+		}
+	}
+	return false
+}
+
+// secretScanScore computes a 0-100 health score.
+func secretScanScore(s SecretExpSummary) int {
+	if s.TotalSecrets == 0 {
+		return 100
+	}
+
+	score := 100
+
+	if s.ExposedPlainSecrets > 0 {
+		score -= min(20, s.ExposedPlainSecrets*3)
+	}
+
+	if s.StaleSecrets > 0 {
+		ratio := float64(s.StaleSecrets) / float64(s.TotalSecrets)
+		score -= int(ratio * 20)
+	}
+
+	if s.UnreferencedSecrets > 0 {
+		ratio := float64(s.UnreferencedSecrets) / float64(s.TotalSecrets)
+		score -= int(ratio * 15)
+	}
+
+	if score < 0 {
+		score = 0
+	}
+	return score
+}
+
+// secretScanRecommendations generates actionable recommendations.
+func secretScanRecommendations(r *SecretExpResult) []string {
+	var recs []string
+
+	inlineCount := 0
+	for _, leak := range r.EnvVarLeaks {
+		if leak.HasValue {
+			inlineCount++
+		}
+	}
+	if inlineCount > 0 {
+		recs = append(recs, fmt.Sprintf(
+			"%d credential(s) detected as inline environment variables — move to Kubernetes Secrets or external secret management",
+			inlineCount,
+		))
+	}
+
+	if r.Summary.ExposedPlainSecrets > 0 {
+		recs = append(recs, fmt.Sprintf(
+			"%d Secret(s) with sensitive keys are exposed as environment variables — consider using volume mounts with read-only access",
+			r.Summary.ExposedPlainSecrets,
+		))
+	}
+
+	if r.Summary.StaleSecrets > 0 {
+		recs = append(recs, fmt.Sprintf(
+			"%d Secret(s) are older than 90 days — rotate credentials regularly",
+			r.Summary.StaleSecrets,
+		))
+	}
+
+	if r.Summary.UnreferencedSecrets > 0 {
+		recs = append(recs, fmt.Sprintf(
+			"%d Secret(s) are not referenced by any pod — clean up unused secrets to reduce attack surface",
+			r.Summary.UnreferencedSecrets,
+		))
+	}
+
+	if len(recs) == 0 {
+		recs = append(recs, "Secret management is healthy — no credential leaks or exposure risks detected")
+	}
+
+	return recs
+}

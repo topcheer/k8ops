@@ -170,7 +170,7 @@ func (s *Server) Start(addr string) error {
 
 	// Security audit
 	mux.HandleFunc("/api/security/audit", s.handleSecurityAudit)
-	mux.HandleFunc("/api/security/secrets", s.cacheMiddleware(60*time.Second, s.handleSecretExposure))       // 1min cache                // cluster-wide security scan
+	mux.HandleFunc("/api/security/secrets", s.cacheMiddleware(60*time.Second, s.handleSecretScan))           // 1min cache                // cluster-wide security scan
 	mux.HandleFunc("/api/security/network-policies", s.cacheMiddleware(60*time.Second, s.handleNetPolAudit)) // NetworkPolicy audit
 	mux.HandleFunc("/api/security/health", s.handleSecurityHealth)                                           // platform security health check
 	mux.HandleFunc("/api/security/compliance", s.handleComplianceScan)                                       // CIS benchmark compliance scan
@@ -260,6 +260,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/mac-audit", s.cacheMiddleware(120*time.Second, s.handleMACAudit))                                   // AppArmor & SELinux MAC compliance auditor
 	mux.HandleFunc("/api/security/forensics", s.cacheMiddleware(30*time.Second, s.handleForensics))                                   // pod security forensics & incident evidence collector
 	mux.HandleFunc("/api/security/rbac-audit", s.cacheMiddleware(120*time.Second, s.handleRBACOverprivilege))                         // RBAC overprivilege & wildcard permission auditor
+	mux.HandleFunc("/api/security/secret-scan", s.cacheMiddleware(120*time.Second, s.handleSecretScan))                               // secret data exposure & env var credential leak scanner
 	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                                   // resource dependency graph & blast radius
 	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))                            // topology spread compliance
 	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                               // workload staleness & release cadence
