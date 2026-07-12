@@ -3059,6 +3059,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- etcd Health & Database Pressure Monitor (v16.16+) ---
+	add("/api/operations/etcd-health", "get", OpenAPIOperation{
+		Summary:     "etcd health & database pressure monitor",
+		OperationID: "etcdHealth",
+		Tags:        []string{"Operations", "etcd", "Database"},
+		Description: "Monitors etcd pod health and database pressure. Tracks etcd pod readiness, version, restarts. Detects large ConfigMaps/Secrets (>100KB) that pressure etcd. Identifies single etcd instances (no HA quorum). etcd pressure and health scores (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("etcd health analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"etcdFound": 3, "etcdReady": 3, "largeObjects": 2, "healthScore": 85},
+			}),
+		},
+	})
+
 	return spec
 }
 
