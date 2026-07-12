@@ -12,42 +12,42 @@ import (
 
 // CSRResult is the Certificate Signing Request analysis.
 type CSRResult struct {
-	ScannedAt       time.Time          `json:"scannedAt"`
-	Summary         CSRSummary         `json:"summary"`
-	PendingCSRs     []CSREntry         `json:"pendingCSRs"`
-	ApprovedCSRs    []CSREntry         `json:"approvedCSRs"`
-	DeniedCSRs      []CSREntry         `json:"deniedCSRs"`
-	ExpiredCSRs     []CSREntry         `json:"expiredCSRs"`
-	StaleCSRs       []CSREntry         `json:"staleCSRs"`       // pending > 1h
-	Recommendations []string           `json:"recommendations"`
+	ScannedAt       time.Time  `json:"scannedAt"`
+	Summary         CSRSummary `json:"summary"`
+	PendingCSRs     []CSREntry `json:"pendingCSRs"`
+	ApprovedCSRs    []CSREntry `json:"approvedCSRs"`
+	DeniedCSRs      []CSREntry `json:"deniedCSRs"`
+	ExpiredCSRs     []CSREntry `json:"expiredCSRs"`
+	StaleCSRs       []CSREntry `json:"staleCSRs"` // pending > 1h
+	Recommendations []string   `json:"recommendations"`
 }
 
 // CSRSummary aggregates CSR statistics.
 type CSRSummary struct {
-	Total          int `json:"total"`
-	Pending        int `json:"pending"`
-	Approved       int `json:"approved"`
-	Denied         int `json:"denied"`
-	Expired        int `json:"expired"`
-	StalePending   int `json:"stalePending"` // pending > 1h
-	BySigner       map[string]int `json:"bySigner"`
-	ByRequester    map[string]int `json:"byRequester"`
-	HealthScore    int `json:"healthScore"`
+	Total        int            `json:"total"`
+	Pending      int            `json:"pending"`
+	Approved     int            `json:"approved"`
+	Denied       int            `json:"denied"`
+	Expired      int            `json:"expired"`
+	StalePending int            `json:"stalePending"` // pending > 1h
+	BySigner     map[string]int `json:"bySigner"`
+	ByRequester  map[string]int `json:"byRequester"`
+	HealthScore  int            `json:"healthScore"`
 }
 
 // CSREntry describes one CSR.
 type CSREntry struct {
-	Name           string    `json:"name"`
-	SignerName     string    `json:"signerName"`
-	Requester      string    `json:"requester"`
-	Username       string    `json:"username"`
-	Status         string    `json:"status"` // Pending, Approved, Denied
-	CreatedAt      time.Time `json:"createdAt"`
-	AgeDuration    string    `json:"age"`
-	Expiration     string    `json:"expiration,omitempty"`
-	DenyReason     string    `json:"denyReason,omitempty"`
-	IsStale        bool      `json:"isStale"`
-	Severity       string    `json:"severity,omitempty"`
+	Name        string    `json:"name"`
+	SignerName  string    `json:"signerName"`
+	Requester   string    `json:"requester"`
+	Username    string    `json:"username"`
+	Status      string    `json:"status"` // Pending, Approved, Denied
+	CreatedAt   time.Time `json:"createdAt"`
+	AgeDuration string    `json:"age"`
+	Expiration  string    `json:"expiration,omitempty"`
+	DenyReason  string    `json:"denyReason,omitempty"`
+	IsStale     bool      `json:"isStale"`
+	Severity    string    `json:"severity,omitempty"`
 }
 
 // handleCSRMonitor monitors Certificate Signing Requests and node bootstrap certificates.
@@ -78,10 +78,10 @@ func (s *Server) handleCSRMonitor(w http.ResponseWriter, r *http.Request) {
 
 	for _, csr := range csrs.Items {
 		entry := CSREntry{
-			Name:       csr.Name,
-			SignerName: csr.Spec.SignerName,
-			Username:   csr.Spec.Username,
-			CreatedAt:  csr.CreationTimestamp.Time,
+			Name:        csr.Name,
+			SignerName:  csr.Spec.SignerName,
+			Username:    csr.Spec.Username,
+			CreatedAt:   csr.CreationTimestamp.Time,
 			AgeDuration: formatDuration(now.Sub(csr.CreationTimestamp.Time)),
 		}
 
