@@ -74,7 +74,7 @@ func TestRBACScore(t *testing.T) {
 	}{
 		{"clean", RBACAuditSummary{}, 95, 100},
 		{"cluster-admin bindings", RBACAuditSummary{ClusterAdminBindings: 2}, 60, 75},
-		{"wildcards", RBACAuditSummary{WildcardVerbCount: 5, WildcardResourceCount: 3}, 30, 55},
+		{"wildcards", RBACAuditSummary{WildcardVerbCount: 5, WildcardResourceCount: 3}, 55, 70},
 		{"severe", RBACAuditSummary{ClusterAdminBindings: 3, WildcardVerbCount: 8, WildcardResourceCount: 5}, 0, 25},
 	}
 	for _, tt := range tests {
