@@ -3033,6 +3033,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Volume Snapshot & PVC Backup Compliance Auditor (v16.13+) ---
+	add("/api/product/backup-compliance", "get", OpenAPIOperation{
+		Summary:     "Volume snapshot & PVC backup compliance auditor",
+		OperationID: "backupCompliance",
+		Tags:        []string{"Product", "Backup", "DisasterRecovery"},
+		Description: "Audits PVC backup and snapshot compliance. Detects unprotected PVCs in use, critical large PVCs without backup, Velero installation status. Per-namespace and per-storage-class compliance. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Backup compliance analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalPVCs": 20, "unprotectedPVCs": 5, "healthScore": 70},
+			}),
+		},
+	})
+
 	return spec
 }
 
