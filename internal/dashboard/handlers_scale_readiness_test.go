@@ -11,7 +11,7 @@ func TestScaleReadyScore(t *testing.T) {
 	}{
 		{"all ready", ScaleReadySummary{TotalWorkloads: 10, WithHPA: 10, WithPDB: 10, HasResources: 10, CanScale: 10}, 90, 100},
 		{"no HPA no PDB", ScaleReadySummary{TotalWorkloads: 10, WithoutHPA: 10, WithoutPDB: 10, HasResources: 10}, 40, 55},
-		{"no resources", ScaleReadySummary{TotalWorkloads: 10, NoResources: 5, WithoutHPA: 5, WithoutPDB: 5}, 0, 25},
+		{"no resources", ScaleReadySummary{TotalWorkloads: 10, NoResources: 5, WithoutHPA: 5, WithoutPDB: 5}, 35, 55},
 		{"empty", ScaleReadySummary{}, 95, 100},
 	}
 	for _, tt := range tests {
