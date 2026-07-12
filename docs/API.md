@@ -2444,6 +2444,55 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 107. GET /api/scalability/node-topology — 节点拓扑分布与多可用区容错分析
+
+分析集群节点跨可用区和区域的分布情况。
+
+**每可用区统计：** 节点数、可分配 CPU/内存、Pod 数、CPU 占比
+
+**风险检测：**
+- 单可用区集群（关键风险，无区域故障容错）
+- 可用区不平衡检测
+- 缺少区域标签的节点检测
+- 单区域集群检测
+
+**健康评分 (0-100)：** 单可用区(-40)、无区域标签(-5/per)、不平衡(-)、单区域(-5)
+
+---
+
+### 108. GET /api/security/rbac-audit — RBAC 权限过大与通配符审计
+
+审计 RBAC 角色和绑定的权限过大问题。
+
+**检测项：**
+- 通配符动词（`*`）— 授予所有操作权限
+- 通配符资源（`*`）— 授予所有资源访问权限
+- 非系统 cluster-admin 绑定
+- 指向通配符角色的 RoleBinding
+
+**角色分级：** critical（通配符动词+资源）、high（单一通配符）、medium
+
+**系统角色过滤：** 自动排除 system:*、cluster-admin、admin、edit、view 等内置角色
+
+**健康评分 (0-100)：** cluster-admin 绑定(-15/per)、通配符动词(-5/per)、通配符资源(-4/per)
+
+---
+
+### 109. GET /api/product/backup-compliance — 卷快照与 PVC 备份合规审计
+
+审计 PVC 备份和快照的合规性。
+
+**检测项：**
+- 正在使用但缺少备份保护的 PVC
+- 关键大型 PVC（>=1Gi）无备份告警
+- Velero 安装状态检查
+
+**每命名空间和每存储类别合规统计**
+
+**健康评分 (0-100)：** 未保护比例(-50%)、关键未保护(-5/per)、无 Velero(-10)
+
+---
+
 ### 86. GET /api/security/host-namespace — 容器主机命名空间与特权暴露审计
 
 审计容器的宿主机命名空间暴露和特权升级风险。
@@ -2544,5 +2593,8 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 102 | /api/product/topology-spread | Product | v16.06 | Pod 拓扑分布约束验证 |
 | 103 | /api/deployment/restart-policy | Deployment | v16.08 | 容器重启策略与生命周期钩子审计 |
 | 104 | /api/operations/csr-monitor | Operations | v16.09 | 证书签名请求与节点引导证书监控 |
+| 105 | /api/scalability/node-topology | Scalability | v16.11 | 节点拓扑分布与多可用区容错分析 |
+| 106 | /api/security/rbac-audit | Security | v16.12 | RBAC 权限过大与通配符审计 |
+| 107 | /api/product/backup-compliance | Product | v16.13 | 卷快照与 PVC 备份合规审计 |
 
-**总计：170 个 OpenAPI 端点**
+**总计：173 个 OpenAPI 端点**
