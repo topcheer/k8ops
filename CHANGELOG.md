@@ -4,6 +4,30 @@
 
 ---
 
+## v16.08-v16.09 (2026-07-12)
+
+### v16.08: 容器重启策略与生命周期钩子审计 (维度2: 部署与发布)
+
+**新增 API：**
+- `GET /api/deployment/restart-policy` — 容器重启策略与生命周期钩子审计
+  - 检测策略不匹配（Job 使用 Always，Deployment 使用 Never）
+  - 追踪 postStart/preStop 钩子覆盖率
+  - 每命名空间统计
+  - 2 个单元测试
+
+### v16.09: 证书签名请求与节点引导证书监控 (维度3: 运维与可观测性)
+
+**新增 API：**
+- `GET /api/operations/csr-monitor` — 证书签名请求监控
+  - 追踪 pending/approved/denied/expired CSR
+  - 陈旧 pending 检测（>1h 阻塞节点引导）
+  - 按 signer/requester 分组统计
+  - 2 个单元测试
+
+### 统计
+- OpenAPI 端点：168 → 170
+- 单元测试：1061 → 1065
+
 ## v16.05-v16.06 (2026-07-11)
 
 ### v16.05: Pod 安全取证与事件证据收集 (维度4: 安全与合规)

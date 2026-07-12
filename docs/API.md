@@ -2411,6 +2411,39 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 105. GET /api/deployment/restart-policy — 容器重启策略与生命周期钩子审计
+
+审计容器的重启策略和生命周期钩子配置。
+
+**重启策略验证：**
+- Deployment/StatefulSet/DaemonSet 应使用 `Always`
+- Job/CronJob 应使用 `OnFailure` 或 `Never`
+- 检测策略与工作负载类型不匹配
+
+**生命周期钩子：**
+- postStart 钩子覆盖率
+- preStop 钩子覆盖率（影响滚动更新时的优雅退出）
+
+**每命名空间统计**
+
+**健康评分 (0-100)：** 策略不匹配(-10/per)、无生命周期钩子(-20%)
+
+---
+
+### 106. GET /api/operations/csr-monitor — 证书签名请求与节点引导证书监控
+
+监控 Kubernetes 集群中的 Certificate Signing Requests (CSR)。
+
+**状态追踪：** Pending、Approved、Denied、Expired
+
+**陈旧 CSR 检测：** Pending 超过 1 小时的 CSR（可能阻塞节点引导或服务 TLS）
+
+**统计：** 按 signerName 分组、按 requester 分组
+
+**健康评分 (0-100)：** Pending(-10/per)、陈旧 Pending(-20/per)、大量 Denied(-)
+
+---
+
 ### 86. GET /api/security/host-namespace — 容器主机命名空间与特权暴露审计
 
 审计容器的宿主机命名空间暴露和特权升级风险。
@@ -2509,5 +2542,7 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 100 | /api/operations/dns-health | Operations | v16.03 | DNS 解析健康与 CoreDNS 监控 |
 | 101 | /api/security/forensics | Security | v16.05 | Pod 安全取证与事件证据收集 |
 | 102 | /api/product/topology-spread | Product | v16.06 | Pod 拓扑分布约束验证 |
+| 103 | /api/deployment/restart-policy | Deployment | v16.08 | 容器重启策略与生命周期钩子审计 |
+| 104 | /api/operations/csr-monitor | Operations | v16.09 | 证书签名请求与节点引导证书监控 |
 
-**总计：168 个 OpenAPI 端点**
+**总计：170 个 OpenAPI 端点**

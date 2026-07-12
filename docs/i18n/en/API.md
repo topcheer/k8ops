@@ -1461,12 +1461,24 @@ Validates topology spread constraints across Deployments/StatefulSets/DaemonSets
 
 ---
 
+### 105. GET /api/deployment/restart-policy — Container Restart Policy & Lifecycle Hook Auditor
+
+Audits container restart policies and lifecycle hooks. Detects policy mismatches (Job with Always, Deployment with Never). Tracks postStart/preStop hook coverage. Per-namespace statistics. Health score (0-100).
+
+---
+
+### 106. GET /api/operations/csr-monitor — Certificate Signing Request Monitor
+
+Monitors Certificate Signing Requests. Tracks pending, approved, denied, expired CSRs. Stale pending detection (>1h). Per-signer and per-requester statistics. Health score (0-100).
+
+---
+
 ## API Summary
 
-**Total: 168 OpenAPI endpoints** across 6 dimensions:
+**Total: 170 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor
 - **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit, forensics
 - **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization
 - **Infrastructure**: Auth, RBAC, health, version
