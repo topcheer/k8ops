@@ -2545,6 +2545,22 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 88. GET /api/product/init-container-audit — Init Container 可靠性与启动依赖审计
+
+审计 Init Container 的可靠性和启动依赖。
+
+**检测项：**
+- 缺少资源请求（CPU/内存）的 init container
+- 缺少资源限制的 init container
+- 过多 init container（>5 个，增加启动延迟和故障面）
+- RestartPolicy=Always 的 init container（sidecar 行为，可能延迟启动）
+
+**按命名空间和工作负载分组分析**
+
+**健康评分 (0-100)：** 缺少请求(-10/per)、缺少限制(-3/per)、过多重试(-2/per)、高风险(-8/per)
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -2630,5 +2646,7 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 107 | /api/product/backup-compliance | Product | v16.13 | 卷快照与 PVC 备份合规审计 |
 | 108 | /api/deployment/scale-readiness | Deployment | v16.15 | 部署扩缩容就绪与自动伸缩差距检测 |
 | 109 | /api/operations/etcd-health | Operations | v16.16 | etcd 健康与数据库压力监控 |
+| 110 | /api/security/secret-scan | Security | v16.18 | Secret 数据暴露与凭证泄漏扫描 |
+| 111 | /api/product/init-container-audit | Product | v16.19 | Init Container 可靠性与启动依赖审计 |
 
-**总计：175 个 OpenAPI 端点**
+**总计：177 个 OpenAPI 端点**

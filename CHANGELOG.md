@@ -4,6 +4,24 @@
 
 ---
 
+## v16.19 (2026-07-12)
+
+### v16.19: Init Container 可靠性与启动依赖审计 (维度1: 产品)
+
+**新增 API：**
+- `GET /api/product/init-container-audit` — Init Container 可靠性与启动依赖审计
+  - 检测缺少资源请求（CPU/内存）的 init container
+  - 检测缺少资源限制的 init container
+  - 检测过多的 init container（>5 个，增加启动延迟和故障面）
+  - 检测 RestartPolicy=Always 的 init container（sidecar 行为，可能延迟启动）
+  - 按命名空间和工作负载分组分析
+  - 健康评分（0-100）
+  - 5 个单元测试
+
+**测试总数：** ~1093
+
+---
+
 ## v16.15-v16.16 (2026-07-12)
 
 ### v16.15: 部署扩缩容就绪与自动伸缩差距检测 (维度2: 部署与发布)
