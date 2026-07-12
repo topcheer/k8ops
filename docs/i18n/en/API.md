@@ -1503,12 +1503,51 @@ Monitors etcd pod health and database pressure. etcd pod readiness, version, res
 
 ---
 
+### 112. GET /api/security/secret-scan — Secret Data Exposure & Credential Leak Scanner
+
+Scans for inline credential values in environment variables (high risk). Detects sensitive secrets exposed as env vars. Stale secret detection (>90 days), unreferenced secret detection. Credential classification (password, token, api_key, etc.). Health score (0-100).
+
+---
+
+### 113. GET /api/product/init-container-audit — Init Container Reliability & Startup Dependency Auditor
+
+Audits init container reliability and startup dependencies. Detects missing resource requests/limits, excessive init containers (>5), RestartPolicy=Always sidecar behavior. Per-namespace and per-workload analysis. Health score (0-100).
+
+---
+
+### 114. GET /api/deployment/replica-availability — Deployment Replica Availability & Ready Pod Ratio Monitor
+
+Monitors Deployments, StatefulSets, and DaemonSets replica availability. Detects ready/desired gaps, zero-ready workloads, stale replicas during rollouts. Per-namespace analysis. Health score (0-100).
+
+---
+
+### 115. GET /api/scalability/tenant-pressure — Multi-Tenant Resource Pressure & Quota Competition Auditor
+
+Audits multi-tenant resource pressure and quota competition. Detects saturated quotas (>80%), critical quotas (>95%), unbounded namespaces (no quota + no LimitRange), resource hotspots. Per-namespace risk analysis. Health score (0-100).
+
+---
+
+### 116. GET /api/operations/api-load — API Server Request Throughput & Load Pressure Monitor
+
+Monitors API server load by analyzing pod density, controller count, event volume, and warning ratio per namespace. Identifies dense namespaces (>100 pods), high-activity namespaces, and empty namespaces. Health score (0-100).
+
+---
+
+### v16.20: Agent Tool Bridge
+
+- `k8s_run_audit` tool: Agent can run any of 100+ cluster audits/analyses via HTTP self-call
+- `k8s_list_audits` tool: Lists all available audits with descriptions and categories
+- Registered in CLI, manager, diagnostic controller, chat engine, provider tool list
+- 8 unit tests
+
+---
+
 ## API Summary
 
-**Total: 175 OpenAPI endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor, etcd health
-- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit, forensics, RBAC audit
-- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization, node topology
+**Total: 179 OpenAPI endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance, init container audit
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness, replica availability
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor, etcd health, API load
+- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit, forensics, RBAC audit, secret scan
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization, node topology, tenant pressure
 - **Infrastructure**: Auth, RBAC, health, version

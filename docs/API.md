@@ -2561,6 +2561,49 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 89. GET /api/deployment/replica-availability — 部署副本可用性与 Ready Pod 比率监控
+
+监控 Deployments、StatefulSets、DaemonSets 的副本可用性。
+
+**检测项：**
+- Ready/desired 副本差距
+- 零 Ready 工作负载（完全不可用）
+- Rollout 中的陈旧副本（updatedReplicas < desiredReplicas）
+- 按命名空间分组分析
+
+**健康评分 (0-100)：** 可用率×100 - 零Ready×10 - 差距×3
+
+---
+
+### 90. GET /api/scalability/tenant-pressure — 多租户资源压力与 Quota 竞争审计
+
+审计多租户场景下的资源压力和 Quota 竞争。
+
+**检测项：**
+- Quota 饱和（>80% 利用率）
+- 临界 Quota（>95% 利用率）
+- 无界命名空间（无 ResourceQuota + 无 LimitRange）
+- 资源热点（命名空间消耗 >30%/50% 集群容量）
+
+**按命名空间风险分级：** critical / high / medium / low
+**健康评分 (0-100)：** 100 - 无界×10 - 临界×8 - 饱和×4 - 无LimitRange×2
+
+---
+
+### 91. GET /api/operations/api-load — API Server 请求吞吐与负载压力监控
+
+通过 Pod 密度、Controller 数量、Event 体量分析 API Server 负载。
+
+**检测项：**
+- 密集命名空间（>100 pods，高 API watch 压力）
+- 高活跃命名空间（>80 activity score 或 >10 warnings）
+- 空命名空间（浪费 API watch 资源）
+- Warning event 比率分析
+
+**健康评分 (0-100)：** 100 - 密集×10 - 高活跃×5 - 空NS×2 - warning比率惩罚
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -2648,5 +2691,8 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 109 | /api/operations/etcd-health | Operations | v16.16 | etcd 健康与数据库压力监控 |
 | 110 | /api/security/secret-scan | Security | v16.18 | Secret 数据暴露与凭证泄漏扫描 |
 | 111 | /api/product/init-container-audit | Product | v16.19 | Init Container 可靠性与启动依赖审计 |
+| 112 | /api/deployment/replica-availability | Deployment | v16.21 | 部署副本可用性与 Ready Pod 比率监控 |
+| 113 | /api/scalability/tenant-pressure | Scalability | v16.22 | 多租户资源压力与 Quota 竞争审计 |
+| 114 | /api/operations/api-load | Operations | v16.23 | API Server 请求吞吐与负载压力监控 |
 
-**总计：177 个 OpenAPI 端点**
+**总计：179 个 OpenAPI 端点**

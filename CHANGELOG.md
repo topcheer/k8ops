@@ -4,6 +4,55 @@
 
 ---
 
+## v16.20-v16.23 (2026-07-12)
+
+### v16.20: Agent Tool Bridge — 100+ Dashboard API 暴露为 LLM Agent Tool (跨维度基础设施)
+
+**新增 Agent Tools：**
+- `k8s_run_audit` — Agent 可运行任意已注册的 100+ 集群审计/分析端点
+- `k8s_list_audits` — 列出所有可用审计及描述
+- 覆盖全 6 大维度 + 集群概览 + 基础设施
+- 注册到 5 个入口点：CLI、manager、diagnostic controller、chat engine、provider tool list
+- Agent system prompt 更新，告知 LLM 审计能力
+- 8 个单元测试
+
+### v16.21: 部署副本可用性与 Ready Pod 比率监控 (维度2: 部署与发布)
+
+**新增 API：**
+- `GET /api/deployment/replica-availability` — 副本可用性监控
+  - 监控 Deployments、StatefulSets、DaemonSets 三类工作负载
+  - 检测 ready/desired 副本差距、零 Ready 工作负载
+  - 检测 rollout 中的陈旧副本
+  - 按命名空间分组分析，健康评分（0-100）
+  - 4 个单元测试
+
+### v16.22: 多租户资源压力与 Quota 竞争审计 (维度6: 可扩展性)
+
+**新增 API：**
+- `GET /api/scalability/tenant-pressure` — 多租户资源压力审计
+  - 检测 quota 饱和（>80%）、临界 quota（>95%）
+  - 识别无界命名空间（无 quota + 无 LimitRange）
+  - 识别消耗不成比例集群资源的命名空间热点
+  - 按命名空间风险分级（critical/high/medium/low）
+  - 健康评分（0-100）
+  - 4 个单元测试
+
+### v16.23: API Server 请求吞吐与负载压力监控 (维度3: 运维与可观测性)
+
+**新增 API：**
+- `GET /api/operations/api-load` — API Server 负载监控
+  - 分析 pod 密度、controller 数量、event 体量、warning 比率
+  - 识别密集命名空间（>100 pods）、高活跃命名空间、空命名空间
+  - 健康评分（0-100）
+  - 3 个单元测试
+
+**Agent Tools 总数：** 39 base + 2 audit = 41 LLM tools
+**Dashboard APIs 总数：** 186 endpoints
+**测试总数：** ~1112
+**OpenAPI 端点：** 179
+
+---
+
 ## v16.19 (2026-07-12)
 
 ### v16.19: Init Container 可靠性与启动依赖审计 (维度1: 产品)
