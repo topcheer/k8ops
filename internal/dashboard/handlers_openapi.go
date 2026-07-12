@@ -3124,6 +3124,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- API Server Request Throughput & Load Pressure Monitor (v16.23) ---
+	add("/api/operations/api-load", "get", OpenAPIOperation{
+		Summary:     "API server request throughput & load pressure monitor",
+		OperationID: "apiLoad",
+		Tags:        []string{"Operations", "APIServer", "Performance"},
+		Description: "Monitors API server load by analyzing pod density, controller count, event volume, and warning ratio per namespace. Identifies dense namespaces, high-activity namespaces, and empty namespaces wasting watch resources. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("API load analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalNamespaces": 20, "totalPods": 300, "healthScore": 85},
+			}),
+		},
+	})
+
 	return spec
 }
 

@@ -89,6 +89,7 @@ var auditRegistry = []auditEndpoint{
 	{"operations:dns-health", "/api/operations/dns-health", "DNS resolution health & CoreDNS monitor"},
 	{"operations:csr-monitor", "/api/operations/csr-monitor", "Certificate signing request & node bootstrap cert monitor"},
 	{"operations:etcd-health", "/api/operations/etcd-health", "etcd health & database pressure monitor"},
+	{"operations:api-load", "/api/operations/api-load", "API server request throughput & load pressure monitor"},
 
 	// --- Security ---
 	{"security:audit", "/api/security/audit", "Cluster-wide security scan"},

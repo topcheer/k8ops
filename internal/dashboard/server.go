@@ -238,6 +238,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/dns-health", s.cacheMiddleware(30*time.Second, s.handleDNSHealth))                                // DNS resolution health & CoreDNS monitor
 	mux.HandleFunc("/api/operations/csr-monitor", s.cacheMiddleware(30*time.Second, s.handleCSRMonitor))                              // certificate signing request & node bootstrap cert monitor
 	mux.HandleFunc("/api/operations/etcd-health", s.cacheMiddleware(60*time.Second, s.handleEtcdHealth))                              // etcd health & database pressure monitor
+	mux.HandleFunc("/api/operations/api-load", s.cacheMiddleware(30*time.Second, s.handleAPILoad))                                    // API server request throughput & load pressure monitor
 	mux.HandleFunc("/api/networking/health", s.cacheMiddleware(30*time.Second, s.handleNetworkingHealth))                             // service & endpoint health
 	mux.HandleFunc("/api/storage/health", s.cacheMiddleware(60*time.Second, s.handleStorageHealth))                                   // PV/PVC storage health
 	mux.HandleFunc("/api/deployments/audit", s.cacheMiddleware(60*time.Second, s.handleDeployAudit))                                  // deployment config audit
