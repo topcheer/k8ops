@@ -135,6 +135,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:external-secret-health", "/api/product/external-secret-health", "External secrets & secret store CSI health auditor"},
 	{"deployment:progressive-delivery", "/api/deployment/progressive-delivery", "Progressive delivery & canary rollout health auditor"},
 	{"operations:metrics-pipeline", "/api/operations/metrics-pipeline", "Metrics pipeline & kube-state-metrics health auditor"},
+	{"security:pss-scorecard", "/api/security/pss-scorecard", "Pod Security Standards compliance scorecard"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

@@ -3398,6 +3398,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Security Standards Compliance Scorecard (v16.47) ---
+	add("/api/security/pss-scorecard", "get", OpenAPIOperation{
+		Summary:     "Pod Security Standards compliance scorecard",
+		OperationID: "pssScorecard",
+		Tags:        []string{"Security", "PodSecurity", "Compliance"},
+		Description: "Audits all containers against Pod Security Standards restricted profile: runAsNonRoot, seccompProfile, allowPrivilegeEscalation=false, capabilities.drop ALL, readOnlyRootFilesystem, privileged flag, hostNetwork/PID/IPC. Per-namespace compliance rate, health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("PSS compliance scorecard", map[string]interface{}{
+				"summary": map[string]interface{}{"totalContainers": 80, "restrictedCompliant": 45, "privileged": 3, "healthScore": 72},
+			}),
+		},
+	})
+
 	return spec
 }
 
