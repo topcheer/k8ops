@@ -64,6 +64,7 @@ var auditRegistry = []auditEndpoint{
 	{"deployment:ref-integrity", "/api/deployment/ref-integrity", "Secret/ConfigMap reference integrity checker"},
 	{"deployment:image-drift", "/api/deployment/image-drift", "Deployment image drift & version consistency detector"},
 	{"deployment:replica-availability", "/api/deployment/replica-availability", "Deployment replica availability & ready pod ratio monitor"},
+	{"deployment:helm-health", "/api/deployment/helm-health", "Helm release health & GitOps drift detector"},
 
 	// --- Operations ---
 	{"operations:cronjobs-health", "/api/operations/cronjobs/health", "CronJob execution health"},

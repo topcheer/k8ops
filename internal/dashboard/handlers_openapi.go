@@ -3176,6 +3176,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Helm Release Health & GitOps Drift Detector (v16.28) ---
+	add("/api/deployment/helm-health", "get", OpenAPIOperation{
+		Summary:     "Helm release health & GitOps drift detector",
+		OperationID: "helmHealth",
+		Tags:        []string{"Deployment", "GitOps", "Helm"},
+		Description: "Audits Helm release health by scanning Helm release secrets. Detects failed releases, pending/stuck installs, stale releases. Identifies releases in unusual states. Per-namespace analysis. Health score (0-100). Blind spot: GitOps/CD coverage.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Helm release health analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalReleases": 10, "healthyReleases": 8, "healthScore": 85},
+			}),
+		},
+	})
+
 	return spec
 }
 
