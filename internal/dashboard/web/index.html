@@ -27,6 +27,7 @@
         <span class="nav-arrow">&#9662;</span>
       </button>
       <div class="nav-group-items" id="navgrp-operations">
+        <button onclick="showTab('audit-dashboard', this)"><span class="nav-icon">&#9989;</span><span>Audit Dashboard</span></button>
         <button onclick="showTab('diagnostics', this)"><span class="nav-icon">&#9888;</span><span>Diagnostics</span></button>
         <button onclick="showTab('remediations', this)"><span class="nav-icon">&#9881;</span><span>Remediations</span></button>
         <button onclick="showTab('events', this)"><span class="nav-icon">&#9888;</span><span>Events</span></button>
@@ -136,6 +137,15 @@
     <div id="overviewDetails" class="detail-panel" style="margin-top:16px;"></div>
     <div id="recentEventsPanel" class="detail-panel" style="margin-top:16px;"></div>
     <div id="costPanel" style="margin-top:16px;"></div>
+  </div>
+
+  <!-- Audit Dashboard -->
+  <div id="tab-audit-dashboard" class="hidden">
+    <div class="refresh-bar">
+      <div class="section-title">Audit Dashboard</div>
+      <button onclick="window.loadAuditDashboard()" class="btn-secondary" style="font-size:12px;">Refresh</button>
+    </div>
+    <div id="audit-dashboard-content" style="padding:16px;"></div>
   </div>
 
   <!-- Diagnostics -->

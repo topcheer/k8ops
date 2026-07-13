@@ -35,6 +35,7 @@ export function showTab(name, btn) {
   if (name === 'hpa') window.loadHPA();
   if (name === 'images') window.loadImages();
   if (name === 'cost') window.loadCost();
+  if (name === 'audit-dashboard') window.loadAuditDashboard();
 }
 
 // ============================
