@@ -241,6 +241,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/api-load", s.cacheMiddleware(30*time.Second, s.handleAPILoad))                                    // API server request throughput & load pressure monitor
 	mux.HandleFunc("/api/operations/prom-health", s.cacheMiddleware(120*time.Second, s.handlePromHealth))                             // Prometheus rule health & alert coverage auditor
 	mux.HandleFunc("/api/operations/alertmanager-health", s.cacheMiddleware(120*time.Second, s.handleAlertmanager))                   // Alertmanager config & alert routing health auditor
+	mux.HandleFunc("/api/operations/grafana-health", s.cacheMiddleware(120*time.Second, s.handleGrafanaHealth))                       // Grafana dashboard availability & datasource health auditor
 	mux.HandleFunc("/api/networking/health", s.cacheMiddleware(30*time.Second, s.handleNetworkingHealth))                             // service & endpoint health
 	mux.HandleFunc("/api/storage/health", s.cacheMiddleware(60*time.Second, s.handleStorageHealth))                                   // PV/PVC storage health
 	mux.HandleFunc("/api/deployments/audit", s.cacheMiddleware(60*time.Second, s.handleDeployAudit))                                  // deployment config audit

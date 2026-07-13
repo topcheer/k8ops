@@ -3307,6 +3307,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Grafana Dashboard Availability & Datasource Health Auditor (v16.40) ---
+	add("/api/operations/grafana-health", "get", OpenAPIOperation{
+		Summary:     "Grafana dashboard availability & datasource health auditor",
+		OperationID: "grafanaHealth",
+		Tags:        []string{"Operations", "Observability", "Grafana"},
+		Description: "Audits Grafana dashboard availability and datasource health. Detects Grafana installation via pod image scan, analyzes dashboard ConfigMaps for title/refresh/panel count/datasource references, identifies stale dashboards (no refresh or very long refresh), broken dashboards (panels but no datasource), and missing time ranges. Checks Grafana pod health (ready/restarts/probes). Health score (0-100). Blind spot: Observability Stack.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Grafana health analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"grafanaDetected": true, "totalDashboards": 15, "staleDashboards": 3, "healthScore": 82},
+			}),
+		},
+	})
+
 	// --- Container Image Vulnerability & Patch Lag Auditor (v16.37) ---
 	add("/api/security/image-vuln", "get", OpenAPIOperation{
 		Summary:     "Container image vulnerability & patch lag auditor",

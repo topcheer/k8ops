@@ -129,6 +129,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:image-vuln", "/api/security/image-vuln", "Container image vulnerability & patch lag auditor"},
 	{"product:cronjob-schedule", "/api/product/cronjob-schedule", "CronJob schedule conflict & resource configuration auditor"},
 	{"deployment:startup-latency", "/api/deployment/startup-latency", "Pod startup latency & readiness performance auditor"},
+	{"operations:grafana-health", "/api/operations/grafana-health", "Grafana dashboard availability & datasource health auditor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
