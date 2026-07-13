@@ -147,6 +147,7 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:node-topology", "/api/scalability/node-topology", "Node topology distribution & multi-AZ fault tolerance analyzer"},
 	{"scalability:tenant-pressure", "/api/scalability/tenant-pressure", "Multi-tenant resource pressure & quota competition auditor"},
 	{"scalability:node-pool-health", "/api/scalability/node-pool-health", "Node pool & cluster autoscaler health monitor"},
+	{"scalability:cost-waste", "/api/scalability/cost-waste", "Idle resource cost waste & namespace cost attribution auditor"},
 
 	// --- Other audits ---
 	{"certificates:expiry", "/api/certificates/expiry", "Certificate & TLS expiry monitor"},

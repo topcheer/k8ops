@@ -3228,6 +3228,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Idle Resource Cost Waste & Namespace Cost Attribution Auditor (v16.32) ---
+	add("/api/scalability/cost-waste", "get", OpenAPIOperation{
+		Summary:     "Idle resource cost waste & namespace cost attribution auditor",
+		OperationID: "costWaste",
+		Tags:        []string{"Scalability", "Cost", "FinOps"},
+		Description: "Audits idle resource cost waste and namespace cost attribution. Detects idle pods (very low resource requests), over-provisioned pods (>4 CPU or >8Gi memory), idle namespaces. Calculates waste percentage and per-namespace cost distribution. Blind spot: Cost/FinOps coverage. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Cost waste analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalPods": 100, "idlePods": 15, "wastePercent": 15.0, "healthScore": 82},
+			}),
+		},
+	})
+
 	return spec
 }
 
