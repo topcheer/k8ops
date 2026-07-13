@@ -3463,6 +3463,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- SA Token Rotation & Access Risk Auditor (v16.52) ---
+	add("/api/security/sa-token-audit", "get", OpenAPIOperation{
+		Summary:     "ServiceAccount token rotation & access risk auditor",
+		OperationID: "saTokenAudit",
+		Tags:        []string{"Security", "ServiceAccount", "Token"},
+		Description: "Audits ServiceAccount token configuration: detects auto-mount enabled SAs, long-lived tokens (>90 days), default SA used by pods, unused SAs with automount, and missing secret references. Per-namespace stats, health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("SA token audit", map[string]interface{}{
+				"summary": map[string]interface{}{"totalServiceAccounts": 30, "autoMountEnabled": 25, "defaultSAUsed": 5, "longLivedTokens": 3, "healthScore": 75},
+			}),
+		},
+	})
+
 	return spec
 }
 

@@ -272,6 +272,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/image-vuln", s.cacheMiddleware(120*time.Second, s.handleImageVuln))                                 // container image vulnerability & patch lag auditor
 	mux.HandleFunc("/api/security/kyverno-compliance", s.cacheMiddleware(120*time.Second, s.handleKyvernoCompliance))                 // Kyverno policy compliance & cluster policy audit
 	mux.HandleFunc("/api/security/pss-scorecard", s.cacheMiddleware(120*time.Second, s.handlePSSScorecard))                           // Pod Security Standards compliance scorecard
+	mux.HandleFunc("/api/security/sa-token-audit", s.cacheMiddleware(120*time.Second, s.handleSATokenAudit))                          // SA token rotation & access risk audit
 	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                                   // resource dependency graph & blast radius
 	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))                            // topology spread compliance
 	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                               // workload staleness & release cadence
