@@ -122,6 +122,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:rbac-audit", "/api/security/rbac-audit", "RBAC overprivilege & wildcard permission auditor"},
 	{"security:secret-scan", "/api/security/secret-scan", "Secret data exposure & env var credential leak scanner"},
 	{"security:sec-drift", "/api/security/sec-drift", "Security context drift & runtime policy compliance auditor"},
+	{"security:opa-compliance", "/api/security/opa-compliance", "OPA/Gatekeeper policy compliance & constraint violation auditor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

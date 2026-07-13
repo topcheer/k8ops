@@ -3202,6 +3202,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- OPA/Gatekeeper Policy Compliance & Constraint Violation Auditor (v16.30) ---
+	add("/api/security/opa-compliance", "get", OpenAPIOperation{
+		Summary:     "OPA/Gatekeeper policy compliance & constraint violation auditor",
+		OperationID: "opaCompliance",
+		Tags:        []string{"Security", "Compliance", "OPA", "Gatekeeper"},
+		Description: "Audits OPA Gatekeeper and Kyverno policy engine compliance. Detects Gatekeeper/Kyverno installation, scans Constraint CRDs for enforce/audit mode, counts violations per constraint and namespace. Blind spot: Compliance/Governance coverage. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("OPA compliance analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"hasGatekeeper": true, "totalConstraints": 10, "violationCount": 3, "healthScore": 85},
+			}),
+		},
+	})
+
 	return spec
 }
 
