@@ -298,6 +298,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/mesh-health", s.cacheMiddleware(120*time.Second, s.handleMeshHealth))                                // service mesh sidecar health & mTLS coverage auditor
 	mux.HandleFunc("/api/product/cronjob-schedule", s.cacheMiddleware(60*time.Second, s.handleCronJobSchedule))                       // CronJob schedule conflict & resource configuration auditor
 	mux.HandleFunc("/api/product/external-secret-health", s.cacheMiddleware(120*time.Second, s.handleExternalSecretHealth))           // external secrets & secret store CSI health auditor
+	mux.HandleFunc("/api/product/endpoint-dns-health", s.cacheMiddleware(60*time.Second, s.handleEndpointDNSHealth))                  // service endpoint & DNS resolution health auditor
 	mux.HandleFunc("/api/scalability/overcommit", s.cacheMiddleware(60*time.Second, s.handleOvercommitAnalysis))                      // resource over-commit & pressure
 	mux.HandleFunc("/api/scalability/autoscale-recommendations", s.cacheMiddleware(60*time.Second, s.handleAutoscaleRecommendations)) // HPA/VPA right-sizing
 	mux.HandleFunc("/api/scalability/pvc-analysis", s.cacheMiddleware(60*time.Second, s.handlePVCAnalysis))                           // PVC binding & storage performance

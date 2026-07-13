@@ -3424,6 +3424,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Service Endpoint & DNS Resolution Health Auditor (v16.49) ---
+	add("/api/product/endpoint-dns-health", "get", OpenAPIOperation{
+		Summary:     "Service endpoint & DNS resolution health auditor",
+		OperationID: "endpointDNSHealth",
+		Tags:        []string{"Product", "Service", "DNS"},
+		Description: "Audits service endpoint and DNS resolution health: detects services with no ready endpoints, headless services, external-name services, no-selector services, unnamed multi-port services. Cross-references Endpoints resources. Per-namespace stats, health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Endpoint DNS health analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalServices": 30, "noEndpoints": 3, "headlessServices": 5, "healthScore": 82},
+			}),
+		},
+	})
+
 	return spec
 }
 
