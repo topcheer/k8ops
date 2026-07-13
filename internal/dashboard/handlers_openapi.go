@@ -3268,6 +3268,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Resource Request vs Limit Allocation Efficiency Auditor (v16.42) ---
+	add("/api/scalability/alloc-efficiency", "get", OpenAPIOperation{
+		Summary:     "Resource request vs limit allocation efficiency auditor",
+		OperationID: "allocEfficiency",
+		Tags:        []string{"Scalability", "Resources", "FinOps"},
+		Description: "Audits resource request vs limit allocation efficiency across all containers. Detects overallocated containers (request ≈ limit, wasted scheduling), underallocated containers (request << limit, throttling risk), missing requests/limits, and computes overall CPU allocation efficiency ratio. Per-namespace and per-workload breakdown. Health score (0-100). Blind spot: Cost/FinOps deepening.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Allocation efficiency analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalContainers": 80, "noRequests": 5, "noLimits": 10, "allocEfficiency": 0.65, "healthScore": 78},
+			}),
+		},
+	})
+
 	// --- Rolling Update Risk & Surge Configuration Analyzer (v16.35) ---
 	add("/api/deployment/surge-risk", "get", OpenAPIOperation{
 		Summary:     "Rolling update risk & surge configuration analyzer",
