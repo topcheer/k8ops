@@ -3489,6 +3489,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- ConfigMap & Secret Mount Injection Risk Auditor (v16.55) ---
+	add("/api/product/config-mount-risk", "get", OpenAPIOperation{
+		Summary:     "ConfigMap & Secret mount injection risk auditor",
+		OperationID: "configMountRisk",
+		Tags:        []string{"Product", "ConfigMap", "Secret"},
+		Description: "Audits ConfigMap and Secret mount injection risks: detects missing ConfigMap references, large ConfigMaps (>500KB), non-optional mounts, subPath mounts (prevent hot-reload), envFrom Secret injection. Per-namespace stats, health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Config mount risk analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalPods": 30, "configMapMounts": 15, "largeConfigMaps": 2, "healthScore": 85},
+			}),
+		},
+	})
+
 	return spec
 }
 
