@@ -4,6 +4,101 @@
 
 ---
 
+## v16.25-v16.32 (2026-07-13)
+
+### v16.25: 安全上下文漂移与运行时策略合规审计 (维度4: 安全, 盲区2: 合规/治理)
+
+**新增 API：**
+- `GET /api/security/sec-drift` — 安全上下文漂移审计
+  - 检测缺失 runAsNonRoot、readOnlyRootFilesystem、allowPrivilegeEscalation
+  - 检测无 capability drops、ADD ALL caps、privileged containers
+  - 检测危险 capabilities（SYS_ADMIN、NET_ADMIN 等）
+  - 健康评分（0-100），3 个单元测试
+
+### v16.26: HPA 目标利用率差距与扩缩容行为审计 (维度1: 产品)
+
+**新增 API：**
+- `GET /api/product/hpa-gap` — HPA 目标利用率差距审计
+  - 检测目标利用率过高（>90%）或过低（<30%）
+  - 检测缺失 metrics、minReplicas==maxReplicas（无扩缩容空间）
+  - 检测缺失 scaleDown 行为/稳定窗口
+  - 健康评分（0-100），3 个单元测试
+
+### v16.27: 节点池与集群自动伸缩健康监控 (维度6: 可扩展性)
+
+**新增 API：**
+- `GET /api/scalability/node-pool-health` — 节点池健康监控
+  - 检测节点就绪状态、陈旧心跳（>5min）、cordon 节点
+  - 检测不平衡池（>30% NotReady）
+  - 检测 cluster autoscaler 是否安装
+  - 按池和可用区分组分析，健康评分（0-100），3 个单元测试
+
+### v16.28: Helm Release 健康与 GitOps 漂移检测 (维度2: 部署, 盲区4: GitOps/CD)
+
+**新增 API：**
+- `GET /api/deployment/helm-health` — Helm Release 健康审计
+  - 扫描 Helm release secrets，检测 failed/pending/stale releases
+  - 识别卡住的安装/升级、异常 release 状态
+  - 健康评分（0-100），3 个单元测试
+  - **盲区4 (GitOps/CD) 首次覆盖**
+
+### v16.29: Prometheus 规则健康与告警覆盖率审计 (维度3: 运维, 盲区5: 可观测性栈)
+
+**新增 API：**
+- `GET /api/operations/prom-health` — 可观测性栈健康审计
+  - 检测 Prometheus、Alertmanager、Grafana、metrics-server、kube-state-metrics
+  - 扫描 PrometheusRule ConfigMaps 中的告警/记录规则
+  - 识别无告警覆盖的命名空间
+  - 健康评分（0-100），3 个单元测试
+  - **盲区5 (Observability Stack) 首次覆盖**
+
+### v16.30: OPA/Gatekeeper 策略合规与约束违规审计 (维度4: 安全, 盲区2: 合规/治理)
+
+**新增 API：**
+- `GET /api/security/opa-compliance` — OPA/Gatekeeper 策略合规审计
+  - 检测 Gatekeeper 和 Kyverno 安装状态
+  - 扫描 Constraint CRD，识别 enforce/audit 模式
+  - 统计每个 constraint 和命名空间的违规数
+  - 健康评分（0-100），3 个单元测试
+  - **盲区2 (Compliance/Governance) 首次覆盖**
+
+### v16.31: Service Mesh Sidecar 健康与 mTLS 覆盖率审计 (维度1: 产品, 盲区3: 网络/服务网格)
+
+**新增 API：**
+- `GET /api/product/mesh-health` — Service Mesh 健康审计
+  - 检测 Istio、Linkerd、Consul Connect 控制面
+  - 扫描 pod 的 sidecar 注入状态
+  - 检查每个 pod 的 mTLS 状态
+  - 检测 sidecar 高重启次数
+  - 健康评分（0-100），3 个单元测试
+  - **盲区3 (Network/Service Mesh) 首次覆盖**
+
+### v16.32: 闲置资源成本浪费与命名空间成本分摊审计 (维度6: 可扩展性, 盲区1: 成本/FinOps)
+
+**新增 API：**
+- `GET /api/scalability/cost-waste` — 成本浪费审计
+  - 检测闲置 pods（<100m CPU / <128Mi memory 请求）
+  - 检测过度配置 pods（>4 CPU 或 >8Gi memory 请求）
+  - 识别闲置 namespaces
+  - 计算浪费百分比和按命名空间成本分布
+  - 健康评分（0-100），3 个单元测试
+  - **盲区1 (Cost/FinOps) 首次覆盖**
+
+**盲区覆盖进度：5/6 完成**
+- #1 Cost/FinOps: DONE (v16.32)
+- #2 Compliance/Governance: DONE (v16.30)
+- #3 Network/Service Mesh: DONE (v16.31)
+- #4 GitOps/CD: DONE (v16.28)
+- #5 Observability Stack: DONE (v16.29)
+- #6 Node Lifecycle: TODO (partial, node-pool-health at v16.27)
+
+**Agent Tools 总数：** 39 base + 2 audit = 41 LLM tools
+**Dashboard APIs 总数：** 195 endpoints
+**测试总数：** ~1139
+**OpenAPI 端点：** 188
+
+---
+
 ## v16.20-v16.23 (2026-07-12)
 
 ### v16.20: Agent Tool Bridge — 100+ Dashboard API 暴露为 LLM Agent Tool (跨维度基础设施)

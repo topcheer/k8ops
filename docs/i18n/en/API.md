@@ -1544,7 +1544,7 @@ Monitors API server load by analyzing pod density, controller count, event volum
 
 ## API Summary
 
-**Total: 179 OpenAPI endpoints** across 6 dimensions:
+**Total: 188 OpenAPI endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance, init container audit
 - **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness, replica availability
 - **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor, etcd health, API load

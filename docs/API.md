@@ -2694,5 +2694,13 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 112 | /api/deployment/replica-availability | Deployment | v16.21 | 部署副本可用性与 Ready Pod 比率监控 |
 | 113 | /api/scalability/tenant-pressure | Scalability | v16.22 | 多租户资源压力与 Quota 竞争审计 |
 | 114 | /api/operations/api-load | Operations | v16.23 | API Server 请求吞吐与负载压力监控 |
+| 115 | /api/security/sec-drift | Security | v16.25 | 安全上下文漂移与运行时策略合规审计 |
+| 116 | /api/product/hpa-gap | Product | v16.26 | HPA 目标利用率差距与扩缩容行为审计 |
+| 117 | /api/scalability/node-pool-health | Scalability | v16.27 | 节点池与集群自动伸缩健康监控 |
+| 118 | /api/deployment/helm-health | Deployment | v16.28 | Helm Release 健康与 GitOps 漂移检测 |
+| 119 | /api/operations/prom-health | Operations | v16.29 | Prometheus 规则健康与告警覆盖率审计 |
+| 120 | /api/security/opa-compliance | Security | v16.30 | OPA/Gatekeeper 策略合规与约束违规审计 |
+| 121 | /api/product/mesh-health | Product | v16.31 | Service Mesh Sidecar 健康与 mTLS 覆盖率审计 |
+| 122 | /api/scalability/cost-waste | Scalability | v16.32 | 闲置资源成本浪费与命名空间成本分摊审计 |
 
-**总计：179 个 OpenAPI 端点**
+**总计：188 个 OpenAPI 端点**
