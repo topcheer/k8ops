@@ -142,6 +142,7 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:ip-cidr-utilization", "/api/scalability/ip-cidr-utilization", "IP address & Pod CIDR utilization monitor"},
 	{"scalability:node-topology", "/api/scalability/node-topology", "Node topology distribution & multi-AZ fault tolerance analyzer"},
 	{"scalability:tenant-pressure", "/api/scalability/tenant-pressure", "Multi-tenant resource pressure & quota competition auditor"},
+	{"scalability:node-pool-health", "/api/scalability/node-pool-health", "Node pool & cluster autoscaler health monitor"},
 
 	// --- Other audits ---
 	{"certificates:expiry", "/api/certificates/expiry", "Certificate & TLS expiry monitor"},

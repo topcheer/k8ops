@@ -3163,6 +3163,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Node Pool & Cluster Autoscaler Health Monitor (v16.27) ---
+	add("/api/scalability/node-pool-health", "get", OpenAPIOperation{
+		Summary:     "Node pool & cluster autoscaler health monitor",
+		OperationID: "nodePoolHealth",
+		Tags:        []string{"Scalability", "NodePool", "Autoscaler"},
+		Description: "Monitors node pool health, node readiness distribution, stale heartbeats, cordoned nodes, and cluster autoscaler presence. Detects unbalanced pools (>30% NotReady) and stale nodes. Per-pool and per-zone analysis. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Node pool health analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalNodes": 10, "readyNodes": 8, "healthScore": 85},
+			}),
+		},
+	})
+
 	return spec
 }
 
