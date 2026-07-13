@@ -130,6 +130,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:cronjob-schedule", "/api/product/cronjob-schedule", "CronJob schedule conflict & resource configuration auditor"},
 	{"deployment:startup-latency", "/api/deployment/startup-latency", "Pod startup latency & readiness performance auditor"},
 	{"operations:grafana-health", "/api/operations/grafana-health", "Grafana dashboard availability & datasource health auditor"},
+	{"security:kyverno-compliance", "/api/security/kyverno-compliance", "Kyverno policy compliance & cluster policy audit"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

@@ -3333,6 +3333,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Kyverno Policy Compliance & Cluster Policy Audit (v16.41) ---
+	add("/api/security/kyverno-compliance", "get", OpenAPIOperation{
+		Summary:     "Kyverno policy compliance & cluster policy audit",
+		OperationID: "kyvernoCompliance",
+		Tags:        []string{"Security", "Compliance", "Policy"},
+		Description: "Audits Kyverno policy compliance: detects Kyverno installation via pod image scan, lists ClusterPolicy and Policy CRDs, classifies rules by type (validate/mutate/generate), checks enforcement mode (Enforce vs Audit), background scan status, and policy violations. Identifies audit-only policies ready for enforcement. Health score (0-100). Blind spot: Compliance/Governance.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Kyverno compliance analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"kyvernoDetected": true, "totalPolicies": 12, "enforcePolicies": 8, "violationCount": 3, "healthScore": 82},
+			}),
+		},
+	})
+
 	return spec
 }
 
