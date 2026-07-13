@@ -3215,6 +3215,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Service Mesh Sidecar Health & mTLS Coverage Auditor (v16.31) ---
+	add("/api/product/mesh-health", "get", OpenAPIOperation{
+		Summary:     "Service mesh sidecar health & mTLS coverage auditor",
+		OperationID: "meshHealth",
+		Tags:        []string{"Product", "ServiceMesh", "mTLS"},
+		Description: "Audits service mesh (Istio/Linkerd/Consul) sidecar health and mTLS coverage. Detects mesh control plane, sidecar injection rate, mTLS status per pod, sidecar restart patterns. Blind spot: Network/Service Mesh coverage. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Mesh health analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"hasIstio": true, "podsWithSidecar": 50, "mtlsEnabled": 45, "healthScore": 88},
+			}),
+		},
+	})
+
 	return spec
 }
 
