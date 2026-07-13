@@ -3476,6 +3476,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- PV Reclaim Policy & Storage Class Waste Auditor (v16.53) ---
+	add("/api/scalability/pv-reclaim", "get", OpenAPIOperation{
+		Summary:     "PV reclaim policy & storage class waste auditor",
+		OperationID: "pvReclaim",
+		Tags:        []string{"Scalability", "Storage", "PV"},
+		Description: "Audits PV reclaim policy and storage class waste: detects Released PVs with Retain policy (orphaned storage), Failed PVs, Pending PVCs, Delete vs Retain reclaim policy distribution, and storage class statistics. Per-namespace and per-storage-class breakdown. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("PV reclaim analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalPVs": 50, "orphanedPVs": 3, "failedPVs": 1, "pendingPVCs": 2, "healthScore": 85},
+			}),
+		},
+	})
+
 	return spec
 }
 
