@@ -136,6 +136,7 @@ var auditRegistry = []auditEndpoint{
 	{"deployment:progressive-delivery", "/api/deployment/progressive-delivery", "Progressive delivery & canary rollout health auditor"},
 	{"operations:metrics-pipeline", "/api/operations/metrics-pipeline", "Metrics pipeline & kube-state-metrics health auditor"},
 	{"security:pss-scorecard", "/api/security/pss-scorecard", "Pod Security Standards compliance scorecard"},
+	{"scalability:hpa-performance", "/api/scalability/hpa-performance", "HPA autoscaling performance & scaling event auditor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

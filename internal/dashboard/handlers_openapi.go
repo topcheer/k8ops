@@ -3411,6 +3411,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- HPA Autoscaling Performance & Scaling Event Auditor (v16.48) ---
+	add("/api/scalability/hpa-performance", "get", OpenAPIOperation{
+		Summary:     "HPA autoscaling performance & scaling event auditor",
+		OperationID: "hpaPerformance",
+		Tags:        []string{"Scalability", "HPA", "Autoscaling"},
+		Description: "Audits HPA autoscaling performance: current/desired replicas, utilization ratio, scaling active/limited conditions, missing metrics, over/underutilization, no scaling room (max=min), stale HPAs. Per-namespace stats, health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("HPA performance analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalHPAs": 15, "scalingActive": 12, "scalingLimited": 2, "noMetrics": 1, "healthScore": 78},
+			}),
+		},
+	})
+
 	return spec
 }
 
