@@ -3280,6 +3280,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Container Image Vulnerability & Patch Lag Auditor (v16.37) ---
+	add("/api/security/image-vuln", "get", OpenAPIOperation{
+		Summary:     "Container image vulnerability & patch lag auditor",
+		OperationID: "imageVuln",
+		Tags:        []string{"Security", "SupplyChain", "Images"},
+		Description: "Audits container image supply chain: detects :latest tag usage, unpinned images (no @sha256 digest), duplicate tags, and image freshness. Identifies stale images for patch lag. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Image vulnerability analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalImages": 50, "latestTag": 5, "noDigest": 30, "healthScore": 80},
+			}),
+		},
+	})
+
 	return spec
 }
 
