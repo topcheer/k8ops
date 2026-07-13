@@ -3228,6 +3228,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- CronJob Schedule Conflict & Resource Configuration Auditor (v16.38) ---
+	add("/api/product/cronjob-schedule", "get", OpenAPIOperation{
+		Summary:     "CronJob schedule conflict & resource configuration auditor",
+		OperationID: "cronJobSchedule",
+		Tags:        []string{"Product", "CronJob", "BatchWorkloads"},
+		Description: "Audits CronJob schedule conflicts and resource configuration. Detects schedule clustering (3+ jobs at same time slot), suspended cron jobs, missing concurrency limits, missing resource limits, job history configuration, and timezone usage. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("CronJob health analysis", map[string]interface{}{
+				"summary":        map[string]interface{}{"totalCronJobs": 10, "suspendedJobs": 1, "failedJobs": 2, "healthScore": 75},
+				"scheduleIssues": []map[string]interface{}{{"timeSlot": "2:0", "conflictCount": 4}},
+			}),
+		},
+	})
+
 	// --- Idle Resource Cost Waste & Namespace Cost Attribution Auditor (v16.32) ---
 	add("/api/scalability/cost-waste", "get", OpenAPIOperation{
 		Summary:     "Idle resource cost waste & namespace cost attribution auditor",

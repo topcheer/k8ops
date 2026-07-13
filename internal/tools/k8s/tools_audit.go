@@ -127,6 +127,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:sec-drift", "/api/security/sec-drift", "Security context drift & runtime policy compliance auditor"},
 	{"security:opa-compliance", "/api/security/opa-compliance", "OPA/Gatekeeper policy compliance & constraint violation auditor"},
 	{"security:image-vuln", "/api/security/image-vuln", "Container image vulnerability & patch lag auditor"},
+	{"product:cronjob-schedule", "/api/product/cronjob-schedule", "CronJob schedule conflict & resource configuration auditor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

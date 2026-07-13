@@ -292,6 +292,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/init-container-audit", s.cacheMiddleware(60*time.Second, s.handleInitContainerAudit))                // init container reliability & startup dependency auditor
 	mux.HandleFunc("/api/product/hpa-gap", s.cacheMiddleware(60*time.Second, s.handleHPAGap))                                         // HPA target utilization gap & scaling behavior auditor
 	mux.HandleFunc("/api/product/mesh-health", s.cacheMiddleware(120*time.Second, s.handleMeshHealth))                                // service mesh sidecar health & mTLS coverage auditor
+	mux.HandleFunc("/api/product/cronjob-schedule", s.cacheMiddleware(60*time.Second, s.handleCronJobSchedule))                       // CronJob schedule conflict & resource configuration auditor
 	mux.HandleFunc("/api/scalability/overcommit", s.cacheMiddleware(60*time.Second, s.handleOvercommitAnalysis))                      // resource over-commit & pressure
 	mux.HandleFunc("/api/scalability/autoscale-recommendations", s.cacheMiddleware(60*time.Second, s.handleAutoscaleRecommendations)) // HPA/VPA right-sizing
 	mux.HandleFunc("/api/scalability/pvc-analysis", s.cacheMiddleware(60*time.Second, s.handlePVCAnalysis))                           // PVC binding & storage performance
