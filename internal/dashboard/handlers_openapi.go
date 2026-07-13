@@ -3450,6 +3450,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Audit Log Pipeline & Event Export Health Auditor (v16.51) ---
+	add("/api/operations/audit-log-health", "get", OpenAPIOperation{
+		Summary:     "Audit log pipeline & event export health auditor",
+		OperationID: "auditLogHealth",
+		Tags:        []string{"Operations", "Logging", "Events"},
+		Description: "Audits audit log pipeline and event export health: detects fluent-bit/fluentd/vector/loki installation, checks exporter pod health (ready/restarts), scans namespace warning event rates, identifies high-event-rate namespaces. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Audit log health analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"fluentBitDetected": true, "exporterPodCount": 3, "readyExporters": 3, "healthScore": 90},
+			}),
+		},
+	})
+
 	return spec
 }
 
