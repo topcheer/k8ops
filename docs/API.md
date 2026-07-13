@@ -2702,5 +2702,14 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 120 | /api/security/opa-compliance | Security | v16.30 | OPA/Gatekeeper 策略合规与约束违规审计 |
 | 121 | /api/product/mesh-health | Product | v16.31 | Service Mesh Sidecar 健康与 mTLS 覆盖率审计 |
 | 122 | /api/scalability/cost-waste | Scalability | v16.32 | 闲置资源成本浪费与命名空间成本分摊审计 |
+| 123 | /api/scalability/node-lifecycle | Scalability | v16.34 | 节点 OS 补丁、内核版本漂移、GPU 资源与节点轮换审计 |
+| 124 | /api/deployment/surge-risk | Deployment | v16.35 | 滚动更新风险与 Surge 配置分析 |
+| 125 | /api/operations/alertmanager-health | Operations | v16.36 | Alertmanager 配置与告警路由健康审计 |
+| 126 | /api/security/image-vuln | Security | v16.37 | 容器镜像漏洞与补丁滞后审计 |
+| 127 | /api/product/cronjob-schedule | Product | v16.38 | CronJob 调度冲突与资源配置审计 |
+| 128 | /api/deployment/startup-latency | Deployment | v16.39 | Pod 启动延迟与就绪性能审计 |
+| 129 | /api/operations/grafana-health | Operations | v16.40 | Grafana Dashboard 可用性与数据源健康审计 |
+| 130 | /api/security/kyverno-compliance | Security | v16.41 | Kyverno 策略合规与集群策略审计 |
+| 131 | /api/scalability/alloc-efficiency | Scalability | v16.42 | 资源请求与限制分配效率审计 |
 
-**总计：188 个 OpenAPI 端点**
+**总计：197 个 OpenAPI 端点**

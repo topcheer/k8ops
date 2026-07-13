@@ -1032,12 +1032,99 @@
 
 ---
 
+## v16.34-v16.42 (2026-07-13)
+
+### v16.34: 节点 OS 补丁与内核版本漂移审计 (维度6: 可扩展性, 盲区6: 节点生命周期)
+
+**新增 API：**
+- `GET /api/scalability/node-lifecycle` — 节点生命周期审计
+  - 内核版本漂移检测、OS 镜像差异检测
+  - 架构多样性分析、GPU 资源可用性检测
+  - 节点年龄与轮换需求（90/180天阈值）
+  - 健康评分（0-100），3 个单元测试
+
+### v16.35: 滚动更新风险与 Surge 配置分析 (维度2: 部署)
+
+**新增 API：**
+- `GET /api/deployment/surge-risk` — 滚动更新风险与 Surge 配置分析
+  - Max Surge/Max Unavailable 配置审计
+  - 不可用副本风险评估、Surge 资源影响分析
+  - 健康评分（0-100），3 个单元测试
+
+### v16.36: Alertmanager 配置与告警路由健康审计 (维度3: 运维, 盲区5: 观测性深化)
+
+**新增 API：**
+- `GET /api/operations/alertmanager-health` — Alertmanager 配置与告警路由审计
+  - Alertmanager 实例检测、告警路由配置分析
+  - 告警接收器健康、静默规则检测
+  - 健康评分（0-100），3 个单元测试
+
+### v16.37: 容器镜像漏洞与补丁滞后审计 (维度4: 安全)
+
+**新增 API：**
+- `GET /api/security/image-vuln` — 容器镜像漏洞与补丁滞后审计
+  - latest 标签检测、digest 引用检测
+  - 镜像新鲜度评估、补丁滞后风险
+  - 健康评分（0-100），3 个单元测试
+
+### v16.38: CronJob 调度冲突与资源配置审计 (维度1: 产品)
+
+**新增 API：**
+- `GET /api/product/cronjob-schedule` — CronJob 调度冲突与资源配置审计
+  - 调度时间冲突检测（3+ 个任务在同一时间槽）
+  - ConcurrencyPolicy 审计、资源限制检查
+  - Job 历史限制检查、挂起任务检测
+  - 健康评分（0-100），5 个单元测试
+
+### v16.39: Pod 启动延迟与就绪性能审计 (维度2: 部署)
+
+**新增 API：**
+- `GET /api/deployment/startup-latency` — Pod 启动延迟与就绪性能审计
+  - p50/p90/p99 启动百分位计算
+  - 慢启动 Pod 检测（>60s warning, >120s critical）
+  - 缺失 readiness/liveness 探针检测
+  - CrashLoopBackOff 追踪、init container 影响分析
+  - 健康评分（0-100），6 个单元测试
+
+### v16.40: Grafana Dashboard 可用性与数据源健康审计 (维度3: 运维, 盲区5: 观测性深化)
+
+**新增 API：**
+- `GET /api/operations/grafana-health` — Grafana Dashboard 可用性与数据源健康审计
+  - Grafana 安装检测、Dashboard ConfigMap 分析
+  - 过期 Dashboard 检测（无/超长刷新间隔）
+  - 损坏 Dashboard 检测（有面板但无数据源引用）
+  - Grafana Pod 健康检查
+  - 健康评分（0-100），6 个单元测试
+
+### v16.41: Kyverno 策略合规与集群策略审计 (维度4: 安全, 盲区2: 合规深化)
+
+**新增 API：**
+- `GET /api/security/kyverno-compliance` — Kyverno 策略合规与集群策略审计
+  - ClusterPolicy/Policy CRD 扫描（dynamic client）
+  - 规则分类：validate/mutate/generate
+  - 强制模式审计（Enforce vs Audit）、后台扫描状态
+  - Audit-only 策略强制执行就绪识别
+  - 健康评分（0-100），5 个单元测试
+
+### v16.42: 资源请求与限制分配效率审计 (维度6: 可扩展性, 盲区1: 成本深化)
+
+**新增 API：**
+- `GET /api/scalability/alloc-efficiency` — 资源请求与限制分配效率审计
+  - CPU/内存 request vs limit 比率分析
+  - 过度分配检测（request ≈ limit，浪费调度）
+  - 分配不足检测（request << limit，限流风险）
+  - 无请求/无限制容器检测
+  - 整体 CPU 分配效率比率
+  - 健康评分（0-100），3 个单元测试
+
+---
+
 ## 统计信息
 
 | 指标 | 数值 |
 |------|------|
-| OpenAPI 端点 | 154 |
-| 单元测试 | 990 |
+| OpenAPI 端点 | 197 |
+| 单元测试 | 1173 |
 | 文档 | 12 篇 (7 种语言) |
 | i18n 文件 | 76 个 |
 | Release Assets | 17 个 |

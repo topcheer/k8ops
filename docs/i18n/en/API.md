@@ -1542,12 +1542,43 @@ Monitors API server load by analyzing pod density, controller count, event volum
 
 ---
 
+## v16.34-v16.42 Additions
+
+### v16.34: Node OS Patch & Kernel Version Drift Auditor
+- `GET /api/scalability/node-lifecycle` — Kernel version drift, OS image drift, architecture diversity, GPU resource availability, node age/rotation needs. Blind spot: Node Lifecycle. 3 unit tests.
+
+### v16.35: Rolling Update Risk & Surge Configuration Analyzer
+- `GET /api/deployment/surge-risk` — Max Surge/Max Unavailable audit, unavailable replica risk, surge resource impact. 3 unit tests.
+
+### v16.36: Alertmanager Config & Alert Routing Health Auditor
+- `GET /api/operations/alertmanager-health` — Alertmanager instance detection, alert routing config, receiver health, silence rules. Blind spot: Observability deepening. 3 unit tests.
+
+### v16.37: Container Image Vulnerability & Patch Lag Auditor
+- `GET /api/security/image-vuln` — latest tag detection, digest reference detection, image freshness assessment, patch lag risk. 3 unit tests.
+
+### v16.38: CronJob Schedule Conflict & Resource Configuration Auditor
+- `GET /api/product/cronjob-schedule` — Schedule clustering detection (3+ jobs same slot), ConcurrencyPolicy audit, resource limit checks, job history config, suspended job detection. 5 unit tests.
+
+### v16.39: Pod Startup Latency & Readiness Performance Auditor
+- `GET /api/deployment/startup-latency` — p50/p90/p99 startup percentiles, slow pod detection (>60s), missing probe detection, CrashLoopBackOff tracking, init container impact. 6 unit tests.
+
+### v16.40: Grafana Dashboard Availability & Datasource Health Auditor
+- `GET /api/operations/grafana-health` — Grafana installation detection, dashboard ConfigMap analysis, stale/broken dashboard detection, Grafana pod health. Blind spot: Observability deepening. 6 unit tests.
+
+### v16.41: Kyverno Policy Compliance & Cluster Policy Audit
+- `GET /api/security/kyverno-compliance` — ClusterPolicy/Policy CRD scanning, rule classification (validate/mutate/generate), Enforce vs Audit mode, background scan status. Blind spot: Compliance deepening. 5 unit tests.
+
+### v16.42: Resource Request vs Limit Allocation Efficiency Auditor
+- `GET /api/scalability/alloc-efficiency` — CPU/memory request vs limit ratio analysis, overallocated/underallocated detection, no-requests/no-limits identification, allocation efficiency ratio. Blind spot: Cost/FinOps deepening. 3 unit tests.
+
+---
+
 ## API Summary
 
-**Total: 188 OpenAPI endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance, init container audit
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness, replica availability
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor, etcd health, API load
-- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit, forensics, RBAC audit, secret scan
-- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization, node topology, tenant pressure
+**Total: 197 OpenAPI endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance, init container audit, CronJob schedule conflict
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness, replica availability, surge risk, startup latency
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor, etcd health, API load, Prometheus rule health, Alertmanager health, Grafana health
+- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit, forensics, RBAC audit, secret scan, security context drift, OPA/Gatekeeper compliance, image vulnerability, Kyverno compliance
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization, node topology, tenant pressure, node pool health, cost waste, node lifecycle, alloc efficiency
 - **Infrastructure**: Auth, RBAC, health, version
