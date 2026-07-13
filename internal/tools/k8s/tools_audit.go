@@ -132,6 +132,7 @@ var auditRegistry = []auditEndpoint{
 	{"operations:grafana-health", "/api/operations/grafana-health", "Grafana dashboard availability & datasource health auditor"},
 	{"security:kyverno-compliance", "/api/security/kyverno-compliance", "Kyverno policy compliance & cluster policy audit"},
 	{"scalability:alloc-efficiency", "/api/scalability/alloc-efficiency", "Resource request vs limit allocation efficiency auditor"},
+	{"product:external-secret-health", "/api/product/external-secret-health", "External secrets & secret store CSI health auditor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

@@ -3242,6 +3242,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- External Secrets & Secret Store CSI Health Auditor (v16.44) ---
+	add("/api/product/external-secret-health", "get", OpenAPIOperation{
+		Summary:     "External secrets & secret store CSI health auditor",
+		OperationID: "externalSecretHealth",
+		Tags:        []string{"Product", "Secrets", "Security"},
+		Description: "Audits External Secrets Operator and Secret Store CSI Driver health. Detects ESO/CSI installation via pod image scan, lists ExternalSecret CRDs with sync status, SecretProviderClass CRDs, pod health (ready/restarts). Identifies failed syncs, unknown status secrets, and missing configurations. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("External secret health analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"esoDetected": true, "totalSecrets": 15, "syncedSecrets": 13, "failedSecrets": 2, "healthScore": 82},
+			}),
+		},
+	})
+
 	// --- Idle Resource Cost Waste & Namespace Cost Attribution Auditor (v16.32) ---
 	add("/api/scalability/cost-waste", "get", OpenAPIOperation{
 		Summary:     "Idle resource cost waste & namespace cost attribution auditor",
