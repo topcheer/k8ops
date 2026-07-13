@@ -134,6 +134,7 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:alloc-efficiency", "/api/scalability/alloc-efficiency", "Resource request vs limit allocation efficiency auditor"},
 	{"product:external-secret-health", "/api/product/external-secret-health", "External secrets & secret store CSI health auditor"},
 	{"deployment:progressive-delivery", "/api/deployment/progressive-delivery", "Progressive delivery & canary rollout health auditor"},
+	{"operations:metrics-pipeline", "/api/operations/metrics-pipeline", "Metrics pipeline & kube-state-metrics health auditor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

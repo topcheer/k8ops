@@ -3372,6 +3372,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Metrics Pipeline & kube-state-metrics Health Auditor (v16.46) ---
+	add("/api/operations/metrics-pipeline", "get", OpenAPIOperation{
+		Summary:     "Metrics pipeline & kube-state-metrics health auditor",
+		OperationID: "metricsPipeline",
+		Tags:        []string{"Operations", "Observability", "Metrics"},
+		Description: "Audits metrics pipeline completeness: detects metrics-server, kube-state-metrics, node-exporter, and Prometheus installation via pod image scan. Checks component pod health (ready/restarts). Identifies missing critical components for HPA, alerting, and capacity planning. Health score (0-100). Blind spot: Observability Stack deepening.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Metrics pipeline analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"metricsServerDetected": true, "kubeStateMetricsDetected": true, "nodeExporterDetected": false, "healthScore": 75},
+			}),
+		},
+	})
+
 	// --- Kyverno Policy Compliance & Cluster Policy Audit (v16.41) ---
 	add("/api/security/kyverno-compliance", "get", OpenAPIOperation{
 		Summary:     "Kyverno policy compliance & cluster policy audit",
