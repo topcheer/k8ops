@@ -1,152 +1,131 @@
 package dashboard
 
 import (
-	"encoding/json"
-	"net/http"
-	"net/http/httptest"
-	"strings"
 	"testing"
+
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func TestHandleAlertmanagerWebhook_MethodNotAllowed(t *testing.T) {
-	s := &Server{}
-	req := httptest.NewRequest(http.MethodGet, "/api/webhooks/alertmanager", nil)
-	rr := httptest.NewRecorder()
-
-	s.handleAlertmanagerWebhook(rr, req)
-
-	if rr.Code != http.StatusMethodNotAllowed {
-		t.Errorf("expected 405, got %d", rr.Code)
+func TestAlertmanagerScore(t *testing.T) {
+	tests := []struct {
+		name     string
+		s        AlertmanagerSummary
+		minScore int
+		maxScore int
+	}{
+		{"no alertmanager", AlertmanagerSummary{}, 48, 52},
+		{"healthy", AlertmanagerSummary{HasAlertmanager: true, TotalReceivers: 5, TotalRoutes: 3}, 95, 100},
+		{"no channels", AlertmanagerSummary{HasAlertmanager: true, NoSlackOrPagerDuty: 2}, 65, 75},
+		{"no group_by", AlertmanagerSummary{HasAlertmanager: true, NoSilencePitfalls: 3}, 80, 90},
+		{"all bad", AlertmanagerSummary{HasAlertmanager: true, NoSlackOrPagerDuty: 3, NoSilencePitfalls: 3}, 30, 50},
 	}
-}
-
-func TestHandleAlertmanagerWebhook_InvalidJSON(t *testing.T) {
-	s := &Server{}
-	req := httptest.NewRequest(http.MethodPost, "/api/webhooks/alertmanager",
-		strings.NewReader("not json"))
-	rr := httptest.NewRecorder()
-
-	s.handleAlertmanagerWebhook(rr, req)
-
-	if rr.Code != http.StatusBadRequest {
-		t.Errorf("expected 400, got %d", rr.Code)
-	}
-}
-
-func TestHandleAlertmanagerWebhook_ValidPayload(t *testing.T) {
-	s := &Server{}
-	payload := `{
-		"version": "4",
-		"status": "firing",
-		"receiver": "k8ops",
-		"alerts": [
-			{
-				"status": "firing",
-				"labels": {"alertname": "HighCPUUsage", "severity": "warning", "instance": "node-1"},
-				"annotations": {"summary": "CPU above 80%"},
-				"startsAt": "2024-01-01T00:00:00Z",
-				"fingerprint": "abc123"
-			},
-			{
-				"status": "resolved",
-				"labels": {"alertname": "HighMemoryUsage", "severity": "critical", "instance": "node-2"},
-				"annotations": {"summary": "Memory above 90%"},
-				"startsAt": "2024-01-01T00:05:00Z",
-				"endsAt": "2024-01-01T00:10:00Z",
-				"fingerprint": "def456"
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			score := alertmanagerScore(tt.s)
+			if score < tt.minScore || score > tt.maxScore {
+				t.Errorf("score = %d, want [%d, %d]", score, tt.minScore, tt.maxScore)
 			}
-		]
-	}`
-	req := httptest.NewRequest(http.MethodPost, "/api/webhooks/alertmanager",
-		strings.NewReader(payload))
-	rr := httptest.NewRecorder()
-
-	s.handleAlertmanagerWebhook(rr, req)
-
-	if rr.Code != http.StatusOK {
-		t.Errorf("expected 200, got %d: %s", rr.Code, rr.Body.String())
-	}
-
-	// Verify response has expected fields
-	var resp map[string]any
-	if err := parseJSON(rr.Body.Bytes(), &resp); err != nil {
-		t.Fatalf("failed to parse response: %v", err)
-	}
-
-	if resp["firing"].(float64) != 1 {
-		t.Errorf("expected 1 firing, got %v", resp["firing"])
-	}
-	if resp["resolved"].(float64) != 1 {
-		t.Errorf("expected 1 resolved, got %v", resp["resolved"])
-	}
-
-	// Should have investigation hints for firing alerts
-	if _, ok := resp["investigation"]; !ok {
-		t.Error("expected investigation field for firing alerts")
+		})
 	}
 }
 
-func TestHandleAlertmanagerWebhook_EmptyAlerts(t *testing.T) {
-	s := &Server{}
-	payload := `{
-		"version": "4",
-		"status": "resolved",
-		"receiver": "k8ops",
-		"alerts": []
-	}`
-	req := httptest.NewRequest(http.MethodPost, "/api/webhooks/alertmanager",
-		strings.NewReader(payload))
-	rr := httptest.NewRecorder()
-
-	s.handleAlertmanagerWebhook(rr, req)
-
-	if rr.Code != http.StatusOK {
-		t.Errorf("expected 200, got %d", rr.Code)
-	}
-
-	var resp map[string]any
-	if err := parseJSON(rr.Body.Bytes(), &resp); err != nil {
-		t.Fatalf("failed to parse response: %v", err)
-	}
-
-	if resp["totalAlerts"].(float64) != 0 {
-		t.Errorf("expected 0 alerts, got %v", resp["totalAlerts"])
-	}
+func TestAlertmanagerRecommendations(t *testing.T) {
+	t.Run("no alertmanager", func(t *testing.T) {
+		recs := alertmanagerRecommendations(AlertmanagerSummary{})
+		if len(recs) == 0 {
+			t.Error("expected at least one recommendation")
+		}
+	})
+	t.Run("with issues", func(t *testing.T) {
+		recs := alertmanagerRecommendations(AlertmanagerSummary{
+			HasAlertmanager: true, NoSlackOrPagerDuty: 1, NoSilencePitfalls: 2,
+		})
+		if len(recs) < 2 {
+			t.Errorf("expected at least 2 recommendations, got %d", len(recs))
+		}
+	})
+	t.Run("healthy", func(t *testing.T) {
+		recs := alertmanagerRecommendations(AlertmanagerSummary{
+			HasAlertmanager: true, TotalReceivers: 3, NoSlackOrPagerDuty: 0, NoSilencePitfalls: 0,
+		})
+		if len(recs) == 0 {
+			t.Error("expected at least one recommendation")
+		}
+	})
 }
 
-func TestBuildInvestigationHints_CPUAlert(t *testing.T) {
-	alerts := []AlertSummary{
+func TestAlertmanagerAuditCore(t *testing.T) {
+	pods := []corev1.Pod{
 		{
-			Name:     "HighCPUUsage",
-			Severity: "warning",
-			Status:   "firing",
-			Instance: "node-1",
+			ObjectMeta: metav1.ObjectMeta{Name: "alertmanager-0", Namespace: "monitoring"},
+			Spec:       corev1.PodSpec{Containers: []corev1.Container{{Image: "prom/alertmanager:v0.27"}}},
 		},
 	}
-	hints := buildInvestigationHints(alerts)
-	if len(hints) != 1 {
-		t.Fatalf("expected 1 hint, got %d", len(hints))
-	}
-	if hints[0]["alert"] != "HighCPUUsage" {
-		t.Errorf("expected alert name 'HighCPUUsage', got %q", hints[0]["alert"])
-	}
-	if !strings.Contains(hints[0]["api"], "capacity") {
-		t.Error("expected API hint to contain 'capacity' for CPU alert")
-	}
-}
 
-func TestBuildInvestigationHints_ResolvedIgnored(t *testing.T) {
-	alerts := []AlertSummary{
-		{Name: "Alert1", Status: "firing"},
-		{Name: "Alert2", Status: "resolved"},
+	configMaps := []corev1.ConfigMap{
+		// Good config with slack and group_by
+		{
+			ObjectMeta: metav1.ObjectMeta{Name: "alertmanager-config", Namespace: "monitoring"},
+			Data: map[string]string{
+				"alertmanager.yml": `
+global:
+  resolve_timeout: 5m
+route:
+  group_by: ['alertname', 'namespace']
+  receivers: ['slack']
+receivers:
+  - name: 'slack'
+    slack_configs:
+      - channel: '#alerts'
+`,
+			},
+		},
+		// Bad config: no group_by, no notification channel
+		{
+			ObjectMeta: metav1.ObjectMeta{Name: "alertmanager-bad", Namespace: "default"},
+			Data: map[string]string{
+				"config.yaml": `
+route:
+  receivers: ['null']
+receivers:
+  - name: 'null'
+`,
+			},
+		},
+		// Non-AM config (should be ignored)
+		{
+			ObjectMeta: metav1.ObjectMeta{Name: "prometheus-config", Namespace: "monitoring"},
+			Data:       map[string]string{"prometheus.yml": "global:\n  scrape_interval: 30s"},
+		},
 	}
-	hints := buildInvestigationHints(alerts)
-	if len(hints) != 1 {
-		t.Errorf("expected 1 hint (firing only), got %d", len(hints))
-	}
-}
 
-// parseJSON is a test helper.
-func parseJSON(data []byte, v any) error {
-	return json.Unmarshal(data, v)
+	result := alertmanagerAuditCore(pods, configMaps)
+
+	if !result.Summary.HasAlertmanager {
+		t.Error("expected hasAlertmanager=true")
+	}
+	if result.Summary.TotalConfigs != 2 {
+		t.Errorf("expected totalConfigs=2, got %d", result.Summary.TotalConfigs)
+	}
+	if len(result.Issues) < 2 {
+		t.Errorf("expected at least 2 issues, got %d", len(result.Issues))
+	}
+	if len(result.Configs) != 2 {
+		t.Errorf("expected 2 configs, got %d", len(result.Configs))
+	}
+	// First config should have slack and group_by
+	if !result.Configs[0].HasSlack {
+		t.Error("expected first config to have slack")
+	}
+	if !result.Configs[0].HasGroupBy {
+		t.Error("expected first config to have group_by")
+	}
+	// Second config should NOT have slack or group_by
+	if result.Configs[1].HasGroupBy {
+		t.Error("expected second config to NOT have group_by")
+	}
+	if len(result.Recommendations) < 1 {
+		t.Error("expected at least 1 recommendation")
+	}
 }

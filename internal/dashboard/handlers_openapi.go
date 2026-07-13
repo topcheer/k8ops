@@ -3267,6 +3267,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Alertmanager Config & Alert Routing Health Auditor (v16.36) ---
+	add("/api/operations/alertmanager-health", "get", OpenAPIOperation{
+		Summary:     "Alertmanager config & alert routing health auditor",
+		OperationID: "alertmanagerHealth",
+		Tags:        []string{"Operations", "Observability", "Alertmanager"},
+		Description: "Audits Alertmanager configuration: detects Alertmanager installation, scans ConfigMaps for receiver/route config, checks for missing notification channels (slack/pagerduty/email), missing group_by grouping. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Alertmanager health analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"hasAlertmanager": true, "totalReceivers": 5, "healthScore": 88},
+			}),
+		},
+	})
+
 	return spec
 }
 

@@ -95,6 +95,7 @@ var auditRegistry = []auditEndpoint{
 	{"operations:etcd-health", "/api/operations/etcd-health", "etcd health & database pressure monitor"},
 	{"operations:api-load", "/api/operations/api-load", "API server request throughput & load pressure monitor"},
 	{"operations:prom-health", "/api/operations/prom-health", "Prometheus rule health & alert coverage auditor"},
+	{"operations:alertmanager-health", "/api/operations/alertmanager-health", "Alertmanager config & alert routing health auditor"},
 
 	// --- Security ---
 	{"security:audit", "/api/security/audit", "Cluster-wide security scan"},
