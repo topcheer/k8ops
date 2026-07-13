@@ -3307,6 +3307,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Progressive Delivery & Canary Rollout Health Auditor (v16.45) ---
+	add("/api/deployment/progressive-delivery", "get", OpenAPIOperation{
+		Summary:     "Progressive delivery & canary rollout health auditor",
+		OperationID: "progressiveDelivery",
+		Tags:        []string{"Deployment", "Rollout", "Canary"},
+		Description: "Audits progressive delivery posture: detects Argo Rollouts/Flagger installation, identifies Recreate vs RollingUpdate strategies, stalled rollouts, missing progressDeadlineSeconds, high-replica deployments without canary, and ProgressDeadlineExceeded conditions. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Progressive delivery analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalDeployments": 25, "stalledRollouts": 2, "recreateStrategy": 1, "healthScore": 82},
+			}),
+		},
+	})
+
 	// --- Pod Startup Latency & Readiness Performance Auditor (v16.39) ---
 	add("/api/deployment/startup-latency", "get", OpenAPIOperation{
 		Summary:     "Pod startup latency & readiness performance auditor",
