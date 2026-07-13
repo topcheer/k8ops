@@ -3281,6 +3281,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Startup Latency & Readiness Performance Auditor (v16.39) ---
+	add("/api/deployment/startup-latency", "get", OpenAPIOperation{
+		Summary:     "Pod startup latency & readiness performance auditor",
+		OperationID: "startupLatency",
+		Tags:        []string{"Deployment", "Startup", "Performance"},
+		Description: "Audits pod startup latency and readiness probe performance. Measures time from pod creation to ready state, computes p50/p90/p99 percentiles, identifies slow-starting pods (>60s), detects missing readiness/liveness probes, tracks CrashLoopBackOff pods, and correlates init container impact. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Startup latency analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalPods": 50, "avgStartupMs": 15000, "p99StartupMs": 90000, "slowPods": 5, "healthScore": 78},
+			}),
+		},
+	})
+
 	// --- Alertmanager Config & Alert Routing Health Auditor (v16.36) ---
 	add("/api/operations/alertmanager-health", "get", OpenAPIOperation{
 		Summary:     "Alertmanager config & alert routing health auditor",

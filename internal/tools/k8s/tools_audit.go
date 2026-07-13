@@ -128,6 +128,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:opa-compliance", "/api/security/opa-compliance", "OPA/Gatekeeper policy compliance & constraint violation auditor"},
 	{"security:image-vuln", "/api/security/image-vuln", "Container image vulnerability & patch lag auditor"},
 	{"product:cronjob-schedule", "/api/product/cronjob-schedule", "CronJob schedule conflict & resource configuration auditor"},
+	{"deployment:startup-latency", "/api/deployment/startup-latency", "Pod startup latency & readiness performance auditor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
