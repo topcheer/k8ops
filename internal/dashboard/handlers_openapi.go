@@ -3189,6 +3189,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Prometheus Rule Health & Alert Coverage Auditor (v16.29) ---
+	add("/api/operations/prom-health", "get", OpenAPIOperation{
+		Summary:     "Prometheus rule health & alert coverage auditor",
+		OperationID: "promHealth",
+		Tags:        []string{"Operations", "Observability", "Prometheus"},
+		Description: "Audits observability stack: detects Prometheus, Alertmanager, Grafana, metrics-server, kube-state-metrics. Scans PrometheusRule ConfigMaps for alert/recording rules. Identifies namespaces with no alerting coverage. Health score (0-100). Blind spot: Observability Stack.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Observability stack health", map[string]interface{}{
+				"summary": map[string]interface{}{"hasPrometheus": true, "totalRules": 50, "healthScore": 85},
+			}),
+		},
+	})
+
 	return spec
 }
 
