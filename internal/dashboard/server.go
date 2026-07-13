@@ -345,6 +345,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/surge-risk", s.cacheMiddleware(60*time.Second, s.handleSurgeRisk))                     // rolling update risk & surge configuration analyzer
 	mux.HandleFunc("/api/deployment/startup-latency", s.cacheMiddleware(60*time.Second, s.handleStartupLatency))           // pod startup latency & readiness performance auditor
 	mux.HandleFunc("/api/deployment/progressive-delivery", s.cacheMiddleware(60*time.Second, s.handleProgressiveDelivery)) // progressive delivery & canary rollout health auditor
+	mux.HandleFunc("/api/deployment/rs-staleness", s.cacheMiddleware(60*time.Second, s.handleRSStaleness))                 // ReplicaSet staleness & rollout history auditor
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))

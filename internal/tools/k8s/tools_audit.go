@@ -138,6 +138,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:pss-scorecard", "/api/security/pss-scorecard", "Pod Security Standards compliance scorecard"},
 	{"scalability:hpa-performance", "/api/scalability/hpa-performance", "HPA autoscaling performance & scaling event auditor"},
 	{"product:endpoint-dns-health", "/api/product/endpoint-dns-health", "Service endpoint & DNS resolution health auditor"},
+	{"deployment:rs-staleness", "/api/deployment/rs-staleness", "ReplicaSet staleness & rollout history auditor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

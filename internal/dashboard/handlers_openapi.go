@@ -3437,6 +3437,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- ReplicaSet Staleness & Rollout History Auditor (v16.50) ---
+	add("/api/deployment/rs-staleness", "get", OpenAPIOperation{
+		Summary:     "ReplicaSet staleness & rollout history auditor",
+		OperationID: "rsStaleness",
+		Tags:        []string{"Deployment", "ReplicaSet", "Rollout"},
+		Description: "Audits ReplicaSet staleness and rollout history: identifies stale ReplicaSets (replicas=0), revisionHistoryLimit configuration, excess ReplicaSets beyond limit, and old stale ReplicaSets consuming etcd storage. Per-namespace stats, health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("RS staleness analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalDeployments": 25, "staleReplicaSets": 40, "healthScore": 85},
+			}),
+		},
+	})
+
 	return spec
 }
 
