@@ -312,6 +312,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/tenant-pressure", s.cacheMiddleware(60*time.Second, s.handleTenantPressure))                     // multi-tenant resource pressure & quota competition auditor
 	mux.HandleFunc("/api/scalability/node-pool-health", s.cacheMiddleware(60*time.Second, s.handleNodePool))                          // node pool & cluster autoscaler health monitor
 	mux.HandleFunc("/api/scalability/cost-waste", s.cacheMiddleware(120*time.Second, s.handleCostWaste))                              // idle resource cost waste & namespace cost attribution auditor
+	mux.HandleFunc("/api/scalability/node-lifecycle", s.cacheMiddleware(120*time.Second, s.handleNodeLifecycle))                      // node OS patch, kernel drift, GPU resources & node rotation auditor
 	mux.HandleFunc("/api/deployment/image-hygiene", s.cacheMiddleware(60*time.Second, s.handleImageHygiene))                          // container image deployment hygiene analyzer
 	mux.HandleFunc("/api/deployment/revision-history", s.cacheMiddleware(60*time.Second, s.handleRevisionHistory))                    // deployment revision history & rollback readiness
 	mux.HandleFunc("/api/deployment/disruption-impact", s.cacheMiddleware(60*time.Second, s.handleDisruptionImpact))                  // deployment PDB disruption & maintenance impact

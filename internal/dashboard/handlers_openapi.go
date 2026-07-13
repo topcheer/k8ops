@@ -3241,6 +3241,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Node OS Patch & Kernel Version Drift Auditor (v16.34) ---
+	add("/api/scalability/node-lifecycle", "get", OpenAPIOperation{
+		Summary:     "Node OS patch, kernel drift, GPU & node rotation auditor",
+		OperationID: "nodeLifecycle",
+		Tags:        []string{"Scalability", "NodeLifecycle", "Infrastructure"},
+		Description: "Audits node lifecycle: kernel version drift, OS image drift, architecture diversity, GPU resource availability, and node age/rotation needs. Identifies nodes older than 90/180 days. Blind spot: Node Lifecycle coverage. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Node lifecycle analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalNodes": 10, "kernelVersions": 2, "gpuNodes": 1, "healthScore": 85},
+			}),
+		},
+	})
+
 	return spec
 }
 
