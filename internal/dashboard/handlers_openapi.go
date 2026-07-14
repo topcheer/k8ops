@@ -3890,6 +3890,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
+	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
+		Summary:     "Cost budget alert & namespace spending limit auditor",
+		OperationID: "budgetAlert",
+		Tags:        []string{"Scalability", "FinOps", "Cost"},
+		Description: "Audits cost budget alerts and namespace spending limits: per-namespace estimated monthly cost, budget annotation tracking (k8ops.io/monthly-budget), over-budget alerts, near-budget warnings (>80%), namespaces without budgets. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Budget alert analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalNamespaces": 10, "nsOverBudget": 1, "totalEstCost": 500.0},
+				"alerts":  []map[string]interface{}{{"namespace": "app-prod", "estCost": 120.0, "budget": 100.0, "severity": "critical"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
