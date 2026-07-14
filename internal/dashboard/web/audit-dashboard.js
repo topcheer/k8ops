@@ -1,5 +1,5 @@
 // audit-dashboard.js — Unified Audit Dashboard showing all audit endpoints by dimension
-import { apiFetch } from './core.js';
+import { escapeHtml, fetchJSON } from './modules/utils.js';
 
 // All audit endpoints organized by dimension
 const AUDIT_ENDPOINTS = {
@@ -133,7 +133,7 @@ window.loadAuditDashboard = function() {
   for (const [dim, endpoints] of Object.entries(AUDIT_ENDPOINTS)) {
     for (const ep of endpoints) {
       const cardId = btoa(ep.path).replace(/=/g, '');
-      apiFetch(ep.path)
+      fetchJSON(ep.path)
         .then(data => {
           const score = data.healthScore !== undefined ? data.healthScore : null;
           const scoreEl = document.getElementById('score-' + cardId);
@@ -191,7 +191,7 @@ window.loadAuditDetail = function(path, name) {
 
   container.innerHTML = `<div style="text-align:center;padding:40px;color:#8b949e;">Loading ${name}...</div>`;
 
-  apiFetch(path)
+  fetchJSON(path)
     .then(data => {
       let html = `
         <div style="margin-bottom:16px;">
