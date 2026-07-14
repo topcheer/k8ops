@@ -3779,6 +3779,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Endpoint Slice Health & Topology-Aware Routing Auditor (v16.84) ---
+	add("/api/product/endpoint-slice", "get", OpenAPIOperation{
+		Summary:     "Endpoint slice health & topology-aware routing auditor",
+		OperationID: "endpointSlice",
+		Tags:        []string{"Product", "EndpointSlice", "Network"},
+		Description: "Audits endpoint slice health and topology-aware routing: endpoint readiness, topology hints, zone distribution, services without endpoints, not-ready endpoints. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Endpoint slice analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalServices": 10, "servicesWithEndpoints": 9, "readyEndpoints": 25},
+				"gaps":    []map[string]interface{}{{"service": "app-svc", "issue": "No topology hints", "severity": "low"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
