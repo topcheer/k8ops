@@ -3502,6 +3502,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- ArgoCD & Flux GitOps Sync Status Auditor (v16.57) ---
+	add("/api/deployment/gitops-sync", "get", OpenAPIOperation{
+		Summary:     "ArgoCD & Flux GitOps sync status & drift auditor",
+		OperationID: "gitopsSync",
+		Tags:        []string{"Deployment", "GitOps", "ArgoCD", "Flux"},
+		Description: "Audits ArgoCD Application and Flux CRD (GitRepository, Kustomization, HelmRelease) sync status. Detects out-of-sync apps, sync failures, stale apps (>24h), configuration drift, missing auto-sync. Blind spot: GitOps/CD deepening. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("GitOps sync analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"argoCDDetected": true, "fluxDetected": false, "totalApps": 5, "healthyApps": 3, "outOfSyncApps": 1, "syncFailedApps": 1},
+			}),
+		},
+	})
+
 	return spec
 }
 

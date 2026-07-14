@@ -143,6 +143,7 @@ var auditRegistry = []auditEndpoint{
 	{"operations:audit-log-health", "/api/operations/audit-log-health", "Audit log pipeline & event export health auditor"},
 	{"security:sa-token-audit", "/api/security/sa-token-audit", "SA token rotation & access risk auditor"},
 	{"scalability:pv-reclaim", "/api/scalability/pv-reclaim", "PV reclaim policy & storage class waste auditor"},
+	{"deployment:gitops-sync", "/api/deployment/gitops-sync", "ArgoCD & Flux GitOps sync status & drift auditor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
