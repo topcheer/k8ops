@@ -3625,6 +3625,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Service Traffic Policy & Routing Configuration Auditor (v16.72) ---
+	add("/api/product/traffic-policy", "get", OpenAPIOperation{
+		Summary:     "Service traffic policy & routing configuration auditor",
+		OperationID: "trafficPolicy",
+		Tags:        []string{"Product", "Networking", "TrafficRouting"},
+		Description: "Audits service traffic policies and routing configuration: externalTrafficPolicy (Cluster vs Local), session affinity, service type distribution, over-exposed LoadBalancer services, external IPs, publishNotReadyAddresses, ExternalName services, missing selectors. Per-namespace issue breakdown. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Traffic policy analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalServices": 50, "loadBalancer": 5, "extTrafficCluster": 2},
+				"issues":  []map[string]interface{}{{"name": "api-svc", "issueType": "ext-traffic-cluster", "severity": "medium"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
