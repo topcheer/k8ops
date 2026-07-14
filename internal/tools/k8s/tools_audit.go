@@ -164,6 +164,7 @@ var auditRegistry = []auditEndpoint{
 	{"deployment:quota-impact", "/api/deployment/quota-impact", "Deployment resource quota impact & namespace deployment capacity auditor"},
 	{"security:runtime-threat", "/api/security/runtime-threat", "Runtime threat detection & container anomaly auditor"},
 	{"operations:cni-health", "/api/operations/cni-health", "CNI plugin health & network stack configuration auditor"},
+	{"operations:observability-stack", "/api/operations/observability-stack", "Observability stack integration health auditor"},
 	{"scalability:budget-alert", "/api/scalability/budget-alert", "Cost budget alert & namespace spending limit auditor"},
 	{"product:ingress-tls", "/api/product/ingress-tls", "Ingress TLS certificate & HTTPS enforcement auditor"},
 	{"deployment:env-config-drift", "/api/deployment/env-config-drift", "Deployment env config drift & ConfigMap/Secret reference auditor"},

@@ -3890,6 +3890,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Observability Stack Integration Health Auditor (v16.98) ---
+	add("/api/operations/observability-stack", "get", OpenAPIOperation{
+		Summary:     "Observability stack integration health auditor",
+		OperationID: "observabilityStack",
+		Tags:        []string{"Operations", "Observability", "Monitoring"},
+		Description: "Audits the full observability stack across three pillars (metrics, logging, tracing): detects backends (Prometheus, Loki, Jaeger, Tempo, OpenTelemetry), per-pillar agent DaemonSet coverage, backend pod readiness, namespace coverage. Health score (0-100). Blind spot: Observability Stack.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Observability stack analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"healthyPillars": 3, "missingPillars": 0, "totalBackends": 5, "agentCoverage": 100},
+				"pillars": []map[string]interface{}{{"name": "metrics", "status": "healthy", "coverage": 100}},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",
