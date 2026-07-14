@@ -3611,6 +3611,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Spot/Preemptible Instance Readiness Auditor (v16.71) ---
+	add("/api/scalability/spot-readiness", "get", OpenAPIOperation{
+		Summary:     "Spot/preemptible instance readiness & cost optimization auditor",
+		OperationID: "spotReadiness",
+		Tags:        []string{"Scalability", "FinOps", "CostOptimization"},
+		Description: "Audits spot/preemptible node usage and workload readiness: spot node detection (Karpenter, GCE, Azure), spot percentage, estimated cost savings, workloads on spot without tolerations (eviction risk), StatefulSet on spot (data loss risk), interruption handler detection (Node Termination Handler, Karpenter), spot anti-affinity coverage. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Spot readiness analysis", map[string]interface{}{
+				"summary":         map[string]interface{}{"totalNodes": 10, "spotNodes": 3, "spotPercentage": 30, "estimatedSavings": 151.2},
+				"atRiskWorkloads": []map[string]interface{}{{"name": "critical-db", "severity": "high", "reason": "StatefulSet on spot without toleration"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
