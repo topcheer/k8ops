@@ -1571,14 +1571,55 @@ Monitors API server load by analyzing pod density, controller count, event volum
 ### v16.42: Resource Request vs Limit Allocation Efficiency Auditor
 - `GET /api/scalability/alloc-efficiency` — CPU/memory request vs limit ratio analysis, overallocated/underallocated detection, no-requests/no-limits identification, allocation efficiency ratio. Blind spot: Cost/FinOps deepening. 3 unit tests.
 
+## v16.44-v16.55 Additions
+
+### v16.44: External Secrets & Secret Store CSI Health Auditor
+- `GET /api/product/external-secret-health` — External Secrets Operator detection, ExternalSecret/SecretStore CRD scanning, sync status audit (NotSynced/Error/loop detection), SecretStore config validation, missing CSI driver detection. 5 unit tests.
+
+### v16.45: Progressive Delivery & Canary Rollout Health Auditor
+- `GET /api/deployment/progressive-delivery` — Argo Rollouts/Flagger CRD detection, canary/blue-green/rolling strategy analysis, traffic weight analysis, analysis step validation, stuck rollout detection. 4 unit tests.
+
+### v16.46: Metrics Pipeline & kube-state-metrics Health Auditor
+- `GET /api/operations/metrics-pipeline` — metrics-server detection and availability, kube-state-metrics health, Prometheus metric pipeline integrity, missing metric source detection. Blind spot: Observability deepening. 4 unit tests.
+
+### v16.47: Pod Security Standards Compliance Scorecard
+- `GET /api/security/pss-scorecard` — Privileged/Baseline/Restricted compliance audit, namespace PSA mode binding, violation detection (privileged, hostPath, hostPort, capabilities), per-namespace compliance rate. 4 unit tests.
+
+### v16.48: HPA Autoscaling Performance & Scaling Event Auditor
+- `GET /api/scalability/hpa-performance` — Scaling event analysis (Replica change history), oscillation detection, scale-down delay analysis, current vs target utilization gap. 3 unit tests.
+
+### v16.49: Service Endpoint & DNS Resolution Health Auditor
+- `GET /api/product/endpoint-dns-health` — Service backend pod readiness, empty Endpoints detection, CoreDNS config validation and pod health, ExternalName service resolution. 3 unit tests.
+
+### v16.50: ReplicaSet Staleness & Rollout History Auditor
+- `GET /api/deployment/rs-staleness` — Stale ReplicaSet detection, revisionHistoryLimit audit, RS age analysis, orphaned RS detection, rollout history depth. 4 unit tests.
+
+### v16.51: Audit Log Pipeline & Event Export Health Auditor
+- `GET /api/operations/audit-log-health` — Audit log config detection (audit-policy.json), log backend validation, event export pipeline health (Fluentd/Fluent Bit/Loki), Warning event backlog detection. Blind spot: Observability deepening. 4 unit tests.
+
+### v16.52: ServiceAccount Token Rotation & Access Risk Auditor
+- `GET /api/security/sa-token-audit` — Long-lived Secret token detection (>90 days), no-Secret-ref SA detection, automountServiceAccountToken audit, high-privilege SA detection (cluster-admin binding). 5 unit tests.
+
+### v16.53: PV Reclaim Policy & Storage Class Waste Auditor
+- `GET /api/scalability/pv-reclaim` — Reclaim policy audit (Retain/Recycle/Delete), Released PV detection, Failed PV detection, storage class binding analysis, default storage class audit. 3 unit tests.
+
+### v16.54: Frontend Audit Dashboard
+- New "Audit Dashboard" tab showing all 40+ audit endpoints organized by 6 dimensions
+- Health score cards (0-100) with color coding: green/yellow/orange/red
+- Click-through to detailed issues, recommendations, summary stats
+- Parallel API loading, new file: audit-dashboard.js (248 lines)
+
+### v16.55: ConfigMap & Secret Mount Injection Risk Auditor
+- `GET /api/product/config-mount-risk` — Missing ConfigMap reference detection, large ConfigMap detection (>500KB), non-optional mount detection, subPath mount detection (prevents hot-reload), envFrom Secret injection. 3 unit tests.
+
 ---
 
 ## API Summary
 
-**Total: 197 OpenAPI endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance, init container audit, CronJob schedule conflict
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness, replica availability, surge risk, startup latency
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor, etcd health, API load, Prometheus rule health, Alertmanager health, Grafana health
-- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit, forensics, RBAC audit, secret scan, security context drift, OPA/Gatekeeper compliance, image vulnerability, Kyverno compliance
-- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization, node topology, tenant pressure, node pool health, cost waste, node lifecycle, alloc efficiency
+**Total: 208 OpenAPI endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance, init container audit, CronJob schedule conflict, external secret health, endpoint & DNS health, ConfigMap mount risk
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness, replica availability, surge risk, startup latency, progressive delivery, ReplicaSet staleness
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor, etcd health, API load, Prometheus rule health, Alertmanager health, Grafana health, metrics pipeline, audit log health
+- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit, forensics, RBAC audit, secret scan, security context drift, OPA/Gatekeeper compliance, image vulnerability, Kyverno compliance, PSS scorecard, SA token audit
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization, node topology, tenant pressure, node pool health, cost waste, node lifecycle, alloc efficiency, HPA performance, PV reclaim
 - **Infrastructure**: Auth, RBAC, health, version

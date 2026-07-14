@@ -2604,6 +2604,163 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 
 ---
 
+### 92. GET /api/product/external-secret-health — External Secrets 与 Secret Store CSI 健康审计 (v16.44)
+
+审计 External Secrets Operator 和 Secret Store CSI 驱动健康状态。
+
+**检测项：**
+- External Secrets Operator 安装状态
+- ExternalSecret CRD 同步状态（NotSynced/Error/循环检测）
+- SecretStore/ClusterSecretStore 配置验证
+- Secret Store CSI 驱动安装检测
+- 过期/停滞同步检测
+
+**健康评分 (0-100)，5 个单元测试**
+
+---
+
+### 93. GET /api/deployment/progressive-delivery — 渐进式交付与金丝雀发布健康审计 (v16.45)
+
+审计 Argo Rollouts / Flagger 渐进式交付健康状态。
+
+**检测项：**
+- Argo Rollouts / Flagger CRD 检测（dynamic client）
+- 金丝雀/蓝绿/滚动发布策略分析
+- 流量权重配置验证
+- 分析步骤配置验证
+- 卡住的发布检测（长时间无进展）
+
+**健康评分 (0-100)，4 个单元测试**
+
+---
+
+### 94. GET /api/operations/metrics-pipeline — Metrics 管道与 kube-state-metrics 健康审计 (v16.46, 盲区5: 观测性深化)
+
+审计 Kubernetes metrics 管道完整性。
+
+**检测项：**
+- metrics-server 安装检测与可用性
+- kube-state-metrics 部署健康
+- Prometheus 指标管道完整性验证
+- 缺失 metrics 源检测（API server、kubelet、容器）
+
+**健康评分 (0-100)，4 个单元测试**
+
+---
+
+### 95. GET /api/security/pss-scorecard — Pod Security Standards 合规评分卡 (v16.47, 盲区2: 合规深化)
+
+按 Pod Security Standards 三个级别审计集群合规状态。
+
+**检测项：**
+- Privileged/Baseline/Restricted 三个级别合规审计
+- 按 namespace 检查 PSA 模式绑定
+- 违规容器检测（privileged、hostPath、hostPort、capabilities 等）
+- 维度评分汇总，namespace 合规率
+
+**健康评分 (0-100)，4 个单元测试**
+
+---
+
+### 96. GET /api/scalability/hpa-performance — HPA 自动伸缩性能与扩缩容事件审计 (v16.48)
+
+分析 HPA 自动伸缩性能和扩缩容事件历史。
+
+**检测项：**
+- 扩缩容事件分析（基于 Replica 变化历史）
+- 伸缩震荡检测（频繁扩缩缩循环）
+- 缩容延迟分析（长时间未缩容）
+- 当前与目标利用率差距
+
+**健康评分 (0-100)，3 个单元测试**
+
+---
+
+### 97. GET /api/product/endpoint-dns-health — 服务端点与 DNS 解析健康审计 (v16.49)
+
+审计服务端点健康和 DNS 解析状态。
+
+**检测项：**
+- Service 后端 Pod 就绪状态检查
+- Endpoints 空服务检测（无后端 Pod）
+- CoreDNS 配置验证与 Pod 健康
+- ExternalName 服务解析验证
+
+**健康评分 (0-100)，3 个单元测试**
+
+---
+
+### 98. GET /api/deployment/rs-staleness — ReplicaSet 陈旧度与滚动发布历史审计 (v16.50)
+
+审计 ReplicaSet 陈旧度和滚动发布历史深度。
+
+**检测项：**
+- 陈旧 ReplicaSet 检测（非当前 RS 保留过多）
+- revisionHistoryLimit 配置审计
+- RS 年龄分析、孤立 RS 检测
+- 滚动发布历史深度评估
+
+**健康评分 (0-100)，4 个单元测试**
+
+---
+
+### 99. GET /api/operations/audit-log-health — 审计日志管道与事件导出健康审计 (v16.51, 盲区5: 观测性深化)
+
+审计 Kubernetes 审计日志管道和事件导出健康状态。
+
+**检测项：**
+- 审计日志配置检测（audit-policy.json）
+- 日志后端验证（backend: logFile/logBatch）
+- 事件导出管道健康（Fluentd/Fluent Bit/Loki 检测）
+- Warning 事件积压检测
+
+**健康评分 (0-100)，4 个单元测试**
+
+---
+
+### 100. GET /api/security/sa-token-audit — ServiceAccount Token 轮换与访问风险审计 (v16.52)
+
+审计 ServiceAccount Token 轮换和访问风险。
+
+**检测项：**
+- 长期未轮换 Secret token 检测（>90天）
+- 无 Secret 引用的 SA 检测
+- automountServiceAccountToken 配置审计
+- 高权限 SA 检测（cluster-admin 绑定）
+
+**健康评分 (0-100)，5 个单元测试**
+
+---
+
+### 101. GET /api/scalability/pv-reclaim — PV 回收策略与存储类浪费审计 (v16.53)
+
+审计 PersistentVolume 回收策略和存储类浪费。
+
+**检测项：**
+- 回收策略审计（Retain/Recycle/Delete）
+- Released 状态 PV 检测（可回收空间）
+- Failed 状态 PV 检测
+- 存储类绑定分析、默认存储类审计
+
+**健康评分 (0-100)，3 个单元测试**
+
+---
+
+### 102. GET /api/product/config-mount-risk — ConfigMap 与 Secret 挂载注入风险审计 (v16.55)
+
+审计 ConfigMap 和 Secret 挂载注入风险。
+
+**检测项：**
+- 缺失 ConfigMap 引用检测
+- 大型 ConfigMap 检测（>500KB）
+- 非可选挂载检测（optional: false）
+- subPath 挂载检测（阻止热更新）
+- envFrom Secret 注入检测
+
+**按 namespace 统计，健康评分 (0-100)，3 个单元测试**
+
+---
+
 ## API 端点总览
 
 | # | 端点 | 维度 | 版本 | 说明 |
@@ -2711,5 +2868,16 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 129 | /api/operations/grafana-health | Operations | v16.40 | Grafana Dashboard 可用性与数据源健康审计 |
 | 130 | /api/security/kyverno-compliance | Security | v16.41 | Kyverno 策略合规与集群策略审计 |
 | 131 | /api/scalability/alloc-efficiency | Scalability | v16.42 | 资源请求与限制分配效率审计 |
+| 132 | /api/product/external-secret-health | Product | v16.44 | External Secrets 与 Secret Store CSI 健康审计 |
+| 133 | /api/deployment/progressive-delivery | Deployment | v16.45 | 渐进式交付与金丝雀发布健康审计 |
+| 134 | /api/operations/metrics-pipeline | Operations | v16.46 | Metrics 管道与 kube-state-metrics 健康审计 |
+| 135 | /api/security/pss-scorecard | Security | v16.47 | Pod Security Standards 合规评分卡 |
+| 136 | /api/scalability/hpa-performance | Scalability | v16.48 | HPA 自动伸缩性能与扩缩容事件审计 |
+| 137 | /api/product/endpoint-dns-health | Product | v16.49 | 服务端点与 DNS 解析健康审计 |
+| 138 | /api/deployment/rs-staleness | Deployment | v16.50 | ReplicaSet 陈旧度与滚动发布历史审计 |
+| 139 | /api/operations/audit-log-health | Operations | v16.51 | 审计日志管道与事件导出健康审计 |
+| 140 | /api/security/sa-token-audit | Security | v16.52 | ServiceAccount Token 轮换与访问风险审计 |
+| 141 | /api/scalability/pv-reclaim | Scalability | v16.53 | PV 回收策略与存储类浪费审计 |
+| 142 | /api/product/config-mount-risk | Product | v16.55 | ConfigMap 与 Secret 挂载注入风险审计 |
 
-**总计：197 个 OpenAPI 端点**
+**总计：208 个 OpenAPI 端点，214 个 Dashboard API 端点**

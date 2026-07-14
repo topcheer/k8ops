@@ -1119,12 +1119,140 @@
 
 ---
 
+## v16.44-v16.55 (2026-07-14)
+
+### v16.44: External Secrets 与 Secret Store CSI 健康审计 (维度1: 产品)
+
+**新增 API：**
+- `GET /api/product/external-secret-health` — External Secrets 与 Secret Store CSI 健康审计
+  - External Secrets Operator 安装检测
+  - ExternalSecret/SecretStore CRD 扫描（dynamic client）
+  - 同步状态审计（NotSynced/Error/循环检测）
+  - SecretStore 配置验证、缺失 CSI 驱动检测
+  - 健康评分（0-100），5 个单元测试
+
+### v16.45: 渐进式交付与金丝雀发布健康审计 (维度2: 部署)
+
+**新增 API：**
+- `GET /api/deployment/progressive-delivery` — 渐进式交付与金丝雀发布健康审计
+  - Argo Rollouts / Flagger CRD 检测（dynamic client）
+  - 金丝雀/蓝绿/滚动发布策略分析
+  - 流量权重分析、分析步骤验证
+  - 卡住的发布检测（长时间无进展）
+  - 健康评分（0-100），4 个单元测试
+
+### v16.46: Metrics Pipeline 与 kube-state-metrics 健康审计 (维度3: 运维, 盲区5: 观测性深化)
+
+**新增 API：**
+- `GET /api/operations/metrics-pipeline` — Metrics 管道与 kube-state-metrics 健康审计
+  - metrics-server 安装检测与可用性
+  - kube-state-metrics 部署健康
+  - Prometheus 指标管道完整性验证
+  - 缺失 metrics 源检测（API server、kubelet、容器）
+  - 健康评分（0-100），4 个单元测试
+
+### v16.47: Pod Security Standards 合规评分卡 (维度4: 安全, 盲区2: 合规深化)
+
+**新增 API：**
+- `GET /api/security/pss-scorecard` — Pod Security Standards 合规评分卡
+  - Privileged/Baseline/Restricted 三个级别合规审计
+  - 按 namespace 检查 PSA 模式绑定
+  - 违规容器检测（privileged、hostPath、hostPort、capabilities 等）
+  - 维度评分汇总，namespace 合规率
+  - 健康评分（0-100），4 个单元测试
+
+### v16.48: HPA 自动伸缩性能与扩缩容事件审计 (维度6: 可扩展性)
+
+**新增 API：**
+- `GET /api/scalability/hpa-performance` — HPA 自动伸缩性能与扩缩容事件审计
+  - 扩缩容事件分析（基于 Replica 变化历史）
+  - 伸缩震荡检测（频繁扩缩缩循环）
+  - 缩容延迟分析（长时间未缩容）
+  - 当前与目标利用率差距
+  - 健康评分（0-100），3 个单元测试
+
+### v16.49: 服务端点与 DNS 解析健康审计 (维度1: 产品)
+
+**新增 API：**
+- `GET /api/product/endpoint-dns-health` — 服务端点与 DNS 解析健康审计
+  - Service 后端 Pod 就绪状态检查
+  - Endpoints 空服务检测（无后端 Pod）
+  - CoreDNS 配置验证与 Pod 健康
+  - DNS 解析测试（基于 CoreDNS Pod 状态）
+  - ExternalName 服务解析验证
+  - 健康评分（0-100），3 个单元测试
+
+### v16.50: ReplicaSet 陈旧度与滚动发布历史审计 (维度2: 部署)
+
+**新增 API：**
+- `GET /api/deployment/rs-staleness` — ReplicaSet 陈旧度与滚动发布历史审计
+  - 陈旧 ReplicaSet 检测（非当前 RS 保留过多）
+  - revisionHistoryLimit 配置审计
+  - RS 年龄分析、孤立 RS 检测
+  - 滚动发布历史深度评估
+  - 健康评分（0-100），4 个单元测试
+
+### v16.51: 审计日志管道与事件导出健康审计 (维度3: 运维, 盲区5: 观测性深化)
+
+**新增 API：**
+- `GET /api/operations/audit-log-health` — 审计日志管道与事件导出健康审计
+  - 审计日志配置检测（audit-policy.json）
+  - 日志后端验证（backend: logFile/logBatch）
+  - 事件导出管道健康（Fluentd/Fluent Bit/Loki 检测）
+  - Warning 事件积压检测
+  - 健康评分（0-100），4 个单元测试
+
+### v16.52: ServiceAccount Token 轮换与访问风险审计 (维度4: 安全)
+
+**新增 API：**
+- `GET /api/security/sa-token-audit` — ServiceAccount Token 轮换与访问风险审计
+  - 长期未轮换 Secret token 检测（>90天）
+  - 无 Secret 引用的 SA 检测
+  - automountServiceAccountToken 配置审计
+  - 高权限 SA 检测（cluster-admin 绑定）
+  - 健康评分（0-100），5 个单元测试
+
+### v16.53: PV 回收策略与存储类浪费审计 (维度6: 可扩展性)
+
+**新增 API：**
+- `GET /api/scalability/pv-reclaim` — PV 回收策略与存储类浪费审计
+  - 回收策略审计（Retain/Recycle/Delete）
+  - Released 状态 PV 检测（可回收空间）
+  - Failed 状态 PV 检测
+  - 存储类绑定分析、默认存储类审计
+  - 健康评分（0-100），3 个单元测试
+
+### v16.54: 前端审计仪表盘 — 统一审计端点视图 (维度3: 运维)
+
+**前端增强：**
+- 新增 "Audit Dashboard" 标签页，展示所有 40+ 审计端点
+- 健康评分卡片（0-100），颜色编码：绿/黄/橙/红
+- 按六大维度组织，点击查看详细问题、建议和统计
+- 并行 API 加载，快速响应
+- 新文件: `audit-dashboard.js`（248 行）
+- 接入 `index.html`、`core.js`、`main.js`
+
+### v16.55: ConfigMap 与 Secret 挂载注入风险审计 (维度1: 产品)
+
+**新增 API：**
+- `GET /api/product/config-mount-risk` — ConfigMap 与 Secret 挂载注入风险审计
+  - 缺失 ConfigMap 引用检测
+  - 大型 ConfigMap 检测（>500KB）
+  - 非可选挂载检测（optional: false）
+  - subPath 挂载检测（阻止热更新）
+  - envFrom Secret 注入检测
+  - 按 namespace 统计，健康评分（0-100），3 个单元测试
+
+---
+
 ## 统计信息
 
 | 指标 | 数值 |
 |------|------|
-| OpenAPI 端点 | 197 |
-| 单元测试 | 1173 |
+| Dashboard API 端点 | 214 |
+| OpenAPI 端点 | 208 |
+| 单元测试 | 1782 |
+| Agent LLM Tools | 41 |
 | 文档 | 12 篇 (7 种语言) |
 | i18n 文件 | 76 个 |
 | Release Assets | 17 个 |
