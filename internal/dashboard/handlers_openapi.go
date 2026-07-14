@@ -3932,6 +3932,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Node Drain & Rotation Readiness Auditor (v17.00) ---
+	add("/api/scalability/node-drain-readiness", "get", OpenAPIOperation{
+		Summary:     "Node drain & rotation readiness auditor",
+		OperationID: "nodeDrainReadiness",
+		Tags:        []string{"Scalability", "NodeLifecycle", "Maintenance"},
+		Description: "Audits per-node drain readiness for safe node rotation: identifies StatefulSet pods (PVC sticky), bare pods (will be lost), pods with local storage (data loss risk), PDB-protected pods, DaemonSet pods (won't move), cordoned nodes, single-replica workloads. Per-node drain safety classification (safe/risky/dangerous/cordoned). Health score (0-100). Blind spot: Node Lifecycle.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Node drain readiness analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalNodes": 5, "safeToDrain": 3, "riskyToDrain": 1, "dangerousToDrain": 1},
+				"byNode":  []map[string]interface{}{{"nodeName": "node-1", "status": "safe", "drainable": true, "podCount": 12}},
+			}),
+		},
+	})
+
 	// --- Ingress TLS Certificate & HTTPS Enforcement Auditor (v16.95) ---
 	add("/api/product/ingress-tls", "get", OpenAPIOperation{
 		Summary:     "Ingress TLS certificate & HTTPS enforcement auditor",
