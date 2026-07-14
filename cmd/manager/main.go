@@ -393,8 +393,10 @@ func main() {
 				authCfg.DBPath = ":memory:"
 				authn, err = auth.New(authCfg)
 				if err != nil {
-					logger.Error("unable to initialize auth even with in-memory fallback", "error", err)
-					dash.SetAuthRequired(err.Error()) // Fail-closed: block API access
+					// Final fallback: run without auth (API accessible but no login required)
+					logger.Error("unable to initialize auth even with in-memory fallback, running in no-auth mode", "error", err)
+					logger.Warn("auth: SQLite unavailable — API will run without authentication. Set AUTH_DB_DRIVER=postgres or mysql for production.")
+					// Don't call SetAuthRequired — this allows API access without auth
 				} else {
 					dash.SetAuthenticator(authn)
 					logger.Warn("auth: running with in-memory database (users will need to re-login after pod restart)")
