@@ -3751,6 +3751,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- PSS Enforcement Gap & Workload Hardening Auditor (v16.82) ---
+	add("/api/security/pss-hardening", "get", OpenAPIOperation{
+		Summary:     "PSS enforcement gap & workload hardening auditor",
+		OperationID: "pssHardening",
+		Tags:        []string{"Security", "Hardening", "PSS"},
+		Description: "Audits pod security standards enforcement gaps and workload hardening: privileged containers, allowPrivilegeEscalation, hostPID/Network/IPC, seccomp profile coverage, AppArmor profile, readOnlyRootFilesystem, added/dropped capabilities. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("PSS hardening analysis", map[string]interface{}{
+				"summary":        map[string]interface{}{"totalPods": 15, "privilegedContainers": 1, "podsNoSeccomp": 5},
+				"privilegedPods": []map[string]interface{}{{"podName": "app-1", "container": "c1", "issue": "Container runs in privileged mode", "severity": "critical"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
