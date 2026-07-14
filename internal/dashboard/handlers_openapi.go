@@ -3737,6 +3737,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Rollout Blocker & Pod Condition Auditor (v16.81) ---
+	add("/api/deployment/rollout-blocker", "get", OpenAPIOperation{
+		Summary:     "Deployment rollout blocker & pod condition auditor",
+		OperationID: "rolloutBlocker",
+		Tags:        []string{"Deployment", "Rollout", "PodHealth"},
+		Description: "Audits deployment rollout blockers and pod conditions: ProgressDeadlineExceeded, no updated replicas, no ready replicas, CrashLoopBackOff, ImagePullBackOff, OOMKilled, Pending pods. Identifies blocked rollouts, degraded deployments, and pod-level issues. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Rollout blocker analysis", map[string]interface{}{
+				"summary":         map[string]interface{}{"totalDeployments": 10, "blockedRollouts": 1, "podsCrashLooping": 2},
+				"blockedRollouts": []map[string]interface{}{{"namespace": "app-prod", "name": "api-deploy", "blocker": "ProgressDeadlineExceeded", "severity": "critical"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
