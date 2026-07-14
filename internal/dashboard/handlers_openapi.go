@@ -3863,6 +3863,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Runtime Threat Detection & Container Anomaly Auditor (v16.92) ---
+	add("/api/security/runtime-threat", "get", OpenAPIOperation{
+		Summary:     "Runtime threat detection & container anomaly auditor",
+		OperationID: "runtimeThreat",
+		Tags:        []string{"Security", "RuntimeSecurity", "ThreatDetection"},
+		Description: "Audits runtime threat detection and container anomalies: Falco/Tracee/Tetragon/Cilium detection, detector health, privileged containers (runtime risk), high restart pods, OOMKilled containers, namespace coverage gaps. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Runtime threat analysis", map[string]interface{}{
+				"summary":       map[string]interface{}{"hasFalco": true, "totalDetectors": 1, "privilegedPods": 2},
+				"anomalousPods": []map[string]interface{}{{"podName": "app-1", "severity": "high"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
