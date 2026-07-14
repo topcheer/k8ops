@@ -244,6 +244,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/grafana-health", s.cacheMiddleware(120*time.Second, s.handleGrafanaHealth))                       // Grafana dashboard availability & datasource health auditor
 	mux.HandleFunc("/api/operations/metrics-pipeline", s.cacheMiddleware(120*time.Second, s.handleMetricsPipeline))                   // metrics pipeline & kube-state-metrics health auditor
 	mux.HandleFunc("/api/operations/audit-log-health", s.cacheMiddleware(120*time.Second, s.handleAuditLogHealth))                    // audit log pipeline & event export health auditor
+	mux.HandleFunc("/api/operations/alert-noise", s.cacheMiddleware(30*time.Second, s.handleAlertNoise))                              // alert noise & fatigue detection auditor
 	mux.HandleFunc("/api/networking/health", s.cacheMiddleware(30*time.Second, s.handleNetworkingHealth))                             // service & endpoint health
 	mux.HandleFunc("/api/storage/health", s.cacheMiddleware(60*time.Second, s.handleStorageHealth))                                   // PV/PVC storage health
 	mux.HandleFunc("/api/deployments/audit", s.cacheMiddleware(60*time.Second, s.handleDeployAudit))                                  // deployment config audit

@@ -3515,6 +3515,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Alert Noise & Fatigue Detection Auditor (v16.58) ---
+	add("/api/operations/alert-noise", "get", OpenAPIOperation{
+		Summary:     "Alert noise & fatigue detection auditor",
+		OperationID: "alertNoise",
+		Tags:        []string{"Operations", "Observability", "Alertmanager"},
+		Description: "Detects alert noise patterns: noisy alerts (>10 events/24h), flapping alerts (repeated fire/resolve cycles), alert storms (>20 events in 5min), stale silences (>7d), noise ratio. Blind spot: Observability deepening. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Alert noise analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalAlertEvents": 100, "noisyAlerts": 3, "flappingAlerts": 2, "alertStorms": 1},
+			}),
+		},
+	})
+
 	return spec
 }
 

@@ -144,6 +144,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:sa-token-audit", "/api/security/sa-token-audit", "SA token rotation & access risk auditor"},
 	{"scalability:pv-reclaim", "/api/scalability/pv-reclaim", "PV reclaim policy & storage class waste auditor"},
 	{"deployment:gitops-sync", "/api/deployment/gitops-sync", "ArgoCD & Flux GitOps sync status & drift auditor"},
+	{"operations:alert-noise", "/api/operations/alert-noise", "Alert noise & fatigue detection auditor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
