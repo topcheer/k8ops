@@ -3835,6 +3835,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Cert-Manager Health & Certificate Renewal Pipeline Auditor (v16.90) ---
+	add("/api/product/cert-manager", "get", OpenAPIOperation{
+		Summary:     "Cert-manager health & certificate renewal pipeline auditor",
+		OperationID: "certManager",
+		Tags:        []string{"Product", "CertManager", "TLS"},
+		Description: "Audits cert-manager installation and certificate renewal pipeline: cert-manager detection, TLS secret scanning, certificate expiry tracking (<30d expiring, expired), cert-manager-managed vs manual certificates, issuer readiness. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Cert-manager analysis", map[string]interface{}{
+				"summary":      map[string]interface{}{"certManagerInstalled": true, "totalCertificates": 5, "expiringSoon": 1, "expired": 0},
+				"certificates": []map[string]interface{}{{"name": "tls-cert", "namespace": "app-prod", "status": "valid", "daysUntilExpiry": 90}},
+			}),
+		},
+	})
+
 	return spec
 }
 
