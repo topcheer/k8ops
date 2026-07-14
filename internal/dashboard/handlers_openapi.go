@@ -3681,6 +3681,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Container Runtime Class & OCI Image Compliance Auditor (v16.76) ---
+	add("/api/product/runtime-class", "get", OpenAPIOperation{
+		Summary:     "Container runtime class & OCI image compliance auditor",
+		OperationID: "runtimeClass",
+		Tags:        []string{"Product", "RuntimeClass", "ImageCompliance"},
+		Description: "Audits container runtime class usage and OCI image compliance: RuntimeClass definitions (kata, gVisor), node container runtime (containerd, cri-o), pod runtimeClassName assignment, :latest image tags, missing digest references, untrusted registry images. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Runtime class & image compliance analysis", map[string]interface{}{
+				"summary":         map[string]interface{}{"totalRuntimeClasses": 1, "podsUsingRuntime": 5, "imagesWithLatest": 3},
+				"imageCompliance": []map[string]interface{}{{"podName": "app-1", "container": "web", "image": "nginx:latest", "issue": "Using :latest tag", "severity": "medium"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
