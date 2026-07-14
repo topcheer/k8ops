@@ -148,6 +148,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:supply-chain", "/api/security/supply-chain", "Supply chain & SBOM coverage security auditor"},
 	{"security:quota-security", "/api/security/quota-security", "Resource quota & limit range security auditor"},
 	{"security:policy-drift", "/api/security/policy-drift", "Security policy drift & baseline configuration auditor"},
+	{"operations:log-pipeline", "/api/operations/log-pipeline", "Log aggregation & forwarding pipeline health auditor"},
 	{"product:pv-access", "/api/product/pv-access", "PV access mode & multi-attach risk auditor"},
 	{"deployment:dora-metrics", "/api/deployment/dora-metrics", "DORA metrics: deployment frequency, lead time, MTTR, change failure rate"},
 	{"operations:apf-audit", "/api/operations/apf-audit", "API Priority & Fairness configuration auditor"},

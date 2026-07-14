@@ -278,6 +278,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/supply-chain", s.cacheMiddleware(120*time.Second, s.handleSupplyChain))                             // supply chain & SBOM coverage security auditor
 	mux.HandleFunc("/api/security/quota-security", s.cacheMiddleware(120*time.Second, s.handleQuotaSecurity))                         // resource quota & limit range security auditor
 	mux.HandleFunc("/api/security/policy-drift", s.cacheMiddleware(120*time.Second, s.handlePolicyDrift))                             // security policy drift & baseline configuration auditor
+	mux.HandleFunc("/api/operations/log-pipeline", s.cacheMiddleware(120*time.Second, s.handleLogPipeline))                           // log aggregation & forwarding pipeline health auditor
 	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                                   // resource dependency graph & blast radius
 	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))                            // topology spread compliance
 	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                               // workload staleness & release cadence

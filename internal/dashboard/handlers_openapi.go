@@ -3667,6 +3667,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Log Aggregation & Forwarding Pipeline Health Auditor (v16.75) ---
+	add("/api/operations/log-pipeline", "get", OpenAPIOperation{
+		Summary:     "Log aggregation & forwarding pipeline health auditor",
+		OperationID: "logPipeline",
+		Tags:        []string{"Operations", "Logging", "Observability"},
+		Description: "Audits log aggregation pipeline health: log collectors (Fluent Bit, Fluentd, Vector, Promtail, Filebeat) as DaemonSets/Deployments, collector readiness, log forwarding ConfigMaps with output/filter configs, storage backends (Elasticsearch, Loki, Kafka, etc.), namespace coverage gaps. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Log pipeline analysis", map[string]interface{}{
+				"summary":    map[string]interface{}{"totalCollectors": 2, "readyCollectors": 2, "hasFluentBit": true},
+				"collectors": []map[string]interface{}{{"name": "fluent-bit", "kind": "DaemonSet", "status": "healthy"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
