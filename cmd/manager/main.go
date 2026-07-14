@@ -387,8 +387,18 @@ func main() {
 
 			authn, err = auth.New(authCfg)
 			if err != nil {
-				logger.Error("unable to initialize auth", "error", err)
-				dash.SetAuthRequired(err.Error()) // Fail-closed: block API access
+				logger.Error("unable to initialize auth with primary config", "error", err)
+				// Fallback: try in-memory SQLite (avoids fail-closed when /data is not writable)
+				logger.Info("auth: falling back to in-memory SQLite (auth state will not persist across restarts)")
+				authCfg.DBPath = ":memory:"
+				authn, err = auth.New(authCfg)
+				if err != nil {
+					logger.Error("unable to initialize auth even with in-memory fallback", "error", err)
+					dash.SetAuthRequired(err.Error()) // Fail-closed: block API access
+				} else {
+					dash.SetAuthenticator(authn)
+					logger.Warn("auth: running with in-memory database (users will need to re-login after pod restart)")
+				}
 			} else {
 				dash.SetAuthenticator(authn)
 				// Wire up RBAC syncer for namespace-scoped users
