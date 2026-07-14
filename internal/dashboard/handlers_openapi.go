@@ -3877,6 +3877,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Secret Management Posture & External Secret Integration Auditor (v16.99) ---
+	add("/api/security/secret-posture", "get", OpenAPIOperation{
+		Summary:     "Secret management posture & external secret integration auditor",
+		OperationID: "secretPosture",
+		Tags:        []string{"Security", "Secrets", "Compliance"},
+		Description: "Audits secret management posture: External Secrets Operator, Sealed Secrets, SOPS, HashiCorp Vault detection. Per-secret managed/unmanaged classification, plaintext secret detection, empty/large secrets, SOPS encryption annotations, namespace risk levels. Integration status (integrated/partial/missing). Health score (0-100). Blind spot: Compliance/Governance.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Secret posture analysis", map[string]interface{}{
+				"summary":     map[string]interface{}{"totalSecrets": 50, "managedSecrets": 30, "plaintextSecrets": 5},
+				"integration": map[string]interface{}{"externalSecretsOperator": true, "status": "partial"},
+			}),
+		},
+	})
+
 	// --- CNI Plugin Health & Network Stack Configuration Auditor (v16.93) ---
 	add("/api/operations/cni-health", "get", OpenAPIOperation{
 		Summary:     "CNI plugin health & network stack configuration auditor",

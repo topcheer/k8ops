@@ -163,6 +163,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:cert-manager", "/api/product/cert-manager", "Cert-manager health & certificate renewal pipeline auditor"},
 	{"deployment:quota-impact", "/api/deployment/quota-impact", "Deployment resource quota impact & namespace deployment capacity auditor"},
 	{"security:runtime-threat", "/api/security/runtime-threat", "Runtime threat detection & container anomaly auditor"},
+	{"security:secret-posture", "/api/security/secret-posture", "Secret management posture & external secret integration auditor"},
 	{"operations:cni-health", "/api/operations/cni-health", "CNI plugin health & network stack configuration auditor"},
 	{"operations:observability-stack", "/api/operations/observability-stack", "Observability stack integration health auditor"},
 	{"scalability:budget-alert", "/api/scalability/budget-alert", "Cost budget alert & namespace spending limit auditor"},

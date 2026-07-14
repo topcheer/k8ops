@@ -292,6 +292,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/cert-manager", s.cacheMiddleware(120*time.Second, s.handleCertManager))                              // cert-manager health & certificate renewal pipeline auditor
 	mux.HandleFunc("/api/deployment/quota-impact", s.cacheMiddleware(120*time.Second, s.handleDeployQuota))                           // deployment resource quota impact & namespace deployment capacity auditor
 	mux.HandleFunc("/api/security/runtime-threat", s.cacheMiddleware(120*time.Second, s.handleRuntimeThreat))                         // runtime threat detection & container anomaly auditor
+	mux.HandleFunc("/api/security/secret-posture", s.cacheMiddleware(120*time.Second, s.handleSecretPosture))                         // secret management posture & external secret integration auditor
 	mux.HandleFunc("/api/operations/cni-health", s.cacheMiddleware(120*time.Second, s.handleCNIHealth))                               // CNI plugin health & network stack configuration auditor
 	mux.HandleFunc("/api/operations/observability-stack", s.cacheMiddleware(120*time.Second, s.handleObservabilityStack))             // observability stack integration health auditor
 	mux.HandleFunc("/api/scalability/budget-alert", s.cacheMiddleware(120*time.Second, s.handleBudgetAlert))                          // cost budget alert & namespace spending limit auditor
