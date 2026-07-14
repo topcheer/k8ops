@@ -56,7 +56,12 @@ func NewStore(driver, dsn string) (*Store, error) {
 		if dsn == "" {
 			dsn = "/data/k8ops.db"
 		}
-		dialector = sqlite.Open(dsn + "?_pragma=journal_mode(WAL)&_pragma=busy_timeout(5000)")
+		// For in-memory SQLite, don't append pragma query params (breaks :memory: DSN)
+		if dsn == ":memory:" {
+			dialector = sqlite.Open(dsn)
+		} else {
+			dialector = sqlite.Open(dsn + "?_pragma=journal_mode(WAL)&_pragma=busy_timeout(5000)")
+		}
 	case "mysql":
 		dialector = mysql.Open(dsn)
 	case "postgres", "postgresql", "pg":
