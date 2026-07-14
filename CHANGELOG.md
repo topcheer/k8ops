@@ -4,6 +4,41 @@
 
 ---
 
+## v16.78-v16.88 (2026-07-14)
+
+### v16.78: API 文档同步 (维度5: 文档)
+- CHANGELOG + API.md + en/API.md 同步 v16.70-v16.77
+
+### v16.79: VPA 配置与资源建议质量审计 (维度6: 可扩展性)
+- `GET /api/scalability/vpa-audit` — VPA 安装检测、更新模式统计、OOM 工作负载识别、覆盖缺口
+
+### v16.80: 服务网格流量管理与熔断器健康审计 (维度1: 产品, 盲区3: 网络网格)
+- `GET /api/product/mesh-traffic` — Istio/Linkerd 检测、sidecar 注入覆盖率、VirtualService retry/timeout
+
+### v16.81: 部署滚动更新阻塞与 Pod 条件审计 (维度2: 部署)
+- `GET /api/deployment/rollout-blocker` — ProgressDeadlineExceeded、CrashLoopBackOff、ImagePullBackOff、OOMKilled
+
+### v16.82: PSS 强制执行差距与工作负载加固审计 (维度4: 安全)
+- `GET /api/security/pss-hardening` — 特权容器、allowPrivilegeEscalation、hostPID/Network/IPC、seccomp/AppArmor
+
+### v16.83: 节点状况趋势与硬件故障预测 (维度3: 运维)
+- `GET /api/operations/node-trend` — MemoryPressure、DiskPressure、PIDPressure、陈旧心跳、风险分级
+
+### v16.84: Endpoint Slice 健康与拓扑感知路由审计 (维度1: 产品)
+- `GET /api/product/endpoint-slice` — 端点就绪状态、拓扑提示、zone 分布、无端点服务
+
+### v16.85: 滚动更新风险与 Surge 配置分析器 (维度2: 部署)
+- `GET /api/deployment/surge-risk` — 高 surge/maxUnavailable、Recreate 策略风险、rollout 卡住检测
+
+### v16.86: 修复重复路由注册 (维度2: 部署)
+- 修复 surge-risk 重复路由注册导致 CrashLoopBackOff
+
+### v16.87: 资源饱和与 CPU/内存节流风险预测 (维度6: 可扩展性)
+- `GET /api/scalability/saturation` — 无限制 Pod、高 CPU limit/request 比率、节流风险、OOM 风险
+
+### v16.88: 容器镜像仓库限速与拉取可靠性审计 (维度3: 运维)
+- `GET /api/operations/registry-rate-limit` — Docker Hub 匿名限速、私有仓库认证、重复镜像、无 pull secrets
+
 ## v16.70-v16.77 (2026-07-14)
 
 ### v16.70: API 文档更新 v16.66-v16.69 (维度5: 文档)

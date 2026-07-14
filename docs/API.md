@@ -2891,5 +2891,14 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 152 | /api/operations/log-pipeline | Operations | v16.75 | 日志聚合与转发管道健康审计 |
 | 153 | /api/product/runtime-class | Product | v16.76 | 容器运行时类与 OCI 镜像合规审计 |
 | 154 | /api/deployment/image-pull-audit | Deployment | v16.77 | 镜像拉取策略与密钥管理审计 |
+| 155 | /api/scalability/vpa-audit | Scalability | v16.79 | VPA 配置与资源建议质量审计 |
+| 156 | /api/product/mesh-traffic | Product | v16.80 | 服务网格流量管理与熔断器健康审计 |
+| 157 | /api/deployment/rollout-blocker | Deployment | v16.81 | 部署滚动更新阻塞与 Pod 条件审计 |
+| 158 | /api/security/pss-hardening | Security | v16.82 | PSS 强制执行差距与工作负载加固审计 |
+| 159 | /api/operations/node-trend | Operations | v16.83 | 节点状况趋势与硬件故障预测 |
+| 160 | /api/product/endpoint-slice | Product | v16.84 | Endpoint Slice 健康与拓扑感知路由审计 |
+| 161 | /api/deployment/surge-risk | Deployment | v16.85 | 滚动更新风险与 Surge 配置分析器 |
+| 162 | /api/scalability/saturation | Scalability | v16.87 | 资源饱和与 CPU/内存节流风险预测 |
+| 163 | /api/operations/registry-rate-limit | Operations | v16.88 | 容器镜像仓库限速与拉取可靠性审计 |
 
-**总计：221 个 OpenAPI 端点，227 个 Dashboard API 端点**
+**总计：229 个 OpenAPI 端点，236 个 Dashboard API 端点**
