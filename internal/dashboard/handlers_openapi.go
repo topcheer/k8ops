@@ -3709,6 +3709,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- VPA Configuration & Resource Recommendation Quality Auditor (v16.79) ---
+	add("/api/scalability/vpa-audit", "get", OpenAPIOperation{
+		Summary:     "VPA configuration & resource recommendation quality auditor",
+		OperationID: "vpaAudit",
+		Tags:        []string{"Scalability", "VPA", "Autoscaling"},
+		Description: "Audits Vertical Pod Autoscaler configuration and resource recommendation quality: VPA installation status, VPA objects and update modes (Auto/Off/Initial/Recreate), workloads with OOM kills that could benefit from VPA, target workload coverage gaps, resource recommendation availability. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("VPA audit analysis", map[string]interface{}{
+				"summary":         map[string]interface{}{"totalVPAs": 3, "vpasWithRecommendations": 2, "vpaNotInstalled": false},
+				"targetWorkloads": []map[string]interface{}{{"namespace": "app-prod", "kind": "Deployment", "name": "app-api", "hasOOMKill": true, "severity": "high"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
