@@ -3877,6 +3877,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- CNI Plugin Health & Network Stack Configuration Auditor (v16.93) ---
+	add("/api/operations/cni-health", "get", OpenAPIOperation{
+		Summary:     "CNI plugin health & network stack configuration auditor",
+		OperationID: "cniHealth",
+		Tags:        []string{"Operations", "CNI", "Network"},
+		Description: "Audits CNI plugin health and network stack: CNI type detection (Calico/Cilium/Flannel/Weave), per-node PodCIDR assignment, network unavailable conditions, CNI agent pod readiness, namespace coverage. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("CNI health analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"cniType": "calico", "totalNodes": 5, "healthyNodes": 4, "nodesWithoutCNI": 1},
+			}),
+		},
+	})
+
 	return spec
 }
 
