@@ -3528,6 +3528,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Supply Chain & SBOM Coverage Auditor (v16.59) ---
+	add("/api/security/supply-chain", "get", OpenAPIOperation{
+		Summary:     "Supply chain & SBOM coverage security auditor",
+		OperationID: "supplyChain",
+		Tags:        []string{"Security", "SupplyChain", "Compliance"},
+		Description: "Audits container image supply chain security: digest pinning, trusted registries, image signing, SBOM/provenance annotations, latest tag usage, stale images. Blind spot: Compliance/Governance deepening. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Supply chain analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalImages": 50, "usingDigest": 15, "usingLatestTag": 5, "unsignedImages": 30},
+			}),
+		},
+	})
+
 	return spec
 }
 
