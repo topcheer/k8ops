@@ -3653,6 +3653,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Security Policy Drift & Baseline Configuration Auditor (v16.74) ---
+	add("/api/security/policy-drift", "get", OpenAPIOperation{
+		Summary:     "Security policy drift & baseline configuration auditor",
+		OperationID: "policyDrift",
+		Tags:        []string{"Security", "PolicyDrift", "Compliance"},
+		Description: "Audits security policy drift and baseline configuration: PSA enforce label gaps on namespaces, inconsistent PSA levels (privileged vs baseline), risky default role bindings (cluster-admin to default SAs), network policy baseline (default deny missing), API server security flags, system namespace PSA consistency. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Policy drift analysis", map[string]interface{}{
+				"summary":      map[string]interface{}{"totalNamespaces": 15, "missingPSALabels": 3, "defaultRoleBindings": 2, "driftDetected": 8},
+				"psaLabelGaps": []map[string]interface{}{{"namespace": "app-prod", "currentLevel": "", "expectedLevel": "baseline", "severity": "high"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
