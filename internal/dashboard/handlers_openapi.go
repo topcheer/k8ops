@@ -3917,6 +3917,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Env Config Drift & ConfigMap/Secret Reference Auditor (v16.96) ---
+	add("/api/deployment/env-config-drift", "get", OpenAPIOperation{
+		Summary:     "Deployment env config drift & ConfigMap/Secret reference auditor",
+		OperationID: "envConfigDrift",
+		Tags:        []string{"Deployment", "Config", "Drift"},
+		Description: "Audits deployment environment configuration drift: missing ConfigMap/Secret references, hardcoded secrets in env vars, ConfigMap/Secret ref validation, env var count per deployment. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Env config drift analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalDeployments": 10, "missingRefs": 2, "hardcodedSecrets": 1},
+			}),
+		},
+	})
+
 	return spec
 }
 
