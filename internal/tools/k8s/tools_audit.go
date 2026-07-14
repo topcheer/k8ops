@@ -147,6 +147,7 @@ var auditRegistry = []auditEndpoint{
 	{"operations:alert-noise", "/api/operations/alert-noise", "Alert noise & fatigue detection auditor"},
 	{"security:supply-chain", "/api/security/supply-chain", "Supply chain & SBOM coverage security auditor"},
 	{"security:quota-security", "/api/security/quota-security", "Resource quota & limit range security auditor"},
+	{"product:pv-access", "/api/product/pv-access", "PV access mode & multi-attach risk auditor"},
 	{"scalability:capacity-plan", "/api/scalability/capacity-plan", "Capacity planning & growth trend predictor"},
 
 	// --- Scalability ---

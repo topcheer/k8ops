@@ -3555,6 +3555,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- PV Access Mode & Multi-Attach Risk Auditor (v16.67) ---
+	add("/api/product/pv-access", "get", OpenAPIOperation{
+		Summary:     "Persistent volume access mode & multi-attach risk auditor",
+		OperationID: "pvAccess",
+		Tags:        []string{"Product", "Storage", "VolumeSecurity"},
+		Description: "Audits persistent volume access modes and multi-attach risks: RWO vs RWX distribution, unbound PVCs, RWX PVCs used by multiple pods (multi-attach data corruption risk), Delete vs Retain reclaim policy, missing storage class, per-storage-class stats. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("PV access analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalPVs": 20, "totalPVCs": 35, "unboundPVCs": 3, "multiAttachPVCs": 2},
+				"risks":   []map[string]interface{}{{"pvcName": "shared-data", "riskType": "multi-attach-rwx", "severity": "medium"}},
+			}),
+		},
+	})
+
 	// --- Capacity Planning & Growth Trend Predictor (v16.65) ---
 	add("/api/scalability/capacity-plan", "get", OpenAPIOperation{
 		Summary:     "Capacity planning & growth trend predictor",
