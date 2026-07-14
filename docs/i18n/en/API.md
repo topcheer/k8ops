@@ -1612,14 +1612,29 @@ Monitors API server load by analyzing pod density, controller count, event volum
 ### v16.55: ConfigMap & Secret Mount Injection Risk Auditor
 - `GET /api/product/config-mount-risk` — Missing ConfigMap reference detection, large ConfigMap detection (>500KB), non-optional mount detection, subPath mount detection (prevents hot-reload), envFrom Secret injection. 3 unit tests.
 
+### v16.65: Capacity Planning & Growth Trend Predictor
+- `GET /api/scalability/capacity-plan` — Predicts capacity exhaustion timelines based on current utilization and estimated growth. Per-node CPU/memory/pod utilization, daily growth rate, days-to-exhaust forecast, first bottleneck identification, recommended scale-out actions. Health score (0-100).
+
+### v16.66: Resource Quota & Limit Range Security Auditor
+- `GET /api/security/quota-security` — Audits namespaces without ResourceQuotas (DoS risk), namespaces without LimitRanges (unbounded pod requests), quota pressure (>80% CPU/memory/pod usage). Health score (0-100), 8 unit tests.
+
+### v16.67: PV Access Mode & Multi-Attach Risk Auditor
+- `GET /api/product/pv-access` — Audits PV access modes (RWO/RWX/ROX), unbound PVCs, RWX PVCs used by multiple pods (multi-attach data corruption risk), Delete vs Retain reclaim policy, missing storage class. Health score (0-100), 7 unit tests.
+
+### v16.68: DORA Metrics Analyzer
+- `GET /api/deployment/dora-metrics` — Deployment frequency, lead time for changes, mean time to recovery (MTTR), change failure rate. Delivery maturity classified as elite/high/medium/low. Per-namespace success rate. 6 unit tests.
+
+### v16.69: API Priority & Fairness Configuration Auditor
+- `GET /api/operations/apf-audit` — Audits FlowSchema and PriorityLevelConfiguration resources, missing PriorityLevel references, essential priority levels (global-default, leader-election, node-high), exempt flow count. Uses dynamic client for flowcontrol.apiserver.k8s.io/v1 CRDs. 2 unit tests.
+
 ---
 
 ## API Summary
 
-**Total: 208 OpenAPI endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance, init container audit, CronJob schedule conflict, external secret health, endpoint & DNS health, ConfigMap mount risk
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness, replica availability, surge risk, startup latency, progressive delivery, ReplicaSet staleness
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor, etcd health, API load, Prometheus rule health, Alertmanager health, Grafana health, metrics pipeline, audit log health
-- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit, forensics, RBAC audit, secret scan, security context drift, OPA/Gatekeeper compliance, image vulnerability, Kyverno compliance, PSS scorecard, SA token audit
-- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization, node topology, tenant pressure, node pool health, cost waste, node lifecycle, alloc efficiency, HPA performance, PV reclaim
+**Total: 215 OpenAPI endpoints, 221 Dashboard API endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance, init container audit, CronJob schedule conflict, external secret health, endpoint & DNS health, ConfigMap mount risk, PV access mode & multi-attach risk
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness, replica availability, surge risk, startup latency, progressive delivery, ReplicaSet staleness, DORA metrics
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor, etcd health, API load, Prometheus rule health, Alertmanager health, Grafana health, metrics pipeline, audit log health, alert noise, API Priority & Fairness
+- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit, forensics, RBAC audit, secret scan, security context drift, OPA/Gatekeeper compliance, image vulnerability, Kyverno compliance, PSS scorecard, SA token audit, resource quota security
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization, node topology, tenant pressure, node pool health, cost waste, node lifecycle, alloc efficiency, HPA performance, PV reclaim, capacity planning
 - **Infrastructure**: Auth, RBAC, health, version

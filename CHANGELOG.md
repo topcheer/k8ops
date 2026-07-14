@@ -1245,14 +1245,59 @@
 
 ---
 
+## v16.66-v16.69 (2026-07-14)
+
+### v16.66: 资源配额与 LimitRange 安全审计 (维度4: 安全)
+
+**新增 API：**
+- `GET /api/security/quota-security` — 资源配额与 LimitRange 安全审计
+  - 检测无 ResourceQuota 的 namespace（DoS 资源耗尽攻击风险）
+  - 检测无 LimitRange 的 namespace（无限制 pod 资源请求）
+  - 检测配额压力（CPU/内存/Pod 使用率 >80%）
+  - 按 namespace 统计，健康评分（0-100），8 个单元测试
+
+### v16.67: PV 访问模式与多重挂载风险审计 (维度1: 产品)
+
+**新增 API：**
+- `GET /api/product/pv-access` — PV 访问模式与多重挂载风险审计
+  - PV 访问模式分布（RWO/RWX/ROX）
+  - 未绑定 PVC 检测（pod 卡在 Pending）
+  - RWX PVC 多 pod 使用检测（数据损坏风险）
+  - Delete vs Retain 回收策略检测（数据丢失风险）
+  - 按 StorageClass 统计，健康评分（0-100），7 个单元测试
+
+### v16.68: DORA 指标分析器 (维度2: 部署)
+
+**新增 API：**
+- `GET /api/deployment/dora-metrics` — DORA 指标分析
+  - 部署频率（deploys/day）
+  - 变更前置时间
+  - 平均恢复时间（MTTR）
+  - 变更失败率
+  - 交付成熟度分级（elite/high/medium/low）
+  - 按 namespace 成功率统计，健康评分（0-100），6 个单元测试
+
+### v16.69: API 优先级与公平性配置审计 (维度3: 运维)
+
+**新增 API：**
+- `GET /api/operations/apf-audit` — API 优先级与公平性配置审计
+  - FlowSchema 资源审计
+  - PriorityLevelConfiguration 资源审计
+  - 检测缺失 PriorityLevel 引用
+  - 检测缺失关键 PL（global-default、leader-election、node-high）
+  - 使用动态客户端访问 flowcontrol.apiserver.k8s.io/v1 CRD
+  - 健康评分（0-100），2 个单元测试
+
+---
+
 ## 统计信息
 
 | 指标 | 数值 |
 |------|------|
-| Dashboard API 端点 | 214 |
-| OpenAPI 端点 | 208 |
-| 单元测试 | 1782 |
-| Agent LLM Tools | 41 |
+| Dashboard API 端点 | 221 |
+| OpenAPI 端点 | 215 |
+| 单元测试 | 1830 |
+| Agent LLM Tools | 45 |
 | 文档 | 12 篇 (7 种语言) |
 | i18n 文件 | 76 个 |
 | Release Assets | 17 个 |

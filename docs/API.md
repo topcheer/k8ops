@@ -2879,5 +2879,10 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 140 | /api/security/sa-token-audit | Security | v16.52 | ServiceAccount Token 轮换与访问风险审计 |
 | 141 | /api/scalability/pv-reclaim | Scalability | v16.53 | PV 回收策略与存储类浪费审计 |
 | 142 | /api/product/config-mount-risk | Product | v16.55 | ConfigMap 与 Secret 挂载注入风险审计 |
+| 143 | /api/scalability/capacity-plan | Scalability | v16.65 | 容量规划与增长趋势预测器 |
+| 144 | /api/security/quota-security | Security | v16.66 | 资源配额与 LimitRange 安全审计 |
+| 145 | /api/product/pv-access | Product | v16.67 | PV 访问模式与多重挂载风险审计 |
+| 146 | /api/deployment/dora-metrics | Deployment | v16.68 | DORA 指标：部署频率、前置时间、MTTR、变更失败率 |
+| 147 | /api/operations/apf-audit | Operations | v16.69 | API 优先级与公平性配置审计 |
 
-**总计：208 个 OpenAPI 端点，214 个 Dashboard API 端点**
+**总计：215 个 OpenAPI 端点，221 个 Dashboard API 端点**
