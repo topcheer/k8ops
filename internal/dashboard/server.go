@@ -294,6 +294,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/runtime-threat", s.cacheMiddleware(120*time.Second, s.handleRuntimeThreat))                         // runtime threat detection & container anomaly auditor
 	mux.HandleFunc("/api/operations/cni-health", s.cacheMiddleware(120*time.Second, s.handleCNIHealth))                               // CNI plugin health & network stack configuration auditor
 	mux.HandleFunc("/api/scalability/budget-alert", s.cacheMiddleware(120*time.Second, s.handleBudgetAlert))                          // cost budget alert & namespace spending limit auditor
+	mux.HandleFunc("/api/product/ingress-tls", s.cacheMiddleware(120*time.Second, s.handleIngressTLS))                                // ingress TLS certificate & HTTPS enforcement auditor
 	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                                   // resource dependency graph & blast radius
 	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))                            // topology spread compliance
 	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                               // workload staleness & release cadence

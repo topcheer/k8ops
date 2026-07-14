@@ -165,6 +165,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:runtime-threat", "/api/security/runtime-threat", "Runtime threat detection & container anomaly auditor"},
 	{"operations:cni-health", "/api/operations/cni-health", "CNI plugin health & network stack configuration auditor"},
 	{"scalability:budget-alert", "/api/scalability/budget-alert", "Cost budget alert & namespace spending limit auditor"},
+	{"product:ingress-tls", "/api/product/ingress-tls", "Ingress TLS certificate & HTTPS enforcement auditor"},
 	{"product:pv-access", "/api/product/pv-access", "PV access mode & multi-attach risk auditor"},
 	{"deployment:dora-metrics", "/api/deployment/dora-metrics", "DORA metrics: deployment frequency, lead time, MTTR, change failure rate"},
 	{"operations:apf-audit", "/api/operations/apf-audit", "API Priority & Fairness configuration auditor"},

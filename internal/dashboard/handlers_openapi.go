@@ -3904,6 +3904,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Ingress TLS Certificate & HTTPS Enforcement Auditor (v16.95) ---
+	add("/api/product/ingress-tls", "get", OpenAPIOperation{
+		Summary:     "Ingress TLS certificate & HTTPS enforcement auditor",
+		OperationID: "ingressTLS",
+		Tags:        []string{"Product", "Ingress", "TLS"},
+		Description: "Audits ingress TLS configuration and HTTPS enforcement: TLS coverage, cert-manager annotation tracking, HTTP->HTTPS redirect, TLS host mismatch detection, ingresses without TLS. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Ingress TLS analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalIngresses": 5, "withTLS": 3, "withoutTLS": 2},
+			}),
+		},
+	})
+
 	return spec
 }
 
