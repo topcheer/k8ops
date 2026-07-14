@@ -300,6 +300,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/ingress-tls", s.cacheMiddleware(120*time.Second, s.handleIngressTLS))                                // ingress TLS certificate & HTTPS enforcement auditor
 	mux.HandleFunc("/api/product/east-west-traffic", s.cacheMiddleware(120*time.Second, s.handleEastWestTraffic))                     // east-west traffic & service-to-service connectivity auditor
 	mux.HandleFunc("/api/deployment/env-config-drift", s.cacheMiddleware(120*time.Second, s.handleEnvConfigDrift))                    // deployment env config drift & ConfigMap/Secret reference auditor
+	mux.HandleFunc("/api/deployment/traceability", s.cacheMiddleware(120*time.Second, s.handleDeployTraceability))                    // deployment reproducibility & CI/CD traceability auditor
 	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                                   // resource dependency graph & blast radius
 	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))                            // topology spread compliance
 	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                               // workload staleness & release cadence

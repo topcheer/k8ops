@@ -3986,6 +3986,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Reproducibility & CI/CD Traceability Auditor (v17.02) ---
+	add("/api/deployment/traceability", "get", OpenAPIOperation{
+		Summary:     "Deployment reproducibility & CI/CD traceability auditor",
+		OperationID: "deployTraceability",
+		Tags:        []string{"Deployment", "GitOps", "CI/CD"},
+		Description: "Audits deployment CI/CD traceability: version labels (app.kubernetes.io/version), git-commit annotations, build-timestamp, image digest pinning (@sha256), managed-by/part-of/created-by labels. Per-workload traceability score (0-100), missing field detection, full-trace vs no-trace classification. Health score (0-100). Blind spot: GitOps/CD.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Deployment traceability analysis", map[string]interface{}{
+				"summary":    map[string]interface{}{"totalWorkloads": 15, "withFullTrace": 5, "withNoTrace": 3},
+				"byWorkload": []map[string]interface{}{{"name": "api", "score": 85, "missingFields": []string{"build-time"}}},
+			}),
+		},
+	})
+
 	return spec
 }
 
