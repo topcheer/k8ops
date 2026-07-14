@@ -3959,6 +3959,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- East-West Traffic & Service-to-Service Connectivity Auditor (v17.01) ---
+	add("/api/product/east-west-traffic", "get", OpenAPIOperation{
+		Summary:     "East-west traffic & service-to-service connectivity auditor",
+		OperationID: "eastWestTraffic",
+		Tags:        []string{"Product", "Network", "ServiceMesh"},
+		Description: "Audits east-west traffic: service exposure classification (ClusterIP/NodePort/LB/ExternalName/headless), network policy coverage, mesh sidecar coverage, cross-namespace access, publicly exposed services, per-namespace risk levels. Health score (0-100). Blind spot: Network/Service Mesh.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("East-west traffic analysis", map[string]interface{}{
+				"summary":         map[string]interface{}{"totalServices": 20, "publiclyExposed": 2, "withoutNetworkPolicy": 5},
+				"exposedServices": []map[string]interface{}{{"name": "web-svc", "type": "LoadBalancer", "riskLevel": "critical"}},
+			}),
+		},
+	})
+
 	// --- Deployment Env Config Drift & ConfigMap/Secret Reference Auditor (v16.96) ---
 	add("/api/deployment/env-config-drift", "get", OpenAPIOperation{
 		Summary:     "Deployment env config drift & ConfigMap/Secret reference auditor",
