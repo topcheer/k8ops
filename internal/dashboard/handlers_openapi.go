@@ -3541,6 +3541,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Resource Quota & Limit Range Security Audit (v16.66) ---
+	add("/api/security/quota-security", "get", OpenAPIOperation{
+		Summary:     "Resource quota & limit range security auditor",
+		OperationID: "quotaSecurity",
+		Tags:        []string{"Security", "ResourceQuota", "DoS-Prevention"},
+		Description: "Audits resource quota and limit range security posture: namespaces without ResourceQuotas (DoS risk), namespaces without LimitRanges (unbounded pod requests), quota pressure (>80% CPU/memory/pod usage). Prevents resource exhaustion attacks by identifying unprotected namespaces. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Quota security analysis", map[string]interface{}{
+				"summary":               map[string]interface{}{"totalNamespaces": 15, "withResourceQuota": 10, "unprotectedNamespaces": 5},
+				"unprotectedNamespaces": []map[string]interface{}{{"namespace": "dev", "podCount": 8, "severity": "high"}},
+			}),
+		},
+	})
+
 	// --- Capacity Planning & Growth Trend Predictor (v16.65) ---
 	add("/api/scalability/capacity-plan", "get", OpenAPIOperation{
 		Summary:     "Capacity planning & growth trend predictor",
