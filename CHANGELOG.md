@@ -4,6 +4,32 @@
 
 ---
 
+## v16.89-v16.96 (2026-07-14)
+
+### v16.89: API 文档同步 v16.78-v16.88 (维度5: 文档)
+- CHANGELOG + API.md + en/API.md 同步 v16.78-v16.88
+
+### v16.90: Cert-Manager 健康与证书续期管道审计 (维度1: 产品)
+- `GET /api/product/cert-manager` — Issuer/ClusterIssuer 状态、证书过期检测、就绪状态、续期管道健康
+
+### v16.91: 部署资源配额影响与命名空间容量审计 (维度2: 部署)
+- `GET /api/deployment/quota-impact` — 命名空间配额使用率、ResourceQuota 硬限制、LimitRange 约束、部署容量影响
+
+### v16.92: 运行时威胁检测与容器异常审计 (维度4: 安全)
+- `GET /api/security/runtime-threat` — 特权逃逸风险、可疑能力、seccomp 缺失、异常进程检测、容器行为基线
+
+### v16.93: CNI 插件健康与网络栈配置审计 (维度3: 运维)
+- `GET /api/operations/cni-health` — CNI 插件状态、网络模型、节点覆盖、插件版本一致性、IPAM 模式
+
+### v16.94: 成本预算告警与命名空间支出限额审计 (维度6: 可扩展性, 盲区1: Cost/FinOps)
+- `GET /api/scalability/budget-alert` — 命名空间预算阈值、支出趋势、超额检测、成本分摊、预算合规评分
+
+### v16.95: Ingress TLS 证书与 HTTPS 强制审计 (维度1: 产品)
+- `GET /api/product/ingress-tls` — TLS 证书状态、HTTPS 强制、HSTS 配置、证书过期预测、未加密入口检测
+
+### v16.96: 部署环境配置漂移与 ConfigMap/Secret 引用审计 (维度2: 部署)
+- `GET /api/deployment/env-config-drift` — 缺失 ConfigMap/Secret 引用、硬编码密钥、引用验证、环境变量计数、健康评分
+
 ## v16.78-v16.88 (2026-07-14)
 
 ### v16.78: API 文档同步 (维度5: 文档)

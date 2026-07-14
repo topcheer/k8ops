@@ -2900,5 +2900,12 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 161 | /api/deployment/surge-risk | Deployment | v16.85 | 滚动更新风险与 Surge 配置分析器 |
 | 162 | /api/scalability/saturation | Scalability | v16.87 | 资源饱和与 CPU/内存节流风险预测 |
 | 163 | /api/operations/registry-rate-limit | Operations | v16.88 | 容器镜像仓库限速与拉取可靠性审计 |
+| 164 | /api/product/cert-manager | Product | v16.90 | Cert-Manager 健康与证书续期管道审计 |
+| 165 | /api/deployment/quota-impact | Deployment | v16.91 | 部署资源配额影响与命名空间容量审计 |
+| 166 | /api/security/runtime-threat | Security | v16.92 | 运行时威胁检测与容器异常审计 |
+| 167 | /api/operations/cni-health | Operations | v16.93 | CNI 插件健康与网络栈配置审计 |
+| 168 | /api/scalability/budget-alert | Scalability | v16.94 | 成本预算告警与命名空间支出限额审计 |
+| 169 | /api/product/ingress-tls | Product | v16.95 | Ingress TLS 证书与 HTTPS 强制审计 |
+| 170 | /api/deployment/env-config-drift | Deployment | v16.96 | 部署环境配置漂移与 ConfigMap/Secret 引用审计 |
 
-**总计：229 个 OpenAPI 端点，236 个 Dashboard API 端点**
+**总计：236 个 OpenAPI 端点，243 个 Dashboard API 端点**

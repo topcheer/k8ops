@@ -1627,14 +1627,38 @@ Monitors API server load by analyzing pod density, controller count, event volum
 ### v16.69: API Priority & Fairness Configuration Auditor
 - `GET /api/operations/apf-audit` — Audits FlowSchema and PriorityLevelConfiguration resources, missing PriorityLevel references, essential priority levels (global-default, leader-election, node-high), exempt flow count. Uses dynamic client for flowcontrol.apiserver.k8s.io/v1 CRDs. 2 unit tests.
 
+### v16.89: API Documentation Sync v16.78-v16.88
+- CHANGELOG + API.md + en/API.md synced for v16.78-v16.88
+
+### v16.90: Cert-Manager Health & Certificate Renewal Pipeline Auditor
+- `GET /api/product/cert-manager` — Issuer/ClusterIssuer status, certificate expiry detection, ready/not-ready certs, renewal pipeline health, Let's Encrypt ACME challenge status. Health score (0-100), 4 unit tests.
+
+### v16.91: Deployment Resource Quota Impact & Namespace Capacity Auditor
+- `GET /api/deployment/quota-impact` — Namespace quota utilization, ResourceQuota hard limits, LimitRange constraints, deployment capacity impact, resource exhaustion prediction. Health score (0-100), 4 unit tests.
+
+### v16.92: Runtime Threat Detection & Container Anomaly Auditor
+- `GET /api/security/runtime-threat` — Privilege escalation risk, suspicious capabilities, missing seccomp, anomalous process detection, container behavior baseline. Health score (0-100), 4 unit tests.
+
+### v16.93: CNI Plugin Health & Network Stack Configuration Auditor
+- `GET /api/operations/cni-health` — CNI plugin status, network model, node coverage, plugin version consistency, IPAM mode detection. Health score (0-100), 4 unit tests.
+
+### v16.94: Cost Budget Alert & Namespace Spending Limit Auditor
+- `GET /api/scalability/budget-alert` — Namespace budget thresholds, spending trends, over-budget detection, cost allocation, budget compliance score. Health score (0-100), 4 unit tests.
+
+### v16.95: Ingress TLS Certificate & HTTPS Enforcement Auditor
+- `GET /api/product/ingress-tls` — TLS certificate status, HTTPS enforcement, HSTS configuration, certificate expiry prediction, unencrypted ingress detection. Health score (0-100), 4 unit tests.
+
+### v16.96: Deployment Env Config Drift & ConfigMap/Secret Reference Auditor
+- `GET /api/deployment/env-config-drift` — Missing ConfigMap/Secret references, hardcoded secrets in env vars, ref validation, env var count, health score. Health score (0-100), 4 unit tests.
+
 ---
 
 ## API Summary
 
-**Total: 229 OpenAPI endpoints, 236 Dashboard API endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance, init container audit, CronJob schedule conflict, external secret health, endpoint & DNS health, ConfigMap mount risk, PV access mode & multi-attach risk, service traffic policy & routing, container runtime class & OCI image compliance
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness, replica availability, surge risk, startup latency, progressive delivery, ReplicaSet staleness, DORA metrics, Helm release health, GitOps sync, DaemonSet rollout & node coverage, image pull policy & secret management
-- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor, etcd health, API load, Prometheus rule health, Alertmanager health, Grafana health, metrics pipeline, audit log health, alert noise, API Priority & Fairness, log aggregation & forwarding pipeline health
-- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit, forensics, RBAC audit, secret scan, security context drift, OPA/Gatekeeper compliance, image vulnerability, Kyverno compliance, PSS scorecard, SA token audit, resource quota security, supply chain & SBOM, security policy drift & baseline configuration
-- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization, node topology, tenant pressure, node pool health, cost waste, node lifecycle, alloc efficiency, HPA performance, PV reclaim, capacity planning, spot/preemptible instance readiness
+**Total: 236 OpenAPI endpoints, 243 Dashboard API endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance, init container audit, CronJob schedule conflict, external secret health, endpoint & DNS health, ConfigMap mount risk, PV access mode & multi-attach risk, service traffic policy & routing, container runtime class & OCI image compliance, cert-manager health & certificate renewal, ingress TLS & HTTPS enforcement
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness, replica availability, surge risk, startup latency, progressive delivery, ReplicaSet staleness, DORA metrics, Helm release health, GitOps sync, DaemonSet rollout & node coverage, image pull policy & secret management, resource quota impact & namespace capacity, env config drift & ConfigMap/Secret reference
+- **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor, etcd health, API load, Prometheus rule health, Alertmanager health, Grafana health, metrics pipeline, audit log health, alert noise, API Priority & Fairness, log aggregation & forwarding pipeline health, CNI plugin health & network stack configuration
+- **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit, forensics, RBAC audit, secret scan, security context drift, OPA/Gatekeeper compliance, image vulnerability, Kyverno compliance, PSS scorecard, SA token audit, resource quota security, supply chain & SBOM, security policy drift & baseline configuration, runtime threat detection & container anomaly
+- **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization, node topology, tenant pressure, node pool health, cost waste, node lifecycle, alloc efficiency, HPA performance, PV reclaim, capacity planning, spot/preemptible instance readiness, cost budget alert & namespace spending limit
 - **Infrastructure**: Auth, RBAC, health, version
