@@ -3807,6 +3807,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Resource Saturation & CPU/Memory Throttling Risk Predictor (v16.87) ---
+	add("/api/scalability/saturation", "get", OpenAPIOperation{
+		Summary:     "Resource saturation & CPU/memory throttling risk predictor",
+		OperationID: "saturation",
+		Tags:        []string{"Scalability", "Resources", "Throttling"},
+		Description: "Audits resource saturation and CPU/memory throttling risk: unbounded pods (no limits), high CPU limit/request ratio (>5x), CPU limit < request (guaranteed throttling), OOM risk (no memory limit), per-namespace saturation. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Saturation analysis", map[string]interface{}{
+				"summary":         map[string]interface{}{"totalPods": 15, "unboundedPods": 3, "oomRiskPods": 5},
+				"throttlingRisks": []map[string]interface{}{{"podName": "app-1", "issue": "No resource limits set", "severity": "medium"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
