@@ -3723,6 +3723,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Service Mesh Traffic Management & Circuit Breaker Health Auditor (v16.80) ---
+	add("/api/product/mesh-traffic", "get", OpenAPIOperation{
+		Summary:     "Service mesh traffic management & circuit breaker health auditor",
+		OperationID: "meshTraffic",
+		Tags:        []string{"Product", "ServiceMesh", "Network"},
+		Description: "Audits service mesh traffic management and circuit breaker health: Istio/Linkerd installation detection, sidecar injection coverage per namespace, VirtualService retry/timeout configurations, DestinationRule circuit breaker/TLS settings, services without mesh protection. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Mesh traffic analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"hasIstio": true, "namespacesWithMesh": 5, "namespacesNoMesh": 2},
+				"gaps":    []map[string]interface{}{{"namespace": "app-prod", "service": "api-svc", "issue": "No mesh sidecar injection", "severity": "medium"}},
+			}),
+		},
+	})
+
 	return spec
 }
 

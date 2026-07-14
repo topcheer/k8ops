@@ -282,6 +282,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/runtime-class", s.cacheMiddleware(120*time.Second, s.handleRuntimeClass))                            // container runtime class & OCI image compliance auditor
 	mux.HandleFunc("/api/deployment/image-pull-audit", s.cacheMiddleware(120*time.Second, s.handleImagePullAudit))                    // image pull policy & secret management auditor
 	mux.HandleFunc("/api/scalability/vpa-audit", s.cacheMiddleware(120*time.Second, s.handleVPAAudit))                                // VPA configuration & resource recommendation quality auditor
+	mux.HandleFunc("/api/product/mesh-traffic", s.cacheMiddleware(120*time.Second, s.handleMeshTraffic))                              // service mesh traffic management & circuit breaker health auditor
 	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                                   // resource dependency graph & blast radius
 	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))                            // topology spread compliance
 	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                               // workload staleness & release cadence
