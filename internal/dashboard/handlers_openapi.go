@@ -3583,6 +3583,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- API Priority & Fairness Configuration Auditor (v16.69) ---
+	add("/api/operations/apf-audit", "get", OpenAPIOperation{
+		Summary:     "API Priority & Fairness configuration auditor",
+		OperationID: "apfAudit",
+		Tags:        []string{"Operations", "APF", "API Server"},
+		Description: "Audits Kubernetes API Priority & Fairness (APF) configuration: FlowSchema resources, PriorityLevelConfiguration resources, missing priority level references, essential priority levels (global-default, leader-election, node-high), exempt flow count, catch-all flow configuration. Uses dynamic client to access flowcontrol.apiserver.k8s.io/v1 CRDs. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("APF configuration analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"flowSchemaCount": 10, "priorityLevelCount": 5, "missingPL": 0},
+				"issues":  []map[string]interface{}{},
+			}),
+		},
+	})
+
 	// --- Capacity Planning & Growth Trend Predictor (v16.65) ---
 	add("/api/scalability/capacity-plan", "get", OpenAPIOperation{
 		Summary:     "Capacity planning & growth trend predictor",

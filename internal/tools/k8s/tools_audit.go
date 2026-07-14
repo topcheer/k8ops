@@ -149,6 +149,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:quota-security", "/api/security/quota-security", "Resource quota & limit range security auditor"},
 	{"product:pv-access", "/api/product/pv-access", "PV access mode & multi-attach risk auditor"},
 	{"deployment:dora-metrics", "/api/deployment/dora-metrics", "DORA metrics: deployment frequency, lead time, MTTR, change failure rate"},
+	{"operations:apf-audit", "/api/operations/apf-audit", "API Priority & Fairness configuration auditor"},
 	{"scalability:capacity-plan", "/api/scalability/capacity-plan", "Capacity planning & growth trend predictor"},
 
 	// --- Scalability ---
