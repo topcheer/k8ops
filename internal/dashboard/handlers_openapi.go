@@ -3821,6 +3821,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Container Image Registry Rate Limit & Pull Reliability Auditor (v16.88) ---
+	add("/api/operations/registry-rate-limit", "get", OpenAPIOperation{
+		Summary:     "Container image registry rate limit & pull reliability auditor",
+		OperationID: "registryRateLimit",
+		Tags:        []string{"Operations", "Registry", "Reliability"},
+		Description: "Audits container image registry rate limit risk and pull reliability: Docker Hub anonymous pull rate limiting, private registry authentication coverage, public vs private registry distribution, duplicate image detection, pods without imagePullSecrets. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Registry rate limit analysis", map[string]interface{}{
+				"summary":    map[string]interface{}{"totalImages": 20, "usingDockerHub": 5, "rateLimitRisk": 3},
+				"registries": []map[string]interface{}{{"registry": "docker.io", "imageCount": 5, "rateLimited": true, "riskLevel": "high"}},
+			}),
+		},
+	})
+
 	return spec
 }
 

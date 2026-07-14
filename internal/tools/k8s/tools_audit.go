@@ -159,6 +159,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:endpoint-slice", "/api/product/endpoint-slice", "Endpoint slice health & topology-aware routing auditor"},
 	{"deployment:surge-risk", "/api/deployment/surge-risk", "Rolling update risk & surge configuration analyzer"},
 	{"scalability:saturation", "/api/scalability/saturation", "Resource saturation & CPU/memory throttling risk predictor"},
+	{"operations:registry-rate-limit", "/api/operations/registry-rate-limit", "Container image registry rate limit & pull reliability auditor"},
 	{"product:pv-access", "/api/product/pv-access", "PV access mode & multi-attach risk auditor"},
 	{"deployment:dora-metrics", "/api/deployment/dora-metrics", "DORA metrics: deployment frequency, lead time, MTTR, change failure rate"},
 	{"operations:apf-audit", "/api/operations/apf-audit", "API Priority & Fairness configuration auditor"},

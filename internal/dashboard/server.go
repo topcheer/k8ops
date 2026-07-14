@@ -288,6 +288,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/node-trend", s.cacheMiddleware(120*time.Second, s.handleNodeTrend))                               // node condition trend & hardware failure prediction auditor
 	mux.HandleFunc("/api/product/endpoint-slice", s.cacheMiddleware(120*time.Second, s.handleEndpointSlice))                          // endpoint slice health & topology-aware routing auditor
 	mux.HandleFunc("/api/scalability/saturation", s.cacheMiddleware(120*time.Second, s.handleSaturation))                             // resource saturation & CPU/memory throttling risk predictor
+	mux.HandleFunc("/api/operations/registry-rate-limit", s.cacheMiddleware(120*time.Second, s.handleRegistryRateLimit))              // container image registry rate limit & pull reliability auditor
 	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                                   // resource dependency graph & blast radius
 	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))                            // topology spread compliance
 	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                               // workload staleness & release cadence
