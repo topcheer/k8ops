@@ -3569,6 +3569,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- DORA Metrics Analyzer (v16.68) ---
+	add("/api/deployment/dora-metrics", "get", OpenAPIOperation{
+		Summary:     "DORA metrics: deployment frequency & delivery performance",
+		OperationID: "doraMetrics",
+		Tags:        []string{"Deployment", "DORA", "Delivery"},
+		Description: "Analyzes DORA metrics: deployment frequency (deploys/day), lead time for changes, mean time to recovery (MTTR), change failure rate. Classifies delivery maturity as elite/high/medium/low. Per-namespace success rate, recent deployment events with strategy and status. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("DORA metrics analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalDeployments": 25, "deploymentFrequency": "5/day", "changeFailureRate": 0.12},
+				"level":   "elite",
+			}),
+		},
+	})
+
 	// --- Capacity Planning & Growth Trend Predictor (v16.65) ---
 	add("/api/scalability/capacity-plan", "get", OpenAPIOperation{
 		Summary:     "Capacity planning & growth trend predictor",
