@@ -330,6 +330,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/alloc-efficiency", s.cacheMiddleware(60*time.Second, s.handleAllocEfficiency))                   // resource request vs limit allocation efficiency auditor
 	mux.HandleFunc("/api/scalability/hpa-performance", s.cacheMiddleware(60*time.Second, s.handleHPAPerformance))                     // HPA autoscaling performance & scaling event auditor
 	mux.HandleFunc("/api/scalability/pv-reclaim", s.cacheMiddleware(120*time.Second, s.handlePVReclaim))                              // PV reclaim policy & storage class waste auditor
+	mux.HandleFunc("/api/scalability/capacity-plan", s.cacheMiddleware(60*time.Second, s.handleCapacityPlan))                         // capacity planning & growth trend predictor
 	mux.HandleFunc("/api/deployment/image-hygiene", s.cacheMiddleware(60*time.Second, s.handleImageHygiene))                          // container image deployment hygiene analyzer
 	mux.HandleFunc("/api/deployment/revision-history", s.cacheMiddleware(60*time.Second, s.handleRevisionHistory))                    // deployment revision history & rollback readiness
 	mux.HandleFunc("/api/deployment/disruption-impact", s.cacheMiddleware(60*time.Second, s.handleDisruptionImpact))                  // deployment PDB disruption & maintenance impact

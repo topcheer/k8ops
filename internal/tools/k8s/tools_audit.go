@@ -146,6 +146,7 @@ var auditRegistry = []auditEndpoint{
 	{"deployment:gitops-sync", "/api/deployment/gitops-sync", "ArgoCD & Flux GitOps sync status & drift auditor"},
 	{"operations:alert-noise", "/api/operations/alert-noise", "Alert noise & fatigue detection auditor"},
 	{"security:supply-chain", "/api/security/supply-chain", "Supply chain & SBOM coverage security auditor"},
+	{"scalability:capacity-plan", "/api/scalability/capacity-plan", "Capacity planning & growth trend predictor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

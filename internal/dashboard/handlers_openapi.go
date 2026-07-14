@@ -3541,6 +3541,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Capacity Planning & Growth Trend Predictor (v16.65) ---
+	add("/api/scalability/capacity-plan", "get", OpenAPIOperation{
+		Summary:     "Capacity planning & growth trend predictor",
+		OperationID: "capacityPlan",
+		Tags:        []string{"Scalability", "Capacity", "Forecast"},
+		Description: "Predicts capacity exhaustion timelines based on current utilization and estimated growth. Per-node CPU/memory/pod utilization, daily growth rate, days-to-exhaust forecast, first bottleneck identification, recommended scale-out actions. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Capacity plan analysis", map[string]interface{}{
+				"summary":  map[string]interface{}{"totalNodes": 5, "cpuUtilization": 0.65, "headroomDays": 45},
+				"forecast": map[string]interface{}{"firstBottleneck": "Memory", "cpuExhaustDays": 60},
+			}),
+		},
+	})
+
 	return spec
 }
 
