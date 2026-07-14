@@ -3793,6 +3793,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Rolling Update Risk & Surge Configuration Analyzer (v16.85) ---
+	add("/api/deployment/surge-risk", "get", OpenAPIOperation{
+		Summary:     "Rolling update risk & surge configuration analyzer",
+		OperationID: "surgeRisk",
+		Tags:        []string{"Deployment", "Rollout", "Risk"},
+		Description: "Audits rolling update surge and maxUnavailable configuration: high surge (>50%), high maxUnavailable (>50%), Recreate strategy risk, zero surge+zero unavailable stall, 100% unavailable risk. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Surge risk analysis", map[string]interface{}{
+				"summary":     map[string]interface{}{"totalDeployments": 10, "highSurge": 1, "recreateStrategy": 2},
+				"deployments": []map[string]interface{}{{"name": "app-1", "strategy": "RollingUpdate", "maxSurge": "25%", "riskLevel": "low"}},
+			}),
+		},
+	})
+
 	return spec
 }
 

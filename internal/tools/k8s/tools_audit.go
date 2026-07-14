@@ -157,6 +157,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:pss-hardening", "/api/security/pss-hardening", "PSS enforcement gap & workload hardening auditor"},
 	{"operations:node-trend", "/api/operations/node-trend", "Node condition trend & hardware failure prediction auditor"},
 	{"product:endpoint-slice", "/api/product/endpoint-slice", "Endpoint slice health & topology-aware routing auditor"},
+	{"deployment:surge-risk", "/api/deployment/surge-risk", "Rolling update risk & surge configuration analyzer"},
 	{"product:pv-access", "/api/product/pv-access", "PV access mode & multi-attach risk auditor"},
 	{"deployment:dora-metrics", "/api/deployment/dora-metrics", "DORA metrics: deployment frequency, lead time, MTTR, change failure rate"},
 	{"operations:apf-audit", "/api/operations/apf-audit", "API Priority & Fairness configuration auditor"},
