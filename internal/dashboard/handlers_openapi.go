@@ -3639,6 +3639,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- DaemonSet Rollout & Node Coverage Auditor (v16.73) ---
+	add("/api/deployment/daemonset-audit", "get", OpenAPIOperation{
+		Summary:     "DaemonSet rollout & node coverage auditor",
+		OperationID: "daemonsetAudit",
+		Tags:        []string{"Deployment", "DaemonSet", "NodeCoverage"},
+		Description: "Audits DaemonSet rollout status and node coverage: desired vs scheduled vs updated vs ready pod counts, missing nodes (schedulable nodes without DS pods), stale revisions (pods running old revision), OnDelete vs RollingUpdate strategy, toleration coverage for tainted nodes, per-DS status (healthy/updating/degraded/critical), node gap analysis. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("DaemonSet audit", map[string]interface{}{
+				"summary":  map[string]interface{}{"totalDaemonSets": 5, "totalNodes": 10, "missingNodes": 2},
+				"nodeGaps": []map[string]interface{}{{"daemonSet": "node-exporter", "nodeName": "node-5", "severity": "medium"}},
+			}),
+		},
+	})
+
 	return spec
 }
 

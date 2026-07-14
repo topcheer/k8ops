@@ -360,6 +360,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/rs-staleness", s.cacheMiddleware(60*time.Second, s.handleRSStaleness))                 // ReplicaSet staleness & rollout history auditor
 	mux.HandleFunc("/api/deployment/gitops-sync", s.cacheMiddleware(60*time.Second, s.handleGitOpsSync))                   // ArgoCD & Flux GitOps sync status & drift auditor
 	mux.HandleFunc("/api/deployment/dora-metrics", s.cacheMiddleware(60*time.Second, s.handleDORAMetrics))                 // DORA metrics: deployment frequency, lead time, MTTR, change failure rate
+	mux.HandleFunc("/api/deployment/daemonset-audit", s.cacheMiddleware(60*time.Second, s.handleDaemonSetAudit))           // DaemonSet rollout & node coverage auditor
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))

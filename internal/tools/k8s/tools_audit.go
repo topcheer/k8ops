@@ -152,6 +152,7 @@ var auditRegistry = []auditEndpoint{
 	{"operations:apf-audit", "/api/operations/apf-audit", "API Priority & Fairness configuration auditor"},
 	{"scalability:spot-readiness", "/api/scalability/spot-readiness", "Spot/preemptible instance readiness & cost optimization auditor"},
 	{"product:traffic-policy", "/api/product/traffic-policy", "Service traffic policy & routing configuration auditor"},
+	{"deployment:daemonset-audit", "/api/deployment/daemonset-audit", "DaemonSet rollout & node coverage auditor"},
 	{"scalability:capacity-plan", "/api/scalability/capacity-plan", "Capacity planning & growth trend predictor"},
 
 	// --- Scalability ---
