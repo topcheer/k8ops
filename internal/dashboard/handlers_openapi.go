@@ -3765,6 +3765,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Node Condition Trend & Hardware Failure Prediction (v16.83) ---
+	add("/api/operations/node-trend", "get", OpenAPIOperation{
+		Summary:     "Node condition trend & hardware failure prediction",
+		OperationID: "nodeTrend",
+		Tags:        []string{"Operations", "NodeHealth", "Predictive"},
+		Description: "Audits node condition trends and predicts hardware failure risk: MemoryPressure, DiskPressure, PIDPressure, NetworkUnavailable, NotReady, stale heartbeat, kernel/runtime version drift, risk classification (low/medium/high/critical). Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Node trend analysis", map[string]interface{}{
+				"summary":     map[string]interface{}{"totalNodes": 5, "healthyNodes": 3, "nodesAtRisk": 2},
+				"atRiskNodes": []map[string]interface{}{{"nodeName": "node-3", "severity": "high"}},
+			}),
+		},
+	})
+
 	return spec
 }
 

@@ -155,6 +155,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:mesh-traffic", "/api/product/mesh-traffic", "Service mesh traffic management & circuit breaker health auditor"},
 	{"deployment:rollout-blocker", "/api/deployment/rollout-blocker", "Deployment rollout blocker & pod condition auditor"},
 	{"security:pss-hardening", "/api/security/pss-hardening", "PSS enforcement gap & workload hardening auditor"},
+	{"operations:node-trend", "/api/operations/node-trend", "Node condition trend & hardware failure prediction auditor"},
 	{"product:pv-access", "/api/product/pv-access", "PV access mode & multi-attach risk auditor"},
 	{"deployment:dora-metrics", "/api/deployment/dora-metrics", "DORA metrics: deployment frequency, lead time, MTTR, change failure rate"},
 	{"operations:apf-audit", "/api/operations/apf-audit", "API Priority & Fairness configuration auditor"},
