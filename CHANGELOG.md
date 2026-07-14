@@ -4,6 +4,84 @@
 
 ---
 
+## v16.70-v16.77 (2026-07-14)
+
+### v16.70: API 文档更新 v16.66-v16.69 (维度5: 文档)
+
+**更新：**
+- CHANGELOG 补充 v16.25-v16.32 条目
+- API.md 补充至 147 个端点
+- en/API.md 同步英文版本
+
+### v16.71: Spot/抢占式实例就绪与成本优化审计 (维度6: 可扩展性, 盲区1: Cost/FinOps)
+
+**新增 API：**
+- `GET /api/scalability/spot-readiness` — Spot 实例就绪审计
+  - 检测节点 preemptible 标签、Spot 实例分布
+  - 检测无 PDB 保护的 Spot 工作负载
+  - 检测 Spot 节点上的有状态工作负载（StatefulSet）
+  - 健康评分（0-100），5 个单元测试
+
+### v16.72: 服务流量策略与路由配置审计 (维度1: 产品, 盲区3: Network/Mesh)
+
+**新增 API：**
+- `GET /api/product/traffic-policy` — 服务流量策略审计
+  - 检测 externalTrafficPolicy 配置（Cluster/Local）
+  - 检测 session affinity、over-exposed LB、ExternalName 服务
+  - 检测 publishNotReady、external IPs
+  - 健康评分（0-100），4 个单元测试
+
+### v16.73: DaemonSet 滚动发布与节点覆盖审计 (维度2: 部署)
+
+**新增 API：**
+- `GET /api/deployment/daemonset-audit` — DaemonSet 发布审计
+  - 检测 desired vs scheduled vs updated vs ready 节点数
+  - 检测缺失节点覆盖、stale 修订版本
+  - 检测 toleration 覆盖率
+  - 健康评分（0-100），5 个单元测试
+
+### v16.74: 安全策略漂移与基线配置审计 (维度4: 安全, 盲区2: 合规/治理)
+
+**新增 API：**
+- `GET /api/security/policy-drift` — 安全策略漂移审计
+  - 检测 PSA enforce 标签缺失
+  - 检测 PSA 级别不一致（privileged enforce）
+  - 检测危险默认角色绑定（cluster-admin → default SA）
+  - 检测网络策略基线（default deny 缺失）
+  - 检测 API server 安全标志漂移
+  - 健康评分（0-100），5 个单元测试
+
+### v16.75: 日志聚合与转发管道健康审计 (维度3: 运维, 盲区5: 可观测性)
+
+**新增 API：**
+- `GET /api/operations/log-pipeline` — 日志管道健康审计
+  - 检测 Fluent Bit/Fluentd/Vector/Promtail/Filebeat 收集器
+  - 检测收集器就绪状态、转发 ConfigMap 配置
+  - 检测存储后端（Elasticsearch/Loki/Kafka）
+  - 检测命名空间覆盖缺口
+  - 健康评分（0-100），5 个单元测试
+
+### v16.76: 容器运行时类与 OCI 镜像合规审计 (维度1: 产品)
+
+**新增 API：**
+- `GET /api/product/runtime-class` — 运行时类与镜像合规审计
+  - 检测 RuntimeClass 定义（kata）、节点容器运行时（containerd/cri-o）
+  - 检测 Pod runtimeClassName 使用情况
+  - 检测 :latest 镜像标签、缺失 digest 引用
+  - 检测不受信任的镜像仓库
+  - 健康评分（0-100），5 个单元测试
+
+### v16.77: 镜像拉取策略与密钥管理审计 (维度2: 部署)
+
+**新增 API：**
+- `GET /api/deployment/image-pull-audit` — 镜像拉取策略审计
+  - 检测 imagePullPolicy 分布（Always/IfNotPresent/Never）
+  - 检测缺失策略、私有镜像无 imagePullSecrets
+  - 检测陈旧 dockerconfigjson 密钥、重复密钥
+  - 检测 pinned 镜像上的 Always 拉取浪费
+  - 健康评分（0-100），5 个单元测试
+  - 修复 log pipeline flaky 测试（map 迭代顺序导致检测不一致）
+
 ## v16.25-v16.32 (2026-07-13)
 
 ### v16.25: 安全上下文漂移与运行时策略合规审计 (维度4: 安全, 盲区2: 合规/治理)
