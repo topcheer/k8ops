@@ -3849,6 +3849,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Resource Quota Impact & Namespace Deployment Capacity Auditor (v16.91) ---
+	add("/api/deployment/quota-impact", "get", OpenAPIOperation{
+		Summary:     "Deployment resource quota impact & namespace deployment capacity auditor",
+		OperationID: "deployQuotaImpact",
+		Tags:        []string{"Deployment", "Quota", "Capacity"},
+		Description: "Audits deployment resource quota impact and namespace deployment capacity: per-namespace quota usage, over-quota namespaces, near-limit (>80%) namespaces, deployments that would be blocked or push >90% of quota, headroom analysis. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Quota impact analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalNamespaces": 10, "nsOverQuota": 1, "deploysBlocked": 2},
+				"impacts": []map[string]interface{}{{"namespace": "app-prod", "deployName": "api", "issue": "Would exceed CPU quota", "severity": "critical"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
