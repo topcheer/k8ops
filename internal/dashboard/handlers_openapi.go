@@ -3695,6 +3695,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Image Pull Policy & Secret Management Auditor (v16.77) ---
+	add("/api/deployment/image-pull-audit", "get", OpenAPIOperation{
+		Summary:     "Image pull policy & secret management auditor",
+		OperationID: "imagePullAudit",
+		Tags:        []string{"Deployment", "ImagePull", "Security"},
+		Description: "Audits image pull policy configuration and secret management: imagePullPolicy distribution (Always/IfNotPresent/Never), missing policies, private images without imagePullSecrets, stale dockerconfigjson secrets, duplicate secrets, wasteful Always pull on pinned images. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Image pull audit", map[string]interface{}{
+				"summary":      map[string]interface{}{"totalPods": 15, "alwaysPull": 3, "ifNotPresent": 10, "neverPull": 2},
+				"policyIssues": []map[string]interface{}{{"podName": "app-1", "container": "web", "policy": "Never", "severity": "high"}},
+			}),
+		},
+	})
+
 	return spec
 }
 

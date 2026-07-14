@@ -98,14 +98,23 @@ func (s *Server) handleLogPipeline(w http.ResponseWriter, r *http.Request) {
 	knownCollectors := map[string]string{
 		"fluent-bit":            "fluentbit",
 		"fluentbit":             "fluentbit",
+		"fluentd-elasticsearch": "fluentd",
 		"fluentd":               "fluentd",
 		"fluent":                "fluentd",
 		"vector":                "vector",
 		"promtail":              "promtail",
 		"filebeat":              "filebeat",
 		"logstash":              "logstash",
-		"fluentd-elasticsearch": "fluentd",
 	}
+
+	// Sort keys by length descending so more specific keywords match first
+	collectorKeywords := make([]string, 0, len(knownCollectors))
+	for k := range knownCollectors {
+		collectorKeywords = append(collectorKeywords, k)
+	}
+	sort.Slice(collectorKeywords, func(i, j int) bool {
+		return len(collectorKeywords[i]) > len(collectorKeywords[j])
+	})
 
 	knownBackends := map[string]string{
 		"elasticsearch": "elasticsearch",
@@ -120,6 +129,15 @@ func (s *Server) handleLogPipeline(w http.ResponseWriter, r *http.Request) {
 		"cloudwatch":    "cloudwatch",
 		"stackdriver":   "stackdriver",
 	}
+
+	// Sort backend keys by length descending for consistent matching
+	backendKeywords := make([]string, 0, len(knownBackends))
+	for k := range knownBackends {
+		backendKeywords = append(backendKeywords, k)
+	}
+	sort.Slice(backendKeywords, func(i, j int) bool {
+		return len(backendKeywords[i]) > len(backendKeywords[j])
+	})
 
 	logNamespaces := map[string]bool{
 		"logging":         true,
@@ -143,7 +161,8 @@ func (s *Server) handleLogPipeline(w http.ResponseWriter, r *http.Request) {
 			imageName := ""
 			if len(ds.Spec.Template.Spec.Containers) > 0 {
 				imageName = ds.Spec.Template.Spec.Containers[0].Image
-				for keyword, ct := range knownCollectors {
+				for _, keyword := range collectorKeywords {
+					ct := knownCollectors[keyword]
 					if strings.Contains(strings.ToLower(imageName), keyword) || strings.Contains(strings.ToLower(ds.Name), keyword) {
 						collectorType = ct
 						break
@@ -204,7 +223,8 @@ func (s *Server) handleLogPipeline(w http.ResponseWriter, r *http.Request) {
 			imageName := ""
 			if len(dep.Spec.Template.Spec.Containers) > 0 {
 				imageName = dep.Spec.Template.Spec.Containers[0].Image
-				for keyword, ct := range knownCollectors {
+				for _, keyword := range collectorKeywords {
+					ct := knownCollectors[keyword]
 					if strings.Contains(strings.ToLower(imageName), keyword) || strings.Contains(strings.ToLower(dep.Name), keyword) {
 						collectorType = ct
 						break
@@ -275,7 +295,8 @@ func (s *Server) handleLogPipeline(w http.ResponseWriter, r *http.Request) {
 			}
 
 			backendType := "unknown"
-			for keyword, bt := range knownBackends {
+			for _, keyword := range backendKeywords {
+				bt := knownBackends[keyword]
 				if strings.Contains(strings.ToLower(imageName), keyword) || strings.Contains(strings.ToLower(dep.Name), keyword) {
 					backendType = bt
 					break
@@ -320,7 +341,8 @@ func (s *Server) handleLogPipeline(w http.ResponseWriter, r *http.Request) {
 			}
 
 			backendType := "unknown"
-			for keyword, bt := range knownBackends {
+			for _, keyword := range backendKeywords {
+				bt := knownBackends[keyword]
 				if strings.Contains(strings.ToLower(imageName), keyword) || strings.Contains(strings.ToLower(sts.Name), keyword) {
 					backendType = bt
 					break
@@ -368,7 +390,8 @@ func (s *Server) handleLogPipeline(w http.ResponseWriter, r *http.Request) {
 
 			for _, data := range cm.Data {
 				lowerData := strings.ToLower(data)
-				for keyword, bt := range knownBackends {
+				for _, keyword := range backendKeywords {
+					bt := knownBackends[keyword]
 					if strings.Contains(lowerData, keyword) {
 						backendType = bt
 						hasOutput = true
