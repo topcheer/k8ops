@@ -4079,6 +4079,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Service Mesh Injection Coverage & Namespace Adoption (v17.25) ---
+	add("/api/product/mesh-injection", "get", OpenAPIOperation{
+		Summary:     "Service mesh injection coverage & namespace adoption analyzer",
+		OperationID: "meshInjection",
+		Tags:        []string{"Product", "ServiceMesh", "Injection"},
+		Description: "Analyzes mesh injection adoption: namespace-level injection status (Istio/Linkerd/Consul), injection gap detection (enabled but no sidecar), opt-out tracking, per-namespace injection rate, mesh type detection, fully-meshed/partial-mesh/unmeshed classification. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Mesh injection analysis", map[string]interface{}{
+				"meshType": "istio",
+				"score":    72,
+				"summary":  map[string]interface{}{"totalPods": 50, "injectedPods": 35, "injectionRate": 70.0, "meshEnabledNamespaces": 5},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",

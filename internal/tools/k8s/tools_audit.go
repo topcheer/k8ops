@@ -195,6 +195,7 @@ var auditRegistry = []auditEndpoint{
 	{"operations:kube-proxy-health", "/api/operations/kube-proxy-health", "Kube-proxy & network routing stability auditor"},
 	{"security:secret-age", "/api/security/secret-age", "Secret age & stale credential tracker"},
 	{"scalability:ext-resource-health", "/api/scalability/ext-resource-health", "Extended resource & device plugin health auditor"},
+	{"product:mesh-injection", "/api/product/mesh-injection", "Service mesh injection coverage & namespace adoption analyzer"},
 	{"deployment:daemonset-audit", "/api/deployment/daemonset-audit", "DaemonSet rollout & node coverage auditor"},
 	{"scalability:capacity-plan", "/api/scalability/capacity-plan", "Capacity planning & growth trend predictor"},
 

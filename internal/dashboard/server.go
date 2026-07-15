@@ -308,40 +308,41 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/scaling-history", s.cacheMiddleware(120*time.Second, s.handleScalingHistory))          // cluster scaling history & autoscaler event timeline auditor
 	mux.HandleFunc("/api/scalability/scheduling-fit", s.cacheMiddleware(120*time.Second, s.handleSchedulingFit))            // pod resource request density & scheduling fit auditor
 	mux.HandleFunc("/api/scalability/quota-saturation", s.cacheMiddleware(120*time.Second, s.handleQuotaSaturation))
-	mux.HandleFunc("/api/scalability/ext-resource-health", s.cacheMiddleware(120*time.Second, s.handleExtResourceHealth))             // extended resource & device plugin health auditor                  // namespace resource quota saturation & limit exhaustion predictor
-	mux.HandleFunc("/api/product/ingress-tls", s.cacheMiddleware(120*time.Second, s.handleIngressTLS))                                // ingress TLS certificate & HTTPS enforcement auditor
-	mux.HandleFunc("/api/product/east-west-traffic", s.cacheMiddleware(120*time.Second, s.handleEastWestTraffic))                     // east-west traffic & service-to-service connectivity auditor
-	mux.HandleFunc("/api/product/port-exposure", s.cacheMiddleware(120*time.Second, s.handlePortExposure))                            // container port exposure & named port consistency auditor
-	mux.HandleFunc("/api/product/endpoint-mismatch", s.cacheMiddleware(60*time.Second, s.handleEndpointMismatch))                     // service endpoint vs pod readiness mismatch auditor
-	mux.HandleFunc("/api/deployment/env-config-drift", s.cacheMiddleware(120*time.Second, s.handleEnvConfigDrift))                    // deployment env config drift & ConfigMap/Secret reference auditor
-	mux.HandleFunc("/api/deployment/traceability", s.cacheMiddleware(120*time.Second, s.handleDeployTraceability))                    // deployment reproducibility & CI/CD traceability auditor
-	mux.HandleFunc("/api/deployment/termination-audit", s.cacheMiddleware(120*time.Second, s.handleTerminationAudit))                 // pod termination message & exit code pattern auditor
-	mux.HandleFunc("/api/deployment/readiness-gate", s.cacheMiddleware(60*time.Second, s.handleReadinessGate))                        // pod readiness gate compliance & custom condition auditor
-	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                                   // resource dependency graph & blast radius
-	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))                            // topology spread compliance
-	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                               // workload staleness & release cadence
-	mux.HandleFunc("/api/product/ingress-health", s.cacheMiddleware(60*time.Second, s.handleIngressHealth))                           // ingress traffic routing health
-	mux.HandleFunc("/api/product/namespaces/lifecycle", s.cacheMiddleware(60*time.Second, s.handleNamespaceLifecycle))                // namespace governance & lifecycle
-	mux.HandleFunc("/api/product/dns-health", s.cacheMiddleware(60*time.Second, s.handleDNSHealth))                                   // DNS resolution health checker
-	mux.HandleFunc("/api/product/config-audit", s.cacheMiddleware(60*time.Second, s.handleConfigAudit))                               // ConfigMap & Secret configuration audit
-	mux.HandleFunc("/api/product/network-policy", s.cacheMiddleware(60*time.Second, s.handleNetworkPolicyAudit))                      // network policy compliance & traffic isolation
-	mux.HandleFunc("/api/product/label-hygiene", s.cacheMiddleware(60*time.Second, s.handleLabelHygiene))                             // label & annotation hygiene auditor
-	mux.HandleFunc("/api/product/orphaned-resources", s.cacheMiddleware(60*time.Second, s.handleOrphanedResources))                   // orphaned resource detector
-	mux.HandleFunc("/api/product/pvc-health", s.cacheMiddleware(60*time.Second, s.handlePVCHealth))                                   // PV/PVC storage health & capacity
-	mux.HandleFunc("/api/product/statefulset-audit", s.cacheMiddleware(60*time.Second, s.handleStatefulSetAudit))                     // StatefulSet health & ordered rollout audit
-	mux.HandleFunc("/api/product/affinity-conflict", s.cacheMiddleware(60*time.Second, s.handleAffinityConflict))                     // affinity & anti-affinity conflict detector
-	mux.HandleFunc("/api/product/taint-toleration", s.cacheMiddleware(60*time.Second, s.handleTaintToleration))                       // node taint & pod toleration impact analyzer
-	mux.HandleFunc("/api/product/configmap-size", s.cacheMiddleware(120*time.Second, s.handleConfigMapSize))                          // ConfigMap/Secret size & memory pressure auditor
-	mux.HandleFunc("/api/product/job-health", s.cacheMiddleware(60*time.Second, s.handleJobHealth))                                   // batch job execution health & completion analyzer
-	mux.HandleFunc("/api/product/hpa-health", s.cacheMiddleware(60*time.Second, s.handleHPAHealth))                                   // HPA health & scaling activity analyzer
-	mux.HandleFunc("/api/product/api-deprecation", s.cacheMiddleware(120*time.Second, s.handleDeprecatedAPI))                         // deprecated API version & upgrade readiness checker
-	mux.HandleFunc("/api/product/qos-priority", s.cacheMiddleware(60*time.Second, s.handleQoSAudit))                                  // pod QoS & priority class distribution auditor
-	mux.HandleFunc("/api/product/service-connectivity", s.cacheMiddleware(60*time.Second, s.handleServiceConnectivity))               // service endpoint & connectivity health auditor
-	mux.HandleFunc("/api/product/topology-spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))                    // topology spread constraint validator
-	mux.HandleFunc("/api/product/backup-compliance", s.cacheMiddleware(120*time.Second, s.handleBackupCompliance))                    // volume snapshot & PVC backup compliance auditor
-	mux.HandleFunc("/api/product/init-container-audit", s.cacheMiddleware(60*time.Second, s.handleInitContainerAudit))                // init container reliability & startup dependency auditor
-	mux.HandleFunc("/api/product/hpa-gap", s.cacheMiddleware(60*time.Second, s.handleHPAGap))                                         // HPA target utilization gap & scaling behavior auditor
-	mux.HandleFunc("/api/product/mesh-health", s.cacheMiddleware(120*time.Second, s.handleMeshHealth))                                // service mesh sidecar health & mTLS coverage auditor
+	mux.HandleFunc("/api/scalability/ext-resource-health", s.cacheMiddleware(120*time.Second, s.handleExtResourceHealth)) // extended resource & device plugin health auditor                  // namespace resource quota saturation & limit exhaustion predictor
+	mux.HandleFunc("/api/product/ingress-tls", s.cacheMiddleware(120*time.Second, s.handleIngressTLS))                    // ingress TLS certificate & HTTPS enforcement auditor
+	mux.HandleFunc("/api/product/east-west-traffic", s.cacheMiddleware(120*time.Second, s.handleEastWestTraffic))         // east-west traffic & service-to-service connectivity auditor
+	mux.HandleFunc("/api/product/port-exposure", s.cacheMiddleware(120*time.Second, s.handlePortExposure))                // container port exposure & named port consistency auditor
+	mux.HandleFunc("/api/product/endpoint-mismatch", s.cacheMiddleware(60*time.Second, s.handleEndpointMismatch))         // service endpoint vs pod readiness mismatch auditor
+	mux.HandleFunc("/api/deployment/env-config-drift", s.cacheMiddleware(120*time.Second, s.handleEnvConfigDrift))        // deployment env config drift & ConfigMap/Secret reference auditor
+	mux.HandleFunc("/api/deployment/traceability", s.cacheMiddleware(120*time.Second, s.handleDeployTraceability))        // deployment reproducibility & CI/CD traceability auditor
+	mux.HandleFunc("/api/deployment/termination-audit", s.cacheMiddleware(120*time.Second, s.handleTerminationAudit))     // pod termination message & exit code pattern auditor
+	mux.HandleFunc("/api/deployment/readiness-gate", s.cacheMiddleware(60*time.Second, s.handleReadinessGate))            // pod readiness gate compliance & custom condition auditor
+	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                       // resource dependency graph & blast radius
+	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))                // topology spread compliance
+	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                   // workload staleness & release cadence
+	mux.HandleFunc("/api/product/ingress-health", s.cacheMiddleware(60*time.Second, s.handleIngressHealth))               // ingress traffic routing health
+	mux.HandleFunc("/api/product/namespaces/lifecycle", s.cacheMiddleware(60*time.Second, s.handleNamespaceLifecycle))    // namespace governance & lifecycle
+	mux.HandleFunc("/api/product/dns-health", s.cacheMiddleware(60*time.Second, s.handleDNSHealth))                       // DNS resolution health checker
+	mux.HandleFunc("/api/product/config-audit", s.cacheMiddleware(60*time.Second, s.handleConfigAudit))                   // ConfigMap & Secret configuration audit
+	mux.HandleFunc("/api/product/network-policy", s.cacheMiddleware(60*time.Second, s.handleNetworkPolicyAudit))          // network policy compliance & traffic isolation
+	mux.HandleFunc("/api/product/label-hygiene", s.cacheMiddleware(60*time.Second, s.handleLabelHygiene))                 // label & annotation hygiene auditor
+	mux.HandleFunc("/api/product/orphaned-resources", s.cacheMiddleware(60*time.Second, s.handleOrphanedResources))       // orphaned resource detector
+	mux.HandleFunc("/api/product/pvc-health", s.cacheMiddleware(60*time.Second, s.handlePVCHealth))                       // PV/PVC storage health & capacity
+	mux.HandleFunc("/api/product/statefulset-audit", s.cacheMiddleware(60*time.Second, s.handleStatefulSetAudit))         // StatefulSet health & ordered rollout audit
+	mux.HandleFunc("/api/product/affinity-conflict", s.cacheMiddleware(60*time.Second, s.handleAffinityConflict))         // affinity & anti-affinity conflict detector
+	mux.HandleFunc("/api/product/taint-toleration", s.cacheMiddleware(60*time.Second, s.handleTaintToleration))           // node taint & pod toleration impact analyzer
+	mux.HandleFunc("/api/product/configmap-size", s.cacheMiddleware(120*time.Second, s.handleConfigMapSize))              // ConfigMap/Secret size & memory pressure auditor
+	mux.HandleFunc("/api/product/job-health", s.cacheMiddleware(60*time.Second, s.handleJobHealth))                       // batch job execution health & completion analyzer
+	mux.HandleFunc("/api/product/hpa-health", s.cacheMiddleware(60*time.Second, s.handleHPAHealth))                       // HPA health & scaling activity analyzer
+	mux.HandleFunc("/api/product/api-deprecation", s.cacheMiddleware(120*time.Second, s.handleDeprecatedAPI))             // deprecated API version & upgrade readiness checker
+	mux.HandleFunc("/api/product/qos-priority", s.cacheMiddleware(60*time.Second, s.handleQoSAudit))                      // pod QoS & priority class distribution auditor
+	mux.HandleFunc("/api/product/service-connectivity", s.cacheMiddleware(60*time.Second, s.handleServiceConnectivity))   // service endpoint & connectivity health auditor
+	mux.HandleFunc("/api/product/topology-spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))        // topology spread constraint validator
+	mux.HandleFunc("/api/product/backup-compliance", s.cacheMiddleware(120*time.Second, s.handleBackupCompliance))        // volume snapshot & PVC backup compliance auditor
+	mux.HandleFunc("/api/product/init-container-audit", s.cacheMiddleware(60*time.Second, s.handleInitContainerAudit))    // init container reliability & startup dependency auditor
+	mux.HandleFunc("/api/product/hpa-gap", s.cacheMiddleware(60*time.Second, s.handleHPAGap))                             // HPA target utilization gap & scaling behavior auditor
+	mux.HandleFunc("/api/product/mesh-health", s.cacheMiddleware(120*time.Second, s.handleMeshHealth))
+	mux.HandleFunc("/api/product/mesh-injection", s.cacheMiddleware(120*time.Second, s.handleMeshInjection))                          // service mesh injection coverage & namespace adoption analyzer                                // service mesh sidecar health & mTLS coverage auditor
 	mux.HandleFunc("/api/product/cronjob-schedule", s.cacheMiddleware(60*time.Second, s.handleCronJobSchedule))                       // CronJob schedule conflict & resource configuration auditor
 	mux.HandleFunc("/api/product/external-secret-health", s.cacheMiddleware(120*time.Second, s.handleExternalSecretHealth))           // external secrets & secret store CSI health auditor
 	mux.HandleFunc("/api/product/endpoint-dns-health", s.cacheMiddleware(60*time.Second, s.handleEndpointDNSHealth))                  // service endpoint & DNS resolution health auditor
