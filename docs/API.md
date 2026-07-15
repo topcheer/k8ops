@@ -2907,5 +2907,10 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 168 | /api/scalability/budget-alert | Scalability | v16.94 | 成本预算告警与命名空间支出限额审计 |
 | 169 | /api/product/ingress-tls | Product | v16.95 | Ingress TLS 证书与 HTTPS 强制审计 |
 | 170 | /api/deployment/env-config-drift | Deployment | v16.96 | 部署环境配置漂移与 ConfigMap/Secret 引用审计 |
+| 171 | /api/operations/observability-stack | Operations | v16.98 | 可观测性栈集成健康审计 |
+| 172 | /api/security/secret-posture | Security | v16.99 | 密钥管理态势与外部密钥集成审计 |
+| 173 | /api/scalability/node-drain-readiness | Scalability | v17.00 | 节点排空与轮换就绪审计 |
+| 174 | /api/product/east-west-traffic | Product | v17.01 | 东西向流量与服务间连通性审计 |
+| 175 | /api/deployment/traceability | Deployment | v17.02 | 部署可复现性与 CI/CD 可追溯性审计 |
 
-**总计：236 个 OpenAPI 端点，243 个 Dashboard API 端点**
+**总计：241 个 OpenAPI 端点，248 个 Dashboard API 端点**

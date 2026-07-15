@@ -4,6 +4,26 @@
 
 ---
 
+## v16.97-v17.02 (2026-07-14)
+
+### v16.97: API 文档同步 v16.89-v16.96 (维度5: 文档)
+- CHANGELOG + API.md + en/API.md 同步 v16.89-v16.96
+
+### v16.98: 可观测性栈集成健康审计 (维度3: 运维, 盲区5)
+- `GET /api/operations/observability-stack` — 三大支柱（metrics/logging/tracing）集成健康，后端检测，agent 覆盖率
+
+### v16.99: 密钥管理态势与外部密钥集成审计 (维度4: 安全, 盲区2)
+- `GET /api/security/secret-posture` — ESO/Sealed Secrets/SOPS/Vault 检测，managed/unmanaged/plaintext 分类
+
+### v17.00: 节点排空与轮换就绪审计 (维度6: 可扩展性, 盲区6)
+- `GET /api/scalability/node-drain-readiness` — 每节点排空安全评估，StatefulSet 粘性 Pod，裸 Pod，本地存储
+
+### v17.01: 东西向流量与服务间连通性审计 (维度1: 产品, 盲区3)
+- `GET /api/product/east-west-traffic` — 服务暴露分类，网络策略覆盖，Mesh sidecar 覆盖，跨命名空间访问
+
+### v17.02: 部署可复现性与 CI/CD 可追溯性审计 (维度2: 部署, 盲区4)
+- `GET /api/deployment/traceability` — 版本标签，git-commit/build-timestamp 注解，镜像摘要固定，追溯评分
+
 ## v16.89-v16.96 (2026-07-14)
 
 ### v16.89: API 文档同步 v16.78-v16.88 (维度5: 文档)
