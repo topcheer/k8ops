@@ -3891,6 +3891,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Namespace Security Posture & Trust Boundary Auditor (v17.05) ---
+	add("/api/security/namespace-posture", "get", OpenAPIOperation{
+		Summary:     "Namespace security posture & trust boundary auditor",
+		OperationID: "namespacePosture",
+		Tags:        []string{"Security", "Namespace", "PSA"},
+		Description: "Audits per-namespace security posture: Pod Security Admission (enforce/warn/audit), default SA token auto-mount, network policy coverage, RBAC role bindings, resource quota, limit range. Trust level classification (high/medium/low/untrusted). Risk score (0-100). Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Namespace security posture analysis", map[string]interface{}{
+				"summary":     map[string]interface{}{"totalNamespaces": 10, "withPSAEnforce": 5, "withoutNetworkPolicy": 3},
+				"byNamespace": []map[string]interface{}{{"namespace": "default", "trustLevel": "low", "riskScore": 35}},
+			}),
+		},
+	})
+
 	// --- CNI Plugin Health & Network Stack Configuration Auditor (v16.93) ---
 	add("/api/operations/cni-health", "get", OpenAPIOperation{
 		Summary:     "CNI plugin health & network stack configuration auditor",
