@@ -3919,6 +3919,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Security Event Timeline & Threat Detection Pattern Auditor (v17.17) ---
+	add("/api/security/threat-timeline", "get", OpenAPIOperation{
+		Summary:     "Security event timeline & threat detection pattern auditor",
+		OperationID: "threatTimeline",
+		Tags:        []string{"Security", "Threat Detection", "Events"},
+		Description: "Audits security-related events: RBAC changes (Role/ClusterRole/Binding), admission denials, forbidden/unauthorized access (403), secret access patterns, ConfigMap changes. Per-namespace risk levels, threat pattern detection. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Threat timeline analysis", map[string]interface{}{
+				"summary":     map[string]interface{}{"totalEvents": 15, "rbacChanges": 3, "admissionDenied": 2, "forbidden": 1},
+				"byNamespace": []map[string]interface{}{{"namespace": "kube-system", "totalEvents": 8, "riskLevel": "critical"}},
+			}),
+		},
+	})
+
 	// --- CNI Plugin Health & Network Stack Configuration Auditor (v16.93) ---
 	add("/api/operations/cni-health", "get", OpenAPIOperation{
 		Summary:     "CNI plugin health & network stack configuration auditor",
