@@ -4,6 +4,26 @@
 
 ---
 
+## v17.09-v17.14 (2026-07-15)
+
+### v17.09: API 文档同步 v17.03-v17.08 (维度5: 文档)
+- CHANGELOG + API.md + en/API.md 同步 v17.03-v17.08
+
+### v17.10: Pod 重启模式与 CrashLoop 聚类审计 (维度3: 运维)
+- `GET /api/operations/restart-storm` — 高重启检测，命名空间聚类，同镜像级联，热点 Pod
+
+### v17.11: 容器镜像来源与注册表信任审计 (维度4: 安全)
+- `GET /api/security/image-provenance` — 受信任/不受信任注册表，摘要固定，:latest 标签检测
+
+### v17.12: Pod 资源请求密度与调度适配审计 (维度6: 可扩展性)
+- `GET /api/scalability/scheduling-fit` — 每节点装箱率，过度/低配置检测，无请求 Pod，bin-packing 效率
+
+### v17.13: 服务端点与 Pod 就绪状态不匹配审计 (维度1: 产品)
+- `GET /api/product/endpoint-mismatch` — 死服务检测，过期端点，选择器匹配验证
+
+### v17.14: Pod 就绪门控合规与自定义条件审计 (维度2: 部署)
+- `GET /api/deployment/readiness-gate` — 就绪门控检测，被阻塞 Pod，未知门控条件
+
 ## v17.03-v17.08 (2026-07-15)
 
 ### v17.03: API 文档同步 v16.97-v17.02 (维度5: 文档)
