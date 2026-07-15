@@ -4071,6 +4071,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Service Endpoint vs Pod Readiness Mismatch Auditor (v17.13) ---
+	add("/api/product/endpoint-mismatch", "get", OpenAPIOperation{
+		Summary:     "Service endpoint vs pod readiness mismatch auditor",
+		OperationID: "endpointMismatch",
+		Tags:        []string{"Product", "Service", "Endpoints"},
+		Description: "Audits service endpoint vs pod readiness: dead services (no ready endpoints), stale endpoints (endpoint/pod mismatch), selector matching, per-namespace stats. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Endpoint mismatch analysis", map[string]interface{}{
+				"summary":        map[string]interface{}{"totalServices": 20, "deadServices": 2, "mismatchedServices": 1},
+				"mismatchedSvcs": []map[string]interface{}{{"name": "api", "readyEndpoints": 1, "readyPods": 2}},
+			}),
+		},
+	})
+
 	// --- Deployment Env Config Drift & ConfigMap/Secret Reference Auditor (v16.96) ---
 	add("/api/deployment/env-config-drift", "get", OpenAPIOperation{
 		Summary:     "Deployment env config drift & ConfigMap/Secret reference auditor",

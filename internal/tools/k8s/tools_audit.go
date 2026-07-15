@@ -177,6 +177,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:ingress-tls", "/api/product/ingress-tls", "Ingress TLS certificate & HTTPS enforcement auditor"},
 	{"product:east-west-traffic", "/api/product/east-west-traffic", "East-west traffic & service-to-service connectivity auditor"},
 	{"product:port-exposure", "/api/product/port-exposure", "Container port exposure & named port consistency auditor"},
+	{"product:endpoint-mismatch", "/api/product/endpoint-mismatch", "Service endpoint vs pod readiness mismatch auditor"},
 	{"deployment:env-config-drift", "/api/deployment/env-config-drift", "Deployment env config drift & ConfigMap/Secret reference auditor"},
 	{"deployment:traceability", "/api/deployment/traceability", "Deployment reproducibility & CI/CD traceability auditor"},
 	{"deployment:termination-audit", "/api/deployment/termination-audit", "Pod termination message & exit code pattern auditor"},

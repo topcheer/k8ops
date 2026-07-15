@@ -306,6 +306,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/ingress-tls", s.cacheMiddleware(120*time.Second, s.handleIngressTLS))                                // ingress TLS certificate & HTTPS enforcement auditor
 	mux.HandleFunc("/api/product/east-west-traffic", s.cacheMiddleware(120*time.Second, s.handleEastWestTraffic))                     // east-west traffic & service-to-service connectivity auditor
 	mux.HandleFunc("/api/product/port-exposure", s.cacheMiddleware(120*time.Second, s.handlePortExposure))                            // container port exposure & named port consistency auditor
+	mux.HandleFunc("/api/product/endpoint-mismatch", s.cacheMiddleware(60*time.Second, s.handleEndpointMismatch))                     // service endpoint vs pod readiness mismatch auditor
 	mux.HandleFunc("/api/deployment/env-config-drift", s.cacheMiddleware(120*time.Second, s.handleEnvConfigDrift))                    // deployment env config drift & ConfigMap/Secret reference auditor
 	mux.HandleFunc("/api/deployment/traceability", s.cacheMiddleware(120*time.Second, s.handleDeployTraceability))                    // deployment reproducibility & CI/CD traceability auditor
 	mux.HandleFunc("/api/deployment/termination-audit", s.cacheMiddleware(120*time.Second, s.handleTerminationAudit))                 // pod termination message & exit code pattern auditor
