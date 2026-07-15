@@ -4015,6 +4015,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Container Port Exposure & Named Port Consistency Auditor (v17.07) ---
+	add("/api/product/port-exposure", "get", OpenAPIOperation{
+		Summary:     "Container port exposure & named port consistency auditor",
+		OperationID: "portExposure",
+		Tags:        []string{"Product", "Network", "Ports"},
+		Description: "Audits container port configuration: hostPort conflicts, unnamed ports, hostPort usage risk, port naming consistency. Per-workload port mapping. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Port exposure analysis", map[string]interface{}{
+				"summary":   map[string]interface{}{"totalContainers": 10, "withHostPort": 2, "hostPortConflicts": 1},
+				"conflicts": []map[string]interface{}{{"port": 8080, "type": "host-port-conflict", "severity": "critical"}},
+			}),
+		},
+	})
+
 	// --- Deployment Env Config Drift & ConfigMap/Secret Reference Auditor (v16.96) ---
 	add("/api/deployment/env-config-drift", "get", OpenAPIOperation{
 		Summary:     "Deployment env config drift & ConfigMap/Secret reference auditor",

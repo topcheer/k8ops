@@ -173,6 +173,7 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:scaling-history", "/api/scalability/scaling-history", "Cluster scaling history & autoscaler event timeline auditor"},
 	{"product:ingress-tls", "/api/product/ingress-tls", "Ingress TLS certificate & HTTPS enforcement auditor"},
 	{"product:east-west-traffic", "/api/product/east-west-traffic", "East-west traffic & service-to-service connectivity auditor"},
+	{"product:port-exposure", "/api/product/port-exposure", "Container port exposure & named port consistency auditor"},
 	{"deployment:env-config-drift", "/api/deployment/env-config-drift", "Deployment env config drift & ConfigMap/Secret reference auditor"},
 	{"deployment:traceability", "/api/deployment/traceability", "Deployment reproducibility & CI/CD traceability auditor"},
 	{"product:pv-access", "/api/product/pv-access", "PV access mode & multi-attach risk auditor"},
