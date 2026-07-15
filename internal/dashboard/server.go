@@ -345,6 +345,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/config-mount-risk", s.cacheMiddleware(60*time.Second, s.handleConfigMountRisk))                      // ConfigMap & Secret mount injection risk auditor
 	mux.HandleFunc("/api/product/pv-access", s.cacheMiddleware(120*time.Second, s.handlePVAccess))                                    // PV access mode & multi-attach risk auditor
 	mux.HandleFunc("/api/product/traffic-policy", s.cacheMiddleware(120*time.Second, s.handleTrafficPolicy))                          // service traffic policy & routing configuration auditor
+	mux.HandleFunc("/api/product/priority-preemption", s.cacheMiddleware(60*time.Second, s.handlePriorityPreemption))                 // pod priority preemption & scheduling starvation risk analyzer
 	mux.HandleFunc("/api/scalability/overcommit", s.cacheMiddleware(60*time.Second, s.handleOvercommitAnalysis))                      // resource over-commit & pressure
 	mux.HandleFunc("/api/scalability/autoscale-recommendations", s.cacheMiddleware(60*time.Second, s.handleAutoscaleRecommendations)) // HPA/VPA right-sizing
 	mux.HandleFunc("/api/scalability/pvc-analysis", s.cacheMiddleware(60*time.Second, s.handlePVCAnalysis))                           // PVC binding & storage performance

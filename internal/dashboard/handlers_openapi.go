@@ -3639,6 +3639,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Priority Preemption & Scheduling Starvation Risk (v17.19) ---
+	add("/api/product/priority-preemption", "get", OpenAPIOperation{
+		Summary:     "Pod priority preemption & scheduling starvation risk analyzer",
+		OperationID: "priorityPreemption",
+		Tags:        []string{"Product", "Scheduling", "PriorityClass"},
+		Description: "Analyzes pod priority classes, preemption vulnerability, and scheduling starvation: PriorityClass distribution & usage, preemption risks (negative/low priority pods), starvation risks (pending pods with low priority), priority heatmap, pending pod queue, recommendations for improving scheduling fairness. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Priority preemption analysis", map[string]interface{}{
+				"score":           85,
+				"status":          "healthy",
+				"summary":         map[string]interface{}{"totalPriorityClasses": 3, "podsWithPriority": 20, "pendingPods": 1},
+				"priorityHeatmap": []map[string]interface{}{{"range": "1K-99K (Normal)", "podCount": 15, "riskLevel": "low"}},
+			}),
+		},
+	})
+
 	// --- DaemonSet Rollout & Node Coverage Auditor (v16.73) ---
 	add("/api/deployment/daemonset-audit", "get", OpenAPIOperation{
 		Summary:     "DaemonSet rollout & node coverage auditor",
