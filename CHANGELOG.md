@@ -4,6 +4,26 @@
 
 ---
 
+## v17.03-v17.08 (2026-07-15)
+
+### v17.03: API 文档同步 v16.97-v17.02 (维度5: 文档)
+- CHANGELOG + API.md + en/API.md 同步 v16.97-v17.02
+
+### v17.04: 集群 Operator 与 OLM 健康审计 (维度3: 运维)
+- `GET /api/operations/operator-health` — Operator 检测，OLM 检测，Pod 就绪状态，CrashLoopBackOff，高重启次数
+
+### v17.05: 命名空间安全态势与信任边界审计 (维度4: 安全)
+- `GET /api/security/namespace-posture` — PSA enforce/warn/audit，默认 SA Token，网络策略覆盖，RBAC，信任分级
+
+### v17.06: 集群扩展历史与自动伸缩事件时间线审计 (维度6: 可扩展性)
+- `GET /api/scalability/scaling-history` — HPA 扩容/缩容事件，集群自动伸缩器节点事件，失败扩展，限流，时间线
+
+### v17.07: 容器端口暴露与命名端口一致性审计 (维度1: 产品)
+- `GET /api/product/port-exposure` — hostPort 冲突，未命名端口，hostPort 使用风险，端口命名一致性
+
+### v17.08: Pod 终止消息与退出码模式审计 (维度2: 部署)
+- `GET /api/deployment/termination-audit` — OOMKilled 检测，信号终止，非零退出码，终止消息覆盖率，高重启次数
+
 ## v16.97-v17.02 (2026-07-14)
 
 ### v16.97: API 文档同步 v16.89-v16.96 (维度5: 文档)

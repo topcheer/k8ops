@@ -2912,5 +2912,10 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 173 | /api/scalability/node-drain-readiness | Scalability | v17.00 | 节点排空与轮换就绪审计 |
 | 174 | /api/product/east-west-traffic | Product | v17.01 | 东西向流量与服务间连通性审计 |
 | 175 | /api/deployment/traceability | Deployment | v17.02 | 部署可复现性与 CI/CD 可追溯性审计 |
+| 176 | /api/operations/operator-health | Operations | v17.04 | 集群 Operator 与 OLM 健康审计 |
+| 177 | /api/security/namespace-posture | Security | v17.05 | 命名空间安全态势与信任边界审计 |
+| 178 | /api/scalability/scaling-history | Scalability | v17.06 | 集群扩展历史与自动伸缩事件时间线审计 |
+| 179 | /api/product/port-exposure | Product | v17.07 | 容器端口暴露与命名端口一致性审计 |
+| 180 | /api/deployment/termination-audit | Deployment | v17.08 | Pod 终止消息与退出码模式审计 |
 
-**总计：241 个 OpenAPI 端点，248 个 Dashboard API 端点**
+**总计：246 个 OpenAPI 端点，253 个 Dashboard API 端点**

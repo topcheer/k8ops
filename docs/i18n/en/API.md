@@ -1667,13 +1667,31 @@ Monitors API server load by analyzing pod density, controller count, event volum
 - `GET /api/product/east-west-traffic` — Service exposure classification (ClusterIP/NodePort/LB/ExternalName/headless), network policy coverage, mesh sidecar coverage, cross-namespace access, publicly exposed services, per-namespace risk levels. Health score (0-100), 4 unit tests.
 
 ### v17.02: Deployment Reproducibility & CI/CD Traceability Auditor
-- `GET /api/deployment/traceability` — Version labels (app.kubernetes.io/version), git-commit annotations, build-timestamp, image digest pinning (@sha256), managed-by/part-of/created-by labels. Per-workload traceability score (0-100), missing field detection, full-trace vs no-trace classification. Health score (0-100), 4 unit tests.
+- `GET /api/deployment/traceability` — Version labels, git-commit annotations, build-timestamp, image digest pinning, managed-by/part-of/created-by labels. Per-workload traceability score (0-100). 4 unit tests.
+
+### v17.03: API Documentation Sync v16.97-v17.02
+- CHANGELOG + API.md + en/API.md synced for v16.97-v17.02
+
+### v17.04: Cluster Operator & OLM Health Auditor
+- `GET /api/operations/operator-health` — Operator detection, OLM detection, pod readiness, crash loops, high restarts, namespace isolation, failing/degraded/healthy classification. 4 unit tests.
+
+### v17.05: Namespace Security Posture & Trust Boundary Auditor
+- `GET /api/security/namespace-posture` — PSA enforce/warn/audit, default SA token auto-mount, network policy coverage, RBAC role bindings, resource quota, limit range, trust level classification. 4 unit tests.
+
+### v17.06: Cluster Scaling History & Autoscaler Event Timeline Auditor
+- `GET /api/scalability/scaling-history` — HPA scale-up/down events, cluster autoscaler node events, failed scaling, throttled scaling, hourly timeline. 4 unit tests.
+
+### v17.07: Container Port Exposure & Named Port Consistency Auditor
+- `GET /api/product/port-exposure` — HostPort conflicts, unnamed ports, hostPort usage risk, port naming consistency, per-workload port mapping. 4 unit tests.
+
+### v17.08: Pod Termination Message & Exit Code Pattern Auditor
+- `GET /api/deployment/termination-audit` — OOMKilled detection, signal terminations, non-zero exit codes, termination message coverage, high restart count, exit code distribution. 4 unit tests.
 
 ---
 
 ## API Summary
 
-**Total: 241 OpenAPI endpoints, 248 Dashboard API endpoints** across 6 dimensions:
+**Total: 246 OpenAPI endpoints, 253 Dashboard API endpoints** across 6 dimensions:
 - **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance, init container audit, CronJob schedule conflict, external secret health, endpoint & DNS health, ConfigMap mount risk, PV access mode & multi-attach risk, service traffic policy & routing, container runtime class & OCI image compliance, cert-manager health & certificate renewal, ingress TLS & HTTPS enforcement, east-west traffic & service-to-service connectivity
 - **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness, replica availability, surge risk, startup latency, progressive delivery, ReplicaSet staleness, DORA metrics, Helm release health, GitOps sync, DaemonSet rollout & node coverage, image pull policy & secret management, resource quota impact & namespace capacity, env config drift & ConfigMap/Secret reference, deployment reproducibility & CI/CD traceability
 - **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor, etcd health, API load, Prometheus rule health, Alertmanager health, Grafana health, metrics pipeline, audit log health, alert noise, API Priority & Fairness, log aggregation & forwarding pipeline health, CNI plugin health & network stack configuration, observability stack integration health
