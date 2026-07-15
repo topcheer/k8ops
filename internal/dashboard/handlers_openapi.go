@@ -4124,6 +4124,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Workload Attack Surface & Blast Radius Analyzer (v17.29) ---
+	add("/api/security/blast-radius", "get", OpenAPIOperation{
+		Summary:     "Workload attack surface & blast radius analyzer",
+		OperationID: "blastRadius",
+		Tags:        []string{"Security", "AttackSurface", "BlastRadius"},
+		Description: "Scores each pod's blast radius: privileged containers, hostNetwork/PID/IPC, hostPath mounts (including container runtime sockets), dangerous capabilities (SYS_ADMIN/NET_ADMIN), privilege escalation, mounted secret count. Per-namespace stats, attack vector mitigation, risk heatmap. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Blast radius analysis", map[string]interface{}{
+				"score":         72,
+				"summary":       map[string]interface{}{"totalPods": 50, "criticalRiskPods": 2, "privilegedPods": 3, "hostNetworkPods": 1},
+				"attackVectors": []map[string]interface{}{{"vector": "privileged", "count": 3, "severity": "critical"}},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",

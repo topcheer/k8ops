@@ -198,6 +198,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:mesh-injection", "/api/product/mesh-injection", "Service mesh injection coverage & namespace adoption analyzer"},
 	{"deployment:revision-diff", "/api/deployment/revision-diff", "Deployment revision diff & pod template change impact analyzer"},
 	{"operations:coredns-health", "/api/operations/coredns-health", "CoreDNS configuration & resolution health auditor"},
+	{"security:blast-radius", "/api/security/blast-radius", "Workload attack surface & blast radius analyzer"},
 	{"deployment:daemonset-audit", "/api/deployment/daemonset-audit", "DaemonSet rollout & node coverage auditor"},
 	{"scalability:capacity-plan", "/api/scalability/capacity-plan", "Capacity planning & growth trend predictor"},
 

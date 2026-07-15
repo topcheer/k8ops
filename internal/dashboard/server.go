@@ -297,6 +297,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/image-provenance", s.cacheMiddleware(120*time.Second, s.handleImageProvenance))           // container image provenance & registry trust auditor
 	mux.HandleFunc("/api/security/threat-timeline", s.cacheMiddleware(60*time.Second, s.handleThreatTimeline))              // security event timeline & threat detection pattern auditor
 	mux.HandleFunc("/api/security/secret-age", s.cacheMiddleware(120*time.Second, s.handleSecretAge))                       // secret age & stale credential tracker
+	mux.HandleFunc("/api/security/blast-radius", s.cacheMiddleware(120*time.Second, s.handleBlastRadius))                   // workload attack surface & blast radius analyzer
 	mux.HandleFunc("/api/operations/cni-health", s.cacheMiddleware(120*time.Second, s.handleCNIHealth))                     // CNI plugin health & network stack configuration auditor
 	mux.HandleFunc("/api/operations/observability-stack", s.cacheMiddleware(120*time.Second, s.handleObservabilityStack))   // observability stack integration health auditor
 	mux.HandleFunc("/api/operations/operator-health", s.cacheMiddleware(120*time.Second, s.handleOperatorHealth))           // cluster operator & OLM health auditor
