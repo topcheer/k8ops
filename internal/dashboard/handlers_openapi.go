@@ -4225,6 +4225,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Cluster Carbon Footprint & Sustainability Analyzer (v17.35) ---
+	add("/api/scalability/carbon-footprint", "get", OpenAPIOperation{
+		Summary:     "Cluster carbon footprint & sustainability metrics analyzer",
+		OperationID: "carbonFootprint",
+		Tags:        []string{"Scalability", "FinOps", "Sustainability", "ESG"},
+		Description: "Estimates cluster-wide energy consumption and carbon emissions. Detects cloud region from node metadata, maps to regional grid carbon intensity (gCO2/kWh). Calculates per-namespace and per-workload carbon attribution based on CPU/memory resource requests. Identifies carbon reduction opportunities: resource consolidation, workload right-sizing, green-hours scheduling, region relocation. Energy breakdown by component (CPU, memory, storage, network, PUE overhead). Green score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Carbon footprint analysis", map[string]interface{}{
+				"summary":       map[string]interface{}{"totalPowerKW": 2.5, "monthlyCO2Kg": 612, "carbonIntensity": 340, "region": "AWS us-east-1", "wastedCO2KgMonth": 150},
+				"byNamespace":   []map[string]interface{}{{"namespace": "prod", "monthlyCO2Kg": 250, "pctClusterTotal": 40}},
+				"opportunities": []map[string]interface{}{{"type": "consolidate", "potentialSavingCO2KgMonth": 150, "severity": "high"}},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",

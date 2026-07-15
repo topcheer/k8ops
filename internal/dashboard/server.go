@@ -303,6 +303,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/incident-correlation", s.cacheMiddleware(30*time.Second, s.handleIncidentCorrelation))  // multi-signal incident correlation & root cause engine
 	mux.HandleFunc("/api/product/service-topology", s.cacheMiddleware(120*time.Second, s.handleServiceTopology))            // cluster-wide service dependency topology & cascade risk analyzer
 	mux.HandleFunc("/api/deployment/chaos-readiness", s.cacheMiddleware(120*time.Second, s.handleChaosReadiness))           // chaos engineering readiness assessment & experiment recommender
+	mux.HandleFunc("/api/scalability/carbon-footprint", s.cacheMiddleware(300*time.Second, s.handleCarbonFootprint))        // cluster carbon footprint & sustainability analyzer
 	mux.HandleFunc("/api/operations/operator-health", s.cacheMiddleware(120*time.Second, s.handleOperatorHealth))           // cluster operator & OLM health auditor
 	mux.HandleFunc("/api/operations/restart-storm", s.cacheMiddleware(60*time.Second, s.handleRestartStorm))                // pod restart pattern & crashloop clustering auditor
 	mux.HandleFunc("/api/operations/webhook-health", s.cacheMiddleware(120*time.Second, s.handleWebhookHealth))             // admission webhook configuration health & performance risk auditor
