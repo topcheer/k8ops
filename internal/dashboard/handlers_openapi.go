@@ -3669,6 +3669,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Concurrency Guard & Rolling Update Collision Detector (v17.20) ---
+	add("/api/deployment/concurrency-guard", "get", OpenAPIOperation{
+		Summary:     "Deployment concurrency & rolling update collision detector",
+		OperationID: "concurrencyGuard",
+		Tags:        []string{"Deployment", "RollingUpdate", "Concurrency"},
+		Description: "Detects concurrent rolling update collisions: active rollouts, namespace-level concurrency (multiple workloads updating simultaneously), surge budget exhaustion risk, node saturation during rollouts, deployment window safety assessment. Provides safeToDeploy flag, blockers, and staggered deployment recommendations. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Concurrency guard analysis", map[string]interface{}{
+				"safeToDeploy": true,
+				"score":        95,
+				"summary":      map[string]interface{}{"activeRollouts": 0, "collisionRisks": 0, "totalSurgePods": 12},
+			}),
+		},
+	})
+
 	// --- Security Policy Drift & Baseline Configuration Auditor (v16.74) ---
 	add("/api/security/policy-drift", "get", OpenAPIOperation{
 		Summary:     "Security policy drift & baseline configuration auditor",

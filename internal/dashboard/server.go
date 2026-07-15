@@ -381,24 +381,25 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/ephemeral-storage", s.cacheMiddleware(60*time.Second, s.handleEphemeralStorage))                  // ephemeral storage & emptyDir limit compliance
 	mux.HandleFunc("/api/deployment/config-sync", s.cacheMiddleware(60*time.Second, s.handleConfigSync))                              // ConfigMap/Secret config sync & staleness detector
 	mux.HandleFunc("/api/deployment/sidecar-audit", s.cacheMiddleware(60*time.Second, s.handleSidecarAudit))
-	mux.HandleFunc("/api/deployment/restart-policy", s.cacheMiddleware(60*time.Second, s.handleRestartPolicy))             // restart policy & lifecycle hook auditor                          // sidecar container overhead & injection auditor
-	mux.HandleFunc("/api/deployment/scale-readiness", s.cacheMiddleware(60*time.Second, s.handleScaleReadiness))           // deployment scale readiness & autoscaling gap detector
-	mux.HandleFunc("/api/deployment/rollout-health", s.cacheMiddleware(30*time.Second, s.handleRolloutHealth))             // deployment rollout strategy & health analyzer
-	mux.HandleFunc("/api/deployment/probe-compliance", s.cacheMiddleware(60*time.Second, s.handleProbeCompliance))         // health probe compliance auditor
-	mux.HandleFunc("/api/deployment/resource-limits", s.cacheMiddleware(60*time.Second, s.handleResourceLimitsAudit))      // resource limit & enforcement gap audit
-	mux.HandleFunc("/api/deployment/graceful-shutdown", s.cacheMiddleware(60*time.Second, s.handleGracefulShutdown))       // graceful shutdown & termination compliance
-	mux.HandleFunc("/api/deployment/update-strategy", s.cacheMiddleware(60*time.Second, s.handleUpdateStrategy))           // deployment update strategy & rollback readiness
-	mux.HandleFunc("/api/deployment/ref-integrity", s.cacheMiddleware(60*time.Second, s.handleRefIntegrity))               // Secret/ConfigMap reference integrity checker
-	mux.HandleFunc("/api/deployment/image-drift", s.cacheMiddleware(60*time.Second, s.handleImageDrift))                   // deployment image drift & version consistency detector
-	mux.HandleFunc("/api/deployment/replica-availability", s.cacheMiddleware(30*time.Second, s.handleReplicaAvailability)) // deployment replica availability & ready pod ratio monitor
-	mux.HandleFunc("/api/deployment/helm-health", s.cacheMiddleware(120*time.Second, s.handleHelmHealth))                  // Helm release health & GitOps drift detector
-	mux.HandleFunc("/api/deployment/surge-risk", s.cacheMiddleware(60*time.Second, s.handleSurgeRisk))                     // rolling update risk & surge configuration analyzer
-	mux.HandleFunc("/api/deployment/startup-latency", s.cacheMiddleware(60*time.Second, s.handleStartupLatency))           // pod startup latency & readiness performance auditor
-	mux.HandleFunc("/api/deployment/progressive-delivery", s.cacheMiddleware(60*time.Second, s.handleProgressiveDelivery)) // progressive delivery & canary rollout health auditor
-	mux.HandleFunc("/api/deployment/rs-staleness", s.cacheMiddleware(60*time.Second, s.handleRSStaleness))                 // ReplicaSet staleness & rollout history auditor
-	mux.HandleFunc("/api/deployment/gitops-sync", s.cacheMiddleware(60*time.Second, s.handleGitOpsSync))                   // ArgoCD & Flux GitOps sync status & drift auditor
-	mux.HandleFunc("/api/deployment/dora-metrics", s.cacheMiddleware(60*time.Second, s.handleDORAMetrics))                 // DORA metrics: deployment frequency, lead time, MTTR, change failure rate
-	mux.HandleFunc("/api/deployment/daemonset-audit", s.cacheMiddleware(60*time.Second, s.handleDaemonSetAudit))           // DaemonSet rollout & node coverage auditor
+	mux.HandleFunc("/api/deployment/restart-policy", s.cacheMiddleware(60*time.Second, s.handleRestartPolicy))                 // restart policy & lifecycle hook auditor                          // sidecar container overhead & injection auditor
+	mux.HandleFunc("/api/deployment/scale-readiness", s.cacheMiddleware(60*time.Second, s.handleScaleReadiness))               // deployment scale readiness & autoscaling gap detector
+	mux.HandleFunc("/api/deployment/rollout-health", s.cacheMiddleware(30*time.Second, s.handleRolloutHealth))                 // deployment rollout strategy & health analyzer
+	mux.HandleFunc("/api/deployment/probe-compliance", s.cacheMiddleware(60*time.Second, s.handleProbeCompliance))             // health probe compliance auditor
+	mux.HandleFunc("/api/deployment/resource-limits", s.cacheMiddleware(60*time.Second, s.handleResourceLimitsAudit))          // resource limit & enforcement gap audit
+	mux.HandleFunc("/api/deployment/graceful-shutdown", s.cacheMiddleware(60*time.Second, s.handleGracefulShutdown))           // graceful shutdown & termination compliance
+	mux.HandleFunc("/api/deployment/update-strategy", s.cacheMiddleware(60*time.Second, s.handleUpdateStrategy))               // deployment update strategy & rollback readiness
+	mux.HandleFunc("/api/deployment/ref-integrity", s.cacheMiddleware(60*time.Second, s.handleRefIntegrity))                   // Secret/ConfigMap reference integrity checker
+	mux.HandleFunc("/api/deployment/image-drift", s.cacheMiddleware(60*time.Second, s.handleImageDrift))                       // deployment image drift & version consistency detector
+	mux.HandleFunc("/api/deployment/replica-availability", s.cacheMiddleware(30*time.Second, s.handleReplicaAvailability))     // deployment replica availability & ready pod ratio monitor
+	mux.HandleFunc("/api/deployment/helm-health", s.cacheMiddleware(120*time.Second, s.handleHelmHealth))                      // Helm release health & GitOps drift detector
+	mux.HandleFunc("/api/deployment/surge-risk", s.cacheMiddleware(60*time.Second, s.handleSurgeRisk))                         // rolling update risk & surge configuration analyzer
+	mux.HandleFunc("/api/deployment/startup-latency", s.cacheMiddleware(60*time.Second, s.handleStartupLatency))               // pod startup latency & readiness performance auditor
+	mux.HandleFunc("/api/deployment/progressive-delivery", s.cacheMiddleware(60*time.Second, s.handleProgressiveDelivery))     // progressive delivery & canary rollout health auditor
+	mux.HandleFunc("/api/deployment/rs-staleness", s.cacheMiddleware(60*time.Second, s.handleRSStaleness))                     // ReplicaSet staleness & rollout history auditor
+	mux.HandleFunc("/api/deployment/gitops-sync", s.cacheMiddleware(60*time.Second, s.handleGitOpsSync))                       // ArgoCD & Flux GitOps sync status & drift auditor
+	mux.HandleFunc("/api/deployment/dora-metrics", s.cacheMiddleware(60*time.Second, s.handleDORAMetrics))                     // DORA metrics: deployment frequency, lead time, MTTR, change failure rate
+	mux.HandleFunc("/api/deployment/daemonset-audit", s.cacheMiddleware(60*time.Second, s.handleDaemonSetAudit))               // DaemonSet rollout & node coverage auditor
+	mux.HandleFunc("/api/deployment/concurrency-guard", s.cacheMiddleware(30*time.Second, s.handleDeploymentConcurrencyGuard)) // deployment concurrency & rolling update collision detector
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))
