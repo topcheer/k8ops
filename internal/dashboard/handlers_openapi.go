@@ -4006,6 +4006,26 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Multi-Signal Incident Correlation & Root Cause Engine (v17.32) ---
+	add("/api/operations/incident-correlation", "get", OpenAPIOperation{
+		Summary:     "Multi-signal incident correlation & root cause suggestion engine",
+		OperationID: "incidentCorrelation",
+		Tags:        []string{"Operations", "AIOps", "Incident Management"},
+		Description: "Collects signals from cluster warning events, pod lifecycle data (CrashLoopBackOff, OOMKilled, high restarts), and node pressure conditions. Correlates related signals into incident clusters using union-find with time-proximity (5min window), namespace, and node-based grouping. For each incident: determines severity, identifies probable root cause with confidence score, calculates blast radius (affected pods/namespaces/nodes/workloads), reconstructs timeline, and generates category-specific recommendations. AIOps core feature.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter to specific namespace (default: all)"),
+			queryParam("window", "Time window in minutes (default: 60, max: 360)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Incident correlation analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"totalSignals": 25, "totalIncidents": 2, "criticalCount": 1, "affectedNamespaces": 3},
+				"incidents": []map[string]interface{}{
+					{"id": "INC-001", "title": "Resource pressure in node node-1 (MemoryPressure)", "severity": "critical", "category": "resource-pressure", "signalCount": 5, "rootCause": map[string]interface{}{"description": "MemoryPressure: kubelet running out of memory", "confidence": 80}},
+				},
+			}),
+		},
+	})
+
 	// --- Cluster Operator & OLM Health Auditor (v17.04) ---
 	add("/api/operations/operator-health", "get", OpenAPIOperation{
 		Summary:     "Cluster operator & OLM health auditor",

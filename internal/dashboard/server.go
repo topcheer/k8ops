@@ -300,6 +300,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/blast-radius", s.cacheMiddleware(120*time.Second, s.handleBlastRadius))                   // workload attack surface & blast radius analyzer
 	mux.HandleFunc("/api/operations/cni-health", s.cacheMiddleware(120*time.Second, s.handleCNIHealth))                     // CNI plugin health & network stack configuration auditor
 	mux.HandleFunc("/api/operations/observability-stack", s.cacheMiddleware(120*time.Second, s.handleObservabilityStack))   // observability stack integration health auditor
+	mux.HandleFunc("/api/operations/incident-correlation", s.cacheMiddleware(30*time.Second, s.handleIncidentCorrelation))  // multi-signal incident correlation & root cause engine
 	mux.HandleFunc("/api/operations/operator-health", s.cacheMiddleware(120*time.Second, s.handleOperatorHealth))           // cluster operator & OLM health auditor
 	mux.HandleFunc("/api/operations/restart-storm", s.cacheMiddleware(60*time.Second, s.handleRestartStorm))                // pod restart pattern & crashloop clustering auditor
 	mux.HandleFunc("/api/operations/webhook-health", s.cacheMiddleware(120*time.Second, s.handleWebhookHealth))             // admission webhook configuration health & performance risk auditor
