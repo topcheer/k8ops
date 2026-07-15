@@ -4064,6 +4064,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Extended Resource & Device Plugin Health Auditor (v17.24) ---
+	add("/api/scalability/ext-resource-health", "get", OpenAPIOperation{
+		Summary:     "Extended resource & device plugin health auditor",
+		OperationID: "extResourceHealth",
+		Tags:        []string{"Scalability", "GPU", "DevicePlugin"},
+		Description: "Audits extended resources (GPU, FPGA, custom devices): device plugin pod health, GPU node tracking with model/driver version, resource utilization per type, per-node allocation, fully allocated GPU warnings, crash loop detection. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Extended resource health", map[string]interface{}{
+				"score":     90,
+				"summary":   map[string]interface{}{"totalExtendedResources": 1, "gpuNodes": 2, "totalDevicePlugins": 2},
+				"gpuHealth": []map[string]interface{}{{"node": "gpu-node1", "gpuCount": 4, "allocated": 2, "model": "A100-SXM4"}},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",
