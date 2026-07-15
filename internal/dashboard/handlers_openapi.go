@@ -3905,6 +3905,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Container Image Provenance & Registry Trust Auditor (v17.11) ---
+	add("/api/security/image-provenance", "get", OpenAPIOperation{
+		Summary:     "Container image provenance & registry trust auditor",
+		OperationID: "imageProvenance",
+		Tags:        []string{"Security", "Images", "SupplyChain"},
+		Description: "Audits container image provenance: trusted vs untrusted registries, digest pinning (@sha256), mutable tag detection (:latest), per-registry and per-namespace stats. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Image provenance analysis", map[string]interface{}{
+				"summary":    map[string]interface{}{"totalImages": 15, "withDigest": 5, "latestTag": 3, "untrustedRegistries": 2},
+				"byRegistry": []map[string]interface{}{{"registry": "docker.io", "imageCount": 5, "trusted": false}},
+			}),
+		},
+	})
+
 	// --- CNI Plugin Health & Network Stack Configuration Auditor (v16.93) ---
 	add("/api/operations/cni-health", "get", OpenAPIOperation{
 		Summary:     "CNI plugin health & network stack configuration auditor",

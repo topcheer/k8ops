@@ -294,6 +294,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/runtime-threat", s.cacheMiddleware(120*time.Second, s.handleRuntimeThreat))                         // runtime threat detection & container anomaly auditor
 	mux.HandleFunc("/api/security/secret-posture", s.cacheMiddleware(120*time.Second, s.handleSecretPosture))                         // secret management posture & external secret integration auditor
 	mux.HandleFunc("/api/security/namespace-posture", s.cacheMiddleware(120*time.Second, s.handleNamespaceSecurity))                  // namespace security posture & trust boundary auditor
+	mux.HandleFunc("/api/security/image-provenance", s.cacheMiddleware(120*time.Second, s.handleImageProvenance))                     // container image provenance & registry trust auditor
 	mux.HandleFunc("/api/operations/cni-health", s.cacheMiddleware(120*time.Second, s.handleCNIHealth))                               // CNI plugin health & network stack configuration auditor
 	mux.HandleFunc("/api/operations/observability-stack", s.cacheMiddleware(120*time.Second, s.handleObservabilityStack))             // observability stack integration health auditor
 	mux.HandleFunc("/api/operations/operator-health", s.cacheMiddleware(120*time.Second, s.handleOperatorHealth))                     // cluster operator & OLM health auditor

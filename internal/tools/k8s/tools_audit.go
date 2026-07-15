@@ -165,6 +165,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:runtime-threat", "/api/security/runtime-threat", "Runtime threat detection & container anomaly auditor"},
 	{"security:secret-posture", "/api/security/secret-posture", "Secret management posture & external secret integration auditor"},
 	{"security:namespace-posture", "/api/security/namespace-posture", "Namespace security posture & trust boundary auditor"},
+	{"security:image-provenance", "/api/security/image-provenance", "Container image provenance & registry trust auditor"},
 	{"operations:cni-health", "/api/operations/cni-health", "CNI plugin health & network stack configuration auditor"},
 	{"operations:observability-stack", "/api/operations/observability-stack", "Observability stack integration health auditor"},
 	{"operations:operator-health", "/api/operations/operator-health", "Cluster operator & OLM health auditor"},
