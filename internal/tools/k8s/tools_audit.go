@@ -168,6 +168,7 @@ var auditRegistry = []auditEndpoint{
 	{"operations:cni-health", "/api/operations/cni-health", "CNI plugin health & network stack configuration auditor"},
 	{"operations:observability-stack", "/api/operations/observability-stack", "Observability stack integration health auditor"},
 	{"operations:operator-health", "/api/operations/operator-health", "Cluster operator & OLM health auditor"},
+	{"operations:restart-storm", "/api/operations/restart-storm", "Pod restart pattern & crashloop clustering auditor"},
 	{"scalability:budget-alert", "/api/scalability/budget-alert", "Cost budget alert & namespace spending limit auditor"},
 	{"scalability:node-drain-readiness", "/api/scalability/node-drain-readiness", "Node drain & rotation readiness auditor"},
 	{"scalability:scaling-history", "/api/scalability/scaling-history", "Cluster scaling history & autoscaler event timeline auditor"},

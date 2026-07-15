@@ -3946,6 +3946,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Restart Pattern & CrashLoop Clustering Auditor (v17.10) ---
+	add("/api/operations/restart-storm", "get", OpenAPIOperation{
+		Summary:     "Pod restart pattern & crashloop clustering auditor",
+		OperationID: "restartStorm",
+		Tags:        []string{"Operations", "Reliability", "Diagnostics"},
+		Description: "Audits pod restart patterns: high restart count detection (>5/>20), namespace clustering (multiple pods restarting in same namespace), same-image cascade detection, per-namespace restart stats, hotspot pods. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Restart storm analysis", map[string]interface{}{
+				"summary":     map[string]interface{}{"totalRestarts": 25, "highRestartPods": 3, "clusteringDetected": true},
+				"hotspotPods": []map[string]interface{}{{"name": "app-1", "restarts": 10}},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",
