@@ -307,6 +307,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/admission-policy-audit", s.cacheMiddleware(120*time.Second, s.handleAdmissionPolicyAudit)) // admission control policy gap & CEL expression auditor
 	mux.HandleFunc("/api/operations/pod-anomaly", s.cacheMiddleware(60*time.Second, s.handlePodAnomaly))                     // pod performance anomaly & noisy neighbor detector
 	mux.HandleFunc("/api/product/exposure-map", s.cacheMiddleware(120*time.Second, s.handleExposureMap))                     // cluster external exposure surface risk map
+	mux.HandleFunc("/api/scalability/scale-simulator", s.cacheMiddleware(60*time.Second, s.handleScaleSimulator))           // workload scaling impact simulator
 	mux.HandleFunc("/api/operations/operator-health", s.cacheMiddleware(120*time.Second, s.handleOperatorHealth))            // cluster operator & OLM health auditor
 	mux.HandleFunc("/api/operations/restart-storm", s.cacheMiddleware(60*time.Second, s.handleRestartStorm))                 // pod restart pattern & crashloop clustering auditor
 	mux.HandleFunc("/api/operations/webhook-health", s.cacheMiddleware(120*time.Second, s.handleWebhookHealth))              // admission webhook configuration health & performance risk auditor

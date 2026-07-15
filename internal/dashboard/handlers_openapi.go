@@ -4288,6 +4288,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Workload Scaling Impact Simulator (v17.40) ---
+	add("/api/scalability/scale-simulator", "get", OpenAPIOperation{
+		Summary:     "Workload scaling impact simulator (what-if analysis)",
+		OperationID: "scaleSimulator",
+		Tags:        []string{"Scalability", "AIOps", "Capacity Planning"},
+		Description: "Simulates the impact of scaling a workload to N replicas. Checks node capacity (CPU/memory), namespace ResourceQuota limits, pod count quotas, HPA alignment, and PDB constraints. Returns verdict (can-scale, risky, cannot-scale) with detailed checks and blockers.",
+		Parameters: []OpenAPIParam{
+			queryParam("workload", "Workload name (Deployment or StatefulSet)"),
+			queryParam("namespace", "Namespace (default: default)"),
+			queryParam("replicas", "Target replica count"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Scale simulation result", map[string]interface{}{
+				"verdict": "can-scale",
+				"checks":  []map[string]interface{}{{"name": "Node CPU Capacity", "status": "pass"}},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",

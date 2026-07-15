@@ -210,6 +210,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:admission-policy-audit", "/api/security/admission-policy-audit", "Admission control policy gap & CEL expression auditor"},
 	{"operations:pod-anomaly", "/api/operations/pod-anomaly", "Pod performance anomaly & noisy neighbor detector"},
 	{"product:exposure-map", "/api/product/exposure-map", "Cluster external exposure surface risk map"},
+	{"scalability:scale-simulator", "/api/scalability/scale-simulator", "Workload scaling impact simulator"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
