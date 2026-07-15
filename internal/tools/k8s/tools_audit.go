@@ -208,6 +208,7 @@ var auditRegistry = []auditEndpoint{
 	{"deployment:chaos-readiness", "/api/deployment/chaos-readiness", "Chaos engineering readiness assessment & experiment recommender"},
 	{"scalability:carbon-footprint", "/api/scalability/carbon-footprint", "Cluster carbon footprint & sustainability metrics analyzer"},
 	{"security:admission-policy-audit", "/api/security/admission-policy-audit", "Admission control policy gap & CEL expression auditor"},
+	{"operations:pod-anomaly", "/api/operations/pod-anomaly", "Pod performance anomaly & noisy neighbor detector"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

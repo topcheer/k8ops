@@ -4254,6 +4254,23 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Performance Anomaly & Noisy Neighbor Detector (v17.38) ---
+	add("/api/operations/pod-anomaly", "get", OpenAPIOperation{
+		Summary:     "Pod performance anomaly & noisy neighbor detector",
+		OperationID: "podAnomaly",
+		Tags:        []string{"Operations", "AIOps", "Anomaly Detection"},
+		Description: "Detects pod performance anomalies by comparing pods against workload peers. Identifies outlier pods with significantly higher restart counts, noisy neighbors interfering with co-located workloads, and node hotspots with concentrated failures. Uses statistical peer comparison (variance analysis) to detect inconsistent replica behavior.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter to specific namespace"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Pod anomaly analysis", map[string]interface{}{
+				"summary":       map[string]interface{}{"analyzedPods": 120, "anomalousPods": 8, "noisyNodes": 2},
+				"anomalousPods": []map[string]interface{}{{"name": "api-pod-3", "type": "outlier", "restartCount": 12}},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",
