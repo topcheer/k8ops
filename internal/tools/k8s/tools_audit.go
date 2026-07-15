@@ -215,6 +215,7 @@ var auditRegistry = []auditEndpoint{
 	{"operations:pod-lifecycle", "/api/operations/pod-lifecycle", "Pod lifecycle stage analyzer & dwell-time tracker"},
 	{"security:rbac-graph", "/api/security/rbac-graph", "RBAC permission graph & escalation path analyzer"},
 	{"product:gateway-audit", "/api/product/gateway-audit", "Gateway API & ingress controller health audit"},
+	{"scalability:cost-allocation", "/api/scalability/cost-allocation", "Namespace cost allocation & chargeback report"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

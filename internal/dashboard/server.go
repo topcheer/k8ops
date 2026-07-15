@@ -312,6 +312,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/pod-lifecycle", s.cacheMiddleware(60*time.Second, s.handlePodLifecycle))                 // pod lifecycle stage analyzer & dwell-time tracker
 	mux.HandleFunc("/api/security/rbac-graph", s.cacheMiddleware(120*time.Second, s.handleRBACGraph))                        // RBAC permission graph & escalation path analyzer
 	mux.HandleFunc("/api/product/gateway-audit", s.cacheMiddleware(120*time.Second, s.handleGatewayAudit))                   // gateway API & ingress controller health audit
+	mux.HandleFunc("/api/scalability/cost-allocation", s.cacheMiddleware(300*time.Second, s.handleCostAllocation))           // namespace cost allocation & chargeback report
 	mux.HandleFunc("/api/operations/operator-health", s.cacheMiddleware(120*time.Second, s.handleOperatorHealth))            // cluster operator & OLM health auditor
 	mux.HandleFunc("/api/operations/restart-storm", s.cacheMiddleware(60*time.Second, s.handleRestartStorm))                 // pod restart pattern & crashloop clustering auditor
 	mux.HandleFunc("/api/operations/webhook-health", s.cacheMiddleware(120*time.Second, s.handleWebhookHealth))              // admission webhook configuration health & performance risk auditor
