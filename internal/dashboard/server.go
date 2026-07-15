@@ -309,6 +309,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/exposure-map", s.cacheMiddleware(120*time.Second, s.handleExposureMap))                     // cluster external exposure surface risk map
 	mux.HandleFunc("/api/scalability/scale-simulator", s.cacheMiddleware(60*time.Second, s.handleScaleSimulator))            // workload scaling impact simulator
 	mux.HandleFunc("/api/deployment/rollback-risk", s.cacheMiddleware(120*time.Second, s.handleRollbackRisk))                // rollback risk & revision integrity assessor
+	mux.HandleFunc("/api/operations/pod-lifecycle", s.cacheMiddleware(60*time.Second, s.handlePodLifecycle))                 // pod lifecycle stage analyzer & dwell-time tracker
 	mux.HandleFunc("/api/operations/operator-health", s.cacheMiddleware(120*time.Second, s.handleOperatorHealth))            // cluster operator & OLM health auditor
 	mux.HandleFunc("/api/operations/restart-storm", s.cacheMiddleware(60*time.Second, s.handleRestartStorm))                 // pod restart pattern & crashloop clustering auditor
 	mux.HandleFunc("/api/operations/webhook-health", s.cacheMiddleware(120*time.Second, s.handleWebhookHealth))              // admission webhook configuration health & performance risk auditor

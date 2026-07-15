@@ -4305,6 +4305,16 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Lifecycle Stage Analyzer (v17.42) ---
+	add("/api/operations/pod-lifecycle", "get", OpenAPIOperation{
+		Summary:     "Pod lifecycle stage analyzer & dwell-time tracker",
+		OperationID: "podLifecycle",
+		Tags:        []string{"Operations", "AIOps", "Lifecycle"},
+		Description: "Tracks pod lifecycle stages and dwell times. Identifies stuck pods (Pending >5min, Failed not cleaned), calculates P50/P90/P99 pending/creating/terminating durations, shows per-workload and per-node lifecycle distribution.",
+		Parameters:  []OpenAPIParam{queryParam("namespace", "Filter")},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Lifecycle analysis", map[string]interface{}{"summary": map[string]interface{}{"totalPods": 80, "running": 72}})},
+	})
+
 	// --- Workload Scaling Impact Simulator (v17.40) ---
 	add("/api/scalability/scale-simulator", "get", OpenAPIOperation{
 		Summary:     "Workload scaling impact simulator (what-if analysis)",
