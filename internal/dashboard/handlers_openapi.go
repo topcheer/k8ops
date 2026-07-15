@@ -4206,6 +4206,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Chaos Engineering Readiness Assessment (v17.34) ---
+	add("/api/deployment/chaos-readiness", "get", OpenAPIOperation{
+		Summary:     "Chaos engineering readiness assessment & experiment recommender",
+		OperationID: "chaosReadiness",
+		Tags:        []string{"Deployment", "AIOps", "Resilience", "Chaos Engineering"},
+		Description: "Assesses every workload's resilience to chaos engineering experiments. Evaluates 6 readiness criteria: multi-replica HA, PDB coverage, health probes (liveness+readiness), graceful shutdown (PreStop hook + grace period), anti-affinity/topology spread, and multi-zone distribution. Assigns readiness level (ready/partial/fragile) with 0-100 score. Generates safe chaos experiment recommendations (pod-kill, network-latency, cpu-stress) for ready workloads. Calculates blast radius and max tolerable failures. AIOps core resilience feature.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter to specific namespace (default: all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Chaos readiness analysis", map[string]interface{}{
+				"summary":          map[string]interface{}{"totalWorkloads": 30, "readyForChaos": 12, "fragileCount": 5, "readinessScore": 68},
+				"workloads":        []map[string]interface{}{{"name": "api", "readinessLevel": "ready", "score": 85, "maxTolerableFailure": 1}},
+				"experiments":      []map[string]interface{}{{"name": "pod-kill-api", "type": "pod-kill", "safe": true, "blastRadius": "small"}},
+				"fragileWorkloads": []map[string]interface{}{{"name": "singleton", "score": 15, "readinessLevel": "fragile"}},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",

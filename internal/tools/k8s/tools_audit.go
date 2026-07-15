@@ -205,6 +205,7 @@ var auditRegistry = []auditEndpoint{
 	{"deployment:daemonset-audit", "/api/deployment/daemonset-audit", "DaemonSet rollout & node coverage auditor"},
 	{"scalability:capacity-plan", "/api/scalability/capacity-plan", "Capacity planning & growth trend predictor"},
 	{"product:service-topology", "/api/product/service-topology", "Cluster-wide service dependency topology & cascade failure risk analyzer"},
+	{"deployment:chaos-readiness", "/api/deployment/chaos-readiness", "Chaos engineering readiness assessment & experiment recommender"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
