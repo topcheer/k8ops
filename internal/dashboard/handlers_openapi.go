@@ -4016,6 +4016,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Resource Request Density & Scheduling Fit Auditor (v17.12) ---
+	add("/api/scalability/scheduling-fit", "get", OpenAPIOperation{
+		Summary:     "Pod resource request density & scheduling fit auditor",
+		OperationID: "schedulingFit",
+		Tags:        []string{"Scalability", "Scheduling", "Resources"},
+		Description: "Audits pod resource request density vs node capacity: per-node packing %, over/under-provisioned pods, no-request pods, bin-packing efficiency. Fit category (underpacked/optimal/overpacked). Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Scheduling fit analysis", map[string]interface{}{
+				"summary": map[string]interface{}{"avgNodePacking": 65.5, "overpackedNodes": 1, "noRequest": 3},
+				"byNode":  []map[string]interface{}{{"nodeName": "node-1", "packingPct": 85.2, "fitCategory": "overpacked"}},
+			}),
+		},
+	})
+
 	// --- Ingress TLS Certificate & HTTPS Enforcement Auditor (v16.95) ---
 	add("/api/product/ingress-tls", "get", OpenAPIOperation{
 		Summary:     "Ingress TLS certificate & HTTPS enforcement auditor",
