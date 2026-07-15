@@ -214,6 +214,7 @@ var auditRegistry = []auditEndpoint{
 	{"deployment:rollback-risk", "/api/deployment/rollback-risk", "Rollback risk & revision integrity assessor"},
 	{"operations:pod-lifecycle", "/api/operations/pod-lifecycle", "Pod lifecycle stage analyzer & dwell-time tracker"},
 	{"security:rbac-graph", "/api/security/rbac-graph", "RBAC permission graph & escalation path analyzer"},
+	{"product:gateway-audit", "/api/product/gateway-audit", "Gateway API & ingress controller health audit"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
