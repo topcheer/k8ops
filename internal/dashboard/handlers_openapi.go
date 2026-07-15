@@ -4126,6 +4126,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Readiness Gate Compliance & Custom Condition Auditor (v17.14) ---
+	add("/api/deployment/readiness-gate", "get", OpenAPIOperation{
+		Summary:     "Pod readiness gate compliance & custom condition auditor",
+		OperationID: "readinessGate",
+		Tags:        []string{"Deployment", "Reliability", "Readiness"},
+		Description: "Audits pod readiness gates: detects workloads using custom readiness gates, blocked pods (gate condition False/Unknown), unknown gate conditions (no controller), per-namespace stats. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Readiness gate analysis", map[string]interface{}{
+				"summary":     map[string]interface{}{"withReadinessGates": 2, "gateBlockedPods": 1, "gateConditions": 3},
+				"blockedPods": []map[string]interface{}{{"name": "app-1", "condition": "myapp/ready", "status": "Unknown"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
