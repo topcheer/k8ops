@@ -211,6 +211,7 @@ var auditRegistry = []auditEndpoint{
 	{"operations:pod-anomaly", "/api/operations/pod-anomaly", "Pod performance anomaly & noisy neighbor detector"},
 	{"product:exposure-map", "/api/product/exposure-map", "Cluster external exposure surface risk map"},
 	{"scalability:scale-simulator", "/api/scalability/scale-simulator", "Workload scaling impact simulator"},
+	{"deployment:rollback-risk", "/api/deployment/rollback-risk", "Rollback risk & revision integrity assessor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

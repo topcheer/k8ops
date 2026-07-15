@@ -4288,6 +4288,23 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Rollback Risk & Revision Integrity Assessor (v17.41) ---
+	add("/api/deployment/rollback-risk", "get", OpenAPIOperation{
+		Summary:     "Rollback risk & revision integrity assessor",
+		OperationID: "rollbackRisk",
+		Tags:        []string{"Deployment", "AIOps", "Rollback"},
+		Description: "Assesses rollback readiness for every workload. Checks revision history availability, image tag stability (:latest is risky), config dependency drift, replica count for zero-downtime rollback, and workload maturity. Identifies workloads where rollback would fail or cause downtime.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter to specific namespace"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Rollback risk analysis", map[string]interface{}{
+				"summary":   map[string]interface{}{"totalWorkloads": 30, "safeRollback": 15, "highRollbackRisk": 3},
+				"workloads": []map[string]interface{}{{"name": "api", "riskLevel": "safe", "rollbackReady": true}},
+			}),
+		},
+	})
+
 	// --- Workload Scaling Impact Simulator (v17.40) ---
 	add("/api/scalability/scale-simulator", "get", OpenAPIOperation{
 		Summary:     "Workload scaling impact simulator (what-if analysis)",
