@@ -209,6 +209,7 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:carbon-footprint", "/api/scalability/carbon-footprint", "Cluster carbon footprint & sustainability metrics analyzer"},
 	{"security:admission-policy-audit", "/api/security/admission-policy-audit", "Admission control policy gap & CEL expression auditor"},
 	{"operations:pod-anomaly", "/api/operations/pod-anomaly", "Pod performance anomaly & noisy neighbor detector"},
+	{"product:exposure-map", "/api/product/exposure-map", "Cluster external exposure surface risk map"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

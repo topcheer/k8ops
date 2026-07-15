@@ -4271,6 +4271,23 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Cluster External Exposure Surface Risk Map (v17.39) ---
+	add("/api/product/exposure-map", "get", OpenAPIOperation{
+		Summary:     "Cluster external exposure surface risk map",
+		OperationID: "exposureMap",
+		Tags:        []string{"Product", "Security", "Network", "Attack Surface"},
+		Description: "Maps the entire cluster's external attack surface by tracing all network entry points (Ingress, LoadBalancer, NodePort, ExternalIP) to their backing workloads. Identifies insecure endpoints (no TLS, no auth), sensitive paths (admin/debug/metrics), orphan exposure (no backing pods), and per-namespace exposure risk. Calculates cluster-wide exposure risk score.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter to specific namespace"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Exposure surface analysis", map[string]interface{}{
+				"summary":     map[string]interface{}{"totalIngresses": 15, "withoutTLS": 3, "totalLoadBalancers": 2},
+				"entryPoints": []map[string]interface{}{{"type": "ingress", "riskLevel": "high", "hasTLS": false}},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",
