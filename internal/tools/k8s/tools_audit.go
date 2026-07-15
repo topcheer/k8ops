@@ -204,6 +204,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:replica-distribution", "/api/product/replica-distribution", "Workload replica distribution & anti-affinity coverage analyzer"},
 	{"deployment:daemonset-audit", "/api/deployment/daemonset-audit", "DaemonSet rollout & node coverage auditor"},
 	{"scalability:capacity-plan", "/api/scalability/capacity-plan", "Capacity planning & growth trend predictor"},
+	{"product:service-topology", "/api/product/service-topology", "Cluster-wide service dependency topology & cascade failure risk analyzer"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

@@ -4187,6 +4187,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Cluster-Wide Service Dependency Topology & Cascade Risk Analyzer (v17.33) ---
+	add("/api/product/service-topology", "get", OpenAPIOperation{
+		Summary:     "Cluster-wide service dependency topology & cascade failure risk analyzer",
+		OperationID: "serviceTopology",
+		Tags:        []string{"Product", "AIOps", "Topology", "Dependencies"},
+		Description: "Builds a cluster-wide service dependency graph by scanning all workloads (Deployments, StatefulSets, DaemonSets) for service DNS references in env vars. Calculates fan-in/fan-out per node, identifies critical hub services (high fan-in), detects single points of failure (non-HA services with multiple dependents), orphan services (no backing workload), isolated workloads (no dependencies), cross-namespace dependencies, and maximum dependency chain depth. Generates cascade failure risk assessment. AIOps core feature.",
+		Parameters: []OpenAPIParam{
+			queryParam("namespace", "Filter to specific namespace (default: all)"),
+		},
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Service topology analysis", map[string]interface{}{
+				"summary":      map[string]interface{}{"totalWorkloads": 30, "totalEdges": 45, "criticalNodes": 3, "crossNamespace": 5, "maxDepth": 4},
+				"nodes":        []map[string]interface{}{{"id": "Service/prod/db", "fanIn": 8, "criticality": "critical"}},
+				"edges":        []map[string]interface{}{{"from": "Deployment/prod/web", "to": "Service/prod/db", "type": "service-ref"}},
+				"criticalHubs": []map[string]interface{}{{"name": "db", "fanIn": 8, "hasHA": false, "riskLevel": "critical"}},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",
