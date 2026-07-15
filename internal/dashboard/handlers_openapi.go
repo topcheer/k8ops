@@ -3974,6 +3974,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Admission Webhook Configuration Health & Performance Risk Auditor (v17.16) ---
+	add("/api/operations/webhook-health", "get", OpenAPIOperation{
+		Summary:     "Admission webhook configuration health & performance risk auditor",
+		OperationID: "webhookHealth",
+		Tags:        []string{"Operations", "Admission", "Webhook"},
+		Description: "Audits admission webhook configurations: mutating/validating classification, fail-open vs fail-closed, timeout analysis (none/short/long), namespace selector coverage, match-all-resources detection, service vs URL reference. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Webhook health analysis", map[string]interface{}{
+				"summary":  map[string]interface{}{"totalWebhooks": 5, "failOpenCount": 2, "longTimeout": 1, "matchAllResources": 1},
+				"webhooks": []map[string]interface{}{{"name": "validator", "failurePolicy": "Ignore", "riskLevel": "medium"}},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",

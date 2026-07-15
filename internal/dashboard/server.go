@@ -299,6 +299,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/observability-stack", s.cacheMiddleware(120*time.Second, s.handleObservabilityStack))             // observability stack integration health auditor
 	mux.HandleFunc("/api/operations/operator-health", s.cacheMiddleware(120*time.Second, s.handleOperatorHealth))                     // cluster operator & OLM health auditor
 	mux.HandleFunc("/api/operations/restart-storm", s.cacheMiddleware(60*time.Second, s.handleRestartStorm))                          // pod restart pattern & crashloop clustering auditor
+	mux.HandleFunc("/api/operations/webhook-health", s.cacheMiddleware(120*time.Second, s.handleWebhookHealth))                       // admission webhook configuration health & performance risk auditor
 	mux.HandleFunc("/api/scalability/budget-alert", s.cacheMiddleware(120*time.Second, s.handleBudgetAlert))                          // cost budget alert & namespace spending limit auditor
 	mux.HandleFunc("/api/scalability/node-drain-readiness", s.cacheMiddleware(120*time.Second, s.handleNodeDrainReadiness))           // node drain & rotation readiness auditor
 	mux.HandleFunc("/api/scalability/scaling-history", s.cacheMiddleware(120*time.Second, s.handleScalingHistory))                    // cluster scaling history & autoscaler event timeline auditor
