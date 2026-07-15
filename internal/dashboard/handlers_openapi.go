@@ -4109,6 +4109,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- CoreDNS Configuration & Resolution Health Auditor (v17.28) ---
+	add("/api/operations/coredns-health", "get", OpenAPIOperation{
+		Summary:     "CoreDNS configuration & resolution health auditor",
+		OperationID: "corednsHealth",
+		Tags:        []string{"Operations", "DNS", "CoreDNS"},
+		Description: "Audits CoreDNS Deployment/DaemonSet health, Corefile plugin analysis (errors/health/ready/forward/cache/loop/reload), NodeLocal DNS Cache detection, upstream server extraction, stub domain tracking, node coverage, pod restart monitoring. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("CoreDNS health analysis", map[string]interface{}{
+				"score":          92,
+				"summary":        map[string]interface{}{"coreDNSFound": true, "readyReplicas": 2, "hasNodeLocalDNS": false},
+				"configAnalysis": map[string]interface{}{"forwardPlugin": true, "loopPlugin": true, "cachePlugin": true},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",
