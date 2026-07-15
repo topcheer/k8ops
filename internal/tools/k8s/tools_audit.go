@@ -218,6 +218,7 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:cost-allocation", "/api/scalability/cost-allocation", "Namespace cost allocation & chargeback report"},
 	{"deployment:gitops-audit", "/api/deployment/gitops-audit", "GitOps/CD pipeline health & config drift auditor"},
 	{"operations:metrics-pipeline-audit", "/api/operations/metrics-pipeline-audit", "Metrics collection pipeline integrity audit"},
+	{"security:compliance-map", "/api/security/compliance-map", "SOC2/PCI-DSS/HIPAA compliance framework mapping"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
