@@ -4058,6 +4058,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Namespace Resource Quota Saturation & Limit Exhaustion Predictor (v17.18) ---
+	add("/api/scalability/quota-saturation", "get", OpenAPIOperation{
+		Summary:     "Namespace resource quota saturation & limit exhaustion predictor",
+		OperationID: "quotaSaturation",
+		Tags:        []string{"Scalability", "Quota", "Capacity"},
+		Description: "Predicts namespace quota exhaustion: per-resource saturation %, exhausted quotas (100%), critical saturation (>90%), high (>70%), namespaces without quota. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Quota saturation analysis", map[string]interface{}{
+				"summary":     map[string]interface{}{"nsWithQuota": 5, "exhaustedQuotas": 1, "criticalSaturation": 2},
+				"byNamespace": []map[string]interface{}{{"namespace": "stressed", "maxSaturation": 100.0, "riskLevel": "critical"}},
+			}),
+		},
+	})
+
 	// --- Ingress TLS Certificate & HTTPS Enforcement Auditor (v16.95) ---
 	add("/api/product/ingress-tls", "get", OpenAPIOperation{
 		Summary:     "Ingress TLS certificate & HTTPS enforcement auditor",

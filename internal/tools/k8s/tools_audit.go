@@ -176,6 +176,7 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:node-drain-readiness", "/api/scalability/node-drain-readiness", "Node drain & rotation readiness auditor"},
 	{"scalability:scaling-history", "/api/scalability/scaling-history", "Cluster scaling history & autoscaler event timeline auditor"},
 	{"scalability:scheduling-fit", "/api/scalability/scheduling-fit", "Pod resource request density & scheduling fit auditor"},
+	{"scalability:quota-saturation", "/api/scalability/quota-saturation", "Namespace resource quota saturation & limit exhaustion predictor"},
 	{"product:ingress-tls", "/api/product/ingress-tls", "Ingress TLS certificate & HTTPS enforcement auditor"},
 	{"product:east-west-traffic", "/api/product/east-west-traffic", "East-west traffic & service-to-service connectivity auditor"},
 	{"product:port-exposure", "/api/product/port-exposure", "Container port exposure & named port consistency auditor"},
