@@ -346,6 +346,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/hpa-gap", s.cacheMiddleware(60*time.Second, s.handleHPAGap))                             // HPA target utilization gap & scaling behavior auditor
 	mux.HandleFunc("/api/product/mesh-health", s.cacheMiddleware(120*time.Second, s.handleMeshHealth))
 	mux.HandleFunc("/api/product/mesh-injection", s.cacheMiddleware(120*time.Second, s.handleMeshInjection))                          // service mesh injection coverage & namespace adoption analyzer                                // service mesh sidecar health & mTLS coverage auditor
+	mux.HandleFunc("/api/product/replica-distribution", s.cacheMiddleware(120*time.Second, s.handleReplicaDistribution))              // workload replica distribution & anti-affinity coverage analyzer
 	mux.HandleFunc("/api/product/cronjob-schedule", s.cacheMiddleware(60*time.Second, s.handleCronJobSchedule))                       // CronJob schedule conflict & resource configuration auditor
 	mux.HandleFunc("/api/product/external-secret-health", s.cacheMiddleware(120*time.Second, s.handleExternalSecretHealth))           // external secrets & secret store CSI health auditor
 	mux.HandleFunc("/api/product/endpoint-dns-health", s.cacheMiddleware(60*time.Second, s.handleEndpointDNSHealth))                  // service endpoint & DNS resolution health auditor

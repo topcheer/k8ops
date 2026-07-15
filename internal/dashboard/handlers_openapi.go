@@ -4153,6 +4153,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Workload Replica Distribution & Anti-Affinity Coverage (v17.31) ---
+	add("/api/product/replica-distribution", "get", OpenAPIOperation{
+		Summary:     "Workload replica distribution & anti-affinity coverage analyzer",
+		OperationID: "replicaDistribution",
+		Tags:        []string{"Product", "HA", "Distribution"},
+		Description: "Analyzes multi-replica workload spread across nodes: single-node concentration risk, insufficient spread detection, missing pod anti-affinity, per-node and per-zone pod distribution, spread scoring. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Replica distribution analysis", map[string]interface{}{
+				"score":   82,
+				"summary": map[string]interface{}{"totalWorkloads": 25, "goodSpread": 18, "poorSpread": 3, "atRiskCount": 2},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",
