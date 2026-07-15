@@ -1705,13 +1705,31 @@ Monitors API server load by analyzing pod density, controller count, event volum
 ### v17.14: Pod Readiness Gate Compliance & Custom Condition Auditor
 - `GET /api/deployment/readiness-gate` — Readiness gates detection, blocked pods (gate False/Unknown), unknown gate conditions. 4 unit tests.
 
+### v17.15: API Doc Sync v17.09-v17.14
+- CHANGELOG + API.md + en/API.md synced for v17.09-v17.14
+
+### v17.16: Admission Webhook Configuration Health & Performance Risk
+- `GET /api/operations/webhook-health` — Webhook config checks, failure rate analysis, CA cert expiry, namespace selectors. 4 unit tests.
+
+### v17.17: Security Event Timeline & Threat Detection Pattern
+- `GET /api/security/threat-timeline` — RBAC changes, admission denials, forbidden access, secret access, ConfigMap changes. 4 unit tests.
+
+### v17.18: Namespace Resource Quota Saturation & Limit Exhaustion Predictor
+- `GET /api/scalability/quota-saturation` — Per-resource saturation %, exhausted quotas, critical saturation, no-quota namespace detection. 4 unit tests.
+
+### v17.19: Pod Priority Preemption & Scheduling Starvation Risk Analyzer
+- `GET /api/product/priority-preemption` — PriorityClass distribution, preemption vulnerability, scheduling starvation, priority heatmap (5 buckets), pending pod queue. 4 unit tests.
+
+### v17.20: Deployment Concurrency Guard & Rolling Update Collision Detector
+- `GET /api/deployment/concurrency-guard` — Active rollout tracking, namespace collision risk, surge budget analysis, node saturation, safeToDeploy assessment. 4 unit tests.
+
 ---
 
 ## API Summary
 
-**Total: 251 OpenAPI endpoints, 258 Dashboard API endpoints** across 6 dimensions:
-- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance, init container audit, CronJob schedule conflict, external secret health, endpoint & DNS health, ConfigMap mount risk, PV access mode & multi-attach risk, service traffic policy & routing, container runtime class & OCI image compliance, cert-manager health & certificate renewal, ingress TLS & HTTPS enforcement, east-west traffic & service-to-service connectivity, container port exposure & named port consistency, service endpoint vs pod readiness mismatch
-- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness, replica availability, surge risk, startup latency, progressive delivery, ReplicaSet staleness, DORA metrics, Helm release health, GitOps sync, DaemonSet rollout & node coverage, image pull policy & secret management, resource quota impact & namespace capacity, env config drift & ConfigMap/Secret reference, deployment reproducibility & CI/CD traceability, pod termination message & exit code pattern, pod readiness gate compliance & custom condition
+**Total: 255 OpenAPI endpoints, 263 Dashboard API endpoints** across 6 dimensions:
+- **Product**: Cluster resources, DNS health, config audit, network policy, label hygiene, orphaned resources, PVC health, StatefulSet audit, affinity conflict, taint toleration, configmap size, job health, HPA health, API deprecation, QoS & priority class, service connectivity, topology spread, backup compliance, init container audit, CronJob schedule conflict, external secret health, endpoint & DNS health, ConfigMap mount risk, PV access mode & multi-attach risk, service traffic policy & routing, container runtime class & OCI image compliance, cert-manager health & certificate renewal, ingress TLS & HTTPS enforcement, east-west traffic & service-to-service connectivity, container port exposure & named port consistency, service endpoint vs pod readiness mismatch, pod priority preemption & scheduling starvation risk
+- **Deployment**: Image hygiene, rollout health, probe compliance, resource limits, graceful shutdown, update strategy, ref integrity, image drift, revision history, disruption impact, workload maturity, ephemeral storage, config sync, sidecar audit, restart policy, scale readiness, replica availability, surge risk, startup latency, progressive delivery, ReplicaSet staleness, DORA metrics, Helm release health, GitOps sync, DaemonSet rollout & node coverage, image pull policy & secret management, resource quota impact & namespace capacity, env config drift & ConfigMap/Secret reference, deployment reproducibility & CI/CD traceability, pod termination message & exit code pattern, pod readiness gate compliance & custom condition, deployment concurrency guard & rolling update collision detector
 - **Operations**: CrashLoopBackOff, PDB compliance, topology distribution, image pull failures, restart reasons, scheduling latency, resource contention, node lease, control plane, pod evictions, API latency, volume mount errors, pod startup lifecycle, kubelet health, DNS health, CSR monitor, etcd health, API load, Prometheus rule health, Alertmanager health, Grafana health, metrics pipeline, audit log health, alert noise, API Priority & Fairness, log aggregation & forwarding pipeline health, CNI plugin health & network stack configuration, observability stack integration health, cluster operator & OLM health, pod restart pattern & crashloop clustering
 - **Security**: Admission webhook, certificate expiry, volume security, endpoint exposure, seccomp & PSS, batch security, audit policy, encryption at rest, host namespace, PSA enforcement, MAC audit, forensics, RBAC audit, secret scan, security context drift, OPA/Gatekeeper compliance, image vulnerability, Kyverno compliance, PSS scorecard, SA token audit, resource quota security, supply chain & SBOM, security policy drift & baseline configuration, runtime threat detection & container anomaly, secret management posture & external secret integration, namespace security posture & trust boundary, container image provenance & registry trust
 - **Scalability**: Overcommit, storage forecast, pod density, NS consumption, capacity headroom, quota utilization, HA & SPOF, node failure sim, CRD explosion, bottleneck predictor, namespace isolation, CSI audit, scale limits, DR readiness, fragmentation, IP CIDR utilization, node topology, tenant pressure, node pool health, cost waste, node lifecycle, alloc efficiency, HPA performance, PV reclaim, capacity planning, spot/preemptible instance readiness, cost budget alert & namespace spending limit, node drain & rotation readiness, cluster scaling history & autoscaler event timeline, pod resource request density & scheduling fit

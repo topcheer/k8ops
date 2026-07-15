@@ -4,6 +4,26 @@
 
 ---
 
+## v17.15-v17.20 (2026-07-15)
+
+### v17.15: API 文档同步 v17.09-v17.14 (维度5: 文档)
+- CHANGELOG + API.md + en/API.md 同步 v17.09-v17.14
+
+### v17.16: 准入 Webhook 配置健康与性能风险审计 (维度3: 运维)
+- `GET /api/operations/webhook-health` — Webhook 配置检查，失败率分析，CA 证书有效期，命名空间选择器
+
+### v17.17: 安全事件时间线与威胁检测模式审计 (维度4: 安全)
+- `GET /api/security/threat-timeline` — RBAC 变更，准入拒绝，禁止访问，密钥访问，ConfigMap 变更
+
+### v17.18: 命名空间资源配额饱和度与限制耗尽预测器 (维度6: 可扩展性)
+- `GET /api/scalability/quota-saturation` — 配额饱和度百分比，耗尽配额，关键饱和，无配额命名空间
+
+### v17.19: Pod 优先级抢占与调度饥饿风险分析器 (维度1: 产品)
+- `GET /api/product/priority-preemption` — PriorityClass 分布，抢占脆弱性，调度饥饿风险，优先级热力图
+
+### v17.20: 部署并发防护与滚动更新碰撞检测器 (维度2: 部署)
+- `GET /api/deployment/concurrency-guard` — 并发滚动更新检测，命名空间碰撞风险，激增预算分析，部署窗口安全评估
+
 ## v17.09-v17.14 (2026-07-15)
 
 ### v17.09: API 文档同步 v17.03-v17.08 (维度5: 文档)
