@@ -3974,6 +3974,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Cluster Scaling History & Autoscaler Event Timeline Auditor (v17.06) ---
+	add("/api/scalability/scaling-history", "get", OpenAPIOperation{
+		Summary:     "Cluster scaling history & autoscaler event timeline auditor",
+		OperationID: "scalingHistory",
+		Tags:        []string{"Scalability", "Autoscaling", "Events"},
+		Description: "Audits cluster scaling history from Kubernetes events: HPA scale-up/down events, cluster autoscaler node events, failed scaling operations, throttled scaling, hourly timeline. Per-action and per-namespace stats. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Scaling history analysis", map[string]interface{}{
+				"summary":  map[string]interface{}{"totalEvents": 15, "scaleUpEvents": 10, "scaleDownEvents": 5, "failedScales": 1},
+				"timeline": []map[string]interface{}{{"hour": "14:00", "scaleUp": 3, "scaleDown": 1}},
+			}),
+		},
+	})
+
 	// --- Ingress TLS Certificate & HTTPS Enforcement Auditor (v16.95) ---
 	add("/api/product/ingress-tls", "get", OpenAPIOperation{
 		Summary:     "Ingress TLS certificate & HTTPS enforcement auditor",

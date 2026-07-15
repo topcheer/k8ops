@@ -299,6 +299,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/operator-health", s.cacheMiddleware(120*time.Second, s.handleOperatorHealth))                     // cluster operator & OLM health auditor
 	mux.HandleFunc("/api/scalability/budget-alert", s.cacheMiddleware(120*time.Second, s.handleBudgetAlert))                          // cost budget alert & namespace spending limit auditor
 	mux.HandleFunc("/api/scalability/node-drain-readiness", s.cacheMiddleware(120*time.Second, s.handleNodeDrainReadiness))           // node drain & rotation readiness auditor
+	mux.HandleFunc("/api/scalability/scaling-history", s.cacheMiddleware(120*time.Second, s.handleScalingHistory))                    // cluster scaling history & autoscaler event timeline auditor
 	mux.HandleFunc("/api/product/ingress-tls", s.cacheMiddleware(120*time.Second, s.handleIngressTLS))                                // ingress TLS certificate & HTTPS enforcement auditor
 	mux.HandleFunc("/api/product/east-west-traffic", s.cacheMiddleware(120*time.Second, s.handleEastWestTraffic))                     // east-west traffic & service-to-service connectivity auditor
 	mux.HandleFunc("/api/deployment/env-config-drift", s.cacheMiddleware(120*time.Second, s.handleEnvConfigDrift))                    // deployment env config drift & ConfigMap/Secret reference auditor

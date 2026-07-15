@@ -170,6 +170,7 @@ var auditRegistry = []auditEndpoint{
 	{"operations:operator-health", "/api/operations/operator-health", "Cluster operator & OLM health auditor"},
 	{"scalability:budget-alert", "/api/scalability/budget-alert", "Cost budget alert & namespace spending limit auditor"},
 	{"scalability:node-drain-readiness", "/api/scalability/node-drain-readiness", "Node drain & rotation readiness auditor"},
+	{"scalability:scaling-history", "/api/scalability/scaling-history", "Cluster scaling history & autoscaler event timeline auditor"},
 	{"product:ingress-tls", "/api/product/ingress-tls", "Ingress TLS certificate & HTTPS enforcement auditor"},
 	{"product:east-west-traffic", "/api/product/east-west-traffic", "East-west traffic & service-to-service connectivity auditor"},
 	{"deployment:env-config-drift", "/api/deployment/env-config-drift", "Deployment env config drift & ConfigMap/Secret reference auditor"},
