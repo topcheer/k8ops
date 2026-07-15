@@ -1038,3 +1038,48 @@ kubectl rollout restart daemonset/k8ops -n k8ops-system
 - Pod dnsConfig ndots 覆盖检测
 - External-DNS 托管服务发现
 - 集群 DNS 健康评分 0-100
+
+### 多信号事件关联与根因建议引擎
+
+`GET /api/operations/incident-correlation` 是 AIOps 核心功能，将分散的告警信号智能聚合为可操作的事件：
+
+- **信号收集**：集群告警事件（Warning Events）、Pod 生命周期（CrashLoopBackOff、OOMKilled、高频重启）、节点压力状况
+- **关联引擎**：Union-Find 算法，5 分钟时间窗口 + 命名空间/节点关联
+- **每个事件集群**：严重性分级、根因猜测（置信度 0-100%）、爆炸半径、时间线重建
+- **参数**：`namespace=` 过滤，`window=` 时间窗口（默认 60 分钟，最大 360 分钟）
+
+### 集群级服务依赖拓扑与级联故障风险
+
+`GET /api/product/service-topology` 自动发现集群中所有服务间依赖关系：
+
+- **依赖发现**：扫描工作负载环境变量中的 Kubernetes DNS 引用（svc.ns.svc）
+- **关键枢纽识别**：高扇入服务（多个工作负载依赖它）
+- **单点故障检测**：无 HA 的关键服务
+- **孤儿服务检测**：有 selector 但无匹配工作负载的 Service
+- **跨命名空间依赖追踪**
+
+### 混沌工程就绪度评估
+
+`GET /api/deployment/chaos-readiness` 评估每个工作负载对混沌实验的承受能力：
+
+- **六大评估标准**：多副本 HA、PDB 覆盖、健康探针、优雅关闭、反亲和性、多可用区分布
+- **就绪分级**：ready（≥70 分）/ partial（40-69）/ fragile（<40）
+- **实验推荐**：为就绪工作负载推荐安全的混沌实验（pod-kill、network-latency）
+
+### 集群碳足迹与可持续性度量
+
+`GET /api/scalability/carbon-footprint` 估算集群能耗和碳排放：
+
+- **区域检测**：从节点元数据自动检测云区域，映射到电网碳强度（25+ 区域）
+- **碳归因**：按命名空间和工作负载分摊碳排放
+- **减碳机会**：资源整合、工作负载右 sizing、绿色时段调度、区域迁移
+- **绿色评分**：0-100 可持续发展评分
+
+### 准入控制策略差距审计
+
+`GET /api/security/admission-policy-audit` 审计集群准入控制安全态势：
+
+- **Webhook 健康检查**：failurePolicy、sideEffects、超时配置
+- **策略引擎检测**：OPA/Gatekeeper 和 Kyverno 自动发现
+- **覆盖率分析**：按资源类型计算准入保护覆盖率
+- **CEL 策略推荐**：推荐使用 K8s 1.30+ ValidatingAdmissionPolicies 替代重量级 webhook

@@ -4,6 +4,20 @@
 
 k8ops is a Kubernetes AIOps operator that uses AI agents to diagnose cluster issues, suggest optimizations, and execute remediations. It runs as an in-cluster controller with an embedded web dashboard.
 
+### AIOps 智能分析引擎
+
+k8ops 内置多个跨维度智能分析引擎，实现从被动监控到主动预测的升级：
+
+| 引擎 | 端点 | 维度 | 能力 |
+|------|------|------|------|
+| 事件关联与根因 | `/api/operations/incident-correlation` | Operations | Union-Find 多信号关联，根因猜测（置信度），爆炸半径 |
+| 服务依赖拓扑 | `/api/product/service-topology` | Product | 集群级依赖图，关键枢纽识别，级联故障风险 |
+| 混沌就绪评估 | `/api/deployment/chaos-readiness` | Deployment | 六标准韧性评分，安全实验推荐 |
+| 碳足迹追踪 | `/api/scalability/carbon-footprint` | Scalability | 能耗估算，碳归因，减碳机会，绿色评分 |
+| 准入控制审计 | `/api/security/admission-policy-audit` | Security | Webhook 健康，覆盖率分析，CEL 策略推荐 |
+
+这些引擎相互协作形成完整的 AIOps 闭环：发现风险（拓扑/事件） → 评估韧性（混沌就绪） → 追踪影响（碳足迹） → 加固防线（准入控制）。
+
 ## Six-Layer Architecture
 
 ```

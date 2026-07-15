@@ -2932,5 +2932,14 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 193 | /api/scalability/ext-resource-health | Scalability | v17.24 | 扩展资源与设备插件健康审计 |
 | 194 | /api/product/mesh-injection | Product | v17.25 | 服务网格注入覆盖与命名空间采纳分析器 |
 | 195 | /api/deployment/revision-diff | Deployment | v17.26 | 部署修订差异与 Pod 模板变更影响分析器 |
+| 196 | /api/operations/coredns-health | Operations | v17.28 | CoreDNS 配置与解析健康审计 |
+| 197 | /api/security/blast-radius | Security | v17.29 | 工作负载攻击面与爆炸半径分析器 |
+| 198 | /api/scalability/reservation-audit | Scalability | v17.30 | 节点资源预留与可分配差距分析器 |
+| 199 | /api/product/replica-distribution | Product | v17.31 | 工作负载副本分布与反亲和覆盖分析器 |
+| 200 | /api/operations/incident-correlation | Operations | v17.32 | 多信号事件关联与根因建议引擎 |
+| 201 | /api/product/service-topology | Product | v17.33 | 集群级服务依赖拓扑与级联故障风险分析器 |
+| 202 | /api/deployment/chaos-readiness | Deployment | v17.34 | 混沌工程就绪度评估与实验推荐引擎 |
+| 203 | /api/scalability/carbon-footprint | Scalability | v17.35 | 集群碳足迹与可持续性度量分析器 |
+| 204 | /api/security/admission-policy-audit | Security | v17.36 | 准入控制策略差距与 CEL 表达式审计器 |
 
-**总计：261 个 OpenAPI 端点，269 个 Dashboard API 端点**
+**总计：270 个 OpenAPI 端点，278 个 Dashboard API 端点**
