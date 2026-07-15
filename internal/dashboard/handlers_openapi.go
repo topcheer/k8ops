@@ -4094,6 +4094,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Revision Diff & Pod Template Change Impact (v17.26) ---
+	add("/api/deployment/revision-diff", "get", OpenAPIOperation{
+		Summary:     "Deployment revision diff & pod template change impact analyzer",
+		OperationID: "revisionDiff",
+		Tags:        []string{"Deployment", "Revision", "TemplateChange"},
+		Description: "Analyzes pod template changes across deployment revisions: missing probes, resource requests, security context gaps, privileged container detection, Recreate strategy downtime risk, revision history limit, breaking change identification, risk scoring per workload. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Revision diff analysis", map[string]interface{}{
+				"score":           78,
+				"summary":         map[string]interface{}{"totalWorkloads": 30, "withProbeChange": 5, "breakingChangeCount": 2, "riskyWorkloadCount": 3},
+				"breakingChanges": []map[string]interface{}{{"namespace": "prod", "name": "api", "change": "Recreate strategy"}},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",
