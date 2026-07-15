@@ -193,6 +193,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:priority-preemption", "/api/product/priority-preemption", "Pod priority preemption & scheduling starvation risk analyzer"},
 	{"deployment:concurrency-guard", "/api/deployment/concurrency-guard", "Deployment concurrency & rolling update collision detector"},
 	{"operations:kube-proxy-health", "/api/operations/kube-proxy-health", "Kube-proxy & network routing stability auditor"},
+	{"security:secret-age", "/api/security/secret-age", "Secret age & stale credential tracker"},
 	{"deployment:daemonset-audit", "/api/deployment/daemonset-audit", "DaemonSet rollout & node coverage auditor"},
 	{"scalability:capacity-plan", "/api/scalability/capacity-plan", "Capacity planning & growth trend predictor"},
 

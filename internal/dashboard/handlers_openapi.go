@@ -3964,6 +3964,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Secret Age & Stale Credential Tracker (v17.23) ---
+	add("/api/security/secret-age", "get", OpenAPIOperation{
+		Summary:     "Secret age & stale credential tracker",
+		OperationID: "secretAge",
+		Tags:        []string{"Security", "Secrets", "Rotation"},
+		Description: "Audits secret age and staleness: creation age analysis (90d/180d/365d thresholds), orphaned secret detection (not referenced by any pod), type distribution (TLS/Docker/Opaque), age bracket heatmap, per-namespace stale credential stats, TLS certificate secret tracking. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Secret age analysis", map[string]interface{}{
+				"score":   72,
+				"summary": map[string]interface{}{"totalSecrets": 45, "olderThan365d": 3, "olderThan180d": 8, "orphanedCount": 5},
+				"byAge":   []map[string]interface{}{{"range": "90-180d", "count": 4, "risk": "medium"}},
+			}),
+		},
+	})
+
 	// --- CNI Plugin Health & Network Stack Configuration Auditor (v16.93) ---
 	add("/api/operations/cni-health", "get", OpenAPIOperation{
 		Summary:     "CNI plugin health & network stack configuration auditor",
