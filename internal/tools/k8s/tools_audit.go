@@ -176,6 +176,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:port-exposure", "/api/product/port-exposure", "Container port exposure & named port consistency auditor"},
 	{"deployment:env-config-drift", "/api/deployment/env-config-drift", "Deployment env config drift & ConfigMap/Secret reference auditor"},
 	{"deployment:traceability", "/api/deployment/traceability", "Deployment reproducibility & CI/CD traceability auditor"},
+	{"deployment:termination-audit", "/api/deployment/termination-audit", "Pod termination message & exit code pattern auditor"},
 	{"product:pv-access", "/api/product/pv-access", "PV access mode & multi-attach risk auditor"},
 	{"deployment:dora-metrics", "/api/deployment/dora-metrics", "DORA metrics: deployment frequency, lead time, MTTR, change failure rate"},
 	{"operations:apf-audit", "/api/operations/apf-audit", "API Priority & Fairness configuration auditor"},

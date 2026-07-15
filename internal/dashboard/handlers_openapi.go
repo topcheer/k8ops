@@ -4056,6 +4056,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Pod Termination Message & Exit Code Pattern Auditor (v17.08) ---
+	add("/api/deployment/termination-audit", "get", OpenAPIOperation{
+		Summary:     "Pod termination message & exit code pattern auditor",
+		OperationID: "terminationAudit",
+		Tags:        []string{"Deployment", "Reliability", "Diagnostics"},
+		Description: "Audits pod termination patterns: OOMKilled detection, signal terminations (SIGKILL/SIGTERM), non-zero exit codes, termination message coverage, high restart count, exit code distribution, recurring termination patterns. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Termination audit analysis", map[string]interface{}{
+				"summary":   map[string]interface{}{"terminatedPods": 5, "oomKilledCount": 2, "nonZeroExitCount": 3},
+				"exitCodes": []map[string]interface{}{{"exitCode": 137, "count": 2, "reason": "OOMKilled"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
