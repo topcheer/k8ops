@@ -3918,6 +3918,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Cluster Operator & OLM Health Auditor (v17.04) ---
+	add("/api/operations/operator-health", "get", OpenAPIOperation{
+		Summary:     "Cluster operator & OLM health auditor",
+		OperationID: "operatorHealth",
+		Tags:        []string{"Operations", "Operators", "OLM"},
+		Description: "Audits cluster operator health: detects operator deployments, OLM (Operator Lifecycle Manager) installation, per-operator pod readiness, crash loops, high restarts, namespace isolation, failing/degraded/healthy classification. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Operator health analysis", map[string]interface{}{
+				"summary":   map[string]interface{}{"totalOperators": 3, "healthyOperators": 2, "failedOperators": 1, "olmDetected": true},
+				"operators": []map[string]interface{}{{"name": "my-operator", "status": "healthy", "podsReady": 1, "podsTotal": 1}},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",

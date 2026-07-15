@@ -166,6 +166,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:secret-posture", "/api/security/secret-posture", "Secret management posture & external secret integration auditor"},
 	{"operations:cni-health", "/api/operations/cni-health", "CNI plugin health & network stack configuration auditor"},
 	{"operations:observability-stack", "/api/operations/observability-stack", "Observability stack integration health auditor"},
+	{"operations:operator-health", "/api/operations/operator-health", "Cluster operator & OLM health auditor"},
 	{"scalability:budget-alert", "/api/scalability/budget-alert", "Cost budget alert & namespace spending limit auditor"},
 	{"scalability:node-drain-readiness", "/api/scalability/node-drain-readiness", "Node drain & rotation readiness auditor"},
 	{"product:ingress-tls", "/api/product/ingress-tls", "Ingress TLS certificate & HTTPS enforcement auditor"},
