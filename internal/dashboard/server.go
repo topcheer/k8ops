@@ -311,6 +311,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/scheduling-fit", s.cacheMiddleware(120*time.Second, s.handleSchedulingFit))            // pod resource request density & scheduling fit auditor
 	mux.HandleFunc("/api/scalability/quota-saturation", s.cacheMiddleware(120*time.Second, s.handleQuotaSaturation))
 	mux.HandleFunc("/api/scalability/ext-resource-health", s.cacheMiddleware(120*time.Second, s.handleExtResourceHealth)) // extended resource & device plugin health auditor                  // namespace resource quota saturation & limit exhaustion predictor
+	mux.HandleFunc("/api/scalability/reservation-audit", s.cacheMiddleware(120*time.Second, s.handleResvAudit))           // node resource reservation & allocatable gap analyzer
 	mux.HandleFunc("/api/product/ingress-tls", s.cacheMiddleware(120*time.Second, s.handleIngressTLS))                    // ingress TLS certificate & HTTPS enforcement auditor
 	mux.HandleFunc("/api/product/east-west-traffic", s.cacheMiddleware(120*time.Second, s.handleEastWestTraffic))         // east-west traffic & service-to-service connectivity auditor
 	mux.HandleFunc("/api/product/port-exposure", s.cacheMiddleware(120*time.Second, s.handlePortExposure))                // container port exposure & named port consistency auditor

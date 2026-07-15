@@ -4139,6 +4139,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Node Resource Reservation & Allocatable Gap Analyzer (v17.30) ---
+	add("/api/scalability/reservation-audit", "get", OpenAPIOperation{
+		Summary:     "Node resource reservation & allocatable gap analyzer",
+		OperationID: "reservationAudit",
+		Tags:        []string{"Scalability", "Node", "Reservation"},
+		Description: "Analyzes node resource reservation gap (capacity vs allocatable) for CPU/memory/pods: over-reserved detection (>25%%), under-reserved detection (<3%%), per-node-type grouping, cluster-wide reservation rate. Identifies misconfigured kube-reserved/system-reserved/eviction-threshold. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Reservation audit", map[string]interface{}{
+				"score":   85,
+				"summary": map[string]interface{}{"totalNodes": 5, "avgReservationPctCPU": 8.5, "overReservedNodes": 0},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",
