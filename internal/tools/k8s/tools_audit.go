@@ -207,6 +207,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:service-topology", "/api/product/service-topology", "Cluster-wide service dependency topology & cascade failure risk analyzer"},
 	{"deployment:chaos-readiness", "/api/deployment/chaos-readiness", "Chaos engineering readiness assessment & experiment recommender"},
 	{"scalability:carbon-footprint", "/api/scalability/carbon-footprint", "Cluster carbon footprint & sustainability metrics analyzer"},
+	{"security:admission-policy-audit", "/api/security/admission-policy-audit", "Admission control policy gap & CEL expression auditor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

@@ -4240,6 +4240,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Admission Control Policy Gap & CEL Expression Auditor (v17.36) ---
+	add("/api/security/admission-policy-audit", "get", OpenAPIOperation{
+		Summary:     "Admission control policy gap & CEL expression auditor",
+		OperationID: "admissionPolicyAudit",
+		Tags:        []string{"Security", "Admission Control", "Policy"},
+		Description: "Audits cluster admission control: validates webhook health (failurePolicy, sideEffects, timeout), detects OPA/Gatekeeper and Kyverno engines, calculates per-resource-type admission coverage, finds unprotected workloads, recommends CEL ValidatingAdmissionPolicies (K8s 1.30+) for lightweight enforcement without webhook servers.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Admission policy audit", map[string]interface{}{
+				"summary":  map[string]interface{}{"totalValidatingWebhooks": 3, "coveragePercent": 65, "unprotectedWorkloads": 12},
+				"webhooks": []map[string]interface{}{{"name": "pod-security", "failurePolicy": "Fail"}},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",
