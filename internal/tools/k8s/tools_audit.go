@@ -213,6 +213,7 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:scale-simulator", "/api/scalability/scale-simulator", "Workload scaling impact simulator"},
 	{"deployment:rollback-risk", "/api/deployment/rollback-risk", "Rollback risk & revision integrity assessor"},
 	{"operations:pod-lifecycle", "/api/operations/pod-lifecycle", "Pod lifecycle stage analyzer & dwell-time tracker"},
+	{"security:rbac-graph", "/api/security/rbac-graph", "RBAC permission graph & escalation path analyzer"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
