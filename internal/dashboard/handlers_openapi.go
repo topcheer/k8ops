@@ -4033,6 +4033,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Kube-Proxy Health & Network Routing Stability Auditor (v17.22) ---
+	add("/api/operations/kube-proxy-health", "get", OpenAPIOperation{
+		Summary:     "Kube-proxy & network routing stability auditor",
+		OperationID: "kubeProxyHealth",
+		Tags:        []string{"Operations", "Networking", "KubeProxy"},
+		Description: "Audits kube-proxy DaemonSet health, proxy mode (iptables/ipvs/ebpf), node coverage, pod restart patterns, service routing type distribution (ClusterIP/NodePort/LoadBalancer/ExternalName/headless), missing proxy nodes, iptables scale warnings. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Kube-proxy health analysis", map[string]interface{}{
+				"score":          95,
+				"proxyMode":      "ipvs",
+				"summary":        map[string]interface{}{"kubeProxyFound": true, "desiredNodes": 5, "readyNodes": 5},
+				"serviceRouting": map[string]interface{}{"totalServices": 30, "clusterIPServices": 25},
+			}),
+		},
+	})
+
 	// --- Cost Budget Alert & Namespace Spending Limit Auditor (v16.94) ---
 	add("/api/scalability/budget-alert", "get", OpenAPIOperation{
 		Summary:     "Cost budget alert & namespace spending limit auditor",
