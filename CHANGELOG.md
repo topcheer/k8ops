@@ -4,6 +4,26 @@
 
 ---
 
+## v17.21-v17.26 (2026-07-15)
+
+### v17.21: API 文档同步 v17.15-v17.20 (维度5: 文档)
+- CHANGELOG + API.md + en/API.md 同步 v17.15-v17.20
+
+### v17.22: Kube-Proxy 健康与网络路由稳定性审计 (维度3: 运维)
+- `GET /api/operations/kube-proxy-health` — DaemonSet 健康，代理模式 (iptables/ipvs/ebpf)，节点覆盖，服务路由类型分布
+
+### v17.23: 密钥年龄与过期凭证追踪器 (维度4: 安全)
+- `GET /api/security/secret-age` — 创建年龄分析 (90天/180天/365天)，孤立密钥检测，类型分布，每命名空间统计
+
+### v17.24: 扩展资源与设备插件健康审计 (维度6: 可扩展性)
+- `GET /api/scalability/ext-resource-health` — GPU/FPGA 追踪，设备插件健康，每节点分配，型号/驱动版本检测
+
+### v17.25: 服务网格注入覆盖与命名空间采纳分析器 (维度1: 产品)
+- `GET /api/product/mesh-injection` — Istio/Linkerd/Consul 检测，注入缺口检测，opt-out 追踪，命名空间采纳率
+
+### v17.26: 部署修订差异与 Pod 模板变更影响分析器 (维度2: 部署)
+- `GET /api/deployment/revision-diff` — 探针/资源/安全上下文缺口，破坏性变更检测，风险评分，策略风险
+
 ## v17.15-v17.20 (2026-07-15)
 
 ### v17.15: API 文档同步 v17.09-v17.14 (维度5: 文档)

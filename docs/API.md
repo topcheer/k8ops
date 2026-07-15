@@ -2927,5 +2927,10 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 188 | /api/scalability/quota-saturation | Scalability | v17.18 | 命名空间资源配额饱和度与限制耗尽预测器 |
 | 189 | /api/product/priority-preemption | Product | v17.19 | Pod 优先级抢占与调度饥饿风险分析器 |
 | 190 | /api/deployment/concurrency-guard | Deployment | v17.20 | 部署并发防护与滚动更新碰撞检测器 |
+| 191 | /api/operations/kube-proxy-health | Operations | v17.22 | Kube-Proxy 健康与网络路由稳定性审计 |
+| 192 | /api/security/secret-age | Security | v17.23 | 密钥年龄与过期凭证追踪器 |
+| 193 | /api/scalability/ext-resource-health | Scalability | v17.24 | 扩展资源与设备插件健康审计 |
+| 194 | /api/product/mesh-injection | Product | v17.25 | 服务网格注入覆盖与命名空间采纳分析器 |
+| 195 | /api/deployment/revision-diff | Deployment | v17.26 | 部署修订差异与 Pod 模板变更影响分析器 |
 
-**总计：255 个 OpenAPI 端点，263 个 Dashboard API 端点**
+**总计：261 个 OpenAPI 端点，269 个 Dashboard API 端点**
