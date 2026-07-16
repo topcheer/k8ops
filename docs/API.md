@@ -2941,5 +2941,18 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 202 | /api/deployment/chaos-readiness | Deployment | v17.34 | 混沌工程就绪度评估与实验推荐引擎 |
 | 203 | /api/scalability/carbon-footprint | Scalability | v17.35 | 集群碳足迹与可持续性度量分析器 |
 | 204 | /api/security/admission-policy-audit | Security | v17.36 | 准入控制策略差距与 CEL 表达式审计器 |
+| 205 | /api/operations/pod-anomaly | Operations | v17.38 | Pod 性能异常与嘈杂邻居检测器 |
+| 206 | /api/product/exposure-map | Product | v17.39 | 集群外部暴露面风险地图 |
+| 207 | /api/scalability/scale-simulator | Scalability | v17.40 | 工作负载扩缩容影响模拟器（What-If 分析） |
+| 208 | /api/deployment/rollback-risk | Deployment | v17.41 | 回滚风险与修订完整性评估器 |
+| 209 | /api/operations/pod-lifecycle | Operations | v17.42 | Pod 生命周期阶段分析与停留时间追踪器 |
+| 210 | /api/security/rbac-graph | Security | v17.43 | RBAC 权限图与提权路径分析器 |
+| 211 | /api/product/gateway-audit | Product | v17.44 | Gateway API 与 Ingress 控制器健康审计 |
+| 212 | /api/scalability/cost-allocation | Scalability | v17.45 | 命名空间成本分摊与计费报告 |
+| 213 | /api/deployment/gitops-audit | Deployment | v17.46 | GitOps/CD 管道健康与配置漂移审计器 |
+| 214 | /api/operations/metrics-pipeline-audit | Operations | v17.47 | Metrics 管道完整性审计 |
+| 215 | /api/security/compliance-map | Security | v17.48 | SOC2/PCI-DSS/HIPAA 合规框架映射 |
+| 216 | /api/product/probe-effectiveness | Product | v17.49 | 健康探针有效性与故障检测分析器 |
+| 217 | /api/scalability/node-upgrade-audit | Scalability | v17.50 | 节点升级就绪度与 K8s 版本兼容性审计 |
 
-**总计：270 个 OpenAPI 端点，278 个 Dashboard API 端点**
+**总计：293 个 OpenAPI 端点，301 个 Dashboard API 端点**

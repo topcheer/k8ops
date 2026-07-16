@@ -1083,3 +1083,81 @@ kubectl rollout restart daemonset/k8ops -n k8ops-system
 - **策略引擎检测**：OPA/Gatekeeper 和 Kyverno 自动发现
 - **覆盖率分析**：按资源类型计算准入保护覆盖率
 - **CEL 策略推荐**：推荐使用 K8s 1.30+ ValidatingAdmissionPolicies 替代重量级 webhook
+
+### Pod 性能异常与嘈杂邻居检测
+
+`GET /api/operations/pod-anomaly` 通过统计方法自动发现异常 Pod：
+
+- **异常值检测**：副本间重启次数方差分析（3+ 标准差）
+- **嘈杂邻居识别**：共享节点上的干扰模式检测
+- **节点热点**：异常 Pod 浓度分析（>30% 异常率）
+- **年龄归一化严重性**：按运行时间计算重启率/小时
+
+### 集群外部暴露面风险地图
+
+`GET /api/product/exposure-map` 全面映射集群的外部攻击面：
+
+- **入口点追踪**：Ingress/LB/NodePort/ExternalIP → 后端工作负载
+- **风险评估**：TLS 缺失、认证注解、敏感路径检测（/admin、/debug）
+- **孤儿端点检测**：Service 无后端 Pod
+
+### 工作负载扩缩容影响模拟器
+
+`GET /api/scalability/scale-simulator?workload=X&namespace=Y&replicas=N` What-If 分析：
+
+- **节点容量**：集群级 CPU/内存容量 vs 模拟使用量
+- **命名空间配额**：ResourceQuota CPU/内存/Pod 限制
+- **HPA 对齐**：目标 vs minReplicas/maxReplicas
+- **结论**：can-scale / risky / cannot-scale
+
+### 回滚风险与修订完整性评估
+
+`GET /api/deployment/rollback-risk` 评估每个工作负载的回滚就绪度：
+
+- **修订历史**：revisionHistoryLimit=0 = 无法回滚（critical）
+- **镜像稳定性**：`:latest` 标签 = 回滚不可预测
+- **配置依赖漂移**：ConfigMap/Secret 可能已变更
+- **副本数与成熟度**：单副本 = 停机风险，新创建 = 验证不足
+
+### RBAC 权限图与提权路径分析
+
+`GET /api/security/rbac-graph` 构建集群级 RBAC 权限图：
+
+- **危险角色分类**：cluster-admin 等价（wildcard）、提权动词（escalate/bind）、pods/exec、secret 访问
+- **提权路径发现**：低权限主体如何获得更高权限（exec 窃取 SA token、secret 提取 token）
+- **过度授权识别**：SA 拥有 cluster-admin、通配符权限
+
+### GitOps/CD 管道健康审计
+
+`GET /api/deployment/gitops-audit` 检测和审计所有 GitOps/CD 工具：
+
+- **工具发现**：ArgoCD、Flux、Argo Rollouts，含健康状态和版本
+- **Helm 清单**：从 Helm v3 secrets 提取 release 信息
+- **GitOps 采用率**：带有 GitOps 注解的工作负载百分比
+- **配置漂移指标**：被管理但存在手动更改的工作负载
+
+### SOC2/PCI-DSS/HIPAA 合规框架映射
+
+`GET /api/security/compliance-map` 将集群配置映射到三大合规框架：
+
+- **SOC2 Type II**（7 项控制）：访问控制、监控、变更管理
+- **PCI-DSS 4.0**（7 项控制）：数据保护、网络安全、漏洞管理
+- **HIPAA**（4 项控制）：访问控制、审计、完整性、传输安全
+- 每项控制返回 pass/fail 状态和具体修复建议
+
+### Metrics 管道完整性审计
+
+`GET /api/operations/metrics-pipeline-audit` 评估 metrics 管道完整性：
+
+- **组件发现**（11 种）：Prometheus、VictoriaMetrics、node-exporter、Grafana、Alertmanager 等
+- **五维评分卡**：采集 / 存储 / 可视化 / 告警 / 覆盖率（0-100）
+- **缺口检测**：按严重性分级，附带修复建议
+
+### 节点升级就绪度审计
+
+`GET /api/scalability/node-upgrade-audit` 评估集群升级就绪度：
+
+- **版本偏斜检测**：K8s 偏斜策略检查（最大 +2/-1）
+- **升级阻断检测**：节点压力、PDB 覆盖不足、弃用 API
+- **升级影响评估**：受影响工作负载数、需重新调度的 Pod 数
+- **就绪评分**：0-100 基于阻断因素和偏斜程度
