@@ -2986,5 +2986,10 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 247 | /api/product/api-version-governance | Product | v17.82 | K8s API版本治理与弃用跟踪引擎 |
 | 248 | /api/security/secret-lifecycle | Security | v17.83 | Secret管理生命周期与轮换跟踪引擎 |
 | 249 | /api/scalability/dr-backup-verify | Scalability | v17.84 | 灾难恢复与备份验证评估引擎 |
+| 250 | /api/docs/training-readiness | Documentation | v17.85 | 平台上岗培训与文档质量评估引擎 |
+| 251 | /api/operations/cert-expiry | Operations | v17.86 | TLS证书过期与生命周期监控引擎 |
+| 252 | /api/security/image-supply-chain | Security | v17.87 | 容器镜像供应链安全扫描引擎 |
+| 253 | /api/scalability/node-os-drift | Scalability | v17.88 | 节点OS生命周期与内核漂移分析引擎 |
+| 254 | /api/product/traffic-flow | Product | v17.89 | 东西向流量流与服务通信拓扑引擎 |
 
-**总计：325 个 OpenAPI 端点，333 个 Dashboard API 端点**
+**总计：330 个 OpenAPI 端点，338 个 Dashboard API 端点**

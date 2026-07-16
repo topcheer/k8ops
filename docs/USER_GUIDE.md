@@ -1640,3 +1640,60 @@ curl -sk https://k8ops.iot2.win/api/scalability/dr-backup-verify \
 curl -sk https://k8ops.iot2.win/api/scalability/dr-backup-verify \
   -H "Authorization: Bearer $JWT" | jq '.unprotectedNamespaces[] | select(.severity == "high")'
 ```
+
+---
+
+### 平台上岗培训与文档质量评估（v17.85）
+
+**端点**：`GET /api/docs/training-readiness`
+
+评估上岗培训质量：Owner/Team/Docs/Runbook 标签覆盖率、文档完整性、团队知识传递就绪度。评分（0-100，A-F 等级）。
+
+```bash
+curl -sk https://k8ops.iot2.win/api/docs/training-readiness \
+  -H "Authorization: Bearer $JWT" | jq '{score: .onboardingScore, grade: .grade, summary: .summary}'
+```
+
+### TLS证书过期与生命周期监控（v17.86）
+
+**端点**：`GET /api/operations/cert-expiry`
+
+监控 TLS 证书生命周期：解析所有 TLS Secret，检查过期日期，识别已过期/即将过期证书，检测自签名证书。健康评分（0-100，A-F）。
+
+```bash
+curl -sk https://k8ops.iot2.win/api/operations/cert-expiry \
+  -H "Authorization: Bearer $JWT" | jq '{score: .healthScore, grade: .grade, expiring: .expiringCerts[0:5]}'
+```
+
+### 容器镜像供应链安全扫描（v17.87）
+
+**端点**：`GET /api/security/supply-chain`
+
+分析供应链安全：注册表信任、镜像摘要固定、:latest 标签使用、拉取策略合规、未知注册表检测。安全评分（0-100，A-F）。
+
+```bash
+curl -sk https://k8ops.iot2.win/api/security/image-supply-chain \
+  -H "Authorization: Bearer $JWT" | jq '{score: .securityScore, grade: .grade, risks: .riskImages[0:5]}'
+```
+
+### 节点OS生命周期与内核漂移分析（v17.88）
+
+**端点**：`GET /api/scalability/node-os-drift`
+
+深度分析节点 OS 生命周期：内核版本漂移、OS 镜像一致性、容器运行时版本、节点年龄、GPU 可用性、轮换就绪。健康评分（0-100，A-F）。
+
+```bash
+curl -sk https://k8ops.iot2.win/api/scalability/node-os-drift \
+  -H "Authorization: Bearer $JWT" | jq '{score: .healthScore, grade: .grade, nodes: .nodeDetails, drift: .driftFindings}'
+```
+
+### 东西向流量流与服务通信拓扑（v17.89）
+
+**端点**：`GET /api/product/traffic-flow`
+
+分析东西向服务通信：服务暴露级别、端点健康、孤立/孤儿服务检测、LoadBalancer/NodePort 审计。流量评分（0-100，A-F）。
+
+```bash
+curl -sk https://k8ops.iot2.win/api/product/traffic-flow \
+  -H "Authorization: Bearer $JWT" | jq '{score: .flowScore, grade: .grade, isolated: .isolatedServices}'
+```

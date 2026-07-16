@@ -4864,6 +4864,51 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("DR report", map[string]interface{}{"readinessScore": 0, "drReadiness": "not-ready", "estRPO": "unknown"})},
 	})
 
+	// --- Training Readiness (v17.85) ---
+	add("/api/docs/training-readiness", "get", OpenAPIOperation{
+		Summary:     "Platform onboarding & documentation quality assessor",
+		OperationID: "trainingReadiness",
+		Tags:        []string{"Documentation", "Onboarding"},
+		Description: "Assesses onboarding quality: owner/team/docs/runbook label coverage on workloads, documentation completeness, and team knowledge transfer readiness. Scoring (0-100, A-F grading).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Training readiness", map[string]interface{}{"onboardingScore": 25})},
+	})
+
+	// --- Certificate Expiry (v17.86) ---
+	add("/api/operations/cert-expiry", "get", OpenAPIOperation{
+		Summary:     "TLS certificate expiry & lifecycle monitor",
+		OperationID: "certExpiry",
+		Tags:        []string{"Operations", "Certificate", "TLS"},
+		Description: "Monitors TLS certificate lifecycle: parses all kubernetes.io/tls secrets, checks expiry dates, identifies expired/expiring certs, detects self-signed certificates. Health scoring (0-100, A-F).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Certificate report", map[string]interface{}{"healthScore": 85, "summary": map[string]interface{}{"totalCerts": 60}})},
+	})
+
+	// --- Supply Chain (v17.87) ---
+	add("/api/security/image-supply-chain", "get", OpenAPIOperation{
+		Summary:     "Container image supply chain security scanner",
+		OperationID: "supplyChain",
+		Tags:        []string{"Security", "SupplyChain", "Image"},
+		Description: "Analyzes supply chain security: registry trust, image digest pinning, :latest tag usage, pull policy compliance, unknown registry detection. Security scoring (0-100, A-F grading).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Supply chain report", map[string]interface{}{"securityScore": 40})},
+	})
+
+	// --- Node OS Drift (v17.88) ---
+	add("/api/scalability/node-os-drift", "get", OpenAPIOperation{
+		Summary:     "Node OS lifecycle & kernel drift deep analyzer",
+		OperationID: "nodeOSDrift",
+		Tags:        []string{"Scalability", "Node", "OS"},
+		Description: "Deeply analyzes node OS lifecycle: kernel version drift, OS image consistency, container runtime versions, node age, GPU availability, and rotation readiness. Health scoring (0-100, A-F).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Node OS report", map[string]interface{}{"healthScore": 70})},
+	})
+
+	// --- Traffic Flow (v17.89) ---
+	add("/api/product/traffic-flow", "get", OpenAPIOperation{
+		Summary:     "East-west traffic flow & service communication map",
+		OperationID: "trafficFlow",
+		Tags:        []string{"Product", "Traffic", "Networking"},
+		Description: "Analyzes east-west service communication: service exposure levels, endpoint health, isolated/orphaned service detection, LoadBalancer/NodePort audit. Flow scoring (0-100, A-F grading).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Traffic flow report", map[string]interface{}{"flowScore": 75})},
+	})
+
 	return spec
 }
 

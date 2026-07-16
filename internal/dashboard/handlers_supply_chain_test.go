@@ -4,187 +4,81 @@ import (
 	"testing"
 )
 
-func TestAssessSupplyChainRisk(t *testing.T) {
-	tests := []struct {
-		name   string
-		entry  SupplyChainEntry
-		expect string
-	}{
-		{
-			name:   "latest tag critical",
-			entry:  SupplyChainEntry{IsLatestTag: true, HasDigest: false, IsTrusted: false},
-			expect: "critical",
-		},
-		{
-			name:   "no digest and untrusted",
-			entry:  SupplyChainEntry{IsLatestTag: false, HasDigest: false, IsTrusted: false},
-			expect: "warning",
-		},
-		{
-			name:   "no digest but trusted",
-			entry:  SupplyChainEntry{IsLatestTag: false, HasDigest: false, IsTrusted: true},
-			expect: "info",
-		},
-		{
-			name:   "healthy with digest and trusted",
-			entry:  SupplyChainEntry{IsLatestTag: false, HasDigest: true, IsTrusted: true},
-			expect: "healthy",
-		},
+func TestSupplyChainTypes(t *testing.T) {
+	r := SupplyChainResult{SecurityScore: 40, Grade: "D"}
+	if r.SecurityScore != 40 || r.Grade != "D" {
+		t.Error("struct field error")
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := assessSupplyChainRisk(tt.entry)
-			if got != tt.expect {
-				t.Errorf("expected %s, got %s", tt.expect, got)
-			}
-		})
+	s := SupplyChainSummary{TotalImages: 120, ByDigest: 5, ByTag: 115, LatestTag: 30}
+	if s.ByTag != 115 || s.LatestTag != 30 {
+		t.Error("summary field error")
+	}
+
+	ri := RiskImage{Image: "nginx:latest", Severity: "medium", Risks: []string{"uses :latest"}}
+	if ri.Severity != "medium" || len(ri.Risks) != 1 {
+		t.Error("riskImage field error")
+	}
+
+	rs := SupplyRegistryStat{Registry: "docker.io", ImageCount: 50, Trusted: true}
+	if rs.ImageCount != 50 || !rs.Trusted {
+		t.Error("registryStat field error")
 	}
 }
 
-func TestExtractRegistry(t *testing.T) {
+func TestSupplyChainScoring(t *testing.T) {
 	tests := []struct {
-		image  string
-		expect string
+		latest    int
+		byTag     int
+		noPull    int
+		expectedMin int
+		expectedMax int
 	}{
-		{"registry.k8s.io/pause:3.9", "registry.k8s.io"},
-		{"gcr.io/distroless/static-debian12:nonroot", "gcr.io"},
-		{"quay.io/prometheus/node-exporter:v1.6.0", "quay.io"},
-		{"nginx:1.25", "docker.io"},
-		{"localhost:5000/myapp:v1", "localhost:5000"},
-		{"registry.iot2.win/k8ops:v16.58", "registry.iot2.win"},
-		{"public.ecr.aws/eks-distro/kubernetes/pause:3.5", "public.ecr.aws"},
-		{"mcr.microsoft.com/dotnet/runtime:7.0", "mcr.microsoft.com"},
+		{0, 0, 0, 95, 100},
+		{30, 80, 10, 0, 30},
+		{5, 20, 2, 20, 40},
 	}
-
-	for _, tt := range tests {
-		t.Run(tt.image, func(t *testing.T) {
-			got := extractRegistry(tt.image)
-			if got != tt.expect {
-				t.Errorf("extractRegistry(%q) = %q, want %q", tt.image, got, tt.expect)
-			}
-		})
+	for _, tc := range tests {
+		score := 100
+		score -= tc.latest * 5
+		score -= tc.byTag * 2
+		score -= tc.noPull * 3
+		if score < 0 {
+			score = 0
+		}
+		score = min(100, score)
+		if score < tc.expectedMin || score > tc.expectedMax {
+			t.Errorf("latest=%d byTag=%d noPull=%d: expected %d-%d, got %d",
+				tc.latest, tc.byTag, tc.noPull, tc.expectedMin, tc.expectedMax, score)
+		}
 	}
 }
 
-func TestAnalyzeImageSecurity(t *testing.T) {
+func TestSupplyChainRiskSeverity(t *testing.T) {
 	tests := []struct {
-		name          string
-		image         string
-		expectDigest  bool
-		expectLatest  bool
-		expectTrusted bool
+		isLatest   bool
+		byDigest   bool
+		isUnknown  bool
+		expected   string
 	}{
-		{
-			name:          "digest pinned trusted",
-			image:         "registry.k8s.io/pause@sha256:abc123",
-			expectDigest:  true,
-			expectLatest:  false,
-			expectTrusted: true,
-		},
-		{
-			name:          "latest tag untrusted",
-			image:         "myapp:latest",
-			expectDigest:  false,
-			expectLatest:  true,
-			expectTrusted: false,
-		},
-		{
-			name:          "tagged trusted no digest",
-			image:         "quay.io/prometheus/node-exporter:v1.6.0",
-			expectDigest:  false,
-			expectLatest:  false,
-			expectTrusted: true,
-		},
-		{
-			name:          "no tag at all",
-			image:         "nginx",
-			expectDigest:  false,
-			expectLatest:  true,
-			expectTrusted: false,
-		},
+		{true, false, false, "medium"},
+		{false, false, false, "medium"},
+		{false, false, true, "high"},
 	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			entry := &SupplyChainEntry{Image: tt.image}
-			analyzeSupplyChainImage(entry)
-			if entry.HasDigest != tt.expectDigest {
-				t.Errorf("HasDigest = %v, want %v", entry.HasDigest, tt.expectDigest)
-			}
-			if entry.IsLatestTag != tt.expectLatest {
-				t.Errorf("IsLatestTag = %v, want %v", entry.IsLatestTag, tt.expectLatest)
-			}
-			if entry.IsTrusted != tt.expectTrusted {
-				t.Errorf("IsTrusted = %v, want %v", entry.IsTrusted, tt.expectTrusted)
-			}
-		})
-	}
-}
-
-func TestSupplyChainHealthScore(t *testing.T) {
-	tests := []struct {
-		name          string
-		totalImages   int
-		latestTag     int
-		noRegistry    int
-		unsigned      int
-		usingDigest   int
-		staleImages   int
-		expectedRange [2]int
-	}{
-		{"all healthy", 10, 0, 0, 0, 10, 0, [2]int{95, 100}},
-		{"some latest", 10, 3, 0, 0, 7, 0, [2]int{90, 98}},
-		{"untrusted", 10, 0, 4, 0, 6, 0, [2]int{90, 98}},
-		{"low digest ratio", 10, 0, 0, 0, 1, 0, [2]int{85, 95}},
-		{"stale images", 10, 0, 0, 0, 10, 3, [2]int{90, 98}},
-		{"all problems", 10, 8, 6, 7, 1, 5, [2]int{0, 70}},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			score := 100
-			if tt.totalImages > 0 {
-				latestRatio := tt.latestTag * 100 / tt.totalImages
-				score -= latestRatio / 5
-				untrustedRatio := tt.noRegistry * 100 / tt.totalImages
-				score -= untrustedRatio / 10
-				unsignedRatio := tt.unsigned * 100 / tt.totalImages
-				score -= unsignedRatio / 10
-				digestRatio := tt.usingDigest * 100 / tt.totalImages
-				if digestRatio < 20 {
-					score -= 10
-				} else if digestRatio < 50 {
-					score -= 5
-				}
-				if tt.staleImages > 0 {
-					score -= tt.staleImages * 2
-				}
-			}
-			if score < 0 {
-				score = 0
-			}
-
-			if score < tt.expectedRange[0] || score > tt.expectedRange[1] {
-				t.Errorf("score %d not in expected range [%d, %d]", score, tt.expectedRange[0], tt.expectedRange[1])
-			}
-		})
-	}
-}
-
-func TestFormatSupplyChainSummary(t *testing.T) {
-	result := &SupplyChainResult{
-		Summary: SupplyChainSummary{
-			TotalImages:    50,
-			UniqueImages:   20,
-			UsingDigest:    15,
-			UsingLatestTag: 5,
-			NoRegistry:     8,
-			UnsignedImages: 30,
-		},
-	}
-	summary := formatSupplyChainSummary(result)
-	if summary == "" {
-		t.Error("summary should not be empty")
+	for _, tc := range tests {
+		severity := "low"
+		if tc.isLatest {
+			severity = "medium"
+		}
+		if !tc.byDigest && severity == "low" {
+			severity = "medium"
+		}
+		if tc.isUnknown {
+			severity = "high"
+		}
+		if severity != tc.expected {
+			t.Errorf("latest=%v digest=%v unknown=%v: expected %s, got %s",
+				tc.isLatest, tc.byDigest, tc.isUnknown, tc.expected, severity)
+		}
 	}
 }

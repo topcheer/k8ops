@@ -455,6 +455,11 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/api-version-governance", s.cacheMiddleware(120*time.Second, s.handleAPIVersionGov))          // K8s API version governance & deprecation tracker
 	mux.HandleFunc("/api/security/secret-lifecycle", s.cacheMiddleware(120*time.Second, s.handleSecretLifecycle))            // secret management lifecycle & rotation tracker
 	mux.HandleFunc("/api/scalability/dr-backup-verify", s.cacheMiddleware(120*time.Second, s.handleDRBackup))                 // disaster recovery & backup verification assessor
+	mux.HandleFunc("/api/docs/training-readiness", s.cacheMiddleware(120*time.Second, s.handleTrainingReadiness))             // platform onboarding & documentation quality assessor
+	mux.HandleFunc("/api/operations/cert-expiry", s.cacheMiddleware(120*time.Second, s.handleCertExpiry))                     // TLS certificate expiry & lifecycle monitor
+	mux.HandleFunc("/api/security/image-supply-chain", s.cacheMiddleware(120*time.Second, s.handleSupplyChain))                     // container image supply chain security scanner
+	mux.HandleFunc("/api/scalability/node-os-drift", s.cacheMiddleware(120*time.Second, s.handleNodeOSDrift))                 // node OS lifecycle & kernel drift deep analyzer
+	mux.HandleFunc("/api/product/traffic-flow", s.cacheMiddleware(60*time.Second, s.handleTrafficFlow))                       // east-west traffic flow & service communication map
 	mux.HandleFunc("/api/product/mesh-readiness", s.cacheMiddleware(120*time.Second, s.handleMeshReadiness))                   // service mesh readiness & mTLS coverage gap analyzer
 	mux.HandleFunc("/api/scalability/idle-waste", s.cacheMiddleware(120*time.Second, s.handleIdleWaste))                       // idle resource waste quantification & cost recovery engine
 	mux.HandleFunc("/api/security/policy-governance", s.cacheMiddleware(120*time.Second, s.handlePolicyGovernance))           // admission policy governance & enforcement auditor
