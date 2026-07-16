@@ -4715,6 +4715,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Compliance posture", map[string]interface{}{"overallScore": 72, "frameworks": []interface{}{map[string]interface{}{"framework": "SOC2", "score": 80}}})},
 	})
 
+	// --- Observability Coverage (v17.69) ---
+	add("/api/operations/obs-coverage", "get", OpenAPIOperation{
+		Summary:     "Observability coverage & blind spot detector",
+		OperationID: "obsCoverage",
+		Tags:        []string{"Operations", "Observability", "Monitoring"},
+		Description: "Identifies workloads flying blind — no monitoring, tracing, dashboards, runbooks, or alerts. Scores signal coverage across 5 dimensions per workload and cluster-wide.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Coverage report", map[string]interface{}{"summary": map[string]interface{}{"blindCount": 12, "signalQuality": "poor"}})},
+	})
+
 	return spec
 }
 

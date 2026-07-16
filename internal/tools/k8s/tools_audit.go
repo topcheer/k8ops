@@ -237,6 +237,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:ownership-map", "/api/product/ownership-map", "Workload ownership & accountability governance engine"},
 	{"docs:platform-maturity", "/api/docs/platform-maturity", "Platform maturity assessment & capability matrix"},
 	{"security:compliance-posture", "/api/security/compliance-posture", "Multi-framework compliance posture & control mapping"},
+	{"operations:obs-coverage", "/api/operations/obs-coverage", "Observability coverage & blind spot detector"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
