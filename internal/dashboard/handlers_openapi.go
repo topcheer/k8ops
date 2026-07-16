@@ -4792,6 +4792,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Mesh readiness", map[string]interface{}{"readinessScore": 0, "meshDetected": false, "mtlsCoverage": map[string]interface{}{"score": 0, "status": "no-mesh"}})},
 	})
 
+	// --- Idle Waste Detection (v17.77) ---
+	add("/api/scalability/idle-waste", "get", OpenAPIOperation{
+		Summary:     "Idle resource waste quantification & cost recovery",
+		OperationID: "idleWaste",
+		Tags:        []string{"Scalability", "FinOps", "Cost"},
+		Description: "Detects and quantifies idle resource waste: zero-replica workloads, unmounted PVCs, LoadBalancer services. Estimates monthly waste cost and provides resource efficiency scoring (0-100, A-F).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Waste report", map[string]interface{}{"wasteScore": 75, "estimatedWaste": map[string]interface{}{"totalMonthly": 45.5}})},
+	})
+
 	return spec
 }
 

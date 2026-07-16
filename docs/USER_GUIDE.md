@@ -1443,3 +1443,28 @@ curl -sk https://k8ops.iot2.win/api/product/mesh-readiness \
 curl -sk https://k8ops.iot2.win/api/product/mesh-readiness \
   -H "Authorization: Bearer $JWT" | jq '.trafficPolicyGaps'
 ```
+
+---
+
+### 闲置资源浪费量化与成本回收（v17.77）
+
+**端点**：`GET /api/scalability/idle-waste`
+
+检测和量化闲置资源浪费：零副本工作负载、未挂载的 PVC、LoadBalancer 服务。估算月度浪费成本，提供资源效率评分（0-100，A-F 等级）。
+
+**示例**：
+```bash
+# 查看资源浪费报告
+curl -sk https://k8ops.iot2.win/api/scalability/idle-waste \
+  -H "Authorization: Bearer $JWT" | jq '{
+    score: .wasteScore,
+    grade: .grade,
+    waste: .estimatedWaste,
+    idleWorkloads: .idleWorkloads[0:5],
+    unusedVolumes: .unusedVolumes
+  }'
+
+# 查看浪费成本明细
+curl -sk https://k8ops.iot2.win/api/scalability/idle-waste \
+  -H "Authorization: Bearer $JWT" | jq '.recommendations'
+```
