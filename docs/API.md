@@ -2977,5 +2977,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 238 | /api/operations/change-intel | Operations | v17.73 | 变更智能与爆炸半径分析引擎 |
 | 239 | /api/security/net-policy-effectiveness | Security | v17.74 | 网络策略有效性与零信任隔离评分引擎 |
 | 240 | /api/deployment/resource-governance | Deployment | v17.75 | 资源治理与命名空间配额有效性分析引擎 |
+| 241 | /api/product/mesh-readiness | Product | v17.76 | 服务网格就绪度与mTLS覆盖差距分析引擎 |
 
-**总计：316 个 OpenAPI 端点，324 个 Dashboard API 端点**
+**总计：317 个 OpenAPI 端点，325 个 Dashboard API 端点**

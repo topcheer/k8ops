@@ -4783,6 +4783,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Policy report", map[string]interface{}{"isolationScore": 25, "zeroTrustLevel": "low"})},
 	})
 
+	// --- Service Mesh Readiness (v17.76) ---
+	add("/api/product/mesh-readiness", "get", OpenAPIOperation{
+		Summary:     "Service mesh readiness & mTLS coverage gap analyzer",
+		OperationID: "meshReadiness",
+		Tags:        []string{"Product", "ServiceMesh", "mTLS"},
+		Description: "Analyzes service mesh readiness: sidecar injection status, mTLS coverage, traffic management policy gaps (circuit breaker, retry, timeout). Detects Istio/Linkerd mesh presence and identifies unmeshed services lacking resilience policies.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Mesh readiness", map[string]interface{}{"readinessScore": 0, "meshDetected": false, "mtlsCoverage": map[string]interface{}{"score": 0, "status": "no-mesh"}})},
+	})
+
 	return spec
 }
 

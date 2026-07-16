@@ -1417,3 +1417,29 @@ curl -sk https://k8ops.iot2.win/api/deployment/resource-governance \
 curl -sk https://k8ops.iot2.win/api/deployment/resource-governance \
   -H "Authorization: Bearer $JWT" | jq '.quotaAnalysis[] | select(.status != "healthy")'
 ```
+
+---
+
+### 服务网格就绪度与mTLS覆盖差距（v17.76）
+
+**端点**：`GET /api/product/mesh-readiness`
+
+分析服务网格就绪状态：sidecar 注入状态、mTLS 覆盖率、流量管理策略差距（断路器、重试、超时）。检测 Istio/Linkerd 网格是否存在，识别未纳入网格的服务缺失韧性策略。就绪评分（0-100，A-F 等级）。
+
+**示例**：
+```bash
+# 查看服务网格就绪度
+curl -sk https://k8ops.iot2.win/api/product/mesh-readiness \
+  -H "Authorization: Bearer $JWT" | jq '{
+    score: .readinessScore,
+    grade: .grade,
+    meshDetected: .meshDetected,
+    meshType: .meshType,
+    mtls: .mtlsCoverage,
+    topGaps: .injectionGaps[0:5]
+  }'
+
+# 查看缺失韧性策略的多端口服务
+curl -sk https://k8ops.iot2.win/api/product/mesh-readiness \
+  -H "Authorization: Bearer $JWT" | jq '.trafficPolicyGaps'
+```
