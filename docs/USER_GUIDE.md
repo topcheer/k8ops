@@ -1614,3 +1614,29 @@ curl -sk https://k8ops.iot2.win/api/security/secret-lifecycle \
 curl -sk https://k8ops.iot2.win/api/security/secret-lifecycle \
   -H "Authorization: Bearer $JWT" | jq '.plaintextRisks, .secretSprawl'
 ```
+
+---
+
+### 灾难恢复与备份验证评估（v17.84）
+
+**端点**：`GET /api/scalability/dr-backup-verify`
+
+分析灾难恢复就绪状态：备份工具检测（Velero/K8up/Longhorn）、命名空间备份覆盖率、未受保护 PVC 识别、RPO/RTO 估算、恢复就绪评估。
+
+**示例**：
+```bash
+# 查看 DR 就绪报告
+curl -sk https://k8ops.iot2.win/api/scalability/dr-backup-verify \
+  -H "Authorization: Bearer $JWT" | jq '{
+    score: .readinessScore,
+    grade: .grade,
+    readiness: .drReadiness,
+    rpo: .estRPO,
+    rto: .estRTO,
+    summary: .summary
+  }'
+
+# 查看未受保护的命名空间
+curl -sk https://k8ops.iot2.win/api/scalability/dr-backup-verify \
+  -H "Authorization: Bearer $JWT" | jq '.unprotectedNamespaces[] | select(.severity == "high")'
+```

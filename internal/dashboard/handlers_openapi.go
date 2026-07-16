@@ -4855,6 +4855,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Secret lifecycle report", map[string]interface{}{"lifecycleScore": 55, "grade": "D"})},
 	})
 
+	// --- DR Backup Verify (v17.84) ---
+	add("/api/scalability/dr-backup-verify", "get", OpenAPIOperation{
+		Summary:     "Disaster recovery & backup verification assessor",
+		OperationID: "drBackupVerify",
+		Tags:        []string{"Scalability", "DR", "Backup"},
+		Description: "Analyzes DR readiness: backup tool detection (Velero/K8up/Longhorn), namespace backup coverage, unprotected PVC identification, RPO/RTO estimation, and restore readiness assessment.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("DR report", map[string]interface{}{"readinessScore": 0, "drReadiness": "not-ready", "estRPO": "unknown"})},
+	})
+
 	return spec
 }
 

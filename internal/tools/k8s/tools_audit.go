@@ -242,6 +242,7 @@ var auditRegistry = []auditEndpoint{
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},
 	{"product:api-version-governance", "/api/product/api-version-governance", "K8s API version governance & deprecation tracker"},
 	{"security:secret-lifecycle", "/api/security/secret-lifecycle", "Secret management lifecycle & rotation tracker"},
+	{"scalability:dr-backup-verify", "/api/scalability/dr-backup-verify", "Disaster recovery & backup verification assessor"},
 	{"scalability:autoscaling-intel", "/api/scalability/autoscaling-intel", "Autoscaling intelligence & scaling behavior profiler"},
 	{"product:ownership-map", "/api/product/ownership-map", "Workload ownership & accountability governance engine"},
 	{"docs:platform-maturity", "/api/docs/platform-maturity", "Platform maturity assessment & capability matrix"},
