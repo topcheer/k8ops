@@ -5059,6 +5059,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Storage report", map[string]interface{}{"healthScore": 80})},
 	})
 
+	// --- Workload Deps (v18.08) ---
+	add("/api/deployment/workload-deps", "get", OpenAPIOperation{
+		Summary: "Workload dependency graph analyzer", OperationID: "workloadDeps",
+		Tags: []string{"Deployment", "Dependency", "Startup"},
+		Description: "Analyzes workload dependencies: init containers, config/secret refs, startup ordering risks.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Dependency report", map[string]interface{}{"healthScore": 85})},
+	})
+
+	// --- Metrics Pipeline (v18.09) ---
+	add("/api/operations/metrics-pipe", "get", OpenAPIOperation{
+		Summary: "Metrics pipeline integrity & scraping coverage", OperationID: "metricsPipeline",
+		Tags: []string{"Operations", "Metrics", "Pipeline"},
+		Description: "Analyzes metrics pipeline: Prometheus detection, exporter health, scraping targets, blind workloads.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Metrics pipeline", map[string]interface{}{"healthScore": 0})},
+	})
+
+	// --- Platform Changelog (v18.10) ---
+	add("/api/docs/platform-changelog", "get", OpenAPIOperation{
+		Summary: "Platform changelog from recent resource changes", OperationID: "platformChangelog",
+		Tags: []string{"Documentation", "Changelog", "Audit"},
+		Description: "Generates a platform changelog: new/updated deployments, services, configmaps in last 24h.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Changelog", map[string]interface{}{"totalChanges24h": 10})},
+	})
+
 	return spec
 }
 

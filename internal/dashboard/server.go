@@ -478,6 +478,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/admission-posture", s.cacheMiddleware(120*time.Second, s.handleAdmissionAudit))            // admission controller posture & policy engine audit
 	mux.HandleFunc("/api/operations/dashboard-availability", s.cacheMiddleware(120*time.Second, s.handleDashAvail))             // Grafana dashboard availability & observability UI coverage
 	mux.HandleFunc("/api/scalability/storage-orphan", s.cacheMiddleware(120*time.Second, s.handleStorageOrphan))               // orphaned PVC & storage waste analyzer
+	mux.HandleFunc("/api/deployment/workload-deps", s.cacheMiddleware(120*time.Second, s.handleWLDeps))                         // workload dependency graph analyzer
+	mux.HandleFunc("/api/operations/metrics-pipe", s.cacheMiddleware(120*time.Second, s.handleMetricsPipe))                   // metrics pipeline integrity & scraping coverage
+	mux.HandleFunc("/api/docs/platform-changelog", s.cacheMiddleware(30*time.Second, s.handleChangeLog))                     // platform changelog from recent resource changes
 	mux.HandleFunc("/api/product/mesh-readiness", s.cacheMiddleware(120*time.Second, s.handleMeshReadiness))                   // service mesh readiness & mTLS coverage gap analyzer
 	mux.HandleFunc("/api/scalability/idle-waste", s.cacheMiddleware(120*time.Second, s.handleIdleWaste))                       // idle resource waste quantification & cost recovery engine
 	mux.HandleFunc("/api/security/policy-governance", s.cacheMiddleware(120*time.Second, s.handlePolicyGovernance))           // admission policy governance & enforcement auditor
