@@ -179,6 +179,7 @@ func (s *Server) Start(addr string) error {
 	// OpenAPI documentation
 	mux.HandleFunc("/api/openapi.json", s.handleOpenAPISpec) // OpenAPI 3.0 spec
 	mux.HandleFunc("/api/docs", s.handleAPIDocs)             // API documentation (JSON + metadata)
+	mux.HandleFunc("/api/docs/platform-maturity", s.cacheMiddleware(300*time.Second, s.handlePlatformMaturity))         // platform maturity assessment & capability matrix (5min cache)
 
 	// Cost / FinOps
 	mux.HandleFunc("/api/cost/summary", s.cacheMiddleware(60*time.Second, s.handleCostSummary))                 // 1min cache

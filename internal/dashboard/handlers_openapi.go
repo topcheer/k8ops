@@ -4697,6 +4697,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Ownership map", map[string]interface{}{"summary": map[string]interface{}{"coveragePct": 45.2, "accountabilityScore": 38}})},
 	})
 
+	// --- Platform Maturity (v17.67) ---
+	add("/api/docs/platform-maturity", "get", OpenAPIOperation{
+		Summary:     "Platform maturity assessment & capability matrix",
+		OperationID: "platformMaturity",
+		Tags:        []string{"Documentation", "Maturity", "Meta"},
+		Description: "CMMI-style platform maturity assessment across six dimensions. Scores each dimension (0-100), maps blind spot coverage, identifies capability gaps, and generates a prioritized evolution roadmap.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Maturity report", map[string]interface{}{"overallScore": 78, "overallLevel": "defined"})},
+	})
+
 	return spec
 }
 
