@@ -1542,3 +1542,27 @@ curl -sk https://k8ops.iot2.win/api/operations/obs-cardinality \
 curl -sk https://k8ops.iot2.win/api/operations/obs-cardinality \
   -H "Authorization: Bearer $JWT" | jq '.logVolumeByNS[] | select(.status != "covered")'
 ```
+
+---
+
+### GitOps同步健康与配置漂移分析（v17.81）
+
+**端点**：`GET /api/deployment/gitops-drift`
+
+深度分析 GitOps 同步健康：ArgoCD/Flux 控制器检测、Helm release 跟踪、手动部署检测、ConfigMap 过期检测、漂移评分。识别未被 GitOps 管理的工作负载。
+
+**示例**：
+```bash
+# 查看 GitOps 漂移报告
+curl -sk https://k8ops.iot2.win/api/deployment/gitops-drift \
+  -H "Authorization: Bearer $JWT" | jq '{
+    score: .driftScore,
+    grade: .grade,
+    summary: .summary,
+    topDrift: .driftDetected[0:5]
+  }'
+
+# 查看手动部署的工作负载
+curl -sk https://k8ops.iot2.win/api/deployment/gitops-drift \
+  -H "Authorization: Bearer $JWT" | jq '.driftDetected[] | select(.driftType == "manual-deployment")'
+```

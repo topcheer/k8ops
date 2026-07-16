@@ -451,6 +451,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/change-intel", s.cacheMiddleware(60*time.Second, s.handleChangeIntel))                    // change intelligence & blast radius analyzer
 	mux.HandleFunc("/api/operations/obs-coverage", s.cacheMiddleware(120*time.Second, s.handleObsCoverage))                   // observability coverage & blind spot detector
 	mux.HandleFunc("/api/operations/obs-cardinality", s.cacheMiddleware(120*time.Second, s.handleObsCardinality))             // observability data cardinality & volume cost analyzer
+	mux.HandleFunc("/api/deployment/gitops-drift", s.cacheMiddleware(120*time.Second, s.handleGitOpsDrift))                   // GitOps sync health & configuration drift analyzer
 	mux.HandleFunc("/api/product/mesh-readiness", s.cacheMiddleware(120*time.Second, s.handleMeshReadiness))                   // service mesh readiness & mTLS coverage gap analyzer
 	mux.HandleFunc("/api/scalability/idle-waste", s.cacheMiddleware(120*time.Second, s.handleIdleWaste))                       // idle resource waste quantification & cost recovery engine
 	mux.HandleFunc("/api/security/policy-governance", s.cacheMiddleware(120*time.Second, s.handlePolicyGovernance))           // admission policy governance & enforcement auditor

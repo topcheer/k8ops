@@ -4828,6 +4828,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Cardinality report", map[string]interface{}{"riskScore": 50, "grade": "D", "estMonthlyCost": 15.5})},
 	})
 
+	// --- GitOps Drift (v17.81) ---
+	add("/api/deployment/gitops-drift", "get", OpenAPIOperation{
+		Summary:     "GitOps sync health & configuration drift analyzer",
+		OperationID: "gitOpsDrift",
+		Tags:        []string{"Deployment", "GitOps", "Drift"},
+		Description: "Deeply analyzes GitOps sync health: ArgoCD/Flux controller detection, Helm release tracking, manual deployment detection, ConfigMap staleness, and drift scoring. Identifies workloads not managed by GitOps.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("GitOps drift report", map[string]interface{}{"driftScore": 60, "grade": "D", "summary": map[string]interface{}{"hasArgoCD": false, "manualChanges": 10}})},
+	})
+
 	return spec
 }
 
