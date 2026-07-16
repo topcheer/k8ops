@@ -4801,6 +4801,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Waste report", map[string]interface{}{"wasteScore": 75, "estimatedWaste": map[string]interface{}{"totalMonthly": 45.5}})},
 	})
 
+	// --- Policy Governance (v17.78) ---
+	add("/api/security/policy-governance", "get", OpenAPIOperation{
+		Summary:     "Admission policy governance & enforcement auditor",
+		OperationID: "policyGovernance",
+		Tags:        []string{"Security", "Compliance", "OPA", "Gatekeeper"},
+		Description: "Analyzes admission policy governance: OPA Gatekeeper/Kyverno installation status, Pod Security Admission (PSA) label coverage, and policy enforcement gaps across namespaces. Enforcement scoring (0-100, A-F grading).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Policy governance", map[string]interface{}{"enforcementScore": 0, "gatekeeperStatus": "not-installed", "psaCoverage": map[string]interface{}{"coveragePct": 0}})},
+	})
+
 	return spec
 }
 

@@ -1468,3 +1468,28 @@ curl -sk https://k8ops.iot2.win/api/scalability/idle-waste \
 curl -sk https://k8ops.iot2.win/api/scalability/idle-waste \
   -H "Authorization: Bearer $JWT" | jq '.recommendations'
 ```
+
+---
+
+### 准入策略治理与执行审计（v17.78）
+
+**端点**：`GET /api/security/policy-governance`
+
+分析准入策略治理：OPA Gatekeeper/Kyverno 安装状态、Pod Security Admission (PSA) 标签覆盖率、命名空间策略执行差距。执行评分（0-100，A-F 等级）。
+
+**示例**：
+```bash
+# 查看策略治理态势
+curl -sk https://k8ops.iot2.win/api/security/policy-governance \
+  -H "Authorization: Bearer $JWT" | jq '{
+    score: .enforcementScore,
+    grade: .grade,
+    gatekeeper: .gatekeeperStatus,
+    kyverno: .kyvernoStatus,
+    psa: .psaCoverage
+  }'
+
+# 查看无 PSA 标签的命名空间
+curl -sk https://k8ops.iot2.win/api/security/policy-governance \
+  -H "Authorization: Bearer $JWT" | jq '.policyGaps[] | select(.severity == "high")'
+```
