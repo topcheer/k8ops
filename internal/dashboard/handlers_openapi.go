@@ -5131,6 +5131,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Node decommission", map[string]interface{}{"healthScore": 40})},
 	})
 
+	// --- Backup Coverage (v18.17) ---
+	add("/api/operations/backup-coverage", "get", OpenAPIOperation{
+		Summary: "Backup & disaster recovery posture analyzer", OperationID: "backupCoverage",
+		Tags: []string{"Operations", "Backup", "DR"},
+		Description: "Detects Velero/backup tools, PVC backup coverage, schedule presence, restore readiness.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Backup report", map[string]interface{}{"healthScore": 20})},
+	})
+
+	// --- Idle Zombie (v18.18) ---
+	add("/api/deployment/idle-zombie", "get", OpenAPIOperation{
+		Summary: "Idle/zombie workload detector", OperationID: "idleZombie",
+		Tags: []string{"Deployment", "Waste", "Idle"},
+		Description: "Detects idle workloads consuming resources without traffic, zombie deployments with 0 ready replicas.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Idle report", map[string]interface{}{"healthScore": 75})},
+	})
+
+	// --- Service Mesh (v18.19) ---
+	add("/api/product/service-mesh", "get", OpenAPIOperation{
+		Summary: "Service mesh coverage & mTLS analyzer", OperationID: "serviceMesh",
+		Tags: []string{"Product", "Mesh", "MTLS"},
+		Description: "Detects Istio/Linkerd/Consul, sidecar injection rate, mTLS status, mesh coverage gaps.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Mesh report", map[string]interface{}{"healthScore": 20})},
+	})
+
 	return spec
 }
 

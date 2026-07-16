@@ -159,6 +159,10 @@ func (s *Server) handleMTTR(w http.ResponseWriter, r *http.Request) {
 			Namespace: ns, Restarts: restarts, Pods: nsPodCount[ns], Stability: 100 - restarts*5,
 		})
 	}
+	// Sort by restarts descending (highest first)
+	sort.Slice(result.ByNamespace, func(i, j int) bool {
+		return result.ByNamespace[i].Restarts > result.ByNamespace[j].Restarts
+	})
 
 	// MTTR estimate
 	result.MTTREstimate = MTTREstInfo{Minutes: 1, Method: "restart-based", Confidence: "low"}

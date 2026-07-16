@@ -487,6 +487,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/gitops-sync-status", s.cacheMiddleware(120*time.Second, s.handleGitOpsSync))                   // GitOps sync state & drift detection
 	mux.HandleFunc("/api/operations/endpoint-probe", s.cacheMiddleware(60*time.Second, s.handleEndpointProbe))                 // service endpoint readiness probe
 	mux.HandleFunc("/api/scalability/node-decomm", s.cacheMiddleware(120*time.Second, s.handleNodeDecomm))                     // node decommissioning & lifecycle rotation
+	mux.HandleFunc("/api/operations/backup-coverage", s.cacheMiddleware(120*time.Second, s.handleBackupCoverage))             // backup & disaster recovery posture analyzer
+	mux.HandleFunc("/api/deployment/idle-zombie", s.cacheMiddleware(120*time.Second, s.handleIdleZombie))                     // idle/zombie workload detector
+	mux.HandleFunc("/api/product/service-mesh", s.cacheMiddleware(120*time.Second, s.handleServiceMesh))                     // service mesh coverage & mTLS analyzer
 	mux.HandleFunc("/api/product/mesh-readiness", s.cacheMiddleware(120*time.Second, s.handleMeshReadiness))                   // service mesh readiness & mTLS coverage gap analyzer
 	mux.HandleFunc("/api/scalability/idle-waste", s.cacheMiddleware(120*time.Second, s.handleIdleWaste))                       // idle resource waste quantification & cost recovery engine
 	mux.HandleFunc("/api/security/policy-governance", s.cacheMiddleware(120*time.Second, s.handlePolicyGovernance))           // admission policy governance & enforcement auditor
