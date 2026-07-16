@@ -219,6 +219,7 @@ var auditRegistry = []auditEndpoint{
 	{"deployment:gitops-audit", "/api/deployment/gitops-audit", "GitOps/CD pipeline health & config drift auditor"},
 	{"operations:metrics-pipeline-audit", "/api/operations/metrics-pipeline-audit", "Metrics collection pipeline integrity audit"},
 	{"security:compliance-map", "/api/security/compliance-map", "SOC2/PCI-DSS/HIPAA compliance framework mapping"},
+	{"product:probe-effectiveness", "/api/product/probe-effectiveness", "Health probe effectiveness & failure detection analyzer"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
