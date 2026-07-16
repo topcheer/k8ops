@@ -4909,6 +4909,33 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Traffic flow report", map[string]interface{}{"flowScore": 75})},
 	})
 
+	// --- Pipeline Health (v17.90) ---
+	add("/api/deployment/pipeline-health", "get", OpenAPIOperation{
+		Summary:     "CI/CD pipeline health & DORA maturity analyzer",
+		OperationID: "pipelineHealth",
+		Tags:        []string{"Deployment", "CI/CD", "DORA"},
+		Description: "Analyzes deployment pipeline health: deploy frequency, change failure rate, rollback patterns, CI/CD controller detection, and DORA maturity classification.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Pipeline health", map[string]interface{}{"healthScore": 70, "doraLevel": "Medium"})},
+	})
+
+	// --- Alert Rule Quality (v17.91) ---
+	add("/api/operations/alert-rule-quality", "get", OpenAPIOperation{
+		Summary:     "Alerting rule quality & coverage gap analyzer",
+		OperationID: "alertRuleQuality",
+		Tags:        []string{"Operations", "Alerting", "Observability"},
+		Description: "Analyzes alerting rule quality: Prometheus/Alertmanager detection, rule count, workload alerting coverage, noise risk detection.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Alert quality", map[string]interface{}{"qualityScore": 0, "totalRules": 0})},
+	})
+
+	// --- Chargeback (v17.92) ---
+	add("/api/scalability/chargeback", "get", OpenAPIOperation{
+		Summary:     "Cost chargeback & team budget allocation report",
+		OperationID: "chargeback",
+		Tags:        []string{"Scalability", "FinOps", "Cost"},
+		Description: "Detailed cost chargeback: per-namespace cost breakdown, shared infrastructure cost, waste cost, team-level budget allocation.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Chargeback", map[string]interface{}{"totalMonthlyCost": 150.0, "namespaceCount": 28})},
+	})
+
 	return spec
 }
 

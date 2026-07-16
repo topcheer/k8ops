@@ -460,6 +460,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/image-supply-chain", s.cacheMiddleware(120*time.Second, s.handleSupplyChain))                     // container image supply chain security scanner
 	mux.HandleFunc("/api/scalability/node-os-drift", s.cacheMiddleware(120*time.Second, s.handleNodeOSDrift))                 // node OS lifecycle & kernel drift deep analyzer
 	mux.HandleFunc("/api/product/traffic-flow", s.cacheMiddleware(60*time.Second, s.handleTrafficFlow))                       // east-west traffic flow & service communication map
+	mux.HandleFunc("/api/deployment/pipeline-health", s.cacheMiddleware(60*time.Second, s.handlePipelineHealth))             // CI/CD pipeline health & DORA maturity analyzer
+	mux.HandleFunc("/api/operations/alert-rule-quality", s.cacheMiddleware(120*time.Second, s.handleAlertRuleQuality))         // alerting rule quality & coverage gap analyzer
+	mux.HandleFunc("/api/scalability/chargeback", s.cacheMiddleware(300*time.Second, s.handleChargeback))                      // cost chargeback & team budget allocation report
 	mux.HandleFunc("/api/product/mesh-readiness", s.cacheMiddleware(120*time.Second, s.handleMeshReadiness))                   // service mesh readiness & mTLS coverage gap analyzer
 	mux.HandleFunc("/api/scalability/idle-waste", s.cacheMiddleware(120*time.Second, s.handleIdleWaste))                       // idle resource waste quantification & cost recovery engine
 	mux.HandleFunc("/api/security/policy-governance", s.cacheMiddleware(120*time.Second, s.handlePolicyGovernance))           // admission policy governance & enforcement auditor

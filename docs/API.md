@@ -2992,4 +2992,8 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 253 | /api/scalability/node-os-drift | Scalability | v17.88 | 节点OS生命周期与内核漂移分析引擎 |
 | 254 | /api/product/traffic-flow | Product | v17.89 | 东西向流量流与服务通信拓扑引擎 |
 
-**总计：330 个 OpenAPI 端点，338 个 Dashboard API 端点**
+| 255 | /api/deployment/pipeline-health | Deployment | v17.90 | CI/CD流水线健康与DORA成熟度分析引擎 |
+| 256 | /api/operations/alert-rule-quality | Operations | v17.91 | 告警规则质量与覆盖差距分析引擎 |
+| 257 | /api/scalability/chargeback | Scalability | v17.92 | 成本分摊与团队预算分配报告引擎 |
+
+**总计：333 个 OpenAPI 端点，341 个 Dashboard API 端点**
