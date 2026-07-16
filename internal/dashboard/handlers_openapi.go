@@ -4532,6 +4532,23 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Deployment Change Readiness Pre-Flight Gate (v17.53) ---
+	add("/api/deployment/change-readiness", "get", OpenAPIOperation{
+		Summary:     "Deployment change readiness pre-flight gate",
+		OperationID: "changeReadiness",
+		Tags:        []string{"Deployment", "CI/CD", "Gate"},
+		Description: "Pre-flight gate that evaluates whether the cluster is safe for new deployments. Runs 8 checks: node stability (no pressure conditions), active rollouts (<3 concurrent), failed pods (<10 crash-looping), PDB coverage (>50%), capacity headroom (<85% utilized), rollback path (RevisionHistoryLimit > 0), resource limits (containers have CPU/memory limits), health probes (readiness probes configured). Returns gate decision (proceed / proceed-with-caution / blocked), readiness score (0-100), detailed check results, blockers, warnings, recent failures, and capacity metrics. Designed for CI/CD pipeline integration as a deployment gate.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Change readiness assessment", map[string]interface{}{
+				"gateDecision":   "proceed",
+				"readinessScore": 95,
+				"summary":        map[string]interface{}{"totalChecks": 8, "passed": 8, "failed": 0, "warnings": 0},
+				"checks":         []map[string]interface{}{{"name": "node-stability", "category": "stability", "status": "pass"}},
+				"capacityHeadroom": map[string]interface{}{"totalPodSlots": 110, "usedPodSlots": 45, "available": 65, "utilization": 40.9},
+			}),
+		},
+	})
+
 	return spec
 }
 

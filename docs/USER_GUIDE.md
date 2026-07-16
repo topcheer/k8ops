@@ -1178,3 +1178,33 @@ kubectl rollout restart daemonset/k8ops -n k8ops-system
 curl -sk https://k8ops.iot2.win/api/operations/predictive-health \
   -H "Authorization: Bearer $JWT" | jq '.overallRiskLevel, .predictions'
 ```
+
+### 部署变更就绪门禁
+
+`GET /api/deployment/change-readiness` 在部署前评估集群是否处于安全状态，适合 CI/CD 管道集成：
+
+**8 项预检**：
+1. **节点稳定性**：无 MemoryPressure/DiskPressure/PIDPressure
+2. **活跃滚动更新**：并发 rollout < 3
+3. **失败 Pod 检测**：CrashLoopBackOff/ImagePullBackOff/高重启 < 10
+4. **PDB 覆盖率**：PDB 覆盖 > 50% 的工作负载
+5. **容量余量**：Pod 容量利用率 < 85%
+6. **回滚路径**：RevisionHistoryLimit > 0 的部署占比
+7. **资源限制**：容器设置了 CPU/Memory limit
+8. **健康探针**：容器配置了 readiness probe
+
+**Gate 决策**：
+- `proceed`：所有检查通过，可以安全部署
+- `proceed-with-caution`：有警告但不阻断，建议小批量部署
+- `blocked`：存在阻断因素，必须先修复
+
+```bash
+# CI/CD 管道中作为部署门禁
+RESULT=$(curl -sk https://k8ops.iot2.win/api/deployment/change-readiness \
+  -H "Authorization: Bearer $JWT" | jq -r '.gateDecision')
+
+if [ "$RESULT" = "blocked" ]; then
+  echo "Deployment blocked by readiness gate"
+  exit 1
+fi
+```

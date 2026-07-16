@@ -428,6 +428,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/concurrency-guard", s.cacheMiddleware(30*time.Second, s.handleDeploymentConcurrencyGuard)) // deployment concurrency & rolling update collision detector
 	mux.HandleFunc("/api/deployment/revision-diff", s.cacheMiddleware(120*time.Second, s.handleRevisionDiff))                  // deployment revision diff & pod template change impact analyzer
 	mux.HandleFunc("/api/operations/predictive-health", s.cacheMiddleware(60*time.Second, s.handlePredictiveHealth))            // cluster predictive health & risk forecast engine
+	mux.HandleFunc("/api/deployment/change-readiness", s.cacheMiddleware(30*time.Second, s.handleChangeReadiness))              // deployment change readiness pre-flight gate
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))
