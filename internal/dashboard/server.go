@@ -503,6 +503,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/platform-scorecard", s.cacheMiddleware(120*time.Second, s.handlePlatformScorecard))           // unified platform engineering scorecard
 	mux.HandleFunc("/api/operations/signal-correlation", s.cacheMiddleware(30*time.Second, s.handleSignalCorrelation))      // proactive multi-signal anomaly correlation engine
 	mux.HandleFunc("/api/scalability/green-computing", s.cacheMiddleware(120*time.Second, s.handleGreenComputing))          // green computing & sustainability scorecard
+	mux.HandleFunc("/api/deployment/deploy-window", s.cacheMiddleware(60*time.Second, s.handleDeployWindow))               // optimal deployment window analyzer
+	mux.HandleFunc("/api/product/workload-criticality", s.cacheMiddleware(120*time.Second, s.handleCriticality))           // workload criticality scoring & tier classification
+	mux.HandleFunc("/api/scalability/commit-optimizer", s.cacheMiddleware(120*time.Second, s.handleCommitOptimizer))       // resource commitment & reserved instance optimizer
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))

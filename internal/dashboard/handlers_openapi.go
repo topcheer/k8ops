@@ -5227,6 +5227,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Green computing report", map[string]interface{}{"healthScore": 70})},
 	})
 
+	// --- Deploy Window (v18.29) ---
+	add("/api/deployment/deploy-window", "get", OpenAPIOperation{
+		Summary: "Optimal deployment window analyzer", OperationID: "deployWindow",
+		Tags: []string{"Deployment", "Operations", "Risk"},
+		Description: "Analyzes cluster event patterns over 7 days to identify the safest deployment windows. Computes per-hour activity scores from events, warnings, and pod restarts. Recommends top 3 low-risk windows and flags high-risk peak hours. Current deployment risk assessment with verdict (safe-to-deploy/caution/wait). Accounts for crash-loop pods, pending pods, and critical workload density.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Deploy window report", map[string]interface{}{"verdict": "safe-to-deploy"})},
+	})
+
+	// --- Workload Criticality (v18.30) ---
+	add("/api/product/workload-criticality", "get", OpenAPIOperation{
+		Summary: "Workload criticality scoring & tier classification", OperationID: "workloadCriticality",
+		Tags: []string{"Product", "SLA", "Operations"},
+		Description: "Scores each workload's business criticality (0-100) based on: replica count, PDB presence, HPA coverage, ingress exposure, resource commitment, age stability, and namespace patterns. Classifies into tiers: Tier-0 (critical, 99.99% SLA), Tier-1 (important, 99.9%), Tier-2 (standard, 99.5%), Tier-3 (best-effort). Per-tier PDB/HPA coverage gap analysis. SLA matrix with RTO/MTTR targets.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Criticality report", map[string]interface{}{"healthScore": 75})},
+	})
+
+	// --- Commit Optimizer (v18.31) ---
+	add("/api/scalability/commit-optimizer", "get", OpenAPIOperation{
+		Summary: "Resource commitment & reserved instance optimizer", OperationID: "commitOptimizer",
+		Tags: []string{"Scalability", "FinOps", "Cost"},
+		Description: "Analyzes resource commitment patterns to identify savings through reserved instances, sustained-use discounts, and spot migration. Separates stable (always-on) from volatile (batch/spot) workloads. Computes stability scores per workload. Generates commitment plan with monthly/annual savings estimates and confidence scores. Per-namespace cost breakdown. Savings breakdown by category (reserved, right-size, spot).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Commit optimizer report", map[string]interface{}{"healthScore": 80})},
+	})
+
 	return spec
 }
 
