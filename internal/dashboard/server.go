@@ -494,6 +494,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/idle-waste", s.cacheMiddleware(120*time.Second, s.handleIdleWaste))                       // idle resource waste quantification & cost recovery engine
 	mux.HandleFunc("/api/security/policy-governance", s.cacheMiddleware(120*time.Second, s.handlePolicyGovernance))           // admission policy governance & enforcement auditor
 	mux.HandleFunc("/api/docs/api-quality", s.cacheMiddleware(120*time.Second, s.handleAPIQuality))                           // platform API endpoint quality & coverage gap analyzer
+	mux.HandleFunc("/api/product/cloud-portability", s.cacheMiddleware(120*time.Second, s.handleCloudPortability))         // cloud vendor lock-in & workload portability assessor
+	mux.HandleFunc("/api/scalability/storage-performance", s.cacheMiddleware(120*time.Second, s.handleStoragePerf))         // storage performance tier classification & mismatch detector
+	mux.HandleFunc("/api/deployment/workload-lifecycle", s.cacheMiddleware(120*time.Second, s.handleWorkloadLifecycle))     // workload lifecycle stage classifier & cleanup advisor
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))

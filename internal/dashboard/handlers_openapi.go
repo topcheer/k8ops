@@ -5155,6 +5155,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Mesh report", map[string]interface{}{"healthScore": 20})},
 	})
 
+	// --- Cloud Portability (v18.20) ---
+	add("/api/product/cloud-portability", "get", OpenAPIOperation{
+		Summary: "Cloud vendor lock-in & workload portability assessor", OperationID: "cloudPortability",
+		Tags: []string{"Product", "FinOps", "MultiCloud"},
+		Description: "Assesses cloud vendor lock-in by detecting cloud-specific StorageClasses, annotations, node selectors, and volume types. Detects cloud vendor from node providerIDs (AWS/GCP/Azure). Classifies workloads as portable or cloud-locked. Generates prioritized migration plan with effort estimates. Portability score (0-100, A-F grading). Per-namespace portability stats with risk levels.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Portability report", map[string]interface{}{"healthScore": 85})},
+	})
+
+	// --- Storage Performance (v18.21) ---
+	add("/api/scalability/storage-performance", "get", OpenAPIOperation{
+		Summary: "Storage performance tier classification & mismatch detector", OperationID: "storagePerformance",
+		Tags: []string{"Scalability", "Storage", "Performance"},
+		Description: "Classifies StorageClasses by performance tier (fast/standard/slow/unknown) based on provisioner and naming. Infers workload storage needs from pod names/labels (database, message-queue, logging, general). Detects performance mismatches (e.g., database on slow-tier storage). Identifies unbound PVCs, unknown-tier storage, and missing fast-tier options. Health score (0-100, A-F grading).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Storage performance report", map[string]interface{}{"healthScore": 75})},
+	})
+
+	// --- Workload Lifecycle (v18.22) ---
+	add("/api/deployment/workload-lifecycle", "get", OpenAPIOperation{
+		Summary: "Workload lifecycle stage classifier & cleanup advisor", OperationID: "workloadLifecycle",
+		Tags: []string{"Deployment", "Lifecycle", "FinOps"},
+		Description: "Auto-classifies workloads by lifecycle stage (production, staging, development, deprecated, legacy) using namespace patterns, labels, annotations, replica counts, and age. Assigns operational priority (P0-P3) and risk levels. Identifies cleanup candidates (deprecated/legacy workloads consuming resources) with actionable steps (delete, archive, scale-down). Stale workload detection (>90 days, non-production). Lifecycle governance score (0-100, A-F grading).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Lifecycle report", map[string]interface{}{"healthScore": 80})},
+	})
+
 	return spec
 }
 
