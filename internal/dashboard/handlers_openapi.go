@@ -4687,6 +4687,16 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Autoscaling report", map[string]interface{}{"summary": map[string]interface{}{"hpaCoverage": 35.2, "intelScore": 52}})},
 	})
 
+
+	// --- Ownership Map (v17.66) ---
+	add("/api/product/ownership-map", "get", OpenAPIOperation{
+		Summary:     "Workload ownership & accountability governance engine",
+		OperationID: "ownershipMap",
+		Tags:        []string{"Product", "Governance", "Ownership"},
+		Description: "Maps team ownership of workloads, detects orphaned resources lacking ownership metadata, scores accountability, and tracks label coverage.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Ownership map", map[string]interface{}{"summary": map[string]interface{}{"coveragePct": 45.2, "accountabilityScore": 38}})},
+	})
+
 	return spec
 }
 

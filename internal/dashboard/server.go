@@ -438,6 +438,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/cost-intelligence", s.cacheMiddleware(120*time.Second, s.handleCostIntelligence))            // cost intelligence & spend forecast engine
 	mux.HandleFunc("/api/scalability/autoscaling-intel", s.cacheMiddleware(120*time.Second, s.handleAutoscalingIntel))         // autoscaling intelligence & scaling behavior profiler
 	mux.HandleFunc("/api/product/golden-signals", s.cacheMiddleware(60*time.Second, s.handleGoldenSignals))                    // SRE four golden signals unified health engine
+	mux.HandleFunc("/api/product/ownership-map", s.cacheMiddleware(60*time.Second, s.handleOwnershipMap))                    // workload ownership & accountability governance engine
 	mux.HandleFunc("/api/security/remediation-matrix", s.cacheMiddleware(120*time.Second, s.handleRemediationMatrix))        // security remediation priority & risk-effort matrix
 	mux.HandleFunc("/api/operations/mttr", s.cacheMiddleware(60*time.Second, s.handleMTTR))                                    // mean time to recovery & incident lifecycle analytics
 

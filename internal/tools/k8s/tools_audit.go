@@ -234,6 +234,7 @@ var auditRegistry = []auditEndpoint{
 	{"operations:mttr", "/api/operations/mttr", "Mean time to recovery & incident lifecycle analytics"},
 	{"deployment:rollout-forensics", "/api/deployment/rollout-forensics", "Rollout failure forensics & deployment pattern detector"},
 	{"scalability:autoscaling-intel", "/api/scalability/autoscaling-intel", "Autoscaling intelligence & scaling behavior profiler"},
+	{"product:ownership-map", "/api/product/ownership-map", "Workload ownership & accountability governance engine"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
