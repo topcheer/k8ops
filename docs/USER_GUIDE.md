@@ -1250,3 +1250,21 @@ curl -sk https://k8ops.iot2.win/api/scalability/request-intelligence \
 curl -sk https://k8ops.iot2.win/api/product/reliability-scorecard \
   -H "Authorization: Bearer $JWT" | jq '.clusterGrade, .distribution, .weakestSignals'
 ```
+
+### 安全态势评分卡
+
+`GET /api/security/posture-scorecard` 评估集群整体安全态势，生成 A-F 评级：
+
+**5 个评估维度**：
+1. **Pod 安全**：特权容器、root 运行检测
+2. **主机访问**：hostNetwork/hostPID/hostIPC/hostPath 暴露
+3. **网络隔离**：NetworkPolicy 覆盖率
+4. **资源边界**：容器 limit 覆盖
+5. **攻击面**：危险能力(cap)、SA Token、无限制出口流量
+
+**输出**：集群评级(A-F)、高风险工作负载列表、攻击面量化、修复建议
+
+```bash
+curl -sk https://k8ops.iot2.win/api/security/posture-scorecard \
+  -H "Authorization: Bearer $JWT" | jq '.clusterGrade, .dimensions, .highRiskWorkloads'
+```
