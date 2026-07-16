@@ -4733,6 +4733,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Consistency report", map[string]interface{}{"consistencyScore": 62, "grade": "D"})},
 	})
 
+	// --- Scheduling Intelligence (v17.71) ---
+	add("/api/scalability/scheduling-intel", "get", OpenAPIOperation{
+		Summary:     "Scheduling intelligence & bin-packing efficiency analyzer",
+		OperationID: "schedulingIntel",
+		Tags:        []string{"Scalability", "Scheduling", "BinPacking"},
+		Description: "Analyzes node bin-packing efficiency, resource fragmentation, scheduling bottlenecks, and stranded resources. Per-node packing analysis with standard pod fit assessment.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Scheduling report", map[string]interface{}{"schedulingScore": 72, "summary": map[string]interface{}{"binPackScore": 72, "fragileNodes": 1}})},
+	})
+
 	return spec
 }
 

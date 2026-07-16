@@ -239,6 +239,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:compliance-posture", "/api/security/compliance-posture", "Multi-framework compliance posture & control mapping"},
 	{"operations:obs-coverage", "/api/operations/obs-coverage", "Observability coverage & blind spot detector"},
 	{"deployment:config-consistency", "/api/deployment/config-consistency", "Configuration consistency & standardization auditor"},
+	{"scalability:scheduling-intel", "/api/scalability/scheduling-intel", "Scheduling intelligence & bin-packing efficiency analyzer"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
