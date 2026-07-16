@@ -265,6 +265,9 @@ var auditRegistry = []auditEndpoint{
 	{"operations:chaos-readiness", "/api/operations/chaos-readiness", "Chaos engineering readiness & resilience auditor"},
 	{"security:supply-chain", "/api/security/supply-chain", "Container supply chain security auditor"},
 	{"scalability:capacity-forecast-deep", "/api/scalability/capacity-forecast-deep", "Cluster capacity exhaustion forecast"},
+	{"operations:drain-impact", "/api/operations/drain-impact", "Node drain impact simulator"},
+	{"scalability:request-accuracy", "/api/scalability/request-accuracy", "Resource request accuracy & right-sizing analyzer"},
+	{"security:hardening-score", "/api/security/hardening-score", "Comprehensive security hardening posture score"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

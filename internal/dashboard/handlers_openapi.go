@@ -5368,6 +5368,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Capacity forecast", map[string]interface{}{"healthScore": 75})},
 	})
 
+	add("/api/operations/drain-impact", "get", OpenAPIOperation{
+		Summary: "Node drain impact simulator", OperationID: "drainImpact",
+		Tags: []string{"Operations", "Maintenance", "Planning"},
+		Description: "Simulates the effect of draining a specific node. Identifies evictable pods, rescheduling feasibility, capacity fit on remaining nodes, and service disruption impact. Pass ?node=<name> query parameter.",
+		Parameters: []OpenAPIParam{
+			{Name: "node", In: "query", Required: true, Schema: map[string]interface{}{"type": "string"}, Description: "Node name to simulate drain"},
+		},
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Drain impact", map[string]interface{}{"safeToDrain": false, "riskLevel": "high"})},
+	})
+
+	add("/api/scalability/request-accuracy", "get", OpenAPIOperation{
+		Summary: "Resource request accuracy & right-sizing analyzer", OperationID: "requestAccuracy",
+		Tags: []string{"Scalability", "FinOps", "Optimization"},
+		Description: "Analyzes how accurately workload resource requests match actual needs. Identifies over-provisioned (wasted cost) and under-provisioned (throttle/OOM risk) containers with right-sizing recommendations and cost savings estimates.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Request accuracy report", map[string]interface{}{"healthScore": 65})},
+	})
+
+	add("/api/security/hardening-score", "get", OpenAPIOperation{
+		Summary: "Comprehensive security hardening posture score", OperationID: "hardeningScore",
+		Tags: []string{"Security", "Hardening", "Compliance"},
+		Description: "Aggregates findings across Pod Security Standards, network policies, secrets management, RBAC, admission control, and image security into a single weighted score with prioritized remediation guidance and compliance framework mapping.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Hardening score", map[string]interface{}{"overallScore": 45, "grade": "D"})},
+	})
+
 	return spec
 }
 

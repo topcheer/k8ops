@@ -520,6 +520,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/scaling-simulator", s.cacheMiddleware(120*time.Second, s.handleScalingSimulator))      // cluster scaling scenario simulator
 	mux.HandleFunc("/api/product/placement-score", s.cacheMiddleware(120*time.Second, s.handlePlacementScore))      // pod scheduling placement quality scorer
 	mux.HandleFunc("/api/operations/chaos-readiness", s.cacheMiddleware(120*time.Second, s.handleChaosReadiness))  // chaos engineering readiness & resilience auditor
+	mux.HandleFunc("/api/operations/drain-impact", s.cacheMiddleware(60*time.Second, s.handleDrainImpact))        // node drain impact simulator
+	mux.HandleFunc("/api/scalability/request-accuracy", s.cacheMiddleware(120*time.Second, s.handleRequestAccuracy))  // resource request accuracy & right-sizing analyzer
+	mux.HandleFunc("/api/security/hardening-score", s.cacheMiddleware(120*time.Second, s.handleHardeningScore))   // comprehensive security hardening posture score
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 
