@@ -1393,3 +1393,27 @@ curl -sk https://k8ops.iot2.win/api/security/remediation-matrix \
 curl -sk https://k8ops.iot2.win/api/security/remediation-matrix \
   -H "Authorization: Bearer $JWT" | jq '.remediationPlan[0:10]'
 ```
+
+---
+
+### 资源治理与命名空间配额有效性（v17.75）
+
+**端点**：`GET /api/deployment/resource-governance`
+
+分析命名空间级别的资源治理：ResourceQuota 覆盖率、LimitRange 默认值、配额使用率、策略执行差距。识别未受治理的命名空间（Pod 可消耗无限资源）。治理评分（0-100，A-F 等级）。
+
+**示例**：
+```bash
+# 查看资源治理态势
+curl -sk https://k8ops.iot2.win/api/deployment/resource-governance \
+  -H "Authorization: Bearer $JWT" | jq '{
+    score: .governanceScore,
+    grade: .grade,
+    summary: .summary,
+    topRisk: .ungovernedNamespaces[0:5]
+  }'
+
+# 查看配额使用率告警
+curl -sk https://k8ops.iot2.win/api/deployment/resource-governance \
+  -H "Authorization: Bearer $JWT" | jq '.quotaAnalysis[] | select(.status != "healthy")'
+```

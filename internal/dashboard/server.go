@@ -437,6 +437,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/triage", s.cacheMiddleware(30*time.Second, s.handleTriage))
 	mux.HandleFunc("/api/deployment/impact-simulator", s.cacheMiddleware(60*time.Second, s.handleDeployImpact))                // cluster-wide security posture scorecard (A-F grading)
 	mux.HandleFunc("/api/deployment/rollout-forensics", s.cacheMiddleware(60*time.Second, s.handleRolloutForensics))            // rollout failure forensics & deployment pattern detector
+	mux.HandleFunc("/api/deployment/resource-governance", s.cacheMiddleware(60*time.Second, s.handleResourceGovernance))      // resource governance & namespace quota effectiveness
 	mux.HandleFunc("/api/scalability/cost-intelligence", s.cacheMiddleware(120*time.Second, s.handleCostIntelligence))            // cost intelligence & spend forecast engine
 	mux.HandleFunc("/api/scalability/autoscaling-intel", s.cacheMiddleware(120*time.Second, s.handleAutoscalingIntel))         // autoscaling intelligence & scaling behavior profiler
 	mux.HandleFunc("/api/scalability/scheduling-intel", s.cacheMiddleware(60*time.Second, s.handleSchedulingIntel))        // scheduling intelligence & bin-packing efficiency analyzer

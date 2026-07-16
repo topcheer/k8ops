@@ -4678,6 +4678,20 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Resource Governance (v17.75) ---
+	add("/api/deployment/resource-governance", "get", OpenAPIOperation{
+		Summary:     "Resource governance & namespace quota effectiveness",
+		OperationID: "resourceGovernance",
+		Tags:        []string{"Deployment", "Governance", "ResourceQuota"},
+		Description: "Analyzes namespace resource governance: ResourceQuota coverage, LimitRange defaults, quota utilization, and policy enforcement gaps. Identifies ungoverned namespaces where pods can consume unlimited resources. Governance score (0-100, A-F grading).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Resource governance", map[string]interface{}{
+				"summary": map[string]interface{}{"totalNamespaces": 28, "nsWithQuota": 2, "nsWithoutQuota": 26},
+				"ungovernedNamespaces": []map[string]interface{}{{"namespace": "default", "podCount": 5, "severity": "high"}},
+			}),
+		},
+	})
+
 	// --- Autoscaling Intelligence (v17.65) ---
 	add("/api/scalability/autoscaling-intel", "get", OpenAPIOperation{
 		Summary:     "Autoscaling intelligence & scaling behavior profiler",
