@@ -4633,6 +4633,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Security Remediation Priority Matrix (v17.62) ---
+	add("/api/security/remediation-matrix", "get", OpenAPIOperation{
+		Summary:     "Security remediation priority & risk-effort matrix",
+		OperationID: "remediationMatrix",
+		Tags:        []string{"Security", "Remediation", "Risk Management"},
+		Description: "Collects security findings from the live cluster, scores them using CVSS-like methodology (0-100), and prioritizes remediation by risk × effort. Categories: privileged containers (critical, 95), root containers (high, 70), dangerous capabilities (high, 75), host namespaces (high, 72), missing NetworkPolicy (high, 65), mutable image tags (medium, 42), missing resource limits (medium, 40), unused SA tokens (medium, 45), missing PSA labels (medium, 38). Separates findings into quick wins (high risk, fixable in <1 hour) and strategic fixes. Provides ordered remediation plan (top 15 actions) and category risk aggregation.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Remediation matrix", map[string]interface{}{
+				"summary":    map[string]interface{}{"totalFindings": 25, "criticalCount": 2, "quickWinCount": 8},
+				"quickWins":  []map[string]interface{}{{"id": "F001", "severity": "critical", "riskScore": 95}},
+				"remediationPlan": []map[string]interface{}{{"priority": 1, "action": "Set privileged: false"}},
+			}),
+		},
+	})
+
 	return spec
 }
 

@@ -1357,3 +1357,39 @@ curl -sk https://k8ops.iot2.win/api/product/golden-signals \
 curl -sk https://k8ops.iot2.win/api/product/golden-signals \
   -H "Authorization: Bearer $JWT" | jq '.byNamespace[0:10]'
 ```
+
+---
+
+### 安全修复优先级矩阵
+
+**端点**：`GET /api/security/remediation-matrix`
+
+收集集群中的安全发现，使用 CVSS 类方法评分（0-100），按风险 × 修复工作量优先级排序。
+
+**发现类别与评分**：
+- **Pod 安全**：特权容器(95)、root 运行(70)、危险 capabilities(75)、host 命名空间(72)、无 limit(40)
+- **网络安全**：无 NetworkPolicy(65)、外部暴露(50)
+- **RBAC**：未使用 SA Token(45)
+- **镜像安全**：可变标签 latest(42)
+- **准入控制**：无 PSA 标签(38)
+
+**修复分类**：
+- **快速修复**（Quick Wins）：高风险 + 可在 1 小时内修复
+- **战略修复**（Strategic）：高风险 + 需要较多工作量
+
+**输出**：发现列表、分类风险聚合、Top-15 修复计划、预估总修复工时
+
+**示例**：
+```bash
+# 查看安全修复矩阵
+curl -sk https://k8ops.iot2.win/api/security/remediation-matrix \
+  -H "Authorization: Bearer $JWT" | jq '{
+    summary: .summary,
+    quickWins: [.quickWins[] | {id, title, severity, riskScore, fixCommand}],
+    topCategories: .byCategory[0:3]
+  }'
+
+# 查看 Top-10 修复计划
+curl -sk https://k8ops.iot2.win/api/security/remediation-matrix \
+  -H "Authorization: Bearer $JWT" | jq '.remediationPlan[0:10]'
+```

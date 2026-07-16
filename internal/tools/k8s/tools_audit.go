@@ -230,6 +230,7 @@ var auditRegistry = []auditEndpoint{
 	{"deployment:impact-simulator", "/api/deployment/impact-simulator", "Deployment impact simulator & blast radius predictor"},
 	{"scalability:cost-intelligence", "/api/scalability/cost-intelligence", "Cost intelligence, spend forecast & FinOps maturity scorecard"},
 	{"product:golden-signals", "/api/product/golden-signals", "SRE four golden signals unified health engine"},
+	{"security:remediation-matrix", "/api/security/remediation-matrix", "Security remediation priority & risk-effort matrix"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
