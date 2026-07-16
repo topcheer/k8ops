@@ -2983,5 +2983,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 244 | /api/docs/api-quality | Documentation | v17.79 | 平台API端点质量与覆盖差距分析引擎 |
 | 245 | /api/operations/obs-cardinality | Operations | v17.80 | 可观测性数据基数与数据量成本分析引擎 |
 | 246 | /api/deployment/gitops-drift | Deployment | v17.81 | GitOps同步健康与配置漂移分析引擎 |
+| 247 | /api/product/api-version-governance | Product | v17.82 | K8s API版本治理与弃用跟踪引擎 |
 
-**总计：322 个 OpenAPI 端点，330 个 Dashboard API 端点**
+**总计：323 个 OpenAPI 端点，331 个 Dashboard API 端点**

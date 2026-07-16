@@ -4837,6 +4837,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("GitOps drift report", map[string]interface{}{"driftScore": 60, "grade": "D", "summary": map[string]interface{}{"hasArgoCD": false, "manualChanges": 10}})},
 	})
 
+	// --- API Version Governance (v17.82) ---
+	add("/api/product/api-version-governance", "get", OpenAPIOperation{
+		Summary:     "K8s API version governance & deprecation tracker",
+		OperationID: "apiVersionGovernance",
+		Tags:        []string{"Product", "API", "Upgrade"},
+		Description: "Analyzes Kubernetes API version governance: deprecated/removed API usage, alpha/beta API detection, CRD version health, and upgrade readiness assessment. Governance scoring (0-100, A-F grading).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("API version report", map[string]interface{}{"governanceScore": 95, "upgradeReadiness": "ready"})},
+	})
+
 	return spec
 }
 

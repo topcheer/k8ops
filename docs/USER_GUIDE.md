@@ -1566,3 +1566,27 @@ curl -sk https://k8ops.iot2.win/api/deployment/gitops-drift \
 curl -sk https://k8ops.iot2.win/api/deployment/gitops-drift \
   -H "Authorization: Bearer $JWT" | jq '.driftDetected[] | select(.driftType == "manual-deployment")'
 ```
+
+---
+
+### K8s API版本治理与弃用跟踪（v17.82）
+
+**端点**：`GET /api/product/api-version-governance`
+
+分析 Kubernetes API 版本治理：弃用/已移除 API 使用、alpha/beta API 检测、CRD 版本健康、升级就绪评估。治理评分（0-100，A-F 等级）。
+
+**示例**：
+```bash
+# 查看 API 版本治理报告
+curl -sk https://k8ops.iot2.win/api/product/api-version-governance \
+  -H "Authorization: Bearer $JWT" | jq '{
+    score: .governanceScore,
+    grade: .grade,
+    readiness: .upgradeReadiness,
+    summary: .summary
+  }'
+
+# 查看弃用 API 列表
+curl -sk https://k8ops.iot2.win/api/product/api-version-governance \
+  -H "Authorization: Bearer $JWT" | jq '.deprecatedAPIs'
+```
