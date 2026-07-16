@@ -506,6 +506,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/deploy-window", s.cacheMiddleware(60*time.Second, s.handleDeployWindow))               // optimal deployment window analyzer
 	mux.HandleFunc("/api/product/workload-criticality", s.cacheMiddleware(120*time.Second, s.handleCriticality))           // workload criticality scoring & tier classification
 	mux.HandleFunc("/api/scalability/commit-optimizer", s.cacheMiddleware(120*time.Second, s.handleCommitOptimizer))       // resource commitment & reserved instance optimizer
+	mux.HandleFunc("/api/deployment/change-freeze", s.cacheMiddleware(30*time.Second, s.handleChangeFreeze))               // change freeze detector & deployment risk gate
+	mux.HandleFunc("/api/security/attack-surface", s.cacheMiddleware(120*time.Second, s.handleAttackSurface))              // external attack surface mapper & TLS gap analyzer
+	mux.HandleFunc("/api/scalability/density-balance", s.cacheMiddleware(60*time.Second, s.handleDensityBalance))          // pod scheduling density & node balance analyzer
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))

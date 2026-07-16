@@ -5251,6 +5251,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Commit optimizer report", map[string]interface{}{"healthScore": 80})},
 	})
 
+	// --- Change Freeze (v18.32) ---
+	add("/api/deployment/change-freeze", "get", OpenAPIOperation{
+		Summary: "Change freeze detector & deployment risk gate", OperationID: "changeFreeze",
+		Tags: []string{"Deployment", "Operations", "Risk"},
+		Description: "Evaluates cluster stability to determine if changes should proceed. Checks crash loops, recent failed deployments, warning event volume (1h/24h), pod age stability, and active incidents. Detects seasonal freeze periods (holidays, Black Friday). Provides verdict (proceed/caution/freeze) with stability score. Lists recent changes with health status.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Change freeze report", map[string]interface{}{"verdict": "proceed"})},
+	})
+
+	// --- Attack Surface (v18.33) ---
+	add("/api/security/attack-surface", "get", OpenAPIOperation{
+		Summary: "External attack surface mapper & TLS gap analyzer", OperationID: "attackSurface",
+		Tags: []string{"Security", "Network", "Audit"},
+		Description: "Catalogs every externally-reachable endpoint (Ingress, LoadBalancer, NodePort). Classifies exposure levels (public/internal/cluster-only). Identifies TLS gaps on ingress resources. Maps complete external attack surface with port counts, unique hosts, and high-risk endpoint detection. Per-namespace exposure breakdown.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Attack surface map", map[string]interface{}{"healthScore": 85})},
+	})
+
+	// --- Density Balance (v18.34) ---
+	add("/api/scalability/density-balance", "get", OpenAPIOperation{
+		Summary: "Pod scheduling density & node balance analyzer", OperationID: "densityBalance",
+		Tags: []string{"Scalability", "Scheduling", "HA"},
+		Description: "Analyzes pod distribution across nodes for optimal fault tolerance. Identifies over-packed (>80%) and under-used (<20%) nodes. Computes Gini coefficient and standard deviation for distribution inequality. Detects namespace pod spread (how many nodes each namespace spans). Generates rebalancing recommendations (spread/consolidate). Balance score (0-100).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Density balance report", map[string]interface{}{"healthScore": 75})},
+	})
+
 	return spec
 }
 
