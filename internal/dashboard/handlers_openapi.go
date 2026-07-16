@@ -4678,6 +4678,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Autoscaling Intelligence (v17.65) ---
+	add("/api/scalability/autoscaling-intel", "get", OpenAPIOperation{
+		Summary:     "Autoscaling intelligence & scaling behavior profiler",
+		OperationID: "autoscalingIntel",
+		Tags:        []string{"Scalability", "HPA", "Autoscaling"},
+		Description: "Analyzes HPA coverage, scaling gaps, misconfigured HPAs, and provides tuning advice. Per-workload scaling profiles with verdicts (optimal/misconfigured/no-autoscaling).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Autoscaling report", map[string]interface{}{"summary": map[string]interface{}{"hpaCoverage": 35.2, "intelScore": 52}})},
+	})
+
 	return spec
 }
 

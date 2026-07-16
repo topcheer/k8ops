@@ -233,6 +233,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:remediation-matrix", "/api/security/remediation-matrix", "Security remediation priority & risk-effort matrix"},
 	{"operations:mttr", "/api/operations/mttr", "Mean time to recovery & incident lifecycle analytics"},
 	{"deployment:rollout-forensics", "/api/deployment/rollout-forensics", "Rollout failure forensics & deployment pattern detector"},
+	{"scalability:autoscaling-intel", "/api/scalability/autoscaling-intel", "Autoscaling intelligence & scaling behavior profiler"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
