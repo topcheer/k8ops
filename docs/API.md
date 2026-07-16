@@ -2958,5 +2958,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 219 | /api/deployment/change-readiness | Deployment | v17.53 | 部署变更就绪预检门禁 |
 | 220 | /api/scalability/request-intelligence | Scalability | v17.54 | 资源请求智能分析与 Right-Sizing 引擎 |
 | 221 | /api/product/reliability-scorecard | Product | v17.55 | 服务可靠性综合评分卡（A-F 等级） |
+| 222 | /api/security/posture-scorecard | Security | v17.56 | 集群安全态势综合评分卡（A-F 等级） |
 
-**总计：297 个 OpenAPI 端点，305 个 Dashboard API 端点**
+**总计：298 个 OpenAPI 端点，306 个 Dashboard API 端点**

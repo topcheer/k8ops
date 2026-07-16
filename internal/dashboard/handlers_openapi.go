@@ -4580,6 +4580,13 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Cluster Security Posture Scorecard (v17.56) ---
+	add("/api/security/posture-scorecard", "get", OpenAPIOperation{
+		Summary: "Cluster-wide security posture scorecard", OperationID: "securityPosture", Tags: []string{"Security", "Posture", "Scorecard"},
+		Description: "Comprehensive security posture across 5 dimensions: pod-security, host-access, network-isolation, resource-boundaries, attack-surface. Per-workload risk scoring with violation tracking. Attack surface quantification (host paths, cap escalation, SA token exposure, unrestricted egress). A-F cluster grade.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Security posture scorecard", map[string]interface{}{"clusterGrade": "C", "clusterScore": 72})},
+	})
+
 	return spec
 }
 
