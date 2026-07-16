@@ -5179,6 +5179,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Lifecycle report", map[string]interface{}{"healthScore": 80})},
 	})
 
+	// --- Upgrade Impact Simulator (v18.23) ---
+	add("/api/deployment/upgrade-impact", "get", OpenAPIOperation{
+		Summary: "K8s version upgrade impact simulator & readiness assessor", OperationID: "upgradeImpact",
+		Tags: []string{"Deployment", "Upgrade", "Platform"},
+		Description: "Simulates the impact of upgrading to the next Kubernetes minor version. Checks: deprecated API versions that will be removed, breaking changes per target version, node version skew risk (kubelet vs control plane), addon compatibility (CoreDNS, CNI, CSI, cert-manager), workload-specific risks (privileged containers, hostNetwork, default SA). Generates prioritized pre-upgrade action plan with phases. Readiness score (0-100), verdict (ready/caution/blocked).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Upgrade impact report", map[string]interface{}{"readinessScore": 85})},
+	})
+
+	// --- Resource Inventory (v18.24) ---
+	add("/api/docs/resource-inventory", "get", OpenAPIOperation{
+		Summary: "Comprehensive cluster resource catalog & inventory", OperationID: "resourceInventory",
+		Tags: []string{"Documentation", "Inventory", "Audit"},
+		Description: "Full cluster resource inventory documenting every resource type with counts, health status, age distribution, and ownership tracking. Lists: Deployments, StatefulSets, DaemonSets, Pods, Services, ConfigMaps, Secrets, PVCs, Ingresses, NetworkPolicies, ServiceAccounts, Roles, ClusterRoles, HPAs, PDBs, StorageClasses, Nodes. Per-kind health stats (healthy/unhealthy ratio). Per-namespace resource distribution. Orphaned resource detection (services without backing pods). Label hygiene coverage (app/team/env labels). Age distribution (new/week/month/quarter/old). Health score (0-100, A-F grading).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Resource inventory", map[string]interface{}{"healthScore": 90})},
+	})
+
+	// --- Unit Economics (v18.25) ---
+	add("/api/scalability/unit-economics", "get", OpenAPIOperation{
+		Summary: "FinOps unit economics: cost per pod/service/namespace", OperationID: "unitEconomics",
+		Tags: []string{"Scalability", "FinOps", "Cost"},
+		Description: "Translates infrastructure costs into business-relevant unit metrics: cost per pod, cost per service, cost per namespace. Computes CPU/memory cost shares, efficiency ratios (limit-to-request), cost per core, cost per GB. Identifies savings opportunities (right-size limits, consolidate pods). Top 20 most expensive pods ranked by monthly cost. Per-namespace efficiency rating (high/medium/low). Monthly spend estimation from resource requests using cloud pricing models. Efficiency score (0-100, A-F grading).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Unit economics report", map[string]interface{}{"healthScore": 75})},
+	})
+
 	return spec
 }
 
