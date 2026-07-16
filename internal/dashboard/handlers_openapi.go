@@ -4963,6 +4963,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("SLO report", map[string]interface{}{"complianceScore": 92})},
 	})
 
+	// --- Probe Latency (v17.96) ---
+	add("/api/operations/probe-latency", "get", OpenAPIOperation{
+		Summary: "Health probe latency & readiness performance analyzer", OperationID: "probeLatency",
+		Tags: []string{"Operations", "Probe", "Performance"},
+		Description: "Analyzes health probe latency: startup/readiness/liveness probe configs, slow detection, timeout risks, missing probe detection.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Probe report", map[string]interface{}{"healthScore": 65})},
+	})
+
+	// --- Helm Health Deep (v17.97) ---
+	add("/api/deployment/helm-health-deep", "get", OpenAPIOperation{
+		Summary: "Deep Helm release health & chart staleness analyzer", OperationID: "helmHealthDeep",
+		Tags: []string{"Deployment", "Helm", "GitOps"},
+		Description: "Deep analysis of Helm releases: version staleness, failed releases, chart age, release integrity.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Helm report", map[string]interface{}{"healthScore": 85})},
+	})
+
+	// --- Spot Readiness Deep (v17.98) ---
+	add("/api/scalability/spot-readiness-deep", "get", OpenAPIOperation{
+		Summary: "Spot/preemptible instance readiness deep analyzer", OperationID: "spotReadinessDeep",
+		Tags: []string{"Scalability", "Spot", "FinOps"},
+		Description: "Analyzes spot instance readiness: node label detection, toleration coverage, PDB gaps, disruption resilience.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Spot report", map[string]interface{}{"readinessScore": 50})},
+	})
+
 	return spec
 }
 
