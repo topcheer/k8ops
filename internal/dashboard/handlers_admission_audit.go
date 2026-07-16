@@ -43,10 +43,24 @@ func assessAdmissionRisk(entry WebhookEntry) string {
 	if !entry.HasCABundle {
 		return "critical"
 	}
-	if entry.FailurePolicy == "Ignore" && !entry.IsSystem {
+	riskPoints := 0
+	if entry.FailurePolicy == "Ignore" {
+		riskPoints += 15
+	}
+	if !entry.HasNSSelector {
+		riskPoints += 10
+	}
+	// Check for broad scope rules (containing wildcard)
+	for _, rule := range entry.Rules {
+		if strings.Contains(rule, "*") {
+			riskPoints += 5
+			break
+		}
+	}
+	if riskPoints >= 25 {
 		return "high"
 	}
-	if !entry.IsSystem {
+	if riskPoints > 0 {
 		return "medium"
 	}
 	return "low"
@@ -55,31 +69,32 @@ func assessAdmissionRisk(entry WebhookEntry) string {
 func calculateAdmissionScore(s AdmissionSummary) int {
 	score := 100
 	score -= s.NoCABundle * 15
-	score -= s.FailurePolicyIgnore * 10
+	score -= s.FailurePolicyIgnore * 5
 	score -= s.NoNamespaceSelector * 3
+	score -= s.BroadScope * 2
 	if score < 0 { score = 0 }
-	if s.ValidatingWebhooks == 0 && s.MutatingWebhooks == 0 && !s.HasGatekeeper && !s.HasKyverno {
-		return 0
-	}
-	return min(100, score)
+	return score
 }
 
 func generateAdmissionRecs(s AdmissionSummary) []string {
 	var recs []string
-	if !s.HasGatekeeper && !s.HasKyverno {
-		recs = append(recs, "Install OPA Gatekeeper or Kyverno for policy-as-code enforcement")
-	}
-	if s.ValidatingWebhooks == 0 {
-		recs = append(recs, "Add validating webhooks for security-critical resources")
-	}
 	if s.NoCABundle > 0 {
 		recs = append(recs, fmt.Sprintf("%d webhooks without CA bundle — insecure admission control", s.NoCABundle))
 	}
 	if s.FailurePolicyIgnore > 0 {
-		recs = append(recs, fmt.Sprintf("%d webhooks with FailurePolicy=Ignore — failures silently ignored", s.FailurePolicyIgnore))
+		recs = append(recs, fmt.Sprintf("%d webhooks with failurePolicy=Ignore — failures silently ignored", s.FailurePolicyIgnore))
 	}
-	if len(recs) == 0 {
-		recs = append(recs, "Admission control posture is comprehensive")
+	if s.NoNamespaceSelector > 0 {
+		recs = append(recs, fmt.Sprintf("%d webhooks without namespaceSelector — broad scope risk", s.NoNamespaceSelector))
+	}
+	if s.BroadScope > 0 {
+		recs = append(recs, fmt.Sprintf("%d webhooks with broad scope rules — scope to specific resources", s.BroadScope))
+	}
+	if s.TimeoutShort > 0 {
+		recs = append(recs, fmt.Sprintf("%d webhooks with short timeout — may cause request failures", s.TimeoutShort))
+	}
+	if s.SecurityScore < 50 {
+		recs = append(recs, "Admission security score below 50 — review webhook configurations")
 	}
 	return recs
 }
@@ -203,7 +218,7 @@ func (s *Server) handleAdmissionAudit(w http.ResponseWriter, r *http.Request) {
 
 // isSystemWebhook checks if a webhook config is a system/built-in one.
 func isSystemWebhook(name string) bool {
-	systemPrefixes := []string{"kube-system", "cert-manager", "validation.k8s.io", "mutation.", "pod-security."}
+	systemPrefixes := []string{"pod-security.", "kube-system-"}
 	lower := strings.ToLower(name)
 	for _, prefix := range systemPrefixes {
 		if strings.HasPrefix(lower, prefix) {
