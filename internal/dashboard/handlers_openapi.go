@@ -4987,6 +4987,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Spot report", map[string]interface{}{"readinessScore": 50})},
 	})
 
+	// --- RBAC Blast (v17.99) ---
+	add("/api/security/rbac-blast", "get", OpenAPIOperation{
+		Summary: "RBAC privilege escalation & blast radius analyzer", OperationID: "rbacBlast",
+		Tags: []string{"Security", "RBAC", "Privilege"},
+		Description: "Analyzes RBAC privilege escalation paths: cluster-admin bindings, wildcard permissions, privilege escalation roles.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("RBAC report", map[string]interface{}{"riskScore": 70})},
+	})
+
+	// --- Gateway Health (v18.00) ---
+	add("/api/product/api-gateway-health", "get", OpenAPIOperation{
+		Summary: "API gateway & ingress controller health analyzer", OperationID: "gatewayHealth",
+		Tags: []string{"Product", "Gateway", "Ingress"},
+		Description: "Analyzes ingress controller health, TLS coverage, backend service routing, and ingress configuration gaps.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Gateway report", map[string]interface{}{"healthScore": 75})},
+	})
+
+	// --- Throttle Risk (v18.01) ---
+	add("/api/operations/throttle-risk", "get", OpenAPIOperation{
+		Summary: "Pod resource throttling risk & CPU pressure detector", OperationID: "throttleRisk",
+		Tags: []string{"Operations", "Resource", "Throttling"},
+		Description: "Analyzes pod resource throttling: CPU/memory limit gaps, node pressure, unbounded resource consumption.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Throttle report", map[string]interface{}{"riskScore": 55})},
+	})
+
 	return spec
 }
 
