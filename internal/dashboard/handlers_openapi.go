@@ -5299,6 +5299,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("API access report", map[string]interface{}{"healthScore": 85})},
 	})
 
+	// --- Volume Budget (v18.38) ---
+	add("/api/scalability/volume-budget", "get", OpenAPIOperation{
+		Summary: "PVC storage budget & orphan detector", OperationID: "volumeBudget",
+		Tags: []string{"Scalability", "Storage", "FinOps"},
+		Description: "Analyzes PVC usage, storage quota consumption, and volume lifecycle. Tracks PVC request vs capacity, identifies orphaned PVCs, detects pending provisioning failures. Per-namespace and per-storage-class breakdown. Monthly cost estimation. Storage budget forecast.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Volume budget report", map[string]interface{}{"healthScore": 85})},
+	})
+
+	// --- Restart Pattern (v18.39) ---
+	add("/api/operations/restart-pattern", "get", OpenAPIOperation{
+		Summary: "Pod restart pattern & chronic issue analyzer", OperationID: "restartPattern",
+		Tags: []string{"Operations", "Reliability", "AIOps"},
+		Description: "Analyzes pod restart history to detect chronic issues: cyclical restart patterns, periodic OOM kills, configuration-triggered restarts. Classifies patterns (chronic/oom-cycle/periodic/sporadic). Time-correlation analysis for restart spikes. Root cause guessing for each problematic workload.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Restart pattern report", map[string]interface{}{"healthScore": 85})},
+	})
+
+	// --- Cert Inventory (v18.40) ---
+	add("/api/security/cert-inventory", "get", OpenAPIOperation{
+		Summary: "TLS certificate inventory & expiry tracker", OperationID: "certInventory",
+		Tags: []string{"Security", "Compliance", "Certificates"},
+		Description: "Inventories all TLS certificates from K8s TLS secrets. Checks expiry dates, identifies soon-to-expire and expired certificates. Tracks issuers, self-signed ratio, wildcard coverage. Detects cert-manager presence. Per-namespace breakdown. Compliance-friendly certificate landscape view.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Certificate inventory", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
