@@ -5035,6 +5035,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Multi-cluster report", map[string]interface{}{"healthScore": 50})},
 	})
 
+	// --- Admission Audit (v18.05) ---
+	add("/api/security/admission-posture", "get", OpenAPIOperation{
+		Summary: "Admission controller posture & policy engine audit", OperationID: "admissionAudit",
+		Tags: []string{"Security", "Admission", "Policy"},
+		Description: "Detects OPA/Gatekeeper/Kyverno, counts validating/mutating webhooks, assesses enforcement coverage.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Admission report", map[string]interface{}{"postureScore": 20})},
+	})
+
+	// --- Dashboard Availability (v18.06) ---
+	add("/api/operations/dashboard-availability", "get", OpenAPIOperation{
+		Summary: "Grafana dashboard availability & observability UI coverage", OperationID: "dashAvail",
+		Tags: []string{"Operations", "Observability", "Dashboard"},
+		Description: "Detects Grafana, counts dashboards, checks per-namespace observability coverage, identifies blind spots.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Dashboard report", map[string]interface{}{"healthScore": 0})},
+	})
+
+	// --- Storage Orphan (v18.07) ---
+	add("/api/scalability/storage-orphan", "get", OpenAPIOperation{
+		Summary: "Orphaned PVC & storage waste analyzer", OperationID: "storageOrphan",
+		Tags: []string{"Scalability", "Storage", "Waste"},
+		Description: "Identifies orphaned PVCs, pending PVCs, unused storage, and estimates monthly waste cost.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Storage report", map[string]interface{}{"healthScore": 80})},
+	})
+
 	return spec
 }
 
