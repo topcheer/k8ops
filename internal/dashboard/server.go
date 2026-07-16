@@ -252,7 +252,8 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployments/audit", s.cacheMiddleware(60*time.Second, s.handleDeployAudit))                            // deployment config audit
 	mux.HandleFunc("/api/scheduling/health", s.cacheMiddleware(30*time.Second, s.handleSchedulingHealth))                       // scheduling health & fragmentation
 	mux.HandleFunc("/api/security/pods", s.cacheMiddleware(60*time.Second, s.handlePodSecurityScan))                            // pod security posture scan
-	mux.HandleFunc("/api/security/secrets/rotation", s.cacheMiddleware(120*time.Second, s.handleSecretRotationAudit))           // secret lifecycle & rotation audit
+	mux.HandleFunc("/api/security/secrets/rotation", s.cacheMiddleware(120*time.Second, s.handleSecretRotationAudit))             // secret lifecycle & rotation audit
+	mux.HandleFunc("/api/security/secret-rotation-v2", s.cacheMiddleware(120*time.Second, s.handleSecretCompliance))         // secret rotation compliance & staleness tracker
 	mux.HandleFunc("/api/security/images", s.cacheMiddleware(120*time.Second, s.handleImageSecurityAudit))                      // image supply chain security
 	mux.HandleFunc("/api/security/containers", s.cacheMiddleware(120*time.Second, s.handleContainerSecurityAudit))              // container security context audit
 	mux.HandleFunc("/api/security/rbac-effective", s.cacheMiddleware(120*time.Second, s.handleRBACEffective))                   // RBAC effective permissions & escalation
@@ -509,6 +510,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/change-freeze", s.cacheMiddleware(30*time.Second, s.handleChangeFreeze))               // change freeze detector & deployment risk gate
 	mux.HandleFunc("/api/security/attack-surface", s.cacheMiddleware(120*time.Second, s.handleAttackSurface))              // external attack surface mapper & TLS gap analyzer
 	mux.HandleFunc("/api/scalability/density-balance", s.cacheMiddleware(60*time.Second, s.handleDensityBalance))          // pod scheduling density & node balance analyzer
+	mux.HandleFunc("/api/security/secret-rotation", s.cacheMiddleware(120*time.Second, s.handleSecretRotationAudit))            // secret rotation compliance & staleness tracker
+	mux.HandleFunc("/api/scalability/hpa-behavior", s.cacheMiddleware(60*time.Second, s.handleHPABehavior))                // HPA scaling behavior & flapping risk analyzer
+	mux.HandleFunc("/api/operations/api-access-pattern", s.cacheMiddleware(30*time.Second, s.handleAPIAccess))             // API server access pattern & anomaly detector
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))

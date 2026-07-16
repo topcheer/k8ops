@@ -5275,6 +5275,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Density balance report", map[string]interface{}{"healthScore": 75})},
 	})
 
+	// --- Secret Rotation (v18.35) ---
+	add(" /api/security/secret-rotation-v2", "get", OpenAPIOperation{
+		Summary: "Secret rotation compliance & staleness tracker", OperationID: "secretRotation",
+		Tags: []string{"Security", "Secrets", "Compliance"},
+		Description: "Evaluates secret rotation freshness across the cluster. Checks each secret against type-specific max age policies (TLS: 90d, Opaque: 180d, DockerConfig: 90d). Identifies stale, never-rotated, and critically expired secrets. Tracks secret usage by pods. Per-type and per-namespace compliance breakdown.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Secret rotation report", map[string]interface{}{"healthScore": 75})},
+	})
+
+	// --- HPA Behavior (v18.36) ---
+	add("/api/scalability/hpa-behavior", "get", OpenAPIOperation{
+		Summary: "HPA scaling behavior & flapping risk analyzer", OperationID: "hpaBehavior",
+		Tags: []string{"Scalability", "Autoscaling", "AIOps"},
+		Description: "Analyzes existing HPA configurations for behavioral issues: flapping risk (aggressive scale-up without stabilization), missing behavior configs, min=max constraints, and suboptimal CPU targets. Classifies scale-up/down policies (aggressive/moderate/conservative). Generates per-HPA scores and actionable tuning recommendations.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("HPA behavior report", map[string]interface{}{"healthScore": 80})},
+	})
+
+	// --- API Access Pattern (v18.37) ---
+	add("/api/operations/api-access-pattern", "get", OpenAPIOperation{
+		Summary: "API server access pattern & anomaly detector", OperationID: "apiAccessPattern",
+		Tags: []string{"Operations", "Audit", "AIOps"},
+		Description: "Analyzes API server access patterns from event data. Identifies top callers, hot resources, read/write ratios, and access anomalies (high failure rate, dominant callers, resource hotspots). Per-namespace access distribution. Useful for detecting controller misbehavior, excessive API calls, and potential security concerns.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("API access report", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
