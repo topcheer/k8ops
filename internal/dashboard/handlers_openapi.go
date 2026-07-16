@@ -5011,6 +5011,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Throttle report", map[string]interface{}{"riskScore": 55})},
 	})
 
+	// --- Audit Trail (v18.02) ---
+	add("/api/security/audit-trail", "get", OpenAPIOperation{
+		Summary: "Audit logging coverage & compliance trail analyzer", OperationID: "auditTrail",
+		Tags: []string{"Security", "Audit", "Compliance"},
+		Description: "Analyzes K8s audit logging: collector detection, audit policy, sensitive access tracking, compliance trail completeness.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Audit trail report", map[string]interface{}{"complianceScore": 30})},
+	})
+
+	// --- Image Freshness (v18.03) ---
+	add("/api/deployment/image-freshness", "get", OpenAPIOperation{
+		Summary: "Container image freshness & update tracking", OperationID: "imageFreshness",
+		Tags: []string{"Deployment", "Image", "Updates"},
+		Description: "Analyzes image freshness: version pinning, stale image detection, update tracking, :latest tag audit.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Image freshness", map[string]interface{}{"healthScore": 45})},
+	})
+
+	// --- Multi-Cluster Conn (v18.04) ---
+	add("/api/scalability/multi-cluster-conn", "get", OpenAPIOperation{
+		Summary: "Multi-cluster connectivity & federation health", OperationID: "multiClusterConn",
+		Tags: []string{"Scalability", "MultiCluster", "Federation"},
+		Description: "Detects multi-cluster tools (ClusterAPI/Karmada/ArgoCD fleet), analyzes connectivity, federation health, remote cluster coverage.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Multi-cluster report", map[string]interface{}{"healthScore": 50})},
+	})
+
 	return spec
 }
 

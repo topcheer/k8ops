@@ -472,6 +472,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/rbac-blast", s.cacheMiddleware(120*time.Second, s.handleRBACBlast))                         // RBAC privilege escalation & blast radius analyzer
 	mux.HandleFunc("/api/product/api-gateway-health", s.cacheMiddleware(60*time.Second, s.handleGatewayHealth))               // API gateway & ingress controller health analyzer
 	mux.HandleFunc("/api/operations/throttle-risk", s.cacheMiddleware(60*time.Second, s.handleThrottleRisk))                 // pod resource throttling risk & CPU pressure detector
+	mux.HandleFunc("/api/security/audit-trail", s.cacheMiddleware(120*time.Second, s.handleAuditTrail))                         // audit logging coverage & compliance trail analyzer
+	mux.HandleFunc("/api/deployment/image-freshness", s.cacheMiddleware(120*time.Second, s.handleImageFreshness))             // container image freshness & update tracking
+	mux.HandleFunc("/api/scalability/multi-cluster-conn", s.cacheMiddleware(120*time.Second, s.handleMultiClusterConn))       // multi-cluster connectivity & federation health
 	mux.HandleFunc("/api/product/mesh-readiness", s.cacheMiddleware(120*time.Second, s.handleMeshReadiness))                   // service mesh readiness & mTLS coverage gap analyzer
 	mux.HandleFunc("/api/scalability/idle-waste", s.cacheMiddleware(120*time.Second, s.handleIdleWaste))                       // idle resource waste quantification & cost recovery engine
 	mux.HandleFunc("/api/security/policy-governance", s.cacheMiddleware(120*time.Second, s.handlePolicyGovernance))           // admission policy governance & enforcement auditor
