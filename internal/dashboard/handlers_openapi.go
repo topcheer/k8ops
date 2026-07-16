@@ -4594,6 +4594,13 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Triage report", map[string]interface{}{"priority": "P1-urgent", "healthScore": 65})},
 	})
 
+	// --- Deployment Impact Simulator (v17.59) ---
+	add("/api/deployment/impact-simulator", "get", OpenAPIOperation{
+		Summary: "Deployment impact simulator & blast radius predictor", OperationID: "deployImpact", Tags: []string{"Deployment", "Simulation", "Risk"},
+		Description: "Simulates deployment impact: single-replica risk, PDB coverage, dependent service blast radius, node co-location, cascade chain analysis. Ranks workloads by deployment risk (1=most risky). Per-workload impact level, estimated downtime, blockers, and mitigations.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Impact simulation", map[string]interface{}{"clusterRiskLevel": "medium"})},
+	})
+
 	return spec
 }
 
