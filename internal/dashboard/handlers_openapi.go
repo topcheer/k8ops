@@ -3503,7 +3503,7 @@ func buildOpenAPISpec() OpenAPISpec {
 	})
 
 	// --- ArgoCD & Flux GitOps Sync Status Auditor (v16.57) ---
-	add("/api/deployment/gitops-sync", "get", OpenAPIOperation{
+	add("/api/deployment/gitops-sync-status", "get", OpenAPIOperation{
 		Summary:     "ArgoCD & Flux GitOps sync status & drift auditor",
 		OperationID: "gitopsSync",
 		Tags:        []string{"Deployment", "GitOps", "ArgoCD", "Flux"},
@@ -5105,6 +5105,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Tags: []string{"Product", "Reliability", "MTTR"},
 		Description: "Analyzes pod restart patterns to estimate MTTR and identify crash-prone workloads.",
 		Responses: map[string]OpenAPIResponse{"200": okResponse("MTTR", map[string]interface{}{"healthScore": 55})},
+	})
+
+	// --- GitOps Sync (v18.14) ---
+	add("/api/deployment/gitops-sync-status", "get", OpenAPIOperation{
+		Summary: "GitOps sync state & drift detection", OperationID: "gitopsSync",
+		Tags: []string{"Deployment", "GitOps", "Drift"},
+		Description: "Detects ArgoCD/Flux controllers, application sync status, out-of-sync apps, configuration drift.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("GitOps report", map[string]interface{}{"healthScore": 30})},
+	})
+
+	// --- Endpoint Probe (v18.15) ---
+	add("/api/operations/endpoint-probe", "get", OpenAPIOperation{
+		Summary: "Service endpoint readiness probe", OperationID: "endpointProbe",
+		Tags: []string{"Operations", "Endpoint", "Health"},
+		Description: "Probes service endpoint readiness: healthy/partial/no-backend services, endpoint count tracking.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Endpoint probe", map[string]interface{}{"healthScore": 75})},
+	})
+
+	// --- Node Decommission (v18.16) ---
+	add("/api/scalability/node-decomm", "get", OpenAPIOperation{
+		Summary: "Node decommissioning & lifecycle rotation", OperationID: "nodeDecomm",
+		Tags: []string{"Scalability", "Node", "Lifecycle"},
+		Description: "Analyzes node rotation candidates: age, readiness, rotation urgency, decommission readiness.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Node decommission", map[string]interface{}{"healthScore": 40})},
 	})
 
 	return spec

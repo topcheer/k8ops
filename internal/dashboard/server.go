@@ -424,7 +424,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/startup-latency", s.cacheMiddleware(60*time.Second, s.handleStartupLatency))               // pod startup latency & readiness performance auditor
 	mux.HandleFunc("/api/deployment/progressive-delivery", s.cacheMiddleware(60*time.Second, s.handleProgressiveDelivery))     // progressive delivery & canary rollout health auditor
 	mux.HandleFunc("/api/deployment/rs-staleness", s.cacheMiddleware(60*time.Second, s.handleRSStaleness))                     // ReplicaSet staleness & rollout history auditor
-	mux.HandleFunc("/api/deployment/gitops-sync", s.cacheMiddleware(60*time.Second, s.handleGitOpsSync))                       // ArgoCD & Flux GitOps sync status & drift auditor
+	mux.HandleFunc("/api/deployment/gitops-sync-deep", s.cacheMiddleware(60*time.Second, s.handleGitOpsSync))                       // ArgoCD & Flux GitOps sync status & drift auditor
 	mux.HandleFunc("/api/deployment/dora-metrics", s.cacheMiddleware(60*time.Second, s.handleDORAMetrics))                     // DORA metrics: deployment frequency, lead time, MTTR, change failure rate
 	mux.HandleFunc("/api/deployment/daemonset-audit", s.cacheMiddleware(60*time.Second, s.handleDaemonSetAudit))               // DaemonSet rollout & node coverage auditor
 	mux.HandleFunc("/api/deployment/concurrency-guard", s.cacheMiddleware(30*time.Second, s.handleDeploymentConcurrencyGuard)) // deployment concurrency & rolling update collision detector
@@ -484,6 +484,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/capacity-forecast-deep", s.cacheMiddleware(60*time.Second, s.handleCapacityForecastDeep))     // cluster capacity exhaustion forecast
 	mux.HandleFunc("/api/security/compliance-framework", s.cacheMiddleware(120*time.Second, s.handleComplianceMap))         // SOC2/PCI-DSS/CIS compliance framework mapping
 	mux.HandleFunc("/api/product/mttr-analysis", s.cacheMiddleware(60*time.Second, s.handleMTTR))                             // mean time to recovery from restart patterns
+	mux.HandleFunc("/api/deployment/gitops-sync-status", s.cacheMiddleware(120*time.Second, s.handleGitOpsSync))                   // GitOps sync state & drift detection
+	mux.HandleFunc("/api/operations/endpoint-probe", s.cacheMiddleware(60*time.Second, s.handleEndpointProbe))                 // service endpoint readiness probe
+	mux.HandleFunc("/api/scalability/node-decomm", s.cacheMiddleware(120*time.Second, s.handleNodeDecomm))                     // node decommissioning & lifecycle rotation
 	mux.HandleFunc("/api/product/mesh-readiness", s.cacheMiddleware(120*time.Second, s.handleMeshReadiness))                   // service mesh readiness & mTLS coverage gap analyzer
 	mux.HandleFunc("/api/scalability/idle-waste", s.cacheMiddleware(120*time.Second, s.handleIdleWaste))                       // idle resource waste quantification & cost recovery engine
 	mux.HandleFunc("/api/security/policy-governance", s.cacheMiddleware(120*time.Second, s.handlePolicyGovernance))           // admission policy governance & enforcement auditor
