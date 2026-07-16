@@ -1319,3 +1319,41 @@ curl -sk https://k8ops.iot2.win/api/scalability/cost-intelligence \
 curl -sk https://k8ops.iot2.win/api/scalability/cost-intelligence \
   -H "Authorization: Bearer $JWT" | jq '.byNamespace[0:5]'
 ```
+
+---
+
+### SRE 四大黄金信号统一健康引擎
+
+**端点**：`GET /api/product/golden-signals`
+
+将 SRE 四大黄金信号（Latency 延迟、Traffic 流量、Errors 错误、Saturation 饱和度）综合为统一的健康视图。
+
+**四大信号**：
+1. **延迟**：未就绪容器数量、Pod 启动时间（>2min 为慢启动）
+2. **流量**：Running Pod 数量、端点就绪率、节点容量
+3. **错误**：CrashLoopBackOff、高重启 Pod（>5次）、OOMKill、警告事件
+4. **饱和度**：节点压力（磁盘/内存/PID）、Pending Pod、无 limit 的 Pod
+
+**评分原则**：木桶效应（最弱信号决定总体评分）
+
+**复合故障检测**：
+- 静默故障（高延迟+高错误 = Pod 快速启动但持续崩溃）
+- 级联故障风险（高饱和+高错误 = 集群可能正在级联故障）
+- 服务能力不足（低流量+健康延迟 = 就绪探针配置错误）
+- 命名空间热点（多信号同时降级）
+
+**示例**：
+```bash
+# 查看黄金信号总览
+curl -sk https://k8ops.iot2.win/api/product/golden-signals \
+  -H "Authorization: Bearer $JWT" | jq '{
+    overallScore: .overallScore,
+    overallGrade: .overallGrade,
+    signals: [.signals[] | {name, score, status, summary}],
+    criticalIssues: [.topIssues[] | select(.severity == "critical")]
+  }'
+
+# 查看命名空间级信号评分
+curl -sk https://k8ops.iot2.win/api/product/golden-signals \
+  -H "Authorization: Bearer $JWT" | jq '.byNamespace[0:10]'
+```

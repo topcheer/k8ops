@@ -228,6 +228,8 @@ var auditRegistry = []auditEndpoint{
 	{"security:posture-scorecard", "/api/security/posture-scorecard", "Cluster-wide security posture scorecard (A-F grading)"},
 	{"operations:triage", "/api/operations/triage", "AIOps incident triage & remediation action plan engine"},
 	{"deployment:impact-simulator", "/api/deployment/impact-simulator", "Deployment impact simulator & blast radius predictor"},
+	{"scalability:cost-intelligence", "/api/scalability/cost-intelligence", "Cost intelligence, spend forecast & FinOps maturity scorecard"},
+	{"product:golden-signals", "/api/product/golden-signals", "SRE four golden signals unified health engine"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

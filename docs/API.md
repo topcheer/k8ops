@@ -2962,5 +2962,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 223 | /api/operations/triage | Operations | v17.58 | AIOps 事件分诊与修复行动计划引擎 |
 | 224 | /api/deployment/impact-simulator | Deployment | v17.59 | 部署影响模拟器与爆炸半径预测 |
 | 225 | /api/scalability/cost-intelligence | Scalability | v17.60 | 成本智能分析与支出预测引擎（FinOps 成熟度评分） |
+| 226 | /api/product/golden-signals | Product | v17.61 | SRE 四大黄金信号统一健康引擎 |
 
-**总计：301 个 OpenAPI 端点，309 个 Dashboard API 端点**
+**总计：302 个 OpenAPI 端点，310 个 Dashboard API 端点**

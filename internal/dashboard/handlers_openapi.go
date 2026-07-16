@@ -4617,6 +4617,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- SRE Four Golden Signals Unified Health Engine (v17.61) ---
+	add("/api/product/golden-signals", "get", OpenAPIOperation{
+		Summary:     "SRE four golden signals unified health engine",
+		OperationID: "goldenSignals",
+		Tags:        []string{"Product", "SRE", "Health", "Monitoring"},
+		Description: "Synthesizes the four SRE golden signals (Latency, Traffic, Errors, Saturation) into a unified health view. Each signal is scored 0-100 with supporting metrics. Overall score follows the weakest-link principle (minimum of all signals). Detects cross-signal compound failure patterns (silent failures, cascading failures, low serving capacity, namespace hotspots). Per-namespace signal scores for targeted investigation. Actionable recommendations prioritized by weakest signal.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Golden signals health report", map[string]interface{}{
+				"overallScore": 72,
+				"overallGrade": "C",
+				"signals":      []map[string]interface{}{{"name": "latency", "score": 85, "status": "healthy"}, {"name": "errors", "score": 72, "status": "warning"}},
+				"topIssues":    []map[string]interface{}{{"severity": "critical", "title": "Silent failure pattern detected"}},
+			}),
+		},
+	})
+
 	return spec
 }
 
