@@ -238,6 +238,7 @@ var auditRegistry = []auditEndpoint{
 	{"docs:platform-maturity", "/api/docs/platform-maturity", "Platform maturity assessment & capability matrix"},
 	{"security:compliance-posture", "/api/security/compliance-posture", "Multi-framework compliance posture & control mapping"},
 	{"operations:obs-coverage", "/api/operations/obs-coverage", "Observability coverage & blind spot detector"},
+	{"deployment:config-consistency", "/api/deployment/config-consistency", "Configuration consistency & standardization auditor"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

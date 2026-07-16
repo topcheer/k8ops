@@ -4724,6 +4724,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Coverage report", map[string]interface{}{"summary": map[string]interface{}{"blindCount": 12, "signalQuality": "poor"}})},
 	})
 
+	// --- Config Consistency (v17.70) ---
+	add("/api/deployment/config-consistency", "get", OpenAPIOperation{
+		Summary:     "Configuration consistency & standardization auditor",
+		OperationID: "configConsistency",
+		Tags:        []string{"Deployment", "Configuration", "Governance"},
+		Description: "Detects configuration drift across workloads, identifies non-conformant patterns (missing probes, resources, labels, security contexts), analyzes image registry distribution and resource tier patterns, and scores standardization maturity.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Consistency report", map[string]interface{}{"consistencyScore": 62, "grade": "D"})},
+	})
+
 	return spec
 }
 
