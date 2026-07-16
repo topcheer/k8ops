@@ -241,6 +241,7 @@ var auditRegistry = []auditEndpoint{
 	{"deployment:config-consistency", "/api/deployment/config-consistency", "Configuration consistency & standardization auditor"},
 	{"scalability:scheduling-intel", "/api/scalability/scheduling-intel", "Scheduling intelligence & bin-packing efficiency analyzer"},
 	{"product:dependency-resilience", "/api/product/dependency-resilience", "Service dependency resilience & cascade failure risk analyzer"},
+	{"operations:change-intel", "/api/operations/change-intel", "Change intelligence & blast radius analyzer"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

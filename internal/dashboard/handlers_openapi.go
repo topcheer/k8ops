@@ -4751,6 +4751,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Resilience report", map[string]interface{}{"resilienceScore": 72, "grade": "C"})},
 	})
 
+	// --- Change Intelligence (v17.73) ---
+	add("/api/operations/change-intel", "get", OpenAPIOperation{
+		Summary:     "Change intelligence & blast radius analyzer",
+		OperationID: "changeIntel",
+		Tags:        []string{"Operations", "Change Management", "Risk"},
+		Description: "Correlates recent cluster changes with health signals to identify change-induced degradation. Provides blast radius analysis, change velocity tracking, and change freeze recommendations.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Change intelligence", map[string]interface{}{"summary": map[string]interface{}{"totalChanges": 12, "riskyChangeCount": 2}})},
+	})
+
 	return spec
 }
 
