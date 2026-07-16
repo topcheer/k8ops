@@ -4810,6 +4810,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Policy governance", map[string]interface{}{"enforcementScore": 0, "gatekeeperStatus": "not-installed", "psaCoverage": map[string]interface{}{"coveragePct": 0}})},
 	})
 
+	// --- API Quality (v17.79) ---
+	add("/api/docs/api-quality", "get", OpenAPIOperation{
+		Summary:     "Platform API endpoint quality & coverage gap analyzer",
+		OperationID: "apiQuality",
+		Tags:        []string{"Documentation", "Meta", "Quality"},
+		Description: "Meta-analysis of platform API coverage by dimension: endpoint counts, coverage percentages, gap detection, and quality scoring. Identifies weakest dimensions and suggests areas for improvement.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("API quality report", map[string]interface{}{"qualityScore": 85, "avgCoverage": 82.5, "byDimension": []interface{}{}})},
+	})
+
 	return spec
 }
 

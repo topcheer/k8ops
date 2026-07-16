@@ -2980,5 +2980,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 241 | /api/product/mesh-readiness | Product | v17.76 | 服务网格就绪度与mTLS覆盖差距分析引擎 |
 | 242 | /api/scalability/idle-waste | Scalability | v17.77 | 闲置资源浪费量化与成本回收引擎 |
 | 243 | /api/security/policy-governance | Security | v17.78 | 准入策略治理与执行审计引擎 |
+| 244 | /api/docs/api-quality | Documentation | v17.79 | 平台API端点质量与覆盖差距分析引擎 |
 
-**总计：319 个 OpenAPI 端点，327 个 Dashboard API 端点**
+**总计：320 个 OpenAPI 端点，328 个 Dashboard API 端点**

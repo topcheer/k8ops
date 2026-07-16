@@ -1493,3 +1493,27 @@ curl -sk https://k8ops.iot2.win/api/security/policy-governance \
 curl -sk https://k8ops.iot2.win/api/security/policy-governance \
   -H "Authorization: Bearer $JWT" | jq '.policyGaps[] | select(.severity == "high")'
 ```
+
+---
+
+### 平台API端点质量与覆盖差距分析（v17.79）
+
+**端点**：`GET /api/docs/api-quality`
+
+元分析平台 API 覆盖率：按维度统计端点数量、覆盖百分比、差距检测、质量评分。识别最弱维度并建议改进方向。
+
+**示例**：
+```bash
+# 查看API质量报告
+curl -sk https://k8ops.iot2.win/api/docs/api-quality \
+  -H "Authorization: Bearer $JWT" | jq '{
+    score: .qualityScore,
+    grade: .grade,
+    summary: .summary,
+    dimensions: .byDimension
+  }'
+
+# 查看覆盖差距
+curl -sk https://k8ops.iot2.win/api/docs/api-quality \
+  -H "Authorization: Bearer $JWT" | jq '.coverageGaps'
+```

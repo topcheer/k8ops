@@ -237,6 +237,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:mesh-readiness", "/api/product/mesh-readiness", "Service mesh readiness & mTLS coverage gap analyzer"},
 	{"scalability:idle-waste", "/api/scalability/idle-waste", "Idle resource waste quantification & cost recovery"},
 	{"security:policy-governance", "/api/security/policy-governance", "Admission policy governance & enforcement auditor"},
+	{"docs:api-quality", "/api/docs/api-quality", "Platform API endpoint quality & coverage gap analyzer"},
 	{"scalability:autoscaling-intel", "/api/scalability/autoscaling-intel", "Autoscaling intelligence & scaling behavior profiler"},
 	{"product:ownership-map", "/api/product/ownership-map", "Workload ownership & accountability governance engine"},
 	{"docs:platform-maturity", "/api/docs/platform-maturity", "Platform maturity assessment & capability matrix"},
