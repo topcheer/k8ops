@@ -481,6 +481,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/workload-deps", s.cacheMiddleware(120*time.Second, s.handleWLDeps))                         // workload dependency graph analyzer
 	mux.HandleFunc("/api/operations/metrics-pipe", s.cacheMiddleware(120*time.Second, s.handleMetricsPipe))                   // metrics pipeline integrity & scraping coverage
 	mux.HandleFunc("/api/docs/platform-changelog", s.cacheMiddleware(30*time.Second, s.handleChangeLog))                     // platform changelog from recent resource changes
+	mux.HandleFunc("/api/scalability/capacity-forecast-deep", s.cacheMiddleware(60*time.Second, s.handleCapacityForecastDeep))     // cluster capacity exhaustion forecast
+	mux.HandleFunc("/api/security/compliance-framework", s.cacheMiddleware(120*time.Second, s.handleComplianceMap))         // SOC2/PCI-DSS/CIS compliance framework mapping
+	mux.HandleFunc("/api/product/mttr-analysis", s.cacheMiddleware(60*time.Second, s.handleMTTR))                             // mean time to recovery from restart patterns
 	mux.HandleFunc("/api/product/mesh-readiness", s.cacheMiddleware(120*time.Second, s.handleMeshReadiness))                   // service mesh readiness & mTLS coverage gap analyzer
 	mux.HandleFunc("/api/scalability/idle-waste", s.cacheMiddleware(120*time.Second, s.handleIdleWaste))                       // idle resource waste quantification & cost recovery engine
 	mux.HandleFunc("/api/security/policy-governance", s.cacheMiddleware(120*time.Second, s.handlePolicyGovernance))           // admission policy governance & enforcement auditor

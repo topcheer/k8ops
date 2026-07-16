@@ -5083,6 +5083,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Changelog", map[string]interface{}{"totalChanges24h": 10})},
 	})
 
+	// --- Capacity Forecast (v18.11) ---
+	add("/api/scalability/capacity-forecast-deep", "get", OpenAPIOperation{
+		Summary: "Cluster capacity exhaustion forecast", OperationID: "capacityForecast",
+		Tags: []string{"Scalability", "Forecast", "Capacity"},
+		Description: "Forecasts when CPU, memory, and pod slots will be exhausted based on current allocation trends.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Forecast", map[string]interface{}{"healthScore": 70})},
+	})
+
+	// --- Compliance Map (v18.12) ---
+	add("/api/security/compliance-framework", "get", OpenAPIOperation{
+		Summary: "SOC2/PCI-DSS/CIS compliance framework mapping", OperationID: "complianceMap",
+		Tags: []string{"Security", "Compliance", "SOC2"},
+		Description: "Maps cluster state to SOC2, PCI-DSS, and CIS compliance controls with pass/fail status.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Compliance", map[string]interface{}{"complianceScore": 30})},
+	})
+
+	// --- MTTR Analysis (v18.13) ---
+	add("/api/product/mttr-analysis", "get", OpenAPIOperation{
+		Summary: "Mean time to recovery from restart patterns", OperationID: "mttrAnalysis",
+		Tags: []string{"Product", "Reliability", "MTTR"},
+		Description: "Analyzes pod restart patterns to estimate MTTR and identify crash-prone workloads.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("MTTR", map[string]interface{}{"healthScore": 55})},
+	})
+
 	return spec
 }
 

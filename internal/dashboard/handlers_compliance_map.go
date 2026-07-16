@@ -7,66 +7,55 @@ import (
 	"strings"
 	"time"
 
-	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// ComplianceMapResult maps cluster configuration to SOC2/PCI-DSS/HIPAA controls.
+// ComplianceMapResult maps cluster state to compliance frameworks (SOC2, PCI-DSS, CIS).
 type ComplianceMapResult struct {
-	ScannedAt       time.Time            `json:"scannedAt"`
-	Frameworks      []FrameworkResult    `json:"frameworks"`
+	ScannedAt       time.Time           `json:"scannedAt"`
 	Summary         ComplianceMapSummary `json:"summary"`
-	FailingControls []ControlFinding     `json:"failingControls"`
-	ByControl       []ControlFinding     `json:"byControl"`
-	Recommendations []string             `json:"recommendations"`
-	OverallScore    int                  `json:"overallScore"`
+	Controls        []ComplianceControl `json:"controls"`
+	Frameworks      []FrameworkResult   `json:"frameworks"`
+	FailingControls []ControlFinding    `json:"failingControls"`
+	OverallScore    int                 `json:"overallScore"`
+	ComplianceScore int                 `json:"complianceScore"`
+	Grade           string              `json:"grade"`
+	Recommendations []string            `json:"recommendations"`
 }
 
-// ComplianceMapSummary aggregates cross-framework compliance stats.
-type ComplianceMapSummary struct {
-	FrameworksAssessed int     `json:"frameworksAssessed"`
-	TotalControls      int     `json:"totalControls"`
-	PassingControls    int     `json:"passingControls"`
-	FailingControls    int     `json:"failingControls"`
-	WarningControls    int     `json:"warningControls"`
-	OverallPassRate    float64 `json:"overallPassRate"`
-}
-
-// FrameworkResult shows compliance status for one framework.
 type FrameworkResult struct {
-	Name          string          `json:"name"` // SOC2, PCI-DSS, HIPAA
-	Description   string          `json:"description"`
-	TotalControls int             `json:"totalControls"`
-	Passing       int             `json:"passingControls"`
-	Failing       int             `json:"failingControls"`
-	Warnings      int             `json:"warningControls"`
-	PassRate      float64         `json:"passRate"`
-	Status        string          `json:"status"` // compliant, partial, non-compliant
-	Controls      []ControlResult `json:"controls"`
+	Name           string  `json:"name"`
+	PassRate       float64 `json:"passRate"`
+	Passing        int     `json:"passing"`
+	TotalControls  int     `json:"totalControls"`
+	Status         string  `json:"status"`
 }
 
-// ControlResult shows one compliance control check.
-type ControlResult struct {
-	ID          string `json:"id"`
-	Category    string `json:"category"`
-	Title       string `json:"title"`
-	Status      string `json:"status"` // pass, fail, warn
-	Description string `json:"description"`
-	Remediation string `json:"remediation,omitempty"`
-}
-
-// ControlFinding is a failing/warning control with context.
 type ControlFinding struct {
 	Framework   string `json:"framework"`
-	ControlID   string `json:"controlId"`
 	Title       string `json:"title"`
-	Status      string `json:"status"`
 	Severity    string `json:"severity"`
-	Detail      string `json:"detail"`
 	Remediation string `json:"remediation"`
 }
 
-// handleComplianceMap maps cluster configuration to SOC2/PCI-DSS/HIPAA controls.
+type ComplianceMapSummary struct {
+	SOC2Pct       float64 `json:"soc2Pct"`
+	PCIPct        float64 `json:"pciDssPct"`
+	CISPct        float64 `json:"cisPct"`
+	TotalControls int     `json:"totalControls"`
+	Passed        int     `json:"passed"`
+	Failed        int     `json:"failed"`
+}
+
+type ComplianceControl struct {
+	ID         string `json:"id"`
+	Framework  string `json:"framework"`
+	Category   string `json:"category"`
+	Status     string `json:"status"`
+	Detail     string `json:"detail"`
+}
+
+// handleComplianceMap maps cluster state to compliance frameworks.
 // GET /api/security/compliance-map
 func (s *Server) handleComplianceMap(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -77,331 +66,165 @@ func (s *Server) handleComplianceMap(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := ComplianceMapResult{ScannedAt: time.Now()}
+	systemNS := map[string]bool{"kube-system": true, "kube-public": true, "kube-node-lease": true}
 
-	// Collect cluster state
+	nsList, _ := rc.clientset.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
 	pods, _ := rc.clientset.CoreV1().Pods("").List(ctx, metav1.ListOptions{})
-	services, _ := rc.clientset.CoreV1().Services("").List(ctx, metav1.ListOptions{})
-	nodes, _ := rc.clientset.CoreV1().Nodes().List(ctx, metav1.ListOptions{})
-	namespaces, _ := rc.clientset.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
-	secrets, _ := rc.clientset.CoreV1().Secrets("").List(ctx, metav1.ListOptions{Limit: 500})
+	deployments, _ := rc.clientset.AppsV1().Deployments("").List(ctx, metav1.ListOptions{})
+	secrets, _ := rc.clientset.CoreV1().Secrets("").List(ctx, metav1.ListOptions{})
 
-	// Detect encryption/audit/tls state
-	hasAuditLog := false
-	hasRBAC := false
-	hasNetworkPolicy := false
-	hasPrivilegedPods := false
-	hasHostPathPods := false
-	hasLatestImages := false
-
-	// Check pods for security posture
-	for _, pod := range pods.Items {
-		for _, c := range pod.Spec.Containers {
-			if c.SecurityContext != nil && c.SecurityContext.Privileged != nil && *c.SecurityContext.Privileged {
-				hasPrivilegedPods = true
+	// Check various compliance controls
+	checks := []struct {
+		id, framework, category string
+		check                  func() (bool, string)
+	}{
+		// SOC2
+		{"SOC2-CC1", "SOC2", "Access Control", func() (bool, string) {
+			for _, ns := range nsList.Items {
+				if ns.Labels["pod-security.kubernetes.io/enforce"] != "" { return true, "PSA enforced on at least one namespace" }
 			}
-			if len(c.Resources.Requests) == 0 {
+			return false, "No Pod Security Admission labels found on any namespace"
+		}},
+		{"SOC2-CC2", "SOC2", "Encryption", func() (bool, string) {
+			for _, sec := range secrets.Items {
+				if sec.Type == "kubernetes.io/tls" { return true, "TLS certificates detected" }
 			}
-			if strings.Contains(strings.ToLower(c.Image), ":latest") {
-				hasLatestImages = true
-			}
-		}
-		for _, v := range pod.Spec.Volumes {
-			if v.HostPath != nil {
-				hasHostPathPods = true
-			}
-		}
-	}
-
-	// Check namespaces for default namespace usage
-	for _, ns := range namespaces.Items {
-		if ns.Name == "default" {
+			return false, "No TLS secrets found — data in transit may be unencrypted"
+		}},
+		{"SOC2-CC3", "SOC2", "Monitoring", func() (bool, string) {
 			for _, pod := range pods.Items {
-				if pod.Namespace == "default" && pod.Status.Phase == corev1.PodRunning {
+				img := strings.ToLower(pod.Spec.Containers[0].Image)
+				if strings.Contains(img, "prometheus") || strings.Contains(img, "fluent") { return true, "Monitoring/logging detected" }
+			}
+			return false, "No monitoring/logging agent detected"
+		}},
+		// PCI-DSS
+		{"PCI-1", "PCI-DSS", "Network Segmentation", func() (bool, string) {
+			for _, ns := range nsList.Items {
+				if strings.Contains(strings.ToLower(ns.Name), "pci") || strings.Contains(strings.ToLower(ns.Name), "payment") { return true, "PCI namespace isolated" }
+			}
+			return false, "No dedicated PCI namespace found"
+		}},
+		{"PCI-2", "PCI-DSS", "Audit Logging", func() (bool, string) {
+			for _, pod := range pods.Items {
+				img := strings.ToLower(pod.Spec.Containers[0].Image)
+				if strings.Contains(img, "fluent") || strings.Contains(img, "vector") { return true, "Log forwarding detected" }
+			}
+			return false, "No log forwarding agent detected"
+		}},
+		// CIS
+		{"CIS-1", "CIS", "Privileged Pods", func() (bool, string) {
+			for _, pod := range pods.Items {
+				if systemNS[pod.Namespace] { continue }
+				for _, c := range pod.Spec.Containers {
+					if c.SecurityContext != nil && c.SecurityContext.Privileged != nil && *c.SecurityContext.Privileged {
+						return false, "Privileged containers detected in user namespaces"
+					}
 				}
 			}
-		}
-	}
-
-	// Check for audit logging (API server audit policy)
-	_, auditErr := rc.clientset.CoreV1().ConfigMaps("kube-system").Get(ctx, "audit-policy", metav1.GetOptions{})
-	if auditErr == nil {
-		hasAuditLog = true
-	}
-
-	// Check for RBAC
-	crbs, _ := rc.clientset.RbacV1().ClusterRoleBindings().List(ctx, metav1.ListOptions{})
-	if crbs != nil && len(crbs.Items) > 0 {
-		hasRBAC = true
-	}
-
-	// Check for network policies
-	nps, _ := rc.clientset.NetworkingV1().NetworkPolicies("").List(ctx, metav1.ListOptions{})
-	if nps != nil && len(nps.Items) > 0 {
-		hasNetworkPolicy = true
-	}
-
-	// Check for encryption at rest (approximate: check if etcd encryption secret exists)
-	_, encErr := rc.clientset.CoreV1().Secrets("kube-system").Get(ctx, "encryption-config", metav1.GetOptions{})
-	hasEncryptionAtRest := encErr == nil
-
-	// Check for TLS on services
-	hasPublicSvcNoTLS := false
-	if services != nil {
-		for _, svc := range services.Items {
-			if svc.Spec.Type == corev1.ServiceTypeLoadBalancer {
-				hasPublicSvcNoTLS = true
-			}
-		}
-	}
-
-	// Check for secret rotation (stale secrets)
-	hasStaleSecrets := false
-	if secrets != nil {
-		for _, secret := range secrets.Items {
-			age := time.Since(secret.CreationTimestamp.Time)
-			if age > 90*24*time.Hour && secret.Type == corev1.SecretTypeOpaque {
-				hasStaleSecrets = true
-				break
-			}
-		}
-	}
-
-	// Check node versions (patch status - approximate from kubelet version)
-	hasNodeVersionDrift := false
-	if nodes != nil && len(nodes.Items) > 1 {
-		versions := map[string]bool{}
-		for _, node := range nodes.Items {
-			ver := node.Status.NodeInfo.KubeletVersion
-			versions[ver] = true
-		}
-		if len(versions) > 1 {
-			hasNodeVersionDrift = true
-		}
-	}
-
-	// Check for image scanning (approximate: check if gatekeeper/kyverno exists)
-	hasPolicyEnforcement := false
-	for _, pod := range pods.Items {
-		nameLower := strings.ToLower(pod.Name)
-		if strings.Contains(nameLower, "gatekeeper") || strings.Contains(nameLower, "kyverno") {
-			hasPolicyEnforcement = true
-			break
-		}
-	}
-
-	// === SOC2 Controls ===
-	soc2Checks := []ControlResult{
-		makeControl("SOC2-CC6.1", "Access Control", "RBAC enabled and enforced",
-			hasRBAC, "Kubernetes RBAC is not configured", "Enable RBAC and define least-privilege roles"),
-		makeControl("SOC2-CC6.6", "Access Control", "Network policies restrict pod-to-pod communication",
-			hasNetworkPolicy, "No NetworkPolicy found — all pods can communicate freely", "Define default-deny NetworkPolicies per namespace"),
-		makeControl("SOC2-CC6.7", "Access Control", "No privileged containers running",
-			!hasPrivilegedPods, "Privileged containers detected — host-level access risk", "Remove privileged:true or use Pod Security Admission restricted"),
-		makeControl("SOC2-CC7.1", "Monitoring", "Audit logging configured",
-			hasAuditLog, "No audit-policy ConfigMap found in kube-system", "Configure API server audit logging with appropriate policy"),
-		makeControl("SOC2-CC7.2", "Monitoring", "Policy enforcement (OPA/Kyverno) deployed",
-			hasPolicyEnforcement, "No policy engine detected — workloads not validated at admission", "Deploy OPA Gatekeeper or Kyverno for admission control"),
-		makeControl("SOC2-CC8.1", "Change Management", "No :latest images in production",
-			!hasLatestImages, ":latest image tags detected — non-reproducible deployments", "Use versioned image tags for all containers"),
-		makeControl("SOC2-CC8.2", "Change Management", "Node versions consistent (no drift)",
-			!hasNodeVersionDrift, "Multiple kubelet versions detected — patch level inconsistency", "Ensure all nodes run the same Kubernetes patch version"),
-	}
-
-	// === PCI-DSS Controls ===
-	pciChecks := []ControlResult{
-		makeControl("PCI-3.4", "Data Protection", "Encryption at rest for secrets",
-			hasEncryptionAtRest, "No encryption-config Secret found in kube-system", "Enable etcd encryption at rest for Secret resources"),
-		makeControl("PCI-4.1", "Network Security", "Network policies for segmentation",
-			hasNetworkPolicy, "No NetworkPolicy — cardholder data environment not isolated", "Define NetworkPolicies to isolate PCI workloads"),
-		makeControl("PCI-6.2", "Vulnerability Mgmt", "Policy enforcement for image scanning",
-			hasPolicyEnforcement, "No admission policy engine for image validation", "Deploy admission controller that validates image signatures and scans"),
-		makeControl("PCI-7.1", "Access Control", "No privileged containers",
-			!hasPrivilegedPods, "Privileged containers can bypass PCI isolation controls", "Enforce restricted Pod Security Standards"),
-		makeControl("PCI-7.2", "Access Control", "RBAC least-privilege",
-			hasRBAC, "RBAC not configured — no access control enforcement", "Enable RBAC with namespace-scoped roles for PCI workloads"),
-		makeControl("PCI-8.2", "Auth & Identity", "Secret rotation (no stale credentials >90d)",
-			!hasStaleSecrets, "Secrets older than 90 days detected — credential rotation overdue", "Implement automated secret rotation (e.g., External Secrets Operator)"),
-		makeControl("PCI-10.1", "Logging", "Audit logging enabled",
-			hasAuditLog, "No audit logging — PCI activity not recorded", "Configure comprehensive audit logging for all API operations"),
-	}
-
-	// === HIPAA Controls ===
-	hipaaChecks := []ControlResult{
-		makeControl("HIPAA-164.312(a)", "Access Control", "RBAC + NetworkPolicy isolation",
-			hasRBAC && hasNetworkPolicy, "PHI workloads not properly isolated", "Enable RBAC and NetworkPolicies for HIPAA-scoped namespaces"),
-		makeControl("HIPAA-164.312(b)", "Audit Control", "Audit logging configured",
-			hasAuditLog, "No audit logging — PHI access not tracked", "Enable API server audit logging with PHI-relevant events"),
-		makeControl("HIPAA-164.312(c)", "Integrity", "No hostPath volume mounts",
-			!hasHostPathPods, "hostPath volumes detected — can modify host files (integrity risk)", "Remove hostPath mounts and use PVCs"),
-		makeControl("HIPAA-164.312(e)", "Transmission", "TLS for all external services",
-			!hasPublicSvcNoTLS, "LoadBalancer services without TLS detected", "Route all external traffic through Ingress with TLS"),
-	}
-
-	soc2Result := buildFramework("SOC2 Type II", "Service Organization Control 2 — security, availability, confidentiality", soc2Checks)
-	pciResult := buildFramework("PCI-DSS 4.0", "Payment Card Industry Data Security Standard", pciChecks)
-	hipaaResult := buildFramework("HIPAA", "Health Insurance Portability and Accountability Act", hipaaChecks)
-
-	result.Frameworks = []FrameworkResult{soc2Result, pciResult, hipaaResult}
-
-	// Summary
-	totalControls := 0
-	totalPass := 0
-	totalFail := 0
-	totalWarn := 0
-	for _, fw := range result.Frameworks {
-		totalControls += fw.TotalControls
-		totalPass += fw.Passing
-		totalFail += fw.Failing
-		totalWarn += fw.Warnings
-	}
-	result.Summary = ComplianceMapSummary{
-		FrameworksAssessed: len(result.Frameworks),
-		TotalControls:      totalControls,
-		PassingControls:    totalPass,
-		FailingControls:    totalFail,
-		WarningControls:    totalWarn,
-	}
-	if totalControls > 0 {
-		result.Summary.OverallPassRate = float64(totalPass) / float64(totalControls) * 100
-	}
-
-	// Failing controls detail
-	for _, fw := range result.Frameworks {
-		for _, c := range fw.Controls {
-			if c.Status != "pass" {
-				severity := "medium"
-				if c.Status == "fail" {
-					severity = "high"
+			return true, "No privileged containers in user namespaces"
+		}},
+		{"CIS-2", "CIS", "Resource Limits", func() (bool, string) {
+			for _, dep := range deployments.Items {
+				if systemNS[dep.Namespace] { continue }
+				for _, c := range dep.Spec.Template.Spec.Containers {
+					if c.Resources.Limits == nil || len(c.Resources.Limits) == 0 {
+						return false, "Deployments without resource limits detected"
+					}
 				}
-				result.FailingControls = append(result.FailingControls, ControlFinding{
-					Framework:   fw.Name,
-					ControlID:   c.ID,
-					Title:       c.Title,
-					Status:      c.Status,
-					Severity:    severity,
-					Detail:      c.Description,
-					Remediation: c.Remediation,
-				})
 			}
+			return true, "All deployments have resource limits"
+		}},
+		{"CIS-3", "CIS", "Secret Management", func() (bool, string) {
+			for _, pod := range pods.Items {
+				img := strings.ToLower(pod.Spec.Containers[0].Image)
+				if strings.Contains(img, "external-secrets") || strings.Contains(img, "vault") { return true, "External secret management detected" }
+			}
+			return false, "No External Secrets or Vault detected"
+		}},
+	}
+
+	soc2Pass, soc2Total, pciPass, pciTotal, cisPass, cisTotal := 0, 0, 0, 0, 0, 0
+	for _, chk := range checks {
+		ok, detail := chk.check()
+		status := "pass"
+		if !ok { status = "fail" }
+		result.Controls = append(result.Controls, ComplianceControl{
+			ID: chk.id, Framework: chk.framework, Category: chk.category, Status: status, Detail: detail,
+		})
+		result.Summary.TotalControls++
+		if ok {
+			result.Summary.Passed++
+			switch chk.framework {
+			case "SOC2": soc2Pass++
+			case "PCI-DSS": pciPass++
+			case "CIS": cisPass++
+			}
+		} else {
+			result.Summary.Failed++
+		}
+		switch chk.framework {
+		case "SOC2": soc2Total++
+		case "PCI-DSS": pciTotal++
+		case "CIS": cisTotal++
 		}
 	}
-	sort.Slice(result.FailingControls, func(i, j int) bool {
-		return result.FailingControls[i].Severity > result.FailingControls[j].Severity
-	})
 
-	// All controls flat list
-	for _, fw := range result.Frameworks {
-		for _, c := range fw.Controls {
-			result.ByControl = append(result.ByControl, ControlFinding{
-				Framework:   fw.Name,
-				ControlID:   c.ID,
-				Title:       c.Title,
-				Status:      c.Status,
-				Severity:    "info",
-				Detail:      c.Description,
-				Remediation: c.Remediation,
+	if soc2Total > 0 { result.Summary.SOC2Pct = float64(soc2Pass) / float64(soc2Total) * 100 }
+	if pciTotal > 0 { result.Summary.PCIPct = float64(pciPass) / float64(pciTotal) * 100 }
+	if cisTotal > 0 { result.Summary.CISPct = float64(cisPass) / float64(cisTotal) * 100 }
+
+	result.ComplianceScore = int(float64(result.Summary.Passed) / float64(result.Summary.TotalControls) * 100)
+	result.OverallScore = result.ComplianceScore
+	result.Grade = goldenScoreToGrade(result.ComplianceScore)
+
+	// Build framework summaries
+	result.Frameworks = []FrameworkResult{
+		{Name: "SOC2 Type II", PassRate: result.Summary.SOC2Pct, Passing: soc2Pass, TotalControls: soc2Total, Status: fwStatus(result.Summary.SOC2Pct)},
+		{Name: "PCI-DSS 4.0", PassRate: result.Summary.PCIPct, Passing: pciPass, TotalControls: pciTotal, Status: fwStatus(result.Summary.PCIPct)},
+		{Name: "HIPAA", PassRate: result.Summary.CISPct, Passing: cisPass, TotalControls: cisTotal, Status: fwStatus(result.Summary.CISPct)},
+	}
+
+	// Build failing controls list
+	for _, c := range result.Controls {
+		if c.Status == "fail" {
+			result.FailingControls = append(result.FailingControls, ControlFinding{
+				Framework: c.Framework, Title: c.Category, Severity: "high", Remediation: c.Detail,
 			})
 		}
 	}
 
-	// Overall score
-	result.OverallScore = int(result.Summary.OverallPassRate)
+	sort.Slice(result.Controls, func(i, j int) bool {
+		return result.Controls[i].Status > result.Controls[j].Status // fail before pass
+	})
 
-	// Recommendations
-	result.Recommendations = generateComplianceMapRecs(result)
+	recs := generateComplianceMapRecs(ComplianceMapResult{
+		Frameworks: result.Frameworks,
+		FailingControls: result.FailingControls,
+		OverallScore: result.ComplianceScore,
+	})
+	result.Recommendations = recs
 
 	writeJSON(w, result)
 }
 
-// makeControl creates a ControlResult from a boolean condition.
-func makeControl(id, category, title string, passed bool, failMsg, remediation string) ControlResult {
-	if passed {
-		return ControlResult{
-			ID: id, Category: category, Title: title,
-			Status:      "pass",
-			Description: fmt.Sprintf("%s: compliant", title),
-		}
-	}
-	return ControlResult{
-		ID:          id,
-		Category:    category,
-		Title:       title,
-		Status:      "fail",
-		Description: failMsg,
-		Remediation: remediation,
-	}
-}
-
-// buildFramework creates a FrameworkResult from controls.
-func buildFramework(name, description string, controls []ControlResult) FrameworkResult {
-	passing, failing, warnings := 0, 0, 0
-	for _, c := range controls {
-		switch c.Status {
-		case "pass":
-			passing++
-		case "fail":
-			failing++
-		case "warn":
-			warnings++
-		}
-	}
-	total := len(controls)
-	passRate := 0.0
-	if total > 0 {
-		passRate = float64(passing) / float64(total) * 100
-	}
-	status := "compliant"
-	if passRate < 50 {
-		status = "non-compliant"
-	} else if passRate < 100 {
-		status = "partial"
-	}
-
-	return FrameworkResult{
-		Name:          name,
-		Description:   description,
-		TotalControls: total,
-		Passing:       passing,
-		Failing:       failing,
-		Warnings:      warnings,
-		PassRate:      passRate,
-		Status:        status,
-		Controls:      controls,
-	}
-}
-
-// generateComplianceMapRecs produces recommendations.
-func generateComplianceMapRecs(result ComplianceMapResult) []string {
+func generateComplianceMapRecs(r ComplianceMapResult) []string {
 	var recs []string
-
-	for _, fw := range result.Frameworks {
-		recs = append(recs, fmt.Sprintf("%s: %.0f%% compliant (%d/%d controls passing, status: %s)",
-			fw.Name, fw.PassRate, fw.Passing, fw.TotalControls, fw.Status))
-	}
-
-	if len(result.FailingControls) > 0 {
-		highSeverity := 0
-		for _, fc := range result.FailingControls {
-			if fc.Severity == "high" {
-				highSeverity++
-			}
+	recs = append(recs, fmt.Sprintf("Overall compliance score: %d/100", r.OverallScore))
+	for _, fw := range r.Frameworks {
+		if fw.Status != "passing" {
+			recs = append(recs, fmt.Sprintf("%s: %.0f%% pass rate (%d/%d controls) — %s", fw.Name, fw.PassRate, fw.Passing, fw.TotalControls, fw.Status))
 		}
-		recs = append(recs, fmt.Sprintf("%d failing control(s) (%d high severity) — prioritize remediation of high-severity findings", len(result.FailingControls), highSeverity))
 	}
-
-	// Top remediation priorities
-	for i, fc := range result.FailingControls {
-		if i >= 3 || fc.Severity != "high" {
-			break
-		}
-		recs = append(recs, fmt.Sprintf("Priority: %s %s — %s", fc.Framework, fc.ControlID, fc.Remediation))
+	for _, fc := range r.FailingControls {
+		recs = append(recs, fmt.Sprintf("[%s] %s — %s", fc.Severity, fc.Title, fc.Remediation))
 	}
-
-	if result.OverallScore >= 90 {
-		recs = append(recs, fmt.Sprintf("Overall compliance score: %d/100 — cluster meets most framework requirements", result.OverallScore))
-	} else if result.OverallScore < 50 {
-		recs = append(recs, fmt.Sprintf("Overall compliance score: %d/100 — significant gaps require immediate attention", result.OverallScore))
-	}
-
+	if len(recs) == 1 { recs = append(recs, "All compliance frameworks passing") }
 	return recs
+}
+
+func fwStatus(pct float64) string {
+	if pct >= 100 { return "passing" }
+	if pct >= 50 { return "partial" }
+	return "failing"
 }
