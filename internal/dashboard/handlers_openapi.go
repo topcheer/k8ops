@@ -4514,6 +4514,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Cluster Predictive Health & Risk Forecast Engine (v17.52) ---
+	add("/api/operations/predictive-health", "get", OpenAPIOperation{
+		Summary:     "Cluster predictive health & risk forecast engine",
+		OperationID: "predictiveHealth",
+		Tags:        []string{"Operations", "AIOps", "Predictive"},
+		Description: "Predicts cluster risks before they impact. Analyzes node conditions (MemoryPressure, DiskPressure, PIDPressure), pod restart patterns, resource consumption trends, certificate expiry timelines, and capacity utilization to forecast issues across a 30-day horizon. Per-node risk scoring (0-100) with failure risk prediction. Per-pod risk classification (restart-loop, resource-starvation, eviction-risk). Resource trends with projected exhaustion dates. Risk timeline bucketed by ETA (<24h, 1-7d, 7-30d, >30d). Confidence score based on data completeness.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Predictive health forecast", map[string]interface{}{
+				"summary":          map[string]interface{}{"totalNodes": 3, "criticalPredictions": 1, "highPredictions": 2, "nodesAtRisk": 2},
+				"overallRiskLevel": "high",
+				"confidenceScore":  80,
+				"predictions":      []map[string]interface{}{{"category": "node-failure", "severity": "critical", "resource": "worker-3", "eta": "~5 days"}},
+				"nodeRisks":        []map[string]interface{}{{"nodeName": "worker-3", "riskScore": 65, "memoryRisk": "critical"}},
+				"riskTimeline":     []map[string]interface{}{{"when": "< 24h", "count": 1, "severity": "critical"}},
+			}),
+		},
+	})
+
 	return spec
 }
 

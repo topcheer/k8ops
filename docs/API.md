@@ -2954,5 +2954,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 215 | /api/security/compliance-map | Security | v17.48 | SOC2/PCI-DSS/HIPAA 合规框架映射 |
 | 216 | /api/product/probe-effectiveness | Product | v17.49 | 健康探针有效性与故障检测分析器 |
 | 217 | /api/scalability/node-upgrade-audit | Scalability | v17.50 | 节点升级就绪度与 K8s 版本兼容性审计 |
+| 218 | /api/operations/predictive-health | Operations | v17.52 | 集群预测性健康与风险预报引擎 |
 
-**总计：293 个 OpenAPI 端点，301 个 Dashboard API 端点**
+**总计：294 个 OpenAPI 端点，302 个 Dashboard API 端点**

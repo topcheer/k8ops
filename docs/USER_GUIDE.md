@@ -1161,3 +1161,20 @@ kubectl rollout restart daemonset/k8ops -n k8ops-system
 - **升级阻断检测**：节点压力、PDB 覆盖不足、弃用 API
 - **升级影响评估**：受影响工作负载数、需重新调度的 Pod 数
 - **就绪评分**：0-100 基于阻断因素和偏斜程度
+
+### 集群预测性健康引擎
+
+`GET /api/operations/predictive-health` 预测集群未来 30 天的潜在风险：
+
+- **节点风险预测**：基于节点条件（MemoryPressure、DiskPressure、PIDPressure）计算 0-100 风险评分
+- **Pod 风险分类**：识别重启循环（OOMKill 前兆）、资源饥饿（无 limit）、驱逐风险（低 QoS）
+- **资源趋势分析**：Pod 密度趋势、容量消耗速率、预测资源耗尽时间
+- **证书过期预测**：TLS Secret 年龄分析，提醒续期管道检查
+- **风险时间线**：按 ETA 分桶（<24h、1-7d、7-30d、>30d）展示未来风险事件
+- **置信度评分**：基于数据完整性计算预测置信度（50-100）
+
+```bash
+# 获取集群预测性健康报告
+curl -sk https://k8ops.iot2.win/api/operations/predictive-health \
+  -H "Authorization: Bearer $JWT" | jq '.overallRiskLevel, .predictions'
+```

@@ -221,6 +221,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:compliance-map", "/api/security/compliance-map", "SOC2/PCI-DSS/HIPAA compliance framework mapping"},
 	{"product:probe-effectiveness", "/api/product/probe-effectiveness", "Health probe effectiveness & failure detection analyzer"},
 	{"scalability:node-upgrade-audit", "/api/scalability/node-upgrade-audit", "Node upgrade readiness & K8s version compatibility auditor"},
+	{"operations:predictive-health", "/api/operations/predictive-health", "Cluster predictive health & risk forecast engine"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
