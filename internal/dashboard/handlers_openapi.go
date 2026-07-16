@@ -4587,6 +4587,13 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Security posture scorecard", map[string]interface{}{"clusterGrade": "C", "clusterScore": 72})},
 	})
 
+	// --- AIOps Incident Triage & Remediation Action Plan (v17.58) ---
+	add("/api/operations/triage", "get", OpenAPIOperation{
+		Summary: "AIOps incident triage & remediation action plan", OperationID: "triageReport", Tags: []string{"Operations", "AIOps", "Triage"},
+		Description: "Correlates signals across dimensions (crash loops, node pressure, image failures, stuck rollouts, event storms) into prioritized incidents (P0-P3). Generates action plan with kubectl commands, effort estimates, and impact ratings. Separates quick wins from long-term fixes.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Triage report", map[string]interface{}{"priority": "P1-urgent", "healthScore": 65})},
+	})
+
 	return spec
 }
 
