@@ -4706,6 +4706,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Maturity report", map[string]interface{}{"overallScore": 78, "overallLevel": "defined"})},
 	})
 
+	// --- Compliance Posture (v17.68) ---
+	add("/api/security/compliance-posture", "get", OpenAPIOperation{
+		Summary:     "Multi-framework compliance posture & control mapping",
+		OperationID: "compliancePosture",
+		Tags:        []string{"Security", "Compliance", "Governance"},
+		Description: "Maps cluster security state against SOC2, PCI-DSS, HIPAA, NIST 800-53, and GDPR. Cross-references findings with framework control families, identifies cross-framework gaps, and generates prioritized remediation plan.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Compliance posture", map[string]interface{}{"overallScore": 72, "frameworks": []interface{}{map[string]interface{}{"framework": "SOC2", "score": 80}}})},
+	})
+
 	return spec
 }
 
