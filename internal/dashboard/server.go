@@ -445,6 +445,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/ownership-map", s.cacheMiddleware(60*time.Second, s.handleOwnershipMap))                    // workload ownership & accountability governance engine
 	mux.HandleFunc("/api/security/remediation-matrix", s.cacheMiddleware(120*time.Second, s.handleRemediationMatrix))        // security remediation priority & risk-effort matrix
 	mux.HandleFunc("/api/security/compliance-posture", s.cacheMiddleware(120*time.Second, s.handleCompliancePosture))      // multi-framework compliance posture & control mapping (SOC2/PCI-DSS/HIPAA/NIST/GDPR)
+	mux.HandleFunc("/api/security/net-policy-effectiveness", s.cacheMiddleware(120*time.Second, s.handleNetPolicyEffectiveness))  // network policy effectiveness & zero-trust isolation scorer
 	mux.HandleFunc("/api/operations/mttr", s.cacheMiddleware(60*time.Second, s.handleMTTR))                                    // mean time to recovery & incident lifecycle analytics
 	mux.HandleFunc("/api/operations/change-intel", s.cacheMiddleware(60*time.Second, s.handleChangeIntel))                    // change intelligence & blast radius analyzer
 	mux.HandleFunc("/api/operations/obs-coverage", s.cacheMiddleware(120*time.Second, s.handleObsCoverage))                   // observability coverage & blind spot detector

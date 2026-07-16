@@ -4760,6 +4760,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Change intelligence", map[string]interface{}{"summary": map[string]interface{}{"totalChanges": 12, "riskyChangeCount": 2}})},
 	})
 
+	// --- Net Policy Effectiveness (v17.74) ---
+	add("/api/security/net-policy-effectiveness", "get", OpenAPIOperation{
+		Summary:     "Network policy effectiveness & zero-trust isolation scorer",
+		OperationID: "netPolicyEffectiveness",
+		Tags:        []string{"Security", "NetworkPolicy", "ZeroTrust"},
+		Description: "Analyzes network policy effectiveness, namespace isolation, default-deny coverage, egress control, and zero-trust posture across the cluster.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Policy report", map[string]interface{}{"isolationScore": 25, "zeroTrustLevel": "low"})},
+	})
+
 	return spec
 }
 

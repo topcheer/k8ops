@@ -242,6 +242,7 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:scheduling-intel", "/api/scalability/scheduling-intel", "Scheduling intelligence & bin-packing efficiency analyzer"},
 	{"product:dependency-resilience", "/api/product/dependency-resilience", "Service dependency resilience & cascade failure risk analyzer"},
 	{"operations:change-intel", "/api/operations/change-intel", "Change intelligence & blast radius analyzer"},
+	{"security:net-policy-effectiveness", "/api/security/net-policy-effectiveness", "Network policy effectiveness & zero-trust isolation scorer"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
