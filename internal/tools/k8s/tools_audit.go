@@ -262,6 +262,9 @@ var auditRegistry = []auditEndpoint{
 	{"product:env-var-audit", "/api/product/env-var-audit", "Environment variable security & sprawl auditor"},
 	{"scalability:scaling-simulator", "/api/scalability/scaling-simulator", "Cluster scaling scenario simulator"},
 	{"product:placement-score", "/api/product/placement-score", "Pod scheduling placement quality scorer"},
+	{"operations:chaos-readiness", "/api/operations/chaos-readiness", "Chaos engineering readiness & resilience auditor"},
+	{"security:supply-chain", "/api/security/supply-chain", "Container supply chain security auditor"},
+	{"scalability:capacity-forecast-deep", "/api/scalability/capacity-forecast-deep", "Cluster capacity exhaustion forecast"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

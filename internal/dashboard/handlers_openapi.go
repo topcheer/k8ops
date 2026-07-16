@@ -5347,6 +5347,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Placement score", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/operations/chaos-readiness", "get", OpenAPIOperation{
+		Summary: "Chaos engineering readiness & resilience auditor", OperationID: "chaosReadiness",
+		Tags: []string{"Operations", "Reliability", "Resilience"},
+		Description: "Assesses workload resilience for chaos engineering experiments. Evaluates PDB coverage, anti-affinity, graceful shutdown, health probes, resource limits, and simulates failure scenarios (pod kill, node drain, network partition).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Chaos readiness report", map[string]interface{}{"healthScore": 65})},
+	})
+
+	add("/api/security/supply-chain", "get", OpenAPIOperation{
+		Summary: "Container supply chain security auditor", OperationID: "supplyChain",
+		Tags: []string{"Security", "SupplyChain", "Images"},
+		Description: "Audits container image supply chain security: digest vs tag references, :latest usage, non-root execution, read-only rootfs, privileged containers, pull policy, and scan readiness.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Supply chain report", map[string]interface{}{"healthScore": 55})},
+	})
+
+	add("/api/scalability/capacity-forecast-deep", "get", OpenAPIOperation{
+		Summary: "Cluster capacity exhaustion forecast", OperationID: "capacityForecastDeep",
+		Tags: []string{"Scalability", "Capacity", "Forecast"},
+		Description: "Projects cluster resource consumption using deployment growth indicators. Calculates utilization rates, monthly growth rates, time-to-exhaustion for CPU/memory/pods, and 90/180-day projections.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Capacity forecast", map[string]interface{}{"healthScore": 75})},
+	})
+
 	return spec
 }
 

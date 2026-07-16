@@ -519,6 +519,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/env-var-audit", s.cacheMiddleware(120*time.Second, s.handleEnvVarAudit))            // environment variable security & sprawl auditor
 	mux.HandleFunc("/api/scalability/scaling-simulator", s.cacheMiddleware(120*time.Second, s.handleScalingSimulator))      // cluster scaling scenario simulator
 	mux.HandleFunc("/api/product/placement-score", s.cacheMiddleware(120*time.Second, s.handlePlacementScore))      // pod scheduling placement quality scorer
+	mux.HandleFunc("/api/operations/chaos-readiness", s.cacheMiddleware(120*time.Second, s.handleChaosReadiness))  // chaos engineering readiness & resilience auditor
+	// /api/security/supply-chain already registered at line ~280
+	// /api/scalability/capacity-forecast-deep already registered above
 
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
