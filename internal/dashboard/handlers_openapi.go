@@ -4742,6 +4742,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Scheduling report", map[string]interface{}{"schedulingScore": 72, "summary": map[string]interface{}{"binPackScore": 72, "fragileNodes": 1}})},
 	})
 
+	// --- Dependency Resilience (v17.72) ---
+	add("/api/product/dependency-resilience", "get", OpenAPIOperation{
+		Summary:     "Service dependency resilience & cascade failure risk analyzer",
+		OperationID: "dependencyResilience",
+		Tags:        []string{"Product", "Resilience", "Dependencies"},
+		Description: "Analyzes service-to-service dependency chains, identifies cascade failure risks, orphaned services, single-pod bottlenecks, and missing resilience patterns.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Resilience report", map[string]interface{}{"resilienceScore": 72, "grade": "C"})},
+	})
+
 	return spec
 }
 

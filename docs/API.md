@@ -2973,5 +2973,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 234 | /api/operations/obs-coverage | Operations | v17.69 | 工作负载可观测性覆盖率与盲区检测引擎 |
 | 235 | /api/deployment/config-consistency | Deployment | v17.70 | 配置一致性与标准化审计引擎 |
 | 236 | /api/scalability/scheduling-intel | Scalability | v17.71 | 调度智能与装箱效率分析引擎 |
+| 237 | /api/product/dependency-resilience | Product | v17.72 | 服务依赖韧性与级联故障风险分析引擎 |
 
-**总计：312 个 OpenAPI 端点，320 个 Dashboard API 端点**
+**总计：313 个 OpenAPI 端点，321 个 Dashboard API 端点**

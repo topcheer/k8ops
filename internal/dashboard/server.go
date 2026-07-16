@@ -441,6 +441,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/autoscaling-intel", s.cacheMiddleware(120*time.Second, s.handleAutoscalingIntel))         // autoscaling intelligence & scaling behavior profiler
 	mux.HandleFunc("/api/scalability/scheduling-intel", s.cacheMiddleware(60*time.Second, s.handleSchedulingIntel))        // scheduling intelligence & bin-packing efficiency analyzer
 	mux.HandleFunc("/api/product/golden-signals", s.cacheMiddleware(60*time.Second, s.handleGoldenSignals))                    // SRE four golden signals unified health engine
+	mux.HandleFunc("/api/product/dependency-resilience", s.cacheMiddleware(60*time.Second, s.handleDependencyResilience))      // service dependency resilience & cascade failure risk analyzer
 	mux.HandleFunc("/api/product/ownership-map", s.cacheMiddleware(60*time.Second, s.handleOwnershipMap))                    // workload ownership & accountability governance engine
 	mux.HandleFunc("/api/security/remediation-matrix", s.cacheMiddleware(120*time.Second, s.handleRemediationMatrix))        // security remediation priority & risk-effort matrix
 	mux.HandleFunc("/api/security/compliance-posture", s.cacheMiddleware(120*time.Second, s.handleCompliancePosture))      // multi-framework compliance posture & control mapping (SOC2/PCI-DSS/HIPAA/NIST/GDPR)
