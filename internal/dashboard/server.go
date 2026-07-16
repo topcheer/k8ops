@@ -500,6 +500,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/upgrade-impact", s.cacheMiddleware(120*time.Second, s.handleUpgradeImpact))             // K8s version upgrade impact simulator & readiness assessor
 	mux.HandleFunc("/api/docs/resource-inventory", s.cacheMiddleware(120*time.Second, s.handleResourceInventory))           // comprehensive cluster resource catalog & inventory
 	mux.HandleFunc("/api/scalability/unit-economics", s.cacheMiddleware(120*time.Second, s.handleUnitEconomics))           // FinOps unit economics: cost per pod/service/namespace
+	mux.HandleFunc("/api/docs/platform-scorecard", s.cacheMiddleware(120*time.Second, s.handlePlatformScorecard))           // unified platform engineering scorecard
+	mux.HandleFunc("/api/operations/signal-correlation", s.cacheMiddleware(30*time.Second, s.handleSignalCorrelation))      // proactive multi-signal anomaly correlation engine
+	mux.HandleFunc("/api/scalability/green-computing", s.cacheMiddleware(120*time.Second, s.handleGreenComputing))          // green computing & sustainability scorecard
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))

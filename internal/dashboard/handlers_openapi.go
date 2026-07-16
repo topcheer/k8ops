@@ -5203,6 +5203,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Unit economics report", map[string]interface{}{"healthScore": 75})},
 	})
 
+	// --- Platform Scorecard (v18.26) ---
+	add("/api/docs/platform-scorecard", "get", OpenAPIOperation{
+		Summary: "Unified platform engineering scorecard", OperationID: "platformScorecard",
+		Tags: []string{"Documentation", "Platform", "Executive"},
+		Description: "Aggregates signals from infrastructure health, workload reliability, security posture, cost efficiency, operational maturity, and service connectivity into a single executive-level platform score. Weighted scoring with 6 dimensions. Identifies strengths (80+), weaknesses (<60), and generates prioritized improvement roadmap with timeline (quick-win/short-term/long-term) and effort estimates. Maturity level classification (elite/advanced/intermediate/developing/initial). Executive summary with trend direction.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Platform scorecard", map[string]interface{}{"overallScore": 75})},
+	})
+
+	// --- Signal Correlation (v18.27) ---
+	add("/api/operations/signal-correlation", "get", OpenAPIOperation{
+		Summary: "Proactive multi-signal anomaly correlation engine", OperationID: "signalCorrelation",
+		Tags: []string{"Operations", "AIOps", "Proactive"},
+		Description: "Correlates signals from pod restart patterns, crash loops, OOM kills, resource pressure, node conditions, event storms, and scheduling failures to detect emerging issues before they become incidents. Identifies signal hotspots (namespaces/nodes with high anomaly density). Detects emerging risks (disk exhaustion, memory pressure, signal saturation) with probability scores and mitigation steps. Signal matrix showing all monitored signal sources and their current status. Health score (0-100).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Signal correlation report", map[string]interface{}{"healthScore": 85})},
+	})
+
+	// --- Green Computing (v18.28) ---
+	add("/api/scalability/green-computing", "get", OpenAPIOperation{
+		Summary: "Green computing & sustainability scorecard", OperationID: "greenComputing",
+		Tags: []string{"Scalability", "Sustainability", "FinOps"},
+		Description: "Beyond carbon footprint: assesses energy efficiency, PUE estimation, resource waste from idle workloads, workload density (pods/core), and energy-per-pod metrics. Estimates power consumption (kW), annual energy cost, and CO2 emissions. Identifies waste sources (idle CPU, unbounded resources) with their energy and carbon impact. Per-namespace efficiency ratings. Generates sustainability recommendations with annual savings and CO2 reduction estimates. Green verdict (eco-friendly/moderate/wasteful/critical).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Green computing report", map[string]interface{}{"healthScore": 70})},
+	})
+
 	return spec
 }
 
