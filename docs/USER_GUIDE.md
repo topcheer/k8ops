@@ -1230,3 +1230,23 @@ fi
 curl -sk https://k8ops.iot2.win/api/scalability/request-intelligence \
   -H "Authorization: Bearer $JWT" | jq '.postureScore, .savingsEstimate, .underProvisioned'
 ```
+
+### 服务可靠性评分卡
+
+`GET /api/product/reliability-scorecard` 为每个工作负载生成 A-F 可靠性等级：
+
+**7 个评分维度**：
+1. **副本高可用**：>=3 副本得满分，单副本不及格
+2. **健康探针**：readiness + liveness + startup 配置
+3. **资源管理**：CPU/Memory requests + limits
+4. **PDB 覆盖**：PodDisruptionBudget 保护
+5. **安全上下文**：runAsNonRoot + readOnlyRootFilesystem
+6. **更新策略**：RollingUpdate vs Recreate
+7. **反亲和性**：pod anti-affinity / topology spread
+
+**等级标准**：A(>=90) B(80-89) C(70-79) D(60-69) F(<60)
+
+```bash
+curl -sk https://k8ops.iot2.win/api/product/reliability-scorecard \
+  -H "Authorization: Bearer $JWT" | jq '.clusterGrade, .distribution, .weakestSignals'
+```

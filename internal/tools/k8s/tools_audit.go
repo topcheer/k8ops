@@ -224,6 +224,7 @@ var auditRegistry = []auditEndpoint{
 	{"operations:predictive-health", "/api/operations/predictive-health", "Cluster predictive health & risk forecast engine"},
 	{"deployment:change-readiness", "/api/deployment/change-readiness", "Deployment change readiness pre-flight gate"},
 	{"scalability:request-intelligence", "/api/scalability/request-intelligence", "Resource request intelligence & right-sizing engine"},
+	{"product:reliability-scorecard", "/api/product/reliability-scorecard", "Per-workload reliability posture scorecard (A-F grading)"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},

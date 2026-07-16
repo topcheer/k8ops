@@ -430,6 +430,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/predictive-health", s.cacheMiddleware(60*time.Second, s.handlePredictiveHealth))            // cluster predictive health & risk forecast engine
 	mux.HandleFunc("/api/deployment/change-readiness", s.cacheMiddleware(30*time.Second, s.handleChangeReadiness))              // deployment change readiness pre-flight gate
 	mux.HandleFunc("/api/scalability/request-intelligence", s.cacheMiddleware(120*time.Second, s.handleRequestIntelligence))    // resource request intelligence & right-sizing engine
+	mux.HandleFunc("/api/product/reliability-scorecard", s.cacheMiddleware(120*time.Second, s.handleReliabilityScorecard))        // per-workload reliability posture scorecard (A-F grading)
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))

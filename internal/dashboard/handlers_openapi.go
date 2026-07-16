@@ -4565,6 +4565,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Per-Workload Reliability Scorecard (v17.55) ---
+	add("/api/product/reliability-scorecard", "get", OpenAPIOperation{
+		Summary:     "Per-workload reliability posture scorecard",
+		OperationID: "reliabilityScorecard",
+		Tags:        []string{"Product", "Reliability", "Scorecard"},
+		Description: "Scores every workload (Deployment, StatefulSet, DaemonSet) across 7 reliability dimensions: replication (HA), probes (readiness/liveness/startup), resources (requests/limits), PDB coverage, security context (non-root/read-only), update strategy (rolling vs recreate), and affinity/topology spread. Each workload receives an A-F grade and 0-100 score. Cluster-wide grade and weakest signal analysis. Excludes kube-system namespaces.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Reliability scorecard", map[string]interface{}{
+				"clusterGrade": "B",
+				"clusterScore": 82,
+				"workloads":   []map[string]interface{}{{"name": "api-server", "grade": "A", "score": 92}},
+			}),
+		},
+	})
+
 	return spec
 }
 
