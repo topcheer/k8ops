@@ -259,6 +259,10 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:volume-budget", "/api/scalability/volume-budget", "PVC storage budget & orphan detector"},
 	{"operations:restart-pattern", "/api/operations/restart-pattern", "Pod restart pattern & chronic issue analyzer"},
 	{"security:cert-inventory", "/api/security/cert-inventory", "TLS certificate inventory & expiry tracker"},
+	{"product:env-var-audit", "/api/product/env-var-audit", "Environment variable security & sprawl auditor"},
+	{"scalability:scaling-simulator", "/api/scalability/scaling-simulator", "Cluster scaling scenario simulator"},
+	{"product:placement-score", "/api/product/placement-score", "Pod scheduling placement quality scorer"},
+
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},
 	{"product:api-version-governance", "/api/product/api-version-governance", "K8s API version governance & deprecation tracker"},

@@ -5323,6 +5323,30 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Certificate inventory", map[string]interface{}{"healthScore": 85})},
 	})
 
+	// --- Env Var Audit (v18.41) ---
+	add("/api/product/env-var-audit", "get", OpenAPIOperation{
+		Summary: "Environment variable security & sprawl auditor", OperationID: "envVarAudit",
+		Tags: []string{"Product", "Security", "Configuration"},
+		Description: "Audits environment variables across workloads: detects plaintext secrets, hardcoded URLs, config sprawl, missing best practices. Per-namespace breakdown.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Env var audit", map[string]interface{}{"healthScore": 85})},
+	})
+
+	// --- Scaling Simulator (v18.42) ---
+	add("/api/scalability/scaling-simulator", "get", OpenAPIOperation{
+		Summary: "Cluster scaling scenario simulator", OperationID: "scalingSimulator",
+		Tags: []string{"Scalability", "Capacity", "Planning"},
+		Description: "Simulates cluster behavior under 1.5x/2x/3x/5x load. Identifies bottlenecks, additional nodes needed, and cost projections. Capacity headroom analysis.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Scaling simulation", map[string]interface{}{"healthScaleScore": 85})},
+	})
+
+	// --- Placement Score (v18.43) ---
+	add("/api/product/placement-score", "get", OpenAPIOperation{
+		Summary: "Pod scheduling placement quality scorer", OperationID: "placementScore",
+		Tags: []string{"Product", "Scheduling", "HA"},
+		Description: "Evaluates pod placement quality: anti-affinity coverage, topology spread, node diversity, SPOF detection. Per-workload placement scores.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Placement score", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
