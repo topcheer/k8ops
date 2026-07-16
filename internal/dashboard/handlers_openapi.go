@@ -4601,6 +4601,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Impact simulation", map[string]interface{}{"clusterRiskLevel": "medium"})},
 	})
 
+	// --- Cost Intelligence & Spend Forecast Engine (v17.60) ---
+	add("/api/scalability/cost-intelligence", "get", OpenAPIOperation{
+		Summary:     "Cost intelligence & spend forecast engine",
+		OperationID: "costIntelligence",
+		Tags:        []string{"Scalability", "FinOps", "Cost", "Forecasting"},
+		Description: "Advanced FinOps intelligence layer beyond static cost snapshots. Provides: (1) per-namespace cost trend analysis with spend velocity tracking (increasing/stable), (2) cost anomaly detection (concentration spikes, over-request ratios, idle waste, runaway growth), (3) monthly spend forecasting with growth rate estimation and budget recommendations, (4) ranked optimization opportunities by estimated annual savings (right-size, remove-idle, consolidate, spot-migrate), (5) FinOps maturity scorecard grading (A-F) across visibility, optimization, budget enforcement, efficiency, and allocation dimensions. Synthesizes data from all cost-related signals into actionable intelligence.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Cost intelligence report", map[string]interface{}{
+				"summary":         map[string]interface{}{"monthlySpend": 1200.50, "annualProjection": 14406, "topNSPctOfSpend": 65.2},
+				"forecast":        map[string]interface{}{"projectedMonthly": 1380, "growthRate": 15.0, "confidence": "high"},
+				"finOpsScore":     map[string]interface{}{"grade": "C", "score": 72, "visibilityScore": 85, "budgetScore": 20},
+				"topOpportunities": []map[string]interface{}{{"rank": 1, "type": "spot-migrate", "estimatedSavingsAnnual": 5760}},
+			}),
+		},
+	})
+
 	return spec
 }
 

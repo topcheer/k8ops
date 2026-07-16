@@ -1268,3 +1268,54 @@ curl -sk https://k8ops.iot2.win/api/product/reliability-scorecard \
 curl -sk https://k8ops.iot2.win/api/security/posture-scorecard \
   -H "Authorization: Bearer $JWT" | jq '.clusterGrade, .dimensions, .highRiskWorkloads'
 ```
+
+---
+
+### 成本智能分析与支出预测引擎
+
+**端点**：`GET /api/scalability/cost-intelligence`
+
+超越静态成本快照的高级 FinOps 智能层。提供成本趋势分析、异常检测、支出预测和 FinOps 成熟度评分。
+
+**核心能力**：
+1. **命名空间成本趋势**：按命名空间分析月度成本、支出速率（increasing/stable）、风险等级
+2. **成本异常检测**：
+   - 集中度异常（单命名空间占 >40% 总支出）
+   - 过度请求（limit/request 比率 >5x）
+   - 闲置浪费（大量低请求 Pod）
+   - 失控增长（快速资源增长模式）
+3. **支出预测**：基于当前分配模式预测月度支出、增长率（0-20%）、推荐预算（含 10% 缓冲）
+4. **优化机会排名**：按预估年节省金额排序的 Top 15 优化建议
+   - right-size-cpu（CPU 右调）
+   - remove-idle（清理闲置 Pod）
+   - consolidate（Pod 合并）
+   - spot-migrate（Spot 实例迁移）
+5. **FinOps 成熟度评分卡**（A-F 等级），5 个维度：
+   - **可见性**：资源请求覆盖率
+   - **优化**：过度配置/闲置资源比例
+   - **预算**：命名空间预算标注覆盖率
+   - **效率**：limit/request 比率合理性
+   - **分配**：团队/部门标签覆盖率
+
+**示例**：
+```bash
+# 查看成本智能报告
+curl -sk https://k8ops.iot2.win/api/scalability/cost-intelligence \
+  -H "Authorization: Bearer $JWT" | jq '{
+    monthlySpend: .summary.monthlySpend,
+    annualProjection: .summary.annualProjection,
+    forecast: .forecast,
+    finOpsGrade: .finOpsScore.grade,
+    finOpsScore: .finOpsScore.score,
+    topSavings: .topOpportunities[0:3],
+    anomalies: [.anomalies[] | select(.severity == "critical")]
+  }'
+
+# 查看 FinOps 成熟度详情
+curl -sk https://k8ops.iot2.win/api/scalability/cost-intelligence \
+  -H "Authorization: Bearer $JWT" | jq '.finOpsScore'
+
+# 查看成本最高的命名空间
+curl -sk https://k8ops.iot2.win/api/scalability/cost-intelligence \
+  -H "Authorization: Bearer $JWT" | jq '.byNamespace[0:5]'
+```

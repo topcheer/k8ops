@@ -434,6 +434,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/posture-scorecard", s.cacheMiddleware(120*time.Second, s.handleSecurityPosture))
 	mux.HandleFunc("/api/operations/triage", s.cacheMiddleware(30*time.Second, s.handleTriage))
 	mux.HandleFunc("/api/deployment/impact-simulator", s.cacheMiddleware(60*time.Second, s.handleDeployImpact))                // cluster-wide security posture scorecard (A-F grading)
+	mux.HandleFunc("/api/scalability/cost-intelligence", s.cacheMiddleware(120*time.Second, s.handleCostIntelligence))            // cost intelligence & spend forecast engine
 
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))

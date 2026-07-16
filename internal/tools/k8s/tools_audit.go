@@ -253,6 +253,7 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:node-pool-health", "/api/scalability/node-pool-health", "Node pool & cluster autoscaler health monitor"},
 	{"scalability:cost-waste", "/api/scalability/cost-waste", "Idle resource cost waste & namespace cost attribution auditor"},
 	{"scalability:node-lifecycle", "/api/scalability/node-lifecycle", "Node OS patch, kernel drift, GPU resources & node rotation auditor"},
+	{"scalability:cost-intelligence", "/api/scalability/cost-intelligence", "Cost intelligence, spend forecast & FinOps maturity scorecard"},
 
 	// --- Other audits ---
 	{"certificates:expiry", "/api/certificates/expiry", "Certificate & TLS expiry monitor"},
