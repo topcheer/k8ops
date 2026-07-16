@@ -4663,6 +4663,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Rollout Failure Forensics (v17.64) ---
+	add("/api/deployment/rollout-forensics", "get", OpenAPIOperation{
+		Summary:     "Rollout failure forensics & deployment pattern detector",
+		OperationID: "rolloutForensics",
+		Tags:        []string{"Deployment", "Forensics", "Reliability"},
+		Description: "Correlates deployment state, pod conditions, and restart patterns to identify systematic rollout risks and deployment anti-patterns. Per-workload rollout reliability scoring (A-F). Detects: missing probes, Recreate strategy, single-replica, missing resources, no revision history, CrashLoopBackOff, stalled rollouts. Cluster-level risk factors and prioritized recommendations.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Rollout forensics", map[string]interface{}{
+				"summary":       map[string]interface{}{"totalDeployments": 50, "failed": 2, "highRiskCount": 8},
+				"antiPatterns":  []map[string]interface{}{{"type": "no-readiness-probe", "affectedCount": 15}},
+				"reliabilityScore": []map[string]interface{}{{"name": "api", "score": 45, "grade": "D"}},
+			}),
+		},
+	})
+
 	return spec
 }
 

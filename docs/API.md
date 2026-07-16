@@ -2965,5 +2965,6 @@ Pod 反亲和性规则不可满足是生产环境中 Pending Pod 的主要原因
 | 226 | /api/product/golden-signals | Product | v17.61 | SRE 四大黄金信号统一健康引擎 |
 | 227 | /api/security/remediation-matrix | Security | v17.62 | 安全修复优先级矩阵与风险-工作量分析 |
 | 228 | /api/operations/mttr | Operations | v17.63 | 平均恢复时间（MTTR）与事件生命周期分析引擎 |
+| 229 | /api/deployment/rollout-forensics | Deployment | v17.64 | 部署发布故障取证与部署反模式检测引擎 |
 
-**总计：304 个 OpenAPI 端点，312 个 Dashboard API 端点**
+**总计：305 个 OpenAPI 端点，313 个 Dashboard API 端点**
