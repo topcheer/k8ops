@@ -4648,6 +4648,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- MTTR & Incident Lifecycle Analytics (v17.63) ---
+	add("/api/operations/mttr", "get", OpenAPIOperation{
+		Summary:     "Mean time to recovery & incident lifecycle analytics",
+		OperationID: "mttrAnalytics",
+		Tags:        []string{"Operations", "SRE", "Incident Management"},
+		Description: "Estimates MTTD, MTTR, incident frequency, and recovery effectiveness from pod restart patterns, container state transitions, and event history. Tracks OOMKill and CrashLoopBackOff recovery times. Detects restart bursts, hourly incident patterns (peak hours), and per-namespace stability scores. Provides trend analysis (improving/stable/degrading) and actionable recovery recommendations.",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("MTTR report", map[string]interface{}{
+				"summary":        map[string]interface{}{"totalRestarts": 45, "stabilityScore": 72},
+				"mttrEstimate":   map[string]interface{}{"estMTTR": "5.2m", "confidence": "medium"},
+				"incidentFrequency": map[string]interface{}{"incidentsPerDay": 12.5, "burstDetected": true},
+			}),
+		},
+	})
+
 	return spec
 }
 

@@ -231,6 +231,7 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:cost-intelligence", "/api/scalability/cost-intelligence", "Cost intelligence, spend forecast & FinOps maturity scorecard"},
 	{"product:golden-signals", "/api/product/golden-signals", "SRE four golden signals unified health engine"},
 	{"security:remediation-matrix", "/api/security/remediation-matrix", "Security remediation priority & risk-effort matrix"},
+	{"operations:mttr", "/api/operations/mttr", "Mean time to recovery & incident lifecycle analytics"},
 
 	// --- Scalability ---
 	{"scalability:overcommit", "/api/scalability/overcommit", "Resource over-commit & pressure"},
