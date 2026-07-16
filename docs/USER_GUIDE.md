@@ -1590,3 +1590,27 @@ curl -sk https://k8ops.iot2.win/api/product/api-version-governance \
 curl -sk https://k8ops.iot2.win/api/product/api-version-governance \
   -H "Authorization: Bearer $JWT" | jq '.deprecatedAPIs'
 ```
+
+---
+
+### Secret管理生命周期与轮换跟踪（v17.83）
+
+**端点**：`GET /api/security/secret-lifecycle`
+
+分析 Secret 管理生命周期：Secret 年龄、轮换合规性、明文检测、跨命名空间 Secret 散布、未使用 Secret 识别。生命周期评分（0-100，A-F 等级）。
+
+**示例**：
+```bash
+# 查看 Secret 生命周期报告
+curl -sk https://k8ops.iot2.win/api/security/secret-lifecycle \
+  -H "Authorization: Bearer $JWT" | jq '{
+    score: .lifecycleScore,
+    grade: .grade,
+    summary: .summary,
+    topAged: .agedSecrets[0:5]
+  }'
+
+# 查看明文风险和散布
+curl -sk https://k8ops.iot2.win/api/security/secret-lifecycle \
+  -H "Authorization: Bearer $JWT" | jq '.plaintextRisks, .secretSprawl'
+```

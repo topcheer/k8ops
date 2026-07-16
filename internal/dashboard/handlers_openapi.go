@@ -4846,6 +4846,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("API version report", map[string]interface{}{"governanceScore": 95, "upgradeReadiness": "ready"})},
 	})
 
+	// --- Secret Lifecycle (v17.83) ---
+	add("/api/security/secret-lifecycle", "get", OpenAPIOperation{
+		Summary:     "Secret management lifecycle & rotation tracker",
+		OperationID: "secretLifecycle",
+		Tags:        []string{"Security", "Secrets", "Rotation"},
+		Description: "Analyzes secret management lifecycle: secret age, rotation compliance, plaintext detection, secret sprawl across namespaces, and unused secret identification. Lifecycle scoring (0-100, A-F grading).",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Secret lifecycle report", map[string]interface{}{"lifecycleScore": 55, "grade": "D"})},
+	})
+
 	return spec
 }
 
