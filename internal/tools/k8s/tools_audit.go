@@ -238,6 +238,7 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:idle-waste", "/api/scalability/idle-waste", "Idle resource waste quantification & cost recovery"},
 	{"security:policy-governance", "/api/security/policy-governance", "Admission policy governance & enforcement auditor"},
 	{"docs:api-quality", "/api/docs/api-quality", "Platform API endpoint quality & coverage gap analyzer"},
+	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"scalability:autoscaling-intel", "/api/scalability/autoscaling-intel", "Autoscaling intelligence & scaling behavior profiler"},
 	{"product:ownership-map", "/api/product/ownership-map", "Workload ownership & accountability governance engine"},
 	{"docs:platform-maturity", "/api/docs/platform-maturity", "Platform maturity assessment & capability matrix"},

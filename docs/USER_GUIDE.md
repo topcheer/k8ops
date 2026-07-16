@@ -1517,3 +1517,28 @@ curl -sk https://k8ops.iot2.win/api/docs/api-quality \
 curl -sk https://k8ops.iot2.win/api/docs/api-quality \
   -H "Authorization: Bearer $JWT" | jq '.coverageGaps'
 ```
+
+---
+
+### 可观测性数据基数与数据量成本分析（v17.80）
+
+**端点**：`GET /api/operations/obs-cardinality`
+
+分析可观测性数据基数风险：Prometheus 指标标签爆炸、每命名空间日志量、采集器健康状态、数据管道成本估算。识别高基数标签风险和日志采集盲区。风险评分（0-100，A-F 等级）。
+
+**示例**：
+```bash
+# 查看可观测性基数风险
+curl -sk https://k8ops.iot2.win/api/operations/obs-cardinality \
+  -H "Authorization: Bearer $JWT" | jq '{
+    score: .riskScore,
+    grade: .grade,
+    cost: .estMonthlyCost,
+    summary: .summary,
+    topRisks: .cardinalityRisks[0:5]
+  }'
+
+# 查看日志采集盲区
+curl -sk https://k8ops.iot2.win/api/operations/obs-cardinality \
+  -H "Authorization: Bearer $JWT" | jq '.logVolumeByNS[] | select(.status != "covered")'
+```

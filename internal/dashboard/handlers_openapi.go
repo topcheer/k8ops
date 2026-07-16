@@ -4819,6 +4819,15 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("API quality report", map[string]interface{}{"qualityScore": 85, "avgCoverage": 82.5, "byDimension": []interface{}{}})},
 	})
 
+	// --- Observability Cardinality (v17.80) ---
+	add("/api/operations/obs-cardinality", "get", OpenAPIOperation{
+		Summary:     "Observability data cardinality & volume cost analyzer",
+		OperationID: "obsCardinality",
+		Tags:        []string{"Operations", "Observability", "FinOps"},
+		Description: "Analyzes observability data cardinality risk: Prometheus metric label explosion, log volume per namespace, collector health, and data pipeline cost estimation. Identifies high-cardinality label risks and log collection blind spots.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Cardinality report", map[string]interface{}{"riskScore": 50, "grade": "D", "estMonthlyCost": 15.5})},
+	})
+
 	return spec
 }
 
