@@ -4936,6 +4936,33 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Chargeback", map[string]interface{}{"totalMonthlyCost": 150.0, "namespaceCount": 28})},
 	})
 
+	// --- Runtime Threat (v17.93) ---
+	add("/api/security/runtime-scan", "get", OpenAPIOperation{
+		Summary:     "Runtime threat detection & behavioral anomaly scanner",
+		OperationID: "runtimeThreat",
+		Tags:        []string{"Security", "Runtime", "Threat"},
+		Description: "Analyzes runtime security threats: privileged pods, host namespace access, hostPath mounts, dangerous capabilities, and run-as-root detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Threat report", map[string]interface{}{"threatScore": 55})},
+	})
+
+	// --- Executive Dashboard (v17.94) ---
+	add("/api/docs/exec-dashboard", "get", OpenAPIOperation{
+		Summary:     "Executive platform health summary & scorecard",
+		OperationID: "execDashboard",
+		Tags:        []string{"Documentation", "Executive", "Summary"},
+		Description: "Aggregates scores from all dimensions into a single executive view. Overall health score, per-dimension breakdown, top risks.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Exec dashboard", map[string]interface{}{"overallScore": 68})},
+	})
+
+	// --- SLO Compliance (v17.95) ---
+	add("/api/product/slo-compliance", "get", OpenAPIOperation{
+		Summary:     "Service SLO compliance & error budget burn rate",
+		OperationID: "sloCompliance",
+		Tags:        []string{"Product", "SLO", "Reliability"},
+		Description: "Analyzes service SLO compliance: availability estimation, error budget burn rate, per-namespace SLO tracking.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SLO report", map[string]interface{}{"complianceScore": 92})},
+	})
+
 	return spec
 }
 

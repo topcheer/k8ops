@@ -4,349 +4,206 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
-	"strings"
 	"time"
 
-	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// RuntimeThreatResult is the runtime threat detection & container anomaly audit.
+// RuntimeThreatResult analyzes runtime security threats:
+// privileged pods, host namespace access, hostPath mounts,
+// dangerous capabilities, and shared host network/PID/IPC.
 type RuntimeThreatResult struct {
-	ScannedAt       time.Time            `json:"scannedAt"`
+	ScannedAt       time.Time           `json:"scannedAt"`
 	Summary         RuntimeThreatSummary `json:"summary"`
-	Detectors       []RuntimeDetector    `json:"detectors"`
-	AnomalousPods   []AnomalousPod       `json:"anomalousPods"`
-	Gaps            []RuntimeThreatGap   `json:"gaps"`
+	Threats         []RuntimeThreat      `json:"threats"`
+	PrivilegedPods  []PrivilegedPod      `json:"privilegedPods"`
+	ThreatScore     int                  `json:"threatScore"`
+	Grade           string               `json:"grade"`
 	Recommendations []string             `json:"recommendations"`
-	HealthScore     int                  `json:"healthScore"`
 }
 
-// RuntimeThreatSummary aggregates runtime threat statistics.
 type RuntimeThreatSummary struct {
-	HasFalco              bool `json:"hasFalco"`
-	HasTracee             bool `json:"hasTracee"`
-	HasTetragon           bool `json:"hasTetragon"`
-	HasCilium             bool `json:"hasCilium"` // Cilium runtime security
-	TotalDetectors        int  `json:"totalDetectors"`
-	HealthyDetectors      int  `json:"healthyDetectors"`
-	NamespacesWithRuntime int  `json:"namespacesWithRuntime"` // namespaces with runtime security
-	NamespacesWithout     int  `json:"namespacesWithout"`
-	PodsWithAnomaly       int  `json:"podsWithAnomaly"`
-	HighRestartPods       int  `json:"highRestartPods"`
-	PrivilegedPods        int  `json:"privilegedPods"` // pods with privileged containers (runtime risk)
+	TotalPods        int  `json:"totalPods"`
+	PrivilegedPods   int  `json:"privilegedPods"`
+	HostNetworkPods  int  `json:"hostNetworkPods"`
+	HostPIDPods      int  `json:"hostPIDPods"`
+	HostIPCPods      int  `json:"hostIPCPods"`
+	HostPathMounts   int  `json:"hostPathMounts"`
+	DangerousCaps    int  `json:"dangerousCaps"`
+	RunAsRoot        int  `json:"runAsRoot"`
 }
 
-// RuntimeDetector describes a runtime security tool deployment.
-type RuntimeDetector struct {
-	Name      string `json:"name"`
-	Namespace string `json:"namespace"`
-	Kind      string `json:"kind"` // DaemonSet or Deployment
-	Image     string `json:"image"`
-	Ready     int    `json:"ready"`
-	Desired   int    `json:"desired"`
-	Status    string `json:"status"`
-	Type      string `json:"type"` // falco, tracee, tetragon, cilium
-}
-
-// AnomalousPod describes a pod with runtime anomalies.
-type AnomalousPod struct {
+type RuntimeThreat struct {
+	Pod       string   `json:"pod"`
 	Namespace string   `json:"namespace"`
-	PodName   string   `json:"podName"`
-	OwnerKind string   `json:"ownerKind"`
-	OwnerName string   `json:"ownerName"`
-	Anomalies []string `json:"anomalies"`
+	Threats   []string `json:"threats"`
 	Severity  string   `json:"severity"`
 }
 
-// RuntimeThreatGap describes a gap in runtime security coverage.
-type RuntimeThreatGap struct {
+type PrivilegedPod struct {
+	Pod       string `json:"pod"`
 	Namespace string `json:"namespace"`
-	Issue     string `json:"issue"`
-	Severity  string `json:"severity"`
+	Reason    string `json:"reason"`
 }
 
-// handleRuntimeThreat audits runtime threat detection & container anomalies.
+// dangerous security capabilities
+var dangerousCaps = map[string]bool{
+	"SYS_ADMIN": true, "NET_ADMIN": true, "SYS_PTRACE": true,
+	"SYS_MODULE": true, "DAC_OVERRIDE": true, "SETUID": true,
+	"SETGID": true, "CHOWN": true, "FOWNER": true,
+}
+
+// handleRuntimeThreat analyzes runtime security threats.
 // GET /api/security/runtime-threat
 func (s *Server) handleRuntimeThreat(w http.ResponseWriter, r *http.Request) {
-	result := RuntimeThreatResult{
-		ScannedAt: time.Now(),
-	}
-
+	ctx := r.Context()
 	rc := s.clientsFromReq(r)
 	if rc == nil || rc.clientset == nil {
 		writeError(w, http.StatusServiceUnavailable, "kubernetes client not available")
 		return
 	}
 
-	systemNamespaces := map[string]bool{
-		"kube-system":     true,
-		"kube-public":     true,
-		"kube-node-lease": true,
-	}
+	result := RuntimeThreatResult{ScannedAt: time.Now()}
+	systemNS := map[string]bool{"kube-system": true, "kube-public": true, "kube-node-lease": true}
 
-	// Known runtime security tool images/names
-	runtimeTools := map[string]string{
-		"falco":    "falco",
-		"tracee":   "tracee",
-		"tetragon": "tetragon",
-		"cilium":   "cilium",
-		"aqua":     "aquasec",
-		"sysdig":   "sysdig",
-		"aqua-sec": "aquasec",
-	}
+	pods, _ := rc.clientset.CoreV1().Pods("").List(ctx, metav1.ListOptions{})
 
-	// 1. Check for runtime security tool DaemonSets/Deployments
-	daemonsets, err := rc.clientset.AppsV1().DaemonSets("").List(r.Context(), metav1.ListOptions{})
-	if err == nil {
-		for _, ds := range daemonsets.Items {
-			toolType := ""
-			imageName := ""
-			if len(ds.Spec.Template.Spec.Containers) > 0 {
-				imageName = ds.Spec.Template.Spec.Containers[0].Image
-				for keyword, tt := range runtimeTools {
-					if strings.Contains(strings.ToLower(imageName), keyword) || strings.Contains(strings.ToLower(ds.Name), keyword) {
-						toolType = tt
-						break
-					}
-				}
-			}
-			if toolType == "" {
-				continue
-			}
-
-			status := "healthy"
-			if ds.Status.NumberReady < ds.Status.DesiredNumberScheduled {
-				status = "degraded"
-			}
-
-			result.Detectors = append(result.Detectors, RuntimeDetector{
-				Name:      ds.Name,
-				Namespace: ds.Namespace,
-				Kind:      "DaemonSet",
-				Image:     imageName,
-				Ready:     int(ds.Status.NumberReady),
-				Desired:   int(ds.Status.DesiredNumberScheduled),
-				Status:    status,
-				Type:      toolType,
-			})
-			result.Summary.TotalDetectors++
-			if status == "healthy" {
-				result.Summary.HealthyDetectors++
-			}
-
-			switch toolType {
-			case "falco":
-				result.Summary.HasFalco = true
-			case "tracee":
-				result.Summary.HasTracee = true
-			case "tetragon":
-				result.Summary.HasTetragon = true
-			case "cilium":
-				result.Summary.HasCilium = true
-			}
+	for _, pod := range pods.Items {
+		if systemNS[pod.Namespace] {
+			continue
 		}
-	}
-
-	deployments, err := rc.clientset.AppsV1().Deployments("").List(r.Context(), metav1.ListOptions{})
-	if err == nil {
-		for _, dep := range deployments.Items {
-			toolType := ""
-			imageName := ""
-			if len(dep.Spec.Template.Spec.Containers) > 0 {
-				imageName = dep.Spec.Template.Spec.Containers[0].Image
-				for keyword, tt := range runtimeTools {
-					if strings.Contains(strings.ToLower(imageName), keyword) || strings.Contains(strings.ToLower(dep.Name), keyword) {
-						toolType = tt
-						break
-					}
-				}
-			}
-			if toolType == "" {
-				continue
-			}
-
-			desired := 0
-			if dep.Spec.Replicas != nil {
-				desired = int(*dep.Spec.Replicas)
-			}
-			status := "healthy"
-			if int(dep.Status.ReadyReplicas) < desired {
-				status = "degraded"
-			}
-
-			result.Detectors = append(result.Detectors, RuntimeDetector{
-				Name:      dep.Name,
-				Namespace: dep.Namespace,
-				Kind:      "Deployment",
-				Image:     imageName,
-				Ready:     int(dep.Status.ReadyReplicas),
-				Desired:   desired,
-				Status:    status,
-				Type:      toolType,
-			})
-			result.Summary.TotalDetectors++
-			if status == "healthy" {
-				result.Summary.HealthyDetectors++
-			}
-
-			switch toolType {
-			case "falco":
-				result.Summary.HasFalco = true
-			case "tracee":
-				result.Summary.HasTracee = true
-			case "tetragon":
-				result.Summary.HasTetragon = true
-			case "cilium":
-				result.Summary.HasCilium = true
-			}
+		if pod.Status.Phase != "Running" {
+			continue
 		}
-	}
+		result.Summary.TotalPods++
 
-	// 2. Check pods for runtime anomalies (high restarts, privileged containers)
-	pods, err := rc.clientset.CoreV1().Pods("").List(r.Context(), metav1.ListOptions{})
-	if err == nil {
-		nsWithDetectors := make(map[string]bool)
-		if result.Summary.TotalDetectors > 0 {
-			// If we have runtime detectors running as DaemonSets, they cover all namespaces
-			for _, d := range result.Detectors {
-				if d.Kind == "DaemonSet" && d.Status == "healthy" {
-					nsWithDetectors[d.Namespace] = true
-				}
-			}
+		var threats []string
+		severity := "low"
+
+		// Host namespace access
+		if pod.Spec.HostNetwork {
+			result.Summary.HostNetworkPods++
+			threats = append(threats, "hostNetwork: true")
+			severity = "high"
+		}
+		if pod.Spec.HostPID {
+			result.Summary.HostPIDPods++
+			threats = append(threats, "hostPID: true")
+			severity = "high"
+		}
+		if pod.Spec.HostIPC {
+			result.Summary.HostIPCPods++
+			threats = append(threats, "hostIPC: true")
+			severity = "medium"
 		}
 
-		nsPodCount := make(map[string]int)
-		for _, pod := range pods.Items {
-			if systemNamespaces[pod.Namespace] {
-				continue
+		for _, c := range pod.Spec.Containers {
+			// Privileged
+			if c.SecurityContext != nil && c.SecurityContext.Privileged != nil && *c.SecurityContext.Privileged {
+				result.Summary.PrivilegedPods++
+				threats = append(threats, fmt.Sprintf("container '%s' is privileged", c.Name))
+				severity = "critical"
+				result.PrivilegedPods = append(result.PrivilegedPods, PrivilegedPod{
+					Pod: pod.Name, Namespace: pod.Namespace,
+					Reason: fmt.Sprintf("Container '%s' runs privileged", c.Name),
+				})
 			}
-			if pod.Status.Phase != corev1.PodRunning {
-				continue
-			}
-			nsPodCount[pod.Namespace]++
 
-			ownerKind := getOwnerKind(pod.OwnerReferences)
-			ownerName := getOwnerName(pod.OwnerReferences)
-
-			anomalies := []string{}
-			severity := "low"
-
-			// Check for high restart count
-			for _, cs := range pod.Status.ContainerStatuses {
-				if cs.RestartCount > 5 {
-					anomalies = append(anomalies, fmt.Sprintf("Container %s has %d restarts", cs.Name, cs.RestartCount))
-					result.Summary.HighRestartPods++
+			// Run as root
+			if c.SecurityContext != nil && c.SecurityContext.RunAsUser != nil {
+				if *c.SecurityContext.RunAsUser == 0 {
+					result.Summary.RunAsRoot++
+					threats = append(threats, fmt.Sprintf("'%s' runs as root (uid=0)", c.Name))
 					if severity == "low" {
 						severity = "medium"
 					}
 				}
-				if cs.LastTerminationState.Terminated != nil {
-					reason := cs.LastTerminationState.Terminated.Reason
-					if reason == "OOMKilled" {
-						anomalies = append(anomalies, fmt.Sprintf("Container %s was OOMKilled", cs.Name))
-						if severity == "low" {
-							severity = "medium"
+			} else if c.SecurityContext == nil || c.SecurityContext.RunAsUser == nil {
+				// No security context = defaults to root
+				result.Summary.RunAsRoot++
+				threats = append(threats, fmt.Sprintf("'%s' has no runAsUser (defaults to root)", c.Name))
+				if severity == "low" {
+					severity = "medium"
+				}
+			}
+
+			// Dangerous capabilities
+			if c.SecurityContext != nil && c.SecurityContext.Capabilities != nil {
+				for _, cap := range c.SecurityContext.Capabilities.Add {
+					capStr := string(cap)
+					if dangerousCaps[capStr] {
+						result.Summary.DangerousCaps++
+						threats = append(threats, fmt.Sprintf("'%s' adds dangerous capability %s", c.Name, capStr))
+						if severity != "critical" {
+							severity = "high"
 						}
 					}
 				}
 			}
+		}
 
-			// Check for privileged containers (runtime security risk)
-			for _, c := range pod.Spec.Containers {
-				if c.SecurityContext != nil && c.SecurityContext.Privileged != nil && *c.SecurityContext.Privileged {
-					anomalies = append(anomalies, fmt.Sprintf("Container %s is privileged", c.Name))
-					result.Summary.PrivilegedPods++
-					severity = "high"
+		// HostPath mounts
+		for _, vol := range pod.Spec.Volumes {
+			if vol.HostPath != nil {
+				result.Summary.HostPathMounts++
+				threats = append(threats, fmt.Sprintf("hostPath mount: %s -> %s", vol.HostPath.Path, vol.Name))
+				if severity == "low" {
+					severity = "medium"
 				}
-			}
-
-			if len(anomalies) > 0 {
-				result.Summary.PodsWithAnomaly++
-				result.AnomalousPods = append(result.AnomalousPods, AnomalousPod{
-					Namespace: pod.Namespace,
-					PodName:   pod.Name,
-					OwnerKind: ownerKind,
-					OwnerName: ownerName,
-					Anomalies: anomalies,
-					Severity:  severity,
-				})
 			}
 		}
 
-		// Check namespace coverage
-		for ns, podCount := range nsPodCount {
-			if podCount == 0 {
-				continue
-			}
-			if result.Summary.TotalDetectors == 0 {
-				result.Summary.NamespacesWithout++
-				result.Gaps = append(result.Gaps, RuntimeThreatGap{
-					Namespace: ns,
-					Issue:     "No runtime threat detection tool installed",
-					Severity:  "high",
-				})
-			} else if !nsWithDetectors[ns] && result.Summary.TotalDetectors > 0 {
-				// DaemonSet-based tools cover all namespaces
-				// Only flag if no DaemonSet detector exists
-				hasDaemonSet := false
-				for _, d := range result.Detectors {
-					if d.Kind == "DaemonSet" && d.Status == "healthy" {
-						hasDaemonSet = true
-						break
-					}
-				}
-				if !hasDaemonSet {
-					result.Summary.NamespacesWithout++
-				} else {
-					result.Summary.NamespacesWithRuntime++
-				}
-			} else {
-				result.Summary.NamespacesWithRuntime++
-			}
+		if len(threats) > 0 {
+			result.Threats = append(result.Threats, RuntimeThreat{
+				Pod: pod.Name, Namespace: pod.Namespace,
+				Threats: threats, Severity: severity,
+			})
 		}
 	}
 
-	// Sort results
-	sort.Slice(result.AnomalousPods, func(i, j int) bool {
-		return result.AnomalousPods[i].Severity > result.AnomalousPods[j].Severity
-	})
-	sort.Slice(result.Gaps, func(i, j int) bool {
-		return result.Gaps[i].Severity > result.Gaps[j].Severity
-	})
-
-	// Recommendations
-	if result.Summary.TotalDetectors == 0 {
-		result.Recommendations = append(result.Recommendations,
-			"No runtime threat detection tool installed — install Falco, Tracee, or Tetragon for runtime security monitoring")
-	}
-	if result.Summary.PrivilegedPods > 0 {
-		result.Recommendations = append(result.Recommendations,
-			fmt.Sprintf("%d pods run privileged containers — runtime security risk, remove privileged mode", result.Summary.PrivilegedPods))
-	}
-	if result.Summary.HighRestartPods > 0 {
-		result.Recommendations = append(result.Recommendations,
-			fmt.Sprintf("%d pods have high restart counts — investigate application stability and potential crashes", result.Summary.HighRestartPods))
-	}
-	if result.Summary.TotalDetectors > 0 && result.Summary.HealthyDetectors < result.Summary.TotalDetectors {
-		result.Recommendations = append(result.Recommendations,
-			fmt.Sprintf("%d runtime detectors are degraded — check pod health and resource limits", result.Summary.TotalDetectors-result.Summary.HealthyDetectors))
-	}
-
-	// Health score
+	// Score: start at 100, subtract for each threat category
 	score := 100
-	if result.Summary.TotalDetectors == 0 {
-		score -= 30
-	}
-	score -= result.Summary.PrivilegedPods * 5
-	score -= result.Summary.HighRestartPods * 2
-	if result.Summary.TotalDetectors > 0 && result.Summary.HealthyDetectors < result.Summary.TotalDetectors {
-		score -= 10
-	}
+	score -= result.Summary.PrivilegedPods * 15
+	score -= result.Summary.HostNetworkPods * 8
+	score -= result.Summary.HostPIDPods * 8
+	score -= result.Summary.HostPathMounts * 3
+	score -= result.Summary.DangerousCaps * 5
+	score -= result.Summary.RunAsRoot * 2
 	if score < 0 {
 		score = 0
 	}
-	result.HealthScore = score
+	result.ThreatScore = min(100, score)
+	result.Grade = goldenScoreToGrade(result.ThreatScore)
+
+	sort.Slice(result.Threats, func(i, j int) bool {
+		return result.Threats[i].Severity > result.Threats[j].Severity
+	})
+
+	var recs []string
+	recs = append(recs, fmt.Sprintf("Runtime threat score: %d/100 (grade %s) — %d/%d pods with threats", result.ThreatScore, result.Grade, len(result.Threats), result.Summary.TotalPods))
+	if result.Summary.PrivilegedPods > 0 {
+		recs = append(recs, fmt.Sprintf("%d privileged pods — remove privileged mode or use fine-grained capabilities", result.Summary.PrivilegedPods))
+	}
+	if result.Summary.HostNetworkPods > 0 {
+		recs = append(recs, fmt.Sprintf("%d pods use hostNetwork — restrict to system namespaces only", result.Summary.HostNetworkPods))
+	}
+	if result.Summary.HostPathMounts > 0 {
+		recs = append(recs, fmt.Sprintf("%d hostPath mounts — use PVs/PVCs instead for persistence", result.Summary.HostPathMounts))
+	}
+	if result.Summary.RunAsRoot > 0 {
+		recs = append(recs, fmt.Sprintf("%d pods run as root — set runAsUser to non-zero in securityContext", result.Summary.RunAsRoot))
+	}
+	if len(recs) == 1 {
+		recs = append(recs, "Runtime security posture is clean — no privileged pods or host access detected")
+	}
+	result.Recommendations = recs
 
 	writeJSON(w, result)
+}
+
+// init to ensure package-level map is initialized
+func init() {
+	if dangerousCaps == nil {
+		dangerousCaps = map[string]bool{}
+	}
 }
