@@ -4549,6 +4549,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		},
 	})
 
+	// --- Resource Request Intelligence & Right-Sizing Engine (v17.54) ---
+	add("/api/scalability/request-intelligence", "get", OpenAPIOperation{
+		Summary:     "Resource request intelligence & right-sizing engine",
+		OperationID: "requestIntelligence",
+		Tags:        []string{"Scalability", "FinOps", "Right-Sizing"},
+		Description: "Analyzes resource request right-sizing using multi-signal proxy analysis. Detects over-provisioned workloads (round-number requests on stable pods → potential 30% waste), under-provisioned workloads (OOMKill/restart-loop signals → failure risk), and missing-request workloads. Per-workload verdict (over/under-provisioned/optimal/no-requests) with specific CPU/memory recommendations and confidence levels. Quantifies monthly cost savings ($30/core, $4/GB cloud pricing), estimated node reduction, and risk assessment (OOM/throttle predictions). Cross-cutting insights and posture score (0-100).",
+		Responses: map[string]OpenAPIResponse{
+			"200": okResponse("Request intelligence report", map[string]interface{}{
+				"postureScore": 75,
+				"summary":      map[string]interface{}{"totalWorkloads": 30, "overProvisioned": 8, "underProvisioned": 3, "noRequests": 5},
+				"savingsEstimate": map[string]interface{}{"monthlyTotal": 240.50, "nodesReduction": 1},
+				"overProvisioned": []map[string]interface{}{{"name": "webapp", "verdict": "over-provisioned", "cpuRequestMillicores": 2000, "cpuRecommendMillicores": 1400}},
+			}),
+		},
+	})
+
 	return spec
 }
 

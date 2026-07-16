@@ -1208,3 +1208,25 @@ if [ "$RESULT" = "blocked" ]; then
   exit 1
 fi
 ```
+
+### 资源请求智能分析
+
+`GET /api/scalability/request-intelligence` 通过多信号代理分析资源请求合理性，提供量化的 Right-Sizing 建议：
+
+**分析引擎**：
+- **过度供给检测**：稳定运行的工作负载使用"圆数"请求（1000m/2Gi 等）→ 可能浪费 30%
+- **供给不足检测**：OOMKill/重启循环信号 → 故障风险
+- **无请求检测**：工作负载未设置任何资源请求 → 调度器盲区
+
+**输出**：
+- **分类判定**：over-provisioned / under-provisioned / optimal / no-requests
+- **具体建议**：CPU/Memory 推荐值（基于 0.7x 缩减或 1.5x 增加）
+- **节省估算**：月度成本节省（$30/核/月, $4/GB/月云定价）、可减少节点数
+- **风险评估**：OOM 预测、CPU 节流预测、高/中/低风险分级
+- **Posture Score**：0-100 资源请求健康度评分
+
+```bash
+# 获取资源请求智能分析
+curl -sk https://k8ops.iot2.win/api/scalability/request-intelligence \
+  -H "Authorization: Bearer $JWT" | jq '.postureScore, .savingsEstimate, .underProvisioned'
+```
