@@ -54,6 +54,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/deployment/deploy-risk', name: 'Deploy Risk', icon: '\u26A0' },
     { path: '/api/deployment/config-snapshot', name: 'Config Snapshot', icon: '\u1F4F8' },
     { path: '/api/deployment/probe-generator', name: 'Probe Generator', icon: '\u1F527' },
+    { path: '/api/deployment/update-strategy-auditor', name: 'Update Strategy Auditor', icon: '\u1F504' },
     { path: '/api/deployment/ephemeral-storage', name: 'Ephemeral Storage', icon: '\u1F4BE' },
     { path: '/api/deployment/probe-compliance', name: 'Probe Compliance', icon: '\u1FA78' },
     { path: '/api/deployment/graceful-shutdown', name: 'Graceful Shutdown', icon: '\u1F6D1' },
@@ -89,6 +90,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/operations/probe-latency', name: 'Probe Latency', icon: '\u23F1' },
     { path: '/api/operations/endpoint-probe', name: 'Endpoint Probe', icon: '\u1F50D' },
     { path: '/api/operations/health-trend', name: 'Health Trend', icon: '\u1F4C8' },
+    { path: '/api/operations/restart-analyzer', name: 'Restart Analyzer', icon: '\u1F501' },
   ],
   'Security': [
     { path: '/api/security/sa-token-audit', name: 'SA Token Rotation', icon: '\u1F511' },
@@ -115,6 +117,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/security/fix-plan', name: 'Security Fix Plan', icon: '\u1F527' },
     { path: '/api/security/secret-exposure', name: 'Secret Exposure', icon: '\u1F441' },
     { path: '/api/security/netpol-generator', name: 'NetworkPolicy Generator', icon: '\u1F6E1' },
+    { path: '/api/security/env-leak-scanner', name: 'Env Leak Scanner', icon: '\u1F576' },
     { path: '/api/security/blast-radius', name: 'Blast Radius', icon: '\u1F4A5' },
     { path: '/api/security/net-policy-effectiveness', name: 'Net Policy Effectiveness', icon: '\u1F50D' },
   ],

@@ -5563,6 +5563,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image cleanup", map[string]interface{}{"healthScore": 70})},
 	})
 
+	add("/api/operations/restart-analyzer", "get", OpenAPIOperation{
+		Summary: "Pod restart pattern analyzer & root cause", OperationID: "restartAnalyzer",
+		Tags:        []string{"Operations", "Stability", "Diagnostics"},
+		Description: "Deep analysis of pod restart patterns: OOM kills, crash loops, probe failures. Distinguishes systematic issues from one-off incidents.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Restart analysis", map[string]interface{}{"stabilityScore": 65})},
+	})
+
+	add("/api/security/env-leak-scanner", "get", OpenAPIOperation{
+		Summary: "Plaintext env var leak scanner", OperationID: "envLeakScanner",
+		Tags:        []string{"Security", "Secrets", "Compliance"},
+		Description: "Scans container env vars for plaintext passwords, tokens, API keys. Provides fix commands to migrate to Secrets.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Env leak scan", map[string]interface{}{"healthScore": 50})},
+	})
+
+	add("/api/deployment/update-strategy-auditor", "get", OpenAPIOperation{
+		Summary: "Update strategy risk auditor", OperationID: "updateStrategyAuditor",
+		Tags:        []string{"Deployment", "Strategy", "Risk"},
+		Description: "Evaluates deployment update strategies: Recreate risk, missing surge/unavailable controls, revision history limits.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Strategy audit", map[string]interface{}{"healthScore": 75})},
+	})
+
 	return spec
 }
 

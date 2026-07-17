@@ -292,6 +292,9 @@ var auditRegistry = []auditEndpoint{
 	{"docs:action-priority-matrix", "/api/docs/action-priority-matrix", "Prioritized remediation action queue"},
 	{"operations:health-trend", "/api/operations/health-trend", "Cluster health trend over time"},
 	{"scalability:image-cleanup", "/api/scalability/image-cleanup", "Unused image cleanup advisor"},
+	{"operations:restart-analyzer", "/api/operations/restart-analyzer", "Pod restart pattern analyzer & root cause"},
+	{"security:env-leak-scanner", "/api/security/env-leak-scanner", "Plaintext env var leak scanner"},
+	{"deployment:update-strategy-auditor", "/api/deployment/update-strategy-auditor", "Update strategy risk auditor"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

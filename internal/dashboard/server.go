@@ -547,6 +547,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/action-priority-matrix", s.cacheMiddleware(120*time.Second, s.handleActionPriorityMatrix))         // prioritized remediation action queue
 	mux.HandleFunc("/api/operations/health-trend", s.cacheMiddleware(60*time.Second, s.handleHealthTrend))                       // cluster health trend over time
 	mux.HandleFunc("/api/scalability/image-cleanup", s.cacheMiddleware(120*time.Second, s.handleImageCleanup))                   // unused image cleanup advisor
+	mux.HandleFunc("/api/operations/restart-analyzer", s.cacheMiddleware(60*time.Second, s.handleRestartAnalyzer))               // pod restart pattern analyzer & root cause
+	mux.HandleFunc("/api/security/env-leak-scanner", s.cacheMiddleware(120*time.Second, s.handleEnvLeakScanner))                 // plaintext env var leak scanner
+	mux.HandleFunc("/api/deployment/update-strategy-auditor", s.cacheMiddleware(120*time.Second, s.handleUpdateStrategyAuditor)) // update strategy risk auditor
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 
