@@ -526,6 +526,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/fix-plan", s.cacheMiddleware(120*time.Second, s.handleSecurityFixPlan))                        // security remediation action plan generator
 	mux.HandleFunc("/api/docs/api-coverage-map", s.cacheMiddleware(300*time.Second, s.handleAPICoverageMap))                     // API endpoint coverage map by dimension
 	mux.HandleFunc("/api/deployment/release-gate", s.cacheMiddleware(60*time.Second, s.handleReleaseGate))                       // pre-deployment release gate evaluator
+	mux.HandleFunc("/api/product/service-catalog", s.cacheMiddleware(60*time.Second, s.handleServiceCatalog))                    // cluster service catalog & discovery map
+	mux.HandleFunc("/api/operations/resource-topology", s.cacheMiddleware(120*time.Second, s.handleResourceTopology))            // resource dependency graph & orphan detector
+	mux.HandleFunc("/api/docs/api-explorer", s.cacheMiddleware(300*time.Second, s.handleAPIExplorer))                            // interactive API endpoint browser with search
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

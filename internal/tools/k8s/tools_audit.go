@@ -271,6 +271,9 @@ var auditRegistry = []auditEndpoint{
 	{"security:fix-plan", "/api/security/fix-plan", "Security remediation action plan generator"},
 	{"docs:api-coverage-map", "/api/docs/api-coverage-map", "API endpoint coverage map by dimension"},
 	{"deployment:release-gate", "/api/deployment/release-gate", "Pre-deployment release gate evaluator"},
+	{"product:service-catalog", "/api/product/service-catalog", "Cluster service catalog & discovery map"},
+	{"operations:resource-topology", "/api/operations/resource-topology", "Resource dependency graph & orphan detector"},
+	{"docs:api-explorer", "/api/docs/api-explorer", "Interactive API endpoint browser with search"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

@@ -5412,6 +5412,31 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Release gate", map[string]interface{}{"overallVerdict": "fail", "gateScore": 35})},
 	})
 
+	add("/api/product/service-catalog", "get", OpenAPIOperation{
+		Summary: "Cluster service catalog & discovery map", OperationID: "serviceCatalog",
+		Tags:        []string{"Product", "Services", "Discovery"},
+		Description: "Comprehensive catalog of all Services: type, ports, backends, endpoints, external exposure, health status.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Service catalog", map[string]interface{}{"healthScore": 85})},
+	})
+
+	add("/api/operations/resource-topology", "get", OpenAPIOperation{
+		Summary: "Resource dependency graph & orphan detector", OperationID: "resourceTopology",
+		Tags:        []string{"Operations", "Topology", "Inventory"},
+		Description: "Maps workload connections to ConfigMaps, Secrets, PVCs, and Services. Identifies orphaned and shared resources.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Resource topology", map[string]interface{}{"healthScore": 75})},
+	})
+
+	add("/api/docs/api-explorer", "get", OpenAPIOperation{
+		Summary: "Interactive API endpoint browser with search", OperationID: "apiExplorer",
+		Tags:        []string{"Documentation", "API", "Explorer"},
+		Description: "Searchable, filterable endpoint browser. Pass ?q=<query> for text search or ?tag=<tag> for tag filtering.",
+		Parameters: []OpenAPIParam{
+			{Name: "q", In: "query", Required: false, Schema: map[string]interface{}{"type": "string"}, Description: "Search query"},
+			{Name: "tag", In: "query", Required: false, Schema: map[string]interface{}{"type": "string"}, Description: "Filter by tag"},
+		},
+		Responses: map[string]OpenAPIResponse{"200": okResponse("API explorer", map[string]interface{}{"totalEndpoints": 390})},
+	})
+
 	return spec
 }
 
