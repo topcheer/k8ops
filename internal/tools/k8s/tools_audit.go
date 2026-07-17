@@ -340,6 +340,9 @@ var auditRegistry = []auditEndpoint{
 	{"security:secret-spray", "/api/security/secret-spray", "Secret mount spray exposure analyzer"},
 	{"product:traffic-cost-split", "/api/product/traffic-cost-split", "Traffic cost split by service/ingress"},
 	{"scalability:node-failure-blast", "/api/scalability/node-failure-blast", "Node failure blast radius simulator"},
+	{"operations:incident-timeline", "/api/operations/incident-timeline", "Incident timeline reconstructor"},
+	{"deployment:rollback-safety", "/api/deployment/rollback-safety", "Rollback safety auditor"},
+	{"docs:api-semantic-version", "/api/docs/api-semantic-version", "API semantic version tracker"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

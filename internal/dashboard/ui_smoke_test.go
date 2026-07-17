@@ -110,6 +110,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/security/secret-spray",
 		"/api/product/traffic-cost-split",
 		"/api/scalability/node-failure-blast",
+		"/api/operations/incident-timeline",
+		"/api/deployment/rollback-safety",
+		"/api/docs/api-semantic-version",
 	}
 
 	missing := []string{}

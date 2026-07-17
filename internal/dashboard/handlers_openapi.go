@@ -5883,6 +5883,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Simulates single-node failure to calculate blast radius: affected workloads, unavailable pod percentage, single-replica workloads at risk, anti-affinity gaps. Estimates recovery time and worst-case scenario.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node failure blast", map[string]interface{}{"blastScore": 60, "grade": "B"})},
 	})
+	add("/api/operations/incident-timeline", "get", OpenAPIOperation{
+		Summary: "Incident timeline reconstructor", OperationID: "incidentTimeline",
+		Tags:        []string{"Operations", "Incident", "Timeline"},
+		Description: "Reconstructs incident timelines from Kubernetes events, pod state transitions, and crash/restart patterns. Groups related events into incidents with severity, root cause, duration, and status (active/resolved). Provides event rate analysis and MTTR insights.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Incident timeline", map[string]interface{}{"healthScore": 70, "grade": "B"})},
+	})
+	add("/api/deployment/rollback-safety", "get", OpenAPIOperation{
+		Summary: "Rollback safety auditor", OperationID: "rollbackSafety",
+		Tags:        []string{"Deployment", "Rollback", "Safety"},
+		Description: "Evaluates rollback safety by checking revision history depth, PVC usage (data migration risk), ConfigMap drift, and breaking changes. Classifies workloads as safe/caution/unsafe with actionable recommendations.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Rollback safety", map[string]interface{}{"safetyScore": 75, "grade": "B"})},
+	})
+	add("/api/docs/api-semantic-version", "get", OpenAPIOperation{
+		Summary: "API semantic version tracker", OperationID: "apiSemanticVersion",
+		Tags:        []string{"Documentation", "API", "Versioning"},
+		Description: "Tracks Kubernetes API version semantics across all resources. Identifies deprecated APIs (extensions/v1beta1, apps/v1beta1, etc.), breaking changes, and removal timelines. Provides migration recommendations and maturity distribution (GA/Beta/Alpha).",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API semantic version", map[string]interface{}{"maturityScore": 90, "grade": "A"})},
+	})
 
 	return spec
 }
