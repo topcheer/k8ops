@@ -5829,6 +5829,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Scans workloads for documentation annotations (runbook, docs, wiki, oncall, sop, playbook). Identifies undocumented critical services. Supports standard annotations and app.kubernetes.io prefixed variants.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Runbook coverage", map[string]interface{}{"coverageScore": 30, "grade": "F"})},
 	})
+	add("/api/security/privilege-map", "get", OpenAPIOperation{
+		Summary: "Cluster privilege exposure map", OperationID: "privilegeMap",
+		Tags:        []string{"Security", "Privilege", "Container"},
+		Description: "Builds a cluster-wide privilege exposure map. Scans all containers for: privileged flag, runAsUser=0 (root), hostPID/hostIPC/hostNetwork, dangerous Linux capabilities (CAP_SYS_ADMIN, CAP_SYS_PTRACE, etc.), allowPrivilegeEscalation, and readOnlyRootFilesystem. Provides risk-level classification per workload.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Privilege map", map[string]interface{}{"exposureScore": 50, "grade": "C"})},
+	})
+	add("/api/product/api-slo-correlation", "get", OpenAPIOperation{
+		Summary: "API SLO correlation", OperationID: "apiSloCorrelation",
+		Tags:        []string{"Product", "SLO", "Service"},
+		Description: "Correlates Kubernetes Services with SLO readiness indicators: readiness/liveness probes, resource limits, HPA, PDB. Calculates per-service SLO readiness score (0-100). Identifies services missing critical SLO components.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API SLO correlation", map[string]interface{}{"correlationScore": 55, "grade": "C"})},
+	})
+	add("/api/scalability/eviction-risk", "get", OpenAPIOperation{
+		Summary: "Pod eviction risk predictor", OperationID: "evictionRisk",
+		Tags:        []string{"Scalability", "Eviction", "Stability"},
+		Description: "Predicts which pods are at imminent eviction risk based on: node conditions (memory/disk/PID pressure), QoS class, OOM history, restart frequency, priority class, and resource limits. Risk score 0-100 per pod with categorized risk factors.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Eviction risk", map[string]interface{}{"riskScore": 70, "grade": "B"})},
+	})
 
 	return spec
 }

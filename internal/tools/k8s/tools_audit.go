@@ -331,6 +331,9 @@ var auditRegistry = []auditEndpoint{
 	{"operations:slo-burn-rate", "/api/operations/slo-burn-rate", "SLO error budget burn rate analyzer"},
 	{"deployment:surge-capacity", "/api/deployment/surge-capacity", "Rolling update surge capacity checker"},
 	{"docs:runbook-coverage", "/api/docs/runbook-coverage", "Runbook annotation coverage scanner"},
+	{"security:privilege-map", "/api/security/privilege-map", "Cluster-wide privilege exposure map"},
+	{"product:api-slo-correlation", "/api/product/api-slo-correlation", "API endpoint SLO correlation analyzer"},
+	{"scalability:eviction-risk", "/api/scalability/eviction-risk", "Pod eviction risk predictor"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

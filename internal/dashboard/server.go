@@ -586,6 +586,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/slo-burn-rate", s.cacheMiddleware(60*time.Second, s.handleSLOBurnRate))                      // SLO error budget burn rate analyzer
 	mux.HandleFunc("/api/deployment/surge-capacity", s.cacheMiddleware(120*time.Second, s.handleSurgeCapacity))                  // rolling update surge capacity checker
 	mux.HandleFunc("/api/docs/runbook-coverage", s.cacheMiddleware(300*time.Second, s.handleRunbookCoverage))                    // runbook annotation coverage scanner
+	mux.HandleFunc("/api/security/privilege-map", s.cacheMiddleware(120*time.Second, s.handlePrivilegeMap))                      // cluster-wide privilege exposure map
+	mux.HandleFunc("/api/product/api-slo-correlation", s.cacheMiddleware(120*time.Second, s.handleAPISLOCorrelation))            // API endpoint SLO correlation analyzer
+	mux.HandleFunc("/api/scalability/eviction-risk", s.cacheMiddleware(60*time.Second, s.handleEvictionRisk))                    // pod eviction risk predictor
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

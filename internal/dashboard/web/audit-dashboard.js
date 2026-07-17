@@ -34,6 +34,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/product/ownership-map', name: 'Ownership Map', icon: '\u1F464' },
     { path: '/api/product/api-version-governance', name: 'API Version Governance', icon: '\u1F4C4' },
     { path: '/api/product/cost-topology', name: 'Cost Topology', icon: '\u1F4B0' },
+    { path: '/api/product/api-slo-correlation', name: 'API SLO Correlation', icon: '\u1F517' },
   ],
   'Deployment': [
     { path: '/api/deployment/startup-latency', name: 'Startup Latency', icon: '\u23F1' },
@@ -144,6 +145,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/security/blast-radius', name: 'Blast Radius', icon: '\u1F4A5' },
     { path: '/api/security/net-policy-effectiveness', name: 'Net Policy Effectiveness', icon: '\u1F50D' },
     { path: '/api/security/disruption-budget-gap', name: 'Disruption Budget Gap', icon: '\u1F6E1' },
+    { path: '/api/security/privilege-map', name: 'Privilege Map', icon: '\u1F512' },
   ],
   'Scalability': [
     { path: '/api/scalability/pv-reclaim', name: 'PV Reclaim & Waste', icon: '\u1F4BE' },
@@ -187,6 +189,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/scalability/node-utilization-deep', name: 'Node Utilization Deep', icon: '\u1F4BB' },
     { path: '/api/scalability/resource-forecast', name: 'Resource Forecast', icon: '\u1F52E' },
     { path: '/api/scalability/binpack-efficiency', name: 'Binpack Efficiency', icon: '\u1F4E6' },
+    { path: '/api/scalability/eviction-risk', name: 'Eviction Risk', icon: '\u26A0' },
   ],
   'Documentation': [
     { path: '/api/docs/platform-scorecard', name: 'Platform Scorecard', icon: '\u1F4CB' },
