@@ -529,6 +529,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/service-catalog", s.cacheMiddleware(60*time.Second, s.handleServiceCatalog))                    // cluster service catalog & discovery map
 	mux.HandleFunc("/api/operations/resource-topology", s.cacheMiddleware(120*time.Second, s.handleResourceTopology))            // resource dependency graph & orphan detector
 	mux.HandleFunc("/api/docs/api-explorer", s.cacheMiddleware(300*time.Second, s.handleAPIExplorer))                            // interactive API endpoint browser with search
+	mux.HandleFunc("/api/scalability/orphan-cleanup", s.cacheMiddleware(120*time.Second, s.handleOrphanCleanup))                 // orphaned resource cleanup planner
+	mux.HandleFunc("/api/scalability/cost-anomaly", s.cacheMiddleware(120*time.Second, s.handleCostAnomaly))                     // cost anomaly detector
+	mux.HandleFunc("/api/deployment/config-snapshot", s.cacheMiddleware(60*time.Second, s.handleConfigSnapshot))                 // cluster config snapshot for drift detection
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

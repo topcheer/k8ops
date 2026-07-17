@@ -5437,6 +5437,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("API explorer", map[string]interface{}{"totalEndpoints": 390})},
 	})
 
+	add("/api/scalability/orphan-cleanup", "get", OpenAPIOperation{
+		Summary: "Orphaned resource cleanup planner", OperationID: "orphanCleanup",
+		Tags:        []string{"Scalability", "FinOps", "Cleanup"},
+		Description: "Identifies orphaned ConfigMaps, Secrets, PVCs with safe-to-delete assessment and batch kubectl delete commands.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cleanup plan", map[string]interface{}{"healthScore": 50})},
+	})
+
+	add("/api/scalability/cost-anomaly", "get", OpenAPIOperation{
+		Summary: "Cost anomaly detector", OperationID: "costAnomaly",
+		Tags:        []string{"Scalability", "FinOps", "Anomaly"},
+		Description: "Detects oversized requests, idle workloads, and cost anomalies.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cost anomalies", map[string]interface{}{"healthScore": 70})},
+	})
+
+	add("/api/deployment/config-snapshot", "get", OpenAPIOperation{
+		Summary: "Cluster config snapshot for drift detection", OperationID: "configSnapshot",
+		Tags:        []string{"Deployment", "Audit", "Drift"},
+		Description: "Captures point-in-time workload spec hashes and resource counts for drift comparison.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Config snapshot", map[string]interface{}{"snapshotId": "snap-123"})},
+	})
+
 	return spec
 }
 

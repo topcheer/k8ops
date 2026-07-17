@@ -274,6 +274,9 @@ var auditRegistry = []auditEndpoint{
 	{"product:service-catalog", "/api/product/service-catalog", "Cluster service catalog & discovery map"},
 	{"operations:resource-topology", "/api/operations/resource-topology", "Resource dependency graph & orphan detector"},
 	{"docs:api-explorer", "/api/docs/api-explorer", "Interactive API endpoint browser with search"},
+	{"scalability:orphan-cleanup", "/api/scalability/orphan-cleanup", "Orphaned resource cleanup planner"},
+	{"scalability:cost-anomaly", "/api/scalability/cost-anomaly", "Cost anomaly detector"},
+	{"deployment:config-snapshot", "/api/deployment/config-snapshot", "Cluster config snapshot for drift detection"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},
