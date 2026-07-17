@@ -80,6 +80,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/security/compliance-gap",
 		"/api/scalability/scheduler-fairness",
 		"/api/product/workload-fingerprint",
+		"/api/deployment/deploy-heatmap",
+		"/api/operations/log-volume",
+		"/api/docs/cluster-narrative",
 	}
 
 	missing := []string{}

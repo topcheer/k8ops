@@ -5689,6 +5689,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Workload fingerprints", map[string]interface{}{"healthScore": 70})},
 	})
 
+	add("/api/deployment/deploy-heatmap", "get", OpenAPIOperation{
+		Summary: "Deployment activity heatmap", OperationID: "deployHeatmap",
+		Tags:        []string{"Deployment", "Analytics", "DORA"},
+		Description: "Shows deployment activity by namespace, hour, and weekday. Identifies bottlenecks and change windows.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Deploy heatmap", map[string]interface{}{"healthScore": 60})},
+	})
+
+	add("/api/operations/log-volume", "get", OpenAPIOperation{
+		Summary: "Log volume estimator & noisy logger finder", OperationID: "logVolume",
+		Tags:        []string{"Operations", "Logging", "Storage"},
+		Description: "Estimates per-workload log volume to identify noisy loggers and log storage pressure.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Log volume", map[string]interface{}{"healthScore": 70})},
+	})
+
+	add("/api/docs/cluster-narrative", "get", OpenAPIOperation{
+		Summary: "Human-readable cluster narrative report", OperationID: "clusterNarrative",
+		Tags:        []string{"Documentation", "Report", "Executive"},
+		Description: "Translates raw metrics into natural language paragraphs for executive reporting and onboarding.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cluster narrative", map[string]interface{}{"title": "k8ops report"})},
+	})
+
 	return spec
 }
 

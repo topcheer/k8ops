@@ -310,6 +310,9 @@ var auditRegistry = []auditEndpoint{
 	{"security:compliance-gap", "/api/security/compliance-gap", "Compliance framework gap analysis"},
 	{"scalability:scheduler-fairness", "/api/scalability/scheduler-fairness", "Pod scheduling fairness analyzer"},
 	{"product:workload-fingerprint", "/api/product/workload-fingerprint", "Workload fingerprint & duplicate detector"},
+	{"deployment:deploy-heatmap", "/api/deployment/deploy-heatmap", "Deployment activity heatmap"},
+	{"operations:log-volume", "/api/operations/log-volume", "Log volume estimator & noisy logger finder"},
+	{"docs:cluster-narrative", "/api/docs/cluster-narrative", "Human-readable cluster narrative report"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},
