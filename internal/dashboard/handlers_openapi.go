@@ -5937,6 +5937,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Evaluates whether the cluster can safely operate unattended. Checks: multi-node HA, PDB coverage, HPA autoscaling, health probes, resource limits, crash-loop detection, runbook annotations. Determines if safe for unattended operation.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Oncall readiness", map[string]interface{}{"readinessScore": 50, "grade": "C"})},
 	})
+	add("/api/security/mtls-trust-domain", "get", OpenAPIOperation{
+		Summary: "mTLS trust domain auditor", OperationID: "mtlsTrustDomain",
+		Tags:        []string{"Security", "mTLS", "Mesh"},
+		Description: "Audits mTLS configuration across the cluster. Detects Service Mesh type (Istio/Linkerd/Consul), checks namespace injection labels, mTLS mode (STRICT/PERMISSIVE), sidecar presence per pod, and authorization policies. Provides trust domain analysis.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("mTLS trust", map[string]interface{}{"trustScore": 50, "grade": "C"})},
+	})
+	add("/api/product/latency-budget", "get", OpenAPIOperation{
+		Summary: "Latency budget allocator", OperationID: "latencyBudget",
+		Tags:        []string{"Product", "Latency", "SLO"},
+		Description: "Allocates latency budgets across service paths and identifies services exceeding their allocated latency SLO. Estimates per-service latency from probe config, replica count, restart history. Provides component-level latency breakdown.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Latency budget", map[string]interface{}{"budgetScore": 60, "grade": "C"})},
+	})
+	add("/api/scalability/pod-disruption-tolerance", "get", OpenAPIOperation{
+		Summary: "Pod disruption tolerance", OperationID: "podDisruptionTolerance",
+		Tags:        []string{"Scalability", "Disruption", "HA"},
+		Description: "Analyzes cluster tolerance to both voluntary (drains, maintenance) and involuntary (node failure) disruptions. Computes per-workload voluntary and involuntary scores, recovery time estimates, data loss risk for StatefulSets, and node spread analysis.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Disruption tolerance", map[string]interface{}{"toleranceScore": 50, "grade": "C"})},
+	})
 
 	return spec
 }

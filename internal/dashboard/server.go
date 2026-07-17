@@ -604,6 +604,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/resource-saturation-watch", s.cacheMiddleware(60*time.Second, s.handleResourceSaturationWatch)) // resource saturation watchdog
 	mux.HandleFunc("/api/deployment/deploy-frequency-trend", s.cacheMiddleware(300*time.Second, s.handleDeployFrequencyTrend))      // DORA deploy frequency trend
 	mux.HandleFunc("/api/docs/oncall-readiness", s.cacheMiddleware(300*time.Second, s.handleOncallReadiness))                       // on-call readiness evaluator
+	mux.HandleFunc("/api/security/mtls-trust-domain", s.cacheMiddleware(120*time.Second, s.handleMTLSTrustDomain))                  // mTLS trust domain auditor
+	mux.HandleFunc("/api/product/latency-budget", s.cacheMiddleware(120*time.Second, s.handleLatencyBudget))                        // latency budget allocator
+	mux.HandleFunc("/api/scalability/pod-disruption-tolerance", s.cacheMiddleware(120*time.Second, s.handlePodDisruptionTolerance)) // pod disruption tolerance analyzer
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)

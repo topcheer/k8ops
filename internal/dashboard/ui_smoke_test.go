@@ -119,6 +119,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/operations/resource-saturation-watch",
 		"/api/deployment/deploy-frequency-trend",
 		"/api/docs/oncall-readiness",
+		"/api/security/mtls-trust-domain",
+		"/api/product/latency-budget",
+		"/api/scalability/pod-disruption-tolerance",
 	}
 
 	missing := []string{}

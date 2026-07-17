@@ -37,6 +37,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/product/api-slo-correlation', name: 'API SLO Correlation', icon: '\u1F517' },
     { path: '/api/product/traffic-cost-split', name: 'Traffic Cost Split', icon: '\u1F4B8' },
     { path: '/api/product/feature-flag-audit', name: 'Feature Flag Audit', icon: '\u1F6A7' },
+    { path: '/api/product/latency-budget', name: 'Latency Budget', icon: '\u23F1' },
   ],
   'Deployment': [
     { path: '/api/deployment/startup-latency', name: 'Startup Latency', icon: '\u23F1' },
@@ -156,6 +157,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/security/privilege-map', name: 'Privilege Map', icon: '\u1F512' },
     { path: '/api/security/secret-spray', name: 'Secret Spray', icon: '\u1F510' },
     { path: '/api/security/cert-chain-validator', name: 'Cert Chain Validator', icon: '\u1F510' },
+    { path: '/api/security/mtls-trust-domain', name: 'mTLS Trust Domain', icon: '\u1F511' },
   ],
   'Scalability': [
     { path: '/api/scalability/pv-reclaim', name: 'PV Reclaim & Waste', icon: '\u1F4BE' },
@@ -202,6 +204,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/scalability/eviction-risk', name: 'Eviction Risk', icon: '\u26A0' },
     { path: '/api/scalability/node-failure-blast', name: 'Node Failure Blast', icon: '\u1F4A5' },
     { path: '/api/scalability/autoscaler-gap', name: 'Autoscaler Gap', icon: '\u2195' },
+    { path: '/api/scalability/pod-disruption-tolerance', name: 'Disruption Tolerance', icon: '\u1F6E1' },
   ],
   'Documentation': [
     { path: '/api/docs/platform-scorecard', name: 'Platform Scorecard', icon: '\u1F4CB' },

@@ -349,6 +349,9 @@ var auditRegistry = []auditEndpoint{
 	{"operations:resource-saturation-watch", "/api/operations/resource-saturation-watch", "Resource saturation watchdog"},
 	{"deployment:deploy-frequency-trend", "/api/deployment/deploy-frequency-trend", "DORA deploy frequency trend"},
 	{"docs:oncall-readiness", "/api/docs/oncall-readiness", "On-call readiness evaluator"},
+	{"security:mtls-trust-domain", "/api/security/mtls-trust-domain", "mTLS trust domain auditor"},
+	{"product:latency-budget", "/api/product/latency-budget", "Latency budget allocator"},
+	{"scalability:pod-disruption-tolerance", "/api/scalability/pod-disruption-tolerance", "Pod disruption tolerance analyzer"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},
