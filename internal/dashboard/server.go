@@ -532,6 +532,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/orphan-cleanup", s.cacheMiddleware(120*time.Second, s.handleOrphanCleanup))                 // orphaned resource cleanup planner
 	mux.HandleFunc("/api/scalability/cost-anomaly", s.cacheMiddleware(120*time.Second, s.handleCostAnomaly))                     // cost anomaly detector
 	mux.HandleFunc("/api/deployment/config-snapshot", s.cacheMiddleware(60*time.Second, s.handleConfigSnapshot))                 // cluster config snapshot for drift detection
+	mux.HandleFunc("/api/operations/pod-health-index", s.cacheMiddleware(60*time.Second, s.handlePodHealthIndex))                // per-pod health score & issue detector
+	mux.HandleFunc("/api/product/namespace-quota-map", s.cacheMiddleware(120*time.Second, s.handleNamespaceQuotaMap))            // namespace quota & limit range coverage map
+	mux.HandleFunc("/api/security/secret-exposure", s.cacheMiddleware(120*time.Second, s.handleSecretExposure))                  // secret exposure & plaintext scanner
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

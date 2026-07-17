@@ -277,6 +277,9 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:orphan-cleanup", "/api/scalability/orphan-cleanup", "Orphaned resource cleanup planner"},
 	{"scalability:cost-anomaly", "/api/scalability/cost-anomaly", "Cost anomaly detector"},
 	{"deployment:config-snapshot", "/api/deployment/config-snapshot", "Cluster config snapshot for drift detection"},
+	{"operations:pod-health-index", "/api/operations/pod-health-index", "Per-pod health score & issue detector"},
+	{"product:namespace-quota-map", "/api/product/namespace-quota-map", "Namespace quota & limit range coverage map"},
+	{"security:secret-exposure", "/api/security/secret-exposure", "Secret exposure & plaintext scanner"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

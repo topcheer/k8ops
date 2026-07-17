@@ -5458,6 +5458,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Config snapshot", map[string]interface{}{"snapshotId": "snap-123"})},
 	})
 
+	add("/api/operations/pod-health-index", "get", OpenAPIOperation{
+		Summary: "Per-pod health score & issue detector", OperationID: "podHealthIndex",
+		Tags:        []string{"Operations", "Health", "Pod"},
+		Description: "Per-pod health score aggregated by workload and namespace. Combines restart count, ready status, probe failures, and resource pressure.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod health index", map[string]interface{}{"healthScore": 85})},
+	})
+
+	add("/api/product/namespace-quota-map", "get", OpenAPIOperation{
+		Summary: "Namespace quota & limit range coverage map", OperationID: "namespaceQuotaMap",
+		Tags:        []string{"Product", "Quota", "Governance"},
+		Description: "Comprehensive map of resource quotas, limit ranges, and actual usage per namespace.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Quota map", map[string]interface{}{"healthScore": 60})},
+	})
+
+	add("/api/security/secret-exposure", "get", OpenAPIOperation{
+		Summary: "Secret exposure & plaintext scanner", OperationID: "secretExposure",
+		Tags:        []string{"Security", "Secrets", "Exposure"},
+		Description: "Scans for secrets exposed through env vars, volume mounts, and insecure handling. Identifies plaintext and orphaned secrets.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Secret exposure", map[string]interface{}{"healthScore": 50})},
+	})
+
 	return spec
 }
 
