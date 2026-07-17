@@ -5392,6 +5392,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses: map[string]OpenAPIResponse{"200": okResponse("Hardening score", map[string]interface{}{"overallScore": 45, "grade": "D"})},
 	})
 
+	add("/api/security/fix-plan", "get", OpenAPIOperation{
+		Summary: "Security remediation action plan generator", OperationID: "securityFixPlan",
+		Tags: []string{"Security", "Remediation", "Automation"},
+		Description: "Generates actionable kubectl patch commands for security issues. Provides copy-paste-ready fix commands, batch scripts, and prioritized remediation plans ranked by impact and effort.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Security fix plan", map[string]interface{}{"healthScore": 25})},
+	})
+
+	add("/api/docs/api-coverage-map", "get", OpenAPIOperation{
+		Summary: "API endpoint coverage map by dimension", OperationID: "apiCoverageMap",
+		Tags: []string{"Documentation", "Quality"},
+		Description: "Maps all platform API endpoints grouped by dimension with documentation coverage statistics.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Coverage map", map[string]interface{}{"totalEndpoints": 387})},
+	})
+
+	add("/api/deployment/release-gate", "get", OpenAPIOperation{
+		Summary: "Pre-deployment release gate evaluator", OperationID: "releaseGate",
+		Tags: []string{"Deployment", "Quality", "Gate"},
+		Description: "Evaluates whether the cluster is ready for a new deployment release. Checks PDB coverage, health probes, resource limits, security contexts, multi-node HA, update strategy, and anti-affinity.",
+		Responses: map[string]OpenAPIResponse{"200": okResponse("Release gate", map[string]interface{}{"overallVerdict": "fail", "gateScore": 35})},
+	})
+
 	return spec
 }
 

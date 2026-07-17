@@ -523,6 +523,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/drain-impact", s.cacheMiddleware(60*time.Second, s.handleDrainImpact))        // node drain impact simulator
 	mux.HandleFunc("/api/scalability/request-accuracy", s.cacheMiddleware(120*time.Second, s.handleRequestAccuracy))  // resource request accuracy & right-sizing analyzer
 	mux.HandleFunc("/api/security/hardening-score", s.cacheMiddleware(120*time.Second, s.handleHardeningScore))   // comprehensive security hardening posture score
+	mux.HandleFunc("/api/security/fix-plan", s.cacheMiddleware(120*time.Second, s.handleSecurityFixPlan))            // security remediation action plan generator
+	mux.HandleFunc("/api/docs/api-coverage-map", s.cacheMiddleware(300*time.Second, s.handleAPICoverageMap))         // API endpoint coverage map by dimension
+	mux.HandleFunc("/api/deployment/release-gate", s.cacheMiddleware(60*time.Second, s.handleReleaseGate))            // pre-deployment release gate evaluator
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

@@ -268,6 +268,9 @@ var auditRegistry = []auditEndpoint{
 	{"operations:drain-impact", "/api/operations/drain-impact", "Node drain impact simulator"},
 	{"scalability:request-accuracy", "/api/scalability/request-accuracy", "Resource request accuracy & right-sizing analyzer"},
 	{"security:hardening-score", "/api/security/hardening-score", "Comprehensive security hardening posture score"},
+	{"security:fix-plan", "/api/security/fix-plan", "Security remediation action plan generator"},
+	{"docs:api-coverage-map", "/api/docs/api-coverage-map", "API endpoint coverage map by dimension"},
+	{"deployment:release-gate", "/api/deployment/release-gate", "Pre-deployment release gate evaluator"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},
