@@ -544,6 +544,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/quota-generator", s.cacheMiddleware(120*time.Second, s.handleQuotaGenerator))               // ResourceQuota & LimitRange manifest generator
 	mux.HandleFunc("/api/deployment/probe-generator", s.cacheMiddleware(120*time.Second, s.handleProbeGenerator))                // health probe patch generator
 	mux.HandleFunc("/api/docs/platform-insights", s.cacheMiddleware(60*time.Second, s.handlePlatformInsights))                   // unified executive platform insights
+	mux.HandleFunc("/api/docs/action-priority-matrix", s.cacheMiddleware(120*time.Second, s.handleActionPriorityMatrix))         // prioritized remediation action queue
+	mux.HandleFunc("/api/operations/health-trend", s.cacheMiddleware(60*time.Second, s.handleHealthTrend))                       // cluster health trend over time
+	mux.HandleFunc("/api/scalability/image-cleanup", s.cacheMiddleware(120*time.Second, s.handleImageCleanup))                   // unused image cleanup advisor
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

@@ -5542,6 +5542,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Platform insights", map[string]interface{}{"overallScore": 45, "grade": "D"})},
 	})
 
+	add("/api/docs/action-priority-matrix", "get", OpenAPIOperation{
+		Summary: "Prioritized remediation action queue", OperationID: "actionPriorityMatrix",
+		Tags:        []string{"Documentation", "Planning", "Remediation"},
+		Description: "Aggregates all platform findings into a single prioritized action queue with impact, effort, and urgency scoring. Includes quick wins and batch plan.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Priority matrix", map[string]interface{}{"platformScore": 35})},
+	})
+
+	add("/api/operations/health-trend", "get", OpenAPIOperation{
+		Summary: "Cluster health trend over time", OperationID: "healthTrend",
+		Tags:        []string{"Operations", "Trend", "Stability"},
+		Description: "Tracks cluster health metrics over 8 weeks: pod counts, restart patterns, crash rates, new workloads, per-namespace stability.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Health trend", map[string]interface{}{"stabilityScore": 75})},
+	})
+
+	add("/api/scalability/image-cleanup", "get", OpenAPIOperation{
+		Summary: "Unused image cleanup advisor", OperationID: "imageCleanup",
+		Tags:        []string{"Scalability", "Cleanup", "Storage"},
+		Description: "Identifies unused and stale container images on nodes to free disk space. Cross-references running pods with node image caches.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image cleanup", map[string]interface{}{"healthScore": 70})},
+	})
+
 	return spec
 }
 

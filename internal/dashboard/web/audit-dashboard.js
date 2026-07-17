@@ -88,6 +88,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/operations/pdb-generator', name: 'PDB Generator', icon: '\u1F527' },
     { path: '/api/operations/probe-latency', name: 'Probe Latency', icon: '\u23F1' },
     { path: '/api/operations/endpoint-probe', name: 'Endpoint Probe', icon: '\u1F50D' },
+    { path: '/api/operations/health-trend', name: 'Health Trend', icon: '\u1F4C8' },
   ],
   'Security': [
     { path: '/api/security/sa-token-audit', name: 'SA Token Rotation', icon: '\u1F511' },
@@ -152,6 +153,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/scalability/right-size-engine', name: 'Right Size Engine', icon: '\u1F4CF' },
     { path: '/api/scalability/storage-performance', name: 'Storage Performance', icon: '\u1F4BE' },
     { path: '/api/scalability/quota-generator', name: 'Quota Generator', icon: '\u1F527' },
+    { path: '/api/scalability/image-cleanup', name: 'Image Cleanup', icon: '\u1F9F9' },
   ],
   'Documentation': [
     { path: '/api/docs/platform-scorecard', name: 'Platform Scorecard', icon: '\u1F4CB' },
@@ -165,6 +167,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/docs/api-explorer', name: 'API Explorer', icon: '\u1F50D' },
     { path: '/api/docs/cluster-maturity', name: 'Cluster Maturity', icon: '\u1F3AF' },
     { path: '/api/docs/platform-insights', name: 'Platform Insights', icon: '\u1F4A1' },
+    { path: '/api/docs/action-priority-matrix', name: 'Action Priority Matrix', icon: '\u1F4CB' },
   ],
 };
 

@@ -59,6 +59,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/scalability/quota-generator",
 		"/api/deployment/probe-generator",
 		"/api/docs/platform-insights",
+		"/api/docs/action-priority-matrix",
+		"/api/operations/health-trend",
+		"/api/scalability/image-cleanup",
 	}
 
 	missing := []string{}

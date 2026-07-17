@@ -289,6 +289,9 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:quota-generator", "/api/scalability/quota-generator", "ResourceQuota & LimitRange manifest generator"},
 	{"deployment:probe-generator", "/api/deployment/probe-generator", "Health probe patch generator"},
 	{"docs:platform-insights", "/api/docs/platform-insights", "Unified executive platform insights"},
+	{"docs:action-priority-matrix", "/api/docs/action-priority-matrix", "Prioritized remediation action queue"},
+	{"operations:health-trend", "/api/operations/health-trend", "Cluster health trend over time"},
+	{"scalability:image-cleanup", "/api/scalability/image-cleanup", "Unused image cleanup advisor"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},
