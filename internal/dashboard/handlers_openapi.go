@@ -5865,6 +5865,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Auto-generates capacity planning documentation: cluster overview, headroom analysis (CPU/memory/pod slots), growth projection (5% monthly, days to exhaustion), emergency runbook steps. Bottleneck resource identification.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Capacity runbook", map[string]interface{}{"capacityScore": 40, "grade": "C"})},
 	})
+	add("/api/security/secret-spray", "get", OpenAPIOperation{
+		Summary: "Secret spray exposure", OperationID: "secretSpray",
+		Tags:        []string{"Security", "Secret", "Exposure"},
+		Description: "Analyzes how widely each Secret is mounted across pods. Over-sprayed secrets (mounted on 10+ pods) increase credential compromise blast radius. Checks volumes, env vars, envFrom, imagePullSecrets, and projected volumes. Classifies by spray level and risk score.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Secret spray", map[string]interface{}{"exposureScore": 50, "grade": "C"})},
+	})
+	add("/api/product/traffic-cost-split", "get", OpenAPIOperation{
+		Summary: "Traffic cost split", OperationID: "trafficCostSplit",
+		Tags:        []string{"Product", "Cost", "FinOps"},
+		Description: "Splits cluster traffic cost by Service and Ingress. Attributes compute costs (CPU/memory requests) to API endpoints via service selectors. Identifies high-cost paths, unattributed costs, and cost concentration.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Traffic cost split", map[string]interface{}{"costScore": 70, "grade": "B"})},
+	})
+	add("/api/scalability/node-failure-blast", "get", OpenAPIOperation{
+		Summary: "Node failure blast radius", OperationID: "nodeFailureBlast",
+		Tags:        []string{"Scalability", "HA", "Failure"},
+		Description: "Simulates single-node failure to calculate blast radius: affected workloads, unavailable pod percentage, single-replica workloads at risk, anti-affinity gaps. Estimates recovery time and worst-case scenario.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node failure blast", map[string]interface{}{"blastScore": 60, "grade": "B"})},
+	})
 
 	return spec
 }

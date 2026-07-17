@@ -592,9 +592,11 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/golden-signal-budget", s.cacheMiddleware(60*time.Second, s.handleGoldenSignalBudget))        // golden signal composite health budget
 	mux.HandleFunc("/api/deployment/preflight-check", s.cacheMiddleware(120*time.Second, s.handlePreflightCheck))                // deployment preflight check suite
 	mux.HandleFunc("/api/docs/capacity-runbook", s.cacheMiddleware(300*time.Second, s.handleCapacityRunbook))                    // capacity planning runbook generator
+	mux.HandleFunc("/api/security/secret-spray", s.cacheMiddleware(120*time.Second, s.handleSecretSpray))                        // secret mount spray exposure analyzer
+	mux.HandleFunc("/api/product/traffic-cost-split", s.cacheMiddleware(300*time.Second, s.handleTrafficCostSplit))              // traffic cost split by service/ingress
+	mux.HandleFunc("/api/scalability/node-failure-blast", s.cacheMiddleware(120*time.Second, s.handleNodeFailureBlast))          // node failure blast radius simulator
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
-
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
 	mux.Handle("/metrics", s.localOnlyMiddleware(promhttp.Handler()))
 

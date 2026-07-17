@@ -337,6 +337,9 @@ var auditRegistry = []auditEndpoint{
 	{"operations:golden-signal-budget", "/api/operations/golden-signal-budget", "Golden signal composite health budget tracker"},
 	{"deployment:preflight-check", "/api/deployment/preflight-check", "Deployment preflight validation suite"},
 	{"docs:capacity-runbook", "/api/docs/capacity-runbook", "Capacity planning runbook generator"},
+	{"security:secret-spray", "/api/security/secret-spray", "Secret mount spray exposure analyzer"},
+	{"product:traffic-cost-split", "/api/product/traffic-cost-split", "Traffic cost split by service/ingress"},
+	{"scalability:node-failure-blast", "/api/scalability/node-failure-blast", "Node failure blast radius simulator"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},
