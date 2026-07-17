@@ -5710,6 +5710,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cluster narrative", map[string]interface{}{"title": "k8ops report"})},
 	})
 
+	add("/api/security/config-audit-trail", "get", OpenAPIOperation{
+		Summary: "Configuration change audit trail", OperationID: "configAuditTrail",
+		Tags:        []string{"Security", "Audit", "Changes"},
+		Description: "Tracks configuration changes across deployments via ReplicaSet revision history. Builds complete change timeline.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Config audit", map[string]interface{}{"healthScore": 65})},
+	})
+
+	add("/api/scalability/node-utilization-deep", "get", OpenAPIOperation{
+		Summary: "Deep node utilization & top consumer analysis", OperationID: "nodeUtilizationDeep",
+		Tags:        []string{"Scalability", "Nodes", "Capacity"},
+		Description: "Per-node CPU/memory/pod utilization with top consumer identification and imbalance scoring.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node utilization", map[string]interface{}{"imbalanceScore": 75})},
+	})
+
+	add("/api/security/secret-rotation-plan", "get", OpenAPIOperation{
+		Summary: "Secret rotation plan generator", OperationID: "secretRotationPlan",
+		Tags:        []string{"Security", "Secrets", "Rotation"},
+		Description: "Prioritized secret rotation plan with commands. Identifies old secrets, TLS certs needing renewal.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Rotation plan", map[string]interface{}{"healthScore": 60})},
+	})
+
 	return spec
 }
 

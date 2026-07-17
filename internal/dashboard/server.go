@@ -568,6 +568,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/deploy-heatmap", s.cacheMiddleware(60*time.Second, s.handleDeployHeatmap))                   // deployment activity heatmap
 	mux.HandleFunc("/api/operations/log-volume", s.cacheMiddleware(120*time.Second, s.handleLogVolume))                          // log volume estimator & noisy logger finder
 	mux.HandleFunc("/api/docs/cluster-narrative", s.cacheMiddleware(60*time.Second, s.handleClusterNarrative))                   // human-readable cluster narrative report
+	mux.HandleFunc("/api/security/config-audit-trail", s.cacheMiddleware(60*time.Second, s.handleConfigAuditTrail))              // configuration change audit trail
+	mux.HandleFunc("/api/scalability/node-utilization-deep", s.cacheMiddleware(120*time.Second, s.handleNodeUtilizationDeep))    // deep node utilization & top consumer analysis
+	mux.HandleFunc("/api/security/secret-rotation-plan", s.cacheMiddleware(120*time.Second, s.handleSecretRotationPlan))         // secret rotation plan generator
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

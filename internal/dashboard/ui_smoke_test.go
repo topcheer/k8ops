@@ -83,6 +83,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/deployment/deploy-heatmap",
 		"/api/operations/log-volume",
 		"/api/docs/cluster-narrative",
+		"/api/security/config-audit-trail",
+		"/api/scalability/node-utilization-deep",
+		"/api/security/secret-rotation-plan",
 	}
 
 	missing := []string{}

@@ -130,6 +130,8 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/security/trust-chain', name: 'Trust Chain', icon: '\u1F512' },
     { path: '/api/security/container-hardening', name: 'Container Hardening', icon: '\u1F6E1' },
     { path: '/api/security/compliance-gap', name: 'Compliance Gap', icon: '\u1F4CB' },
+    { path: '/api/security/config-audit-trail', name: 'Config Audit Trail', icon: '\u1F4DD' },
+    { path: '/api/security/secret-rotation-plan', name: 'Secret Rotation Plan', icon: '\u1F504' },
     { path: '/api/security/blast-radius', name: 'Blast Radius', icon: '\u1F4A5' },
     { path: '/api/security/net-policy-effectiveness', name: 'Net Policy Effectiveness', icon: '\u1F50D' },
   ],
@@ -172,6 +174,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/scalability/storage-tier', name: 'Storage Tier', icon: '\u1F4BE' },
     { path: '/api/scalability/autoscale-readiness', name: 'Autoscale Readiness', icon: '\u2195' },
     { path: '/api/scalability/scheduler-fairness', name: 'Scheduler Fairness', icon: '\u2696' },
+    { path: '/api/scalability/node-utilization-deep', name: 'Node Utilization Deep', icon: '\u1F4BB' },
   ],
   'Documentation': [
     { path: '/api/docs/platform-scorecard', name: 'Platform Scorecard', icon: '\u1F4CB' },

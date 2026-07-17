@@ -313,6 +313,9 @@ var auditRegistry = []auditEndpoint{
 	{"deployment:deploy-heatmap", "/api/deployment/deploy-heatmap", "Deployment activity heatmap"},
 	{"operations:log-volume", "/api/operations/log-volume", "Log volume estimator & noisy logger finder"},
 	{"docs:cluster-narrative", "/api/docs/cluster-narrative", "Human-readable cluster narrative report"},
+	{"security:config-audit-trail", "/api/security/config-audit-trail", "Configuration change audit trail"},
+	{"scalability:node-utilization-deep", "/api/scalability/node-utilization-deep", "Deep node utilization & top consumer analysis"},
+	{"security:secret-rotation-plan", "/api/security/secret-rotation-plan", "Secret rotation plan generator"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},
