@@ -5793,6 +5793,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Evaluates API version usage, deprecations, and migration readiness.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("API governance", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/security/disruption-budget-gap", "get", OpenAPIOperation{
+		Summary: "Disruption budget gap analyzer", OperationID: "disruptionBudgetGap",
+		Tags:        []string{"Security", "Reliability", "PDB"},
+		Description: "Scans all workloads (Deployments, StatefulSets) for PodDisruptionBudget coverage. Identifies single-replica workloads exposed to voluntary disruptions, critical labels on unprotected workloads, and provides a risk score (0-100) with grade.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Disruption budget gap", map[string]interface{}{"riskScore": 45, "grade": "C"})},
+	})
+	add("/api/product/cost-topology", "get", OpenAPIOperation{
+		Summary: "Cost topology per namespace", OperationID: "costTopology",
+		Tags:        []string{"Product", "Cost", "FinOps"},
+		Description: "Analyzes resource requests across all namespaces to compute per-namespace cost attribution. Uses on-demand pricing model ($0.034/vCPU-hr, $0.0046/GB-hr). Identifies cost concentration, top spenders, efficiency ratings, and provides optimization recommendations.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cost topology", map[string]interface{}{"costScore": 60, "grade": "B"})},
+	})
+	add("/api/scalability/binpack-efficiency", "get", OpenAPIOperation{
+		Summary: "Node bin-packing efficiency", OperationID: "binpackEfficiency",
+		Tags:        []string{"Scalability", "Node", "Consolidation"},
+		Description: "Analyzes node bin-packing efficiency by comparing pod resource requests against node allocatable capacity. Classifies nodes as idle/underutilized/moderate/packed. Identifies consolidation opportunities (nodes that can be drained), pod density metrics, and potential savings.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Binpack efficiency", map[string]interface{}{"efficiencyScore": 70, "grade": "B"})},
+	})
 
 	return spec
 }

@@ -95,6 +95,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/operations/pod-slo",
 		"/api/deployment/deploy-readiness-gate",
 		"/api/docs/api-governance-score",
+		"/api/security/disruption-budget-gap",
+		"/api/product/cost-topology",
+		"/api/scalability/binpack-efficiency",
 	}
 
 	missing := []string{}

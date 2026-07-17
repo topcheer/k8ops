@@ -580,6 +580,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/pod-slo", s.cacheMiddleware(60*time.Second, s.handlePodSLO))                                 // pod SLO compliance tracker
 	mux.HandleFunc("/api/deployment/deploy-readiness-gate", s.cacheMiddleware(120*time.Second, s.handleDeployReadinessGate))     // deployment readiness gate composite evaluator
 	mux.HandleFunc("/api/docs/api-governance-score", s.cacheMiddleware(300*time.Second, s.handleAPIGovernanceScore))             // API version governance score
+	mux.HandleFunc("/api/security/disruption-budget-gap", s.cacheMiddleware(120*time.Second, s.handleDisruptionBudgetGap))       // PDB gap & disruption risk analyzer
+	mux.HandleFunc("/api/product/cost-topology", s.cacheMiddleware(300*time.Second, s.handleCostTopology))                       // per-namespace cost topology
+	mux.HandleFunc("/api/scalability/binpack-efficiency", s.cacheMiddleware(120*time.Second, s.handleBinpackEfficiency))         // node bin-packing efficiency & consolidation
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 
