@@ -5731,6 +5731,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Rotation plan", map[string]interface{}{"healthScore": 60})},
 	})
 
+	add("/api/operations/event-correlation-deep", "get", OpenAPIOperation{
+		Summary: "Deep event correlation & root cause", OperationID: "eventCorrelationDeep",
+		Tags:        []string{"Operations", "Events", "Correlation"},
+		Description: "Deep correlation of K8s events to find causal chains, cascading failures, and root causes.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event correlation", map[string]interface{}{"healthScore": 60})},
+	})
+
+	add("/api/deployment/rollback-simulator", "get", OpenAPIOperation{
+		Summary: "Rollback risk simulator", OperationID: "rollbackSimulator",
+		Tags:        []string{"Deployment", "Rollback", "Risk"},
+		Description: "Simulates rollback impact per deployment: data loss, HPA mismatch, revision history gaps.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Rollback sim", map[string]interface{}{"healthScore": 75})},
+	})
+
+	add("/api/docs/upgrade-planner", "get", OpenAPIOperation{
+		Summary: "K8s upgrade planner & readiness", OperationID: "upgradePlanner",
+		Tags:        []string{"Documentation", "Upgrade", "Planning"},
+		Description: "Analyzes cluster upgrade readiness: API deprecations, node HA, PVC drain, generates checklist.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Upgrade plan", map[string]interface{}{"readinessScore": 50})},
+	})
+
 	return spec
 }
 

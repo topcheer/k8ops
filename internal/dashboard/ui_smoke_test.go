@@ -86,6 +86,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/security/config-audit-trail",
 		"/api/scalability/node-utilization-deep",
 		"/api/security/secret-rotation-plan",
+		"/api/operations/event-correlation-deep",
+		"/api/deployment/rollback-simulator",
+		"/api/docs/upgrade-planner",
 	}
 
 	missing := []string{}

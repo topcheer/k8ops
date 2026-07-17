@@ -571,6 +571,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/config-audit-trail", s.cacheMiddleware(60*time.Second, s.handleConfigAuditTrail))              // configuration change audit trail
 	mux.HandleFunc("/api/scalability/node-utilization-deep", s.cacheMiddleware(120*time.Second, s.handleNodeUtilizationDeep))    // deep node utilization & top consumer analysis
 	mux.HandleFunc("/api/security/secret-rotation-plan", s.cacheMiddleware(120*time.Second, s.handleSecretRotationPlan))         // secret rotation plan generator
+	mux.HandleFunc("/api/operations/event-correlation-deep", s.cacheMiddleware(60*time.Second, s.handleEventCorrelationDeep))    // deep event correlation & root cause
+	mux.HandleFunc("/api/deployment/rollback-simulator", s.cacheMiddleware(120*time.Second, s.handleRollbackSimulator))          // rollback risk simulator
+	mux.HandleFunc("/api/docs/upgrade-planner", s.cacheMiddleware(300*time.Second, s.handleUpgradePlanner))                      // k8s upgrade planner
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

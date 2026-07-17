@@ -316,6 +316,9 @@ var auditRegistry = []auditEndpoint{
 	{"security:config-audit-trail", "/api/security/config-audit-trail", "Configuration change audit trail"},
 	{"scalability:node-utilization-deep", "/api/scalability/node-utilization-deep", "Deep node utilization & top consumer analysis"},
 	{"security:secret-rotation-plan", "/api/security/secret-rotation-plan", "Secret rotation plan generator"},
+	{"operations:event-correlation-deep", "/api/operations/event-correlation-deep", "Deep event correlation & root cause"},
+	{"deployment:rollback-simulator", "/api/deployment/rollback-simulator", "Rollback risk simulator"},
+	{"docs:upgrade-planner", "/api/docs/upgrade-planner", "K8s upgrade planner & readiness"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},
