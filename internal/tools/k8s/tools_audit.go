@@ -307,6 +307,9 @@ var auditRegistry = []auditEndpoint{
 	{"operations:capacity-gap", "/api/operations/capacity-gap", "Capacity gap & node loss survival analyzer"},
 	{"deployment:revision-drift", "/api/deployment/revision-drift", "ReplicaSet revision drift detector"},
 	{"docs:knowledge-base", "/api/docs/knowledge-base", "Auto-generated cluster knowledge base"},
+	{"security:compliance-gap", "/api/security/compliance-gap", "Compliance framework gap analysis"},
+	{"scalability:scheduler-fairness", "/api/scalability/scheduler-fairness", "Pod scheduling fairness analyzer"},
+	{"product:workload-fingerprint", "/api/product/workload-fingerprint", "Workload fingerprint & duplicate detector"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

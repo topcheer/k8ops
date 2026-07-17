@@ -5668,6 +5668,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Knowledge base", map[string]interface{}{"totalArticles": 8})},
 	})
 
+	add("/api/security/compliance-gap", "get", OpenAPIOperation{
+		Summary: "Compliance framework gap analysis", OperationID: "complianceGap",
+		Tags:        []string{"Security", "Compliance", "Audit"},
+		Description: "Gap analysis against CIS, NIST, SOC2 frameworks. Maps cluster findings to compliance controls with remediation roadmap.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Compliance gap", map[string]interface{}{"healthScore": 40})},
+	})
+
+	add("/api/scalability/scheduler-fairness", "get", OpenAPIOperation{
+		Summary: "Pod scheduling fairness analyzer", OperationID: "schedulerFairness",
+		Tags:        []string{"Scalability", "Scheduling", "Balance"},
+		Description: "Analyzes pod distribution across nodes, identifies hotspots and under-utilized nodes, calculates fairness score.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Scheduler fairness", map[string]interface{}{"fairnessScore": 75})},
+	})
+
+	add("/api/product/workload-fingerprint", "get", OpenAPIOperation{
+		Summary: "Workload fingerprint & duplicate detector", OperationID: "workloadFingerprint",
+		Tags:        []string{"Product", "Classification", "Drift"},
+		Description: "Creates unique fingerprints for workloads based on config hash, resource profile, and behavior. Finds duplicates.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Workload fingerprints", map[string]interface{}{"healthScore": 70})},
+	})
+
 	return spec
 }
 

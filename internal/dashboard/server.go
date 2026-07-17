@@ -562,6 +562,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/capacity-gap", s.cacheMiddleware(120*time.Second, s.handleCapacityGap))                      // capacity gap & node loss survival analyzer
 	mux.HandleFunc("/api/deployment/revision-drift", s.cacheMiddleware(120*time.Second, s.handleRevisionDrift))                  // ReplicaSet revision drift detector
 	mux.HandleFunc("/api/docs/knowledge-base", s.cacheMiddleware(300*time.Second, s.handleKnowledgeBase))                        // auto-generated cluster knowledge base
+	mux.HandleFunc("/api/security/compliance-gap", s.cacheMiddleware(120*time.Second, s.handleComplianceGap))                    // compliance framework gap analysis (CIS/NIST/SOC2)
+	mux.HandleFunc("/api/scalability/scheduler-fairness", s.cacheMiddleware(120*time.Second, s.handleSchedulerFairness))         // pod scheduling fairness & node balance analyzer
+	mux.HandleFunc("/api/product/workload-fingerprint", s.cacheMiddleware(120*time.Second, s.handleWorkloadFingerprint))         // workload fingerprint & duplicate detector
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

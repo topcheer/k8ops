@@ -24,6 +24,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/product/service-dependency-map', name: 'Service Dependency Map', icon: '\u1F50D' },
     { path: '/api/product/label-score', name: 'Label Hygiene Score', icon: '\u1F3F7' },
     { path: '/api/product/workload-efficiency', name: 'Workload Efficiency', icon: '\u2696' },
+    { path: '/api/product/workload-fingerprint', name: 'Workload Fingerprint', icon: '\u1F194' },
     { path: '/api/product/namespace-quota-map', name: 'Namespace Quota Map', icon: '\u1F4CA' },
     { path: '/api/product/ingress-health', name: 'Ingress Health', icon: '\u1F310' },
     { path: '/api/product/network-policy', name: 'Network Policy Audit', icon: '\u1F6E1' },
@@ -126,6 +127,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/security/env-leak-scanner', name: 'Env Leak Scanner', icon: '\u1F576' },
     { path: '/api/security/trust-chain', name: 'Trust Chain', icon: '\u1F512' },
     { path: '/api/security/container-hardening', name: 'Container Hardening', icon: '\u1F6E1' },
+    { path: '/api/security/compliance-gap', name: 'Compliance Gap', icon: '\u1F4CB' },
     { path: '/api/security/blast-radius', name: 'Blast Radius', icon: '\u1F4A5' },
     { path: '/api/security/net-policy-effectiveness', name: 'Net Policy Effectiveness', icon: '\u1F50D' },
   ],
@@ -167,6 +169,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/scalability/image-cleanup', name: 'Image Cleanup', icon: '\u1F9F9' },
     { path: '/api/scalability/storage-tier', name: 'Storage Tier', icon: '\u1F4BE' },
     { path: '/api/scalability/autoscale-readiness', name: 'Autoscale Readiness', icon: '\u2195' },
+    { path: '/api/scalability/scheduler-fairness', name: 'Scheduler Fairness', icon: '\u2696' },
   ],
   'Documentation': [
     { path: '/api/docs/platform-scorecard', name: 'Platform Scorecard', icon: '\u1F4CB' },
