@@ -598,6 +598,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/incident-timeline", s.cacheMiddleware(60*time.Second, s.handleIncidentTimeline))             // incident timeline reconstructor
 	mux.HandleFunc("/api/deployment/rollback-safety", s.cacheMiddleware(120*time.Second, s.handleRollbackSafety))                // rollback safety auditor
 	mux.HandleFunc("/api/docs/api-semantic-version", s.cacheMiddleware(300*time.Second, s.handleAPISemanticVersion))             // API semantic version tracker
+	mux.HandleFunc("/api/security/cert-chain-validator", s.cacheMiddleware(120*time.Second, s.handleCertChainValidator))         // TLS certificate chain validator
+	mux.HandleFunc("/api/product/feature-flag-audit", s.cacheMiddleware(120*time.Second, s.handleFeatureFlagAudit))              // feature flag coverage audit
+	mux.HandleFunc("/api/scalability/autoscaler-gap", s.cacheMiddleware(120*time.Second, s.handleAutoscalerGap))                 // cluster autoscaler gap analyzer
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)

@@ -343,6 +343,9 @@ var auditRegistry = []auditEndpoint{
 	{"operations:incident-timeline", "/api/operations/incident-timeline", "Incident timeline reconstructor"},
 	{"deployment:rollback-safety", "/api/deployment/rollback-safety", "Rollback safety auditor"},
 	{"docs:api-semantic-version", "/api/docs/api-semantic-version", "API semantic version tracker"},
+	{"security:cert-chain-validator", "/api/security/cert-chain-validator", "TLS certificate chain validator"},
+	{"product:feature-flag-audit", "/api/product/feature-flag-audit", "Feature flag coverage audit"},
+	{"scalability:autoscaler-gap", "/api/scalability/autoscaler-gap", "Cluster autoscaler gap analyzer"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

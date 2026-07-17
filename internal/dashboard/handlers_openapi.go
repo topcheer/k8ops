@@ -5901,6 +5901,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Tracks Kubernetes API version semantics across all resources. Identifies deprecated APIs (extensions/v1beta1, apps/v1beta1, etc.), breaking changes, and removal timelines. Provides migration recommendations and maturity distribution (GA/Beta/Alpha).",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("API semantic version", map[string]interface{}{"maturityScore": 90, "grade": "A"})},
 	})
+	add("/api/security/cert-chain-validator", "get", OpenAPIOperation{
+		Summary: "TLS certificate chain validator", OperationID: "certChainValidator",
+		Tags:        []string{"Security", "TLS", "Certificate"},
+		Description: "Validates TLS certificate chains from Secrets and Ingress hosts. Checks certificate expiry, chain completeness (intermediate CA presence), self-signed detection, key pair validity, and key size. Links to Ingress hosts for coverage analysis.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cert chain validation", map[string]interface{}{"validationScore": 75, "grade": "B"})},
+	})
+	add("/api/product/feature-flag-audit", "get", OpenAPIOperation{
+		Summary: "Feature flag audit", OperationID: "featureFlagAudit",
+		Tags:        []string{"Product", "FeatureFlags", "Config"},
+		Description: "Scans ConfigMaps, annotations, and environment variables for feature flags. Identifies stale/debug/test flags, unmanaged toggles, and env-var-based flags that require redeployment to change. Classifies by risk level.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Feature flag audit", map[string]interface{}{"coverageScore": 65, "grade": "C"})},
+	})
+	add("/api/scalability/autoscaler-gap", "get", OpenAPIOperation{
+		Summary: "Cluster autoscaler gap", OperationID: "autoscalerGap",
+		Tags:        []string{"Scalability", "Autoscaler", "Gap"},
+		Description: "Analyzes Cluster Autoscaler/Karpenter configuration and identifies scaling gaps. Detects pending/unschedulable pods, node pool sizing issues, HA gaps, and provides autoscaler deployment recommendations.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Autoscaler gap", map[string]interface{}{"gapScore": 50, "grade": "C"})},
+	})
 
 	return spec
 }
