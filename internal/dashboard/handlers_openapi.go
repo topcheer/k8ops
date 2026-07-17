@@ -5626,6 +5626,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Platform comparison", map[string]interface{}{"overallScore": 45})},
 	})
 
+	add("/api/security/container-hardening", "get", OpenAPIOperation{
+		Summary: "Container security hardening scanner", OperationID: "containerHardening",
+		Tags:        []string{"Security", "Hardening", "Patches"},
+		Description: "Scans containers for missing securityContext fields and generates strategic kubectl patch commands.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Hardening scan", map[string]interface{}{"healthScore": 20})},
+	})
+
+	add("/api/scalability/autoscale-readiness", "get", OpenAPIOperation{
+		Summary: "HPA autoscale readiness & generator", OperationID: "autoscaleReadiness",
+		Tags:        []string{"Scalability", "HPA", "Automation"},
+		Description: "Evaluates workloads for HPA suitability and generates ready-to-apply HPA YAML manifests.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Autoscale readiness", map[string]interface{}{"healthScore": 50})},
+	})
+
+	add("/api/product/workload-efficiency", "get", OpenAPIOperation{
+		Summary: "Workload resource efficiency scorer", OperationID: "workloadEfficiency",
+		Tags:        []string{"Product", "FinOps", "Efficiency"},
+		Description: "Evaluates request-to-limit ratios, replica waste, and anti-patterns. Estimates waste cost.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Workload efficiency", map[string]interface{}{"healthScore": 60})},
+	})
+
 	return spec
 }
 

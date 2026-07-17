@@ -71,6 +71,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/operations/alert-fatigue",
 		"/api/deployment/deploy-frequency",
 		"/api/docs/platform-comparison",
+		"/api/security/container-hardening",
+		"/api/scalability/autoscale-readiness",
+		"/api/product/workload-efficiency",
 	}
 
 	missing := []string{}

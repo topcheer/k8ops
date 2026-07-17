@@ -301,6 +301,9 @@ var auditRegistry = []auditEndpoint{
 	{"operations:alert-fatigue", "/api/operations/alert-fatigue", "Event noise & alert fatigue analyzer"},
 	{"deployment:deploy-frequency", "/api/deployment/deploy-frequency", "Deployment frequency tracker (DORA metric)"},
 	{"docs:platform-comparison", "/api/docs/platform-comparison", "Platform comparison & trend snapshot"},
+	{"security:container-hardening", "/api/security/container-hardening", "Container security hardening scanner"},
+	{"scalability:autoscale-readiness", "/api/scalability/autoscale-readiness", "HPA autoscale readiness & generator"},
+	{"product:workload-efficiency", "/api/product/workload-efficiency", "Workload resource efficiency scorer"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

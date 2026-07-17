@@ -556,6 +556,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/alert-fatigue", s.cacheMiddleware(60*time.Second, s.handleAlertFatigue))                     // event noise & alert fatigue analyzer
 	mux.HandleFunc("/api/deployment/deploy-frequency", s.cacheMiddleware(60*time.Second, s.handleDeployFrequency))               // deployment frequency tracker (DORA)
 	mux.HandleFunc("/api/docs/platform-comparison", s.cacheMiddleware(60*time.Second, s.handlePlatformComparison))               // platform comparison & trend snapshot
+	mux.HandleFunc("/api/security/container-hardening", s.cacheMiddleware(120*time.Second, s.handleContainerHardening))          // container security hardening scanner
+	mux.HandleFunc("/api/scalability/autoscale-readiness", s.cacheMiddleware(120*time.Second, s.handleAutoscaleReadiness))       // HPA autoscale readiness & generator
+	mux.HandleFunc("/api/product/workload-efficiency", s.cacheMiddleware(120*time.Second, s.handleWorkloadEfficiency))           // workload resource efficiency scorer
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 
