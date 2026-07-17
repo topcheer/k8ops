@@ -5500,6 +5500,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Deploy risk", map[string]interface{}{"overallRisk": 55, "verdict": "cautious"})},
 	})
 
+	add("/api/operations/pdb-generator", "get", OpenAPIOperation{
+		Summary: "PDB manifest generator", OperationID: "pdbGenerator",
+		Tags:        []string{"Operations", "PDB", "Automation"},
+		Description: "Generates PodDisruptionBudget YAML manifests for multi-replica workloads without PDB. Provides batch kubectl apply commands.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PDB manifests", map[string]interface{}{"healthScore": 50})},
+	})
+
+	add("/api/security/netpol-generator", "get", OpenAPIOperation{
+		Summary: "NetworkPolicy manifest generator", OperationID: "netpolGenerator",
+		Tags:        []string{"Security", "Network", "Automation"},
+		Description: "Generates default-deny NetworkPolicy manifests for namespaces lacking network isolation. Includes DNS allow policies.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("NetworkPolicy manifests", map[string]interface{}{"healthScore": 40})},
+	})
+
+	add("/api/product/service-dependency-map", "get", OpenAPIOperation{
+		Summary: "Service dependency graph", OperationID: "serviceDependencyMap",
+		Tags:        []string{"Product", "Services", "Dependencies"},
+		Description: "Maps service-to-service dependencies by analyzing env vars and service references. Identifies critical paths and single points of failure.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Dependency map", map[string]interface{}{"healthScore": 60})},
+	})
+
 	return spec
 }
 

@@ -538,6 +538,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/cluster-maturity", s.cacheMiddleware(300*time.Second, s.handleClusterMaturity))                    // cluster maturity model assessment
 	mux.HandleFunc("/api/scalability/right-size-engine", s.cacheMiddleware(120*time.Second, s.handleRightSizeEngine))            // resource right-sizing engine with patches
 	mux.HandleFunc("/api/deployment/deploy-risk", s.cacheMiddleware(60*time.Second, s.handleDeployRisk))                         // pre-deployment risk assessment
+	mux.HandleFunc("/api/operations/pdb-generator", s.cacheMiddleware(120*time.Second, s.handlePDBGenerator))                    // PDB manifest generator
+	mux.HandleFunc("/api/security/netpol-generator", s.cacheMiddleware(120*time.Second, s.handleNetpolGenerator))                // NetworkPolicy manifest generator
+	mux.HandleFunc("/api/product/service-dependency-map", s.cacheMiddleware(120*time.Second, s.handleServiceDependencyMap))      // service dependency graph
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

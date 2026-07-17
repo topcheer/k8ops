@@ -283,6 +283,9 @@ var auditRegistry = []auditEndpoint{
 	{"docs:cluster-maturity", "/api/docs/cluster-maturity", "Cluster maturity model assessment (Level 1-5)"},
 	{"scalability:right-size-engine", "/api/scalability/right-size-engine", "Resource right-sizing engine with patch generator"},
 	{"deployment:deploy-risk", "/api/deployment/deploy-risk", "Pre-deployment risk assessment"},
+	{"operations:pdb-generator", "/api/operations/pdb-generator", "PDB manifest generator for multi-replica workloads"},
+	{"security:netpol-generator", "/api/security/netpol-generator", "NetworkPolicy manifest generator"},
+	{"product:service-dependency-map", "/api/product/service-dependency-map", "Service-to-service dependency graph"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},
