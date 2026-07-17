@@ -574,6 +574,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/event-correlation-deep", s.cacheMiddleware(60*time.Second, s.handleEventCorrelationDeep))    // deep event correlation & root cause
 	mux.HandleFunc("/api/deployment/rollback-simulator", s.cacheMiddleware(120*time.Second, s.handleRollbackSimulator))          // rollback risk simulator
 	mux.HandleFunc("/api/docs/upgrade-planner", s.cacheMiddleware(300*time.Second, s.handleUpgradePlanner))                      // k8s upgrade planner
+	mux.HandleFunc("/api/security/rbac-drift", s.cacheMiddleware(120*time.Second, s.handleRBACDrift))                            // RBAC drift & over-permissive role detector
+	mux.HandleFunc("/api/scalability/resource-forecast", s.cacheMiddleware(300*time.Second, s.handleResourceForecast))           // resource capacity forecast
+	mux.HandleFunc("/api/product/config-warmstart", s.cacheMiddleware(120*time.Second, s.handleConfigWarmstart))                 // startup optimization analyzer
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

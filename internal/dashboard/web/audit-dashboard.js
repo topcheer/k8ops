@@ -25,6 +25,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/product/label-score', name: 'Label Hygiene Score', icon: '\u1F3F7' },
     { path: '/api/product/workload-efficiency', name: 'Workload Efficiency', icon: '\u2696' },
     { path: '/api/product/workload-fingerprint', name: 'Workload Fingerprint', icon: '\u1F194' },
+    { path: '/api/product/config-warmstart', name: 'Config Warmstart', icon: '\u23F1' },
     { path: '/api/product/namespace-quota-map', name: 'Namespace Quota Map', icon: '\u1F4CA' },
     { path: '/api/product/ingress-health', name: 'Ingress Health', icon: '\u1F310' },
     { path: '/api/product/network-policy', name: 'Network Policy Audit', icon: '\u1F6E1' },
@@ -134,6 +135,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/security/compliance-gap', name: 'Compliance Gap', icon: '\u1F4CB' },
     { path: '/api/security/config-audit-trail', name: 'Config Audit Trail', icon: '\u1F4DD' },
     { path: '/api/security/secret-rotation-plan', name: 'Secret Rotation Plan', icon: '\u1F504' },
+    { path: '/api/security/rbac-drift', name: 'RBAC Drift', icon: '\u1F511' },
     { path: '/api/security/blast-radius', name: 'Blast Radius', icon: '\u1F4A5' },
     { path: '/api/security/net-policy-effectiveness', name: 'Net Policy Effectiveness', icon: '\u1F50D' },
   ],
@@ -177,6 +179,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/scalability/autoscale-readiness', name: 'Autoscale Readiness', icon: '\u2195' },
     { path: '/api/scalability/scheduler-fairness', name: 'Scheduler Fairness', icon: '\u2696' },
     { path: '/api/scalability/node-utilization-deep', name: 'Node Utilization Deep', icon: '\u1F4BB' },
+    { path: '/api/scalability/resource-forecast', name: 'Resource Forecast', icon: '\u1F52E' },
   ],
   'Documentation': [
     { path: '/api/docs/platform-scorecard', name: 'Platform Scorecard', icon: '\u1F4CB' },

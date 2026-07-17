@@ -319,6 +319,9 @@ var auditRegistry = []auditEndpoint{
 	{"operations:event-correlation-deep", "/api/operations/event-correlation-deep", "Deep event correlation & root cause"},
 	{"deployment:rollback-simulator", "/api/deployment/rollback-simulator", "Rollback risk simulator"},
 	{"docs:upgrade-planner", "/api/docs/upgrade-planner", "K8s upgrade planner & readiness"},
+	{"security:rbac-drift", "/api/security/rbac-drift", "RBAC drift & over-permissive role detector"},
+	{"scalability:resource-forecast", "/api/scalability/resource-forecast", "Resource capacity forecast"},
+	{"product:config-warmstart", "/api/product/config-warmstart", "Startup optimization & warm-start analyzer"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

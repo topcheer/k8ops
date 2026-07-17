@@ -5752,6 +5752,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Upgrade plan", map[string]interface{}{"readinessScore": 50})},
 	})
 
+	add("/api/security/rbac-drift", "get", OpenAPIOperation{
+		Summary: "RBAC drift & over-permissive role detector", OperationID: "rbacDrift",
+		Tags:        []string{"Security", "RBAC", "Audit"},
+		Description: "Detects over-permissive roles, wildcard permissions, stale bindings, and cluster-admin overuse.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("RBAC drift", map[string]interface{}{"healthScore": 70})},
+	})
+
+	add("/api/scalability/resource-forecast", "get", OpenAPIOperation{
+		Summary: "Resource capacity forecast", OperationID: "resourceForecast",
+		Tags:        []string{"Scalability", "Forecast", "Capacity"},
+		Description: "Projects when CPU, memory, and pod capacity will be exhausted. Recommends scaling actions.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Resource forecast", map[string]interface{}{"healthScore": 75})},
+	})
+
+	add("/api/product/config-warmstart", "get", OpenAPIOperation{
+		Summary: "Startup optimization & warm-start analyzer", OperationID: "configWarmstart",
+		Tags:        []string{"Product", "Startup", "Optimization"},
+		Description: "Identifies slow starters, recommends startupProbe, init containers, and probe improvements.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Warm-start analysis", map[string]interface{}{"healthScore": 60})},
+	})
+
 	return spec
 }
 

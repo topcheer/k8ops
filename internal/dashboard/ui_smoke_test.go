@@ -89,6 +89,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/operations/event-correlation-deep",
 		"/api/deployment/rollback-simulator",
 		"/api/docs/upgrade-planner",
+		"/api/security/rbac-drift",
+		"/api/scalability/resource-forecast",
+		"/api/product/config-warmstart",
 	}
 
 	missing := []string{}
