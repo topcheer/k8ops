@@ -65,6 +65,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/operations/restart-analyzer",
 		"/api/security/env-leak-scanner",
 		"/api/deployment/update-strategy-auditor",
+		"/api/product/label-score",
+		"/api/scalability/storage-tier",
+		"/api/security/trust-chain",
 	}
 
 	missing := []string{}

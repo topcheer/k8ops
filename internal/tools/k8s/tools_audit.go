@@ -295,6 +295,9 @@ var auditRegistry = []auditEndpoint{
 	{"operations:restart-analyzer", "/api/operations/restart-analyzer", "Pod restart pattern analyzer & root cause"},
 	{"security:env-leak-scanner", "/api/security/env-leak-scanner", "Plaintext env var leak scanner"},
 	{"deployment:update-strategy-auditor", "/api/deployment/update-strategy-auditor", "Update strategy risk auditor"},
+	{"product:label-score", "/api/product/label-score", "Label hygiene score & standard label coverage"},
+	{"scalability:storage-tier", "/api/scalability/storage-tier", "Storage tier analyzer & cost optimizer"},
+	{"security:trust-chain", "/api/security/trust-chain", "Trust chain auditor: certs, SA tokens, webhooks"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

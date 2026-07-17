@@ -5584,6 +5584,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Strategy audit", map[string]interface{}{"healthScore": 75})},
 	})
 
+	add("/api/product/label-score", "get", OpenAPIOperation{
+		Summary: "Label hygiene score", OperationID: "labelScore",
+		Tags:        []string{"Product", "Labels", "Quality"},
+		Description: "Evaluates label quality: standard labels coverage, app/team/owner labels, inconsistent naming, orphaned selectors.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Label score", map[string]interface{}{"healthScore": 65})},
+	})
+
+	add("/api/scalability/storage-tier", "get", OpenAPIOperation{
+		Summary: "Storage tier analyzer", OperationID: "storageTier",
+		Tags:        []string{"Scalability", "Storage", "Cost"},
+		Description: "Analyzes storage classes, PVC performance tiers, volume binding modes. Identifies cost optimization and configuration issues.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Storage tier", map[string]interface{}{"healthScore": 85})},
+	})
+
+	add("/api/security/trust-chain", "get", OpenAPIOperation{
+		Summary: "Trust chain auditor", OperationID: "trustChain",
+		Tags:        []string{"Security", "Certificates", "Trust"},
+		Description: "Audits TLS certificates, CA certs, SA tokens, and admission webhooks. Identifies expired certs, old tokens, and missing CA bundles.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Trust chain", map[string]interface{}{"healthScore": 75})},
+	})
+
 	return spec
 }
 
