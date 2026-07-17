@@ -5919,6 +5919,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes Cluster Autoscaler/Karpenter configuration and identifies scaling gaps. Detects pending/unschedulable pods, node pool sizing issues, HA gaps, and provides autoscaler deployment recommendations.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Autoscaler gap", map[string]interface{}{"gapScore": 50, "grade": "C"})},
 	})
+	add("/api/operations/resource-saturation-watch", "get", OpenAPIOperation{
+		Summary: "Resource saturation watchdog", OperationID: "resourceSaturationWatch",
+		Tags:        []string{"Operations", "Saturation", "Watch"},
+		Description: "Monitors real-time resource saturation across CPU, memory, disk, and PID dimensions. Calculates per-node saturation percentages, identifies hotspots, tracks namespace resource consumption, and predicts time-to-exhaustion.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Saturation watch", map[string]interface{}{"watchScore": 75, "grade": "B"})},
+	})
+	add("/api/deployment/deploy-frequency-trend", "get", OpenAPIOperation{
+		Summary: "Deploy frequency trend", OperationID: "deployFrequencyTrend",
+		Tags:        []string{"Deployment", "DORA", "Trend"},
+		Description: "Analyzes deployment frequency patterns using ReplicaSet creation timestamps. Computes DORA metrics (Elite/High/Medium/Low), per-day deploy counts, per-workload deploy frequency, and average intervals.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Deploy frequency", map[string]interface{}{"frequencyScore": 75, "grade": "B"})},
+	})
+	add("/api/docs/oncall-readiness", "get", OpenAPIOperation{
+		Summary: "On-call readiness evaluator", OperationID: "oncallReadiness",
+		Tags:        []string{"Documentation", "Oncall", "Readiness"},
+		Description: "Evaluates whether the cluster can safely operate unattended. Checks: multi-node HA, PDB coverage, HPA autoscaling, health probes, resource limits, crash-loop detection, runbook annotations. Determines if safe for unattended operation.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Oncall readiness", map[string]interface{}{"readinessScore": 50, "grade": "C"})},
+	})
 
 	return spec
 }

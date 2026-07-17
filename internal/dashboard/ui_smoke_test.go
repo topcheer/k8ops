@@ -116,6 +116,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/security/cert-chain-validator",
 		"/api/product/feature-flag-audit",
 		"/api/scalability/autoscaler-gap",
+		"/api/operations/resource-saturation-watch",
+		"/api/deployment/deploy-frequency-trend",
+		"/api/docs/oncall-readiness",
 	}
 
 	missing := []string{}

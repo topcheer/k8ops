@@ -346,6 +346,9 @@ var auditRegistry = []auditEndpoint{
 	{"security:cert-chain-validator", "/api/security/cert-chain-validator", "TLS certificate chain validator"},
 	{"product:feature-flag-audit", "/api/product/feature-flag-audit", "Feature flag coverage audit"},
 	{"scalability:autoscaler-gap", "/api/scalability/autoscaler-gap", "Cluster autoscaler gap analyzer"},
+	{"operations:resource-saturation-watch", "/api/operations/resource-saturation-watch", "Resource saturation watchdog"},
+	{"deployment:deploy-frequency-trend", "/api/deployment/deploy-frequency-trend", "DORA deploy frequency trend"},
+	{"docs:oncall-readiness", "/api/docs/oncall-readiness", "On-call readiness evaluator"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},
