@@ -298,6 +298,9 @@ var auditRegistry = []auditEndpoint{
 	{"product:label-score", "/api/product/label-score", "Label hygiene score & standard label coverage"},
 	{"scalability:storage-tier", "/api/scalability/storage-tier", "Storage tier analyzer & cost optimizer"},
 	{"security:trust-chain", "/api/security/trust-chain", "Trust chain auditor: certs, SA tokens, webhooks"},
+	{"operations:alert-fatigue", "/api/operations/alert-fatigue", "Event noise & alert fatigue analyzer"},
+	{"deployment:deploy-frequency", "/api/deployment/deploy-frequency", "Deployment frequency tracker (DORA metric)"},
+	{"docs:platform-comparison", "/api/docs/platform-comparison", "Platform comparison & trend snapshot"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

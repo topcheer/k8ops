@@ -5605,6 +5605,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Trust chain", map[string]interface{}{"healthScore": 75})},
 	})
 
+	add("/api/operations/alert-fatigue", "get", OpenAPIOperation{
+		Summary: "Event noise & alert fatigue analyzer", OperationID: "alertFatigue",
+		Tags:        []string{"Operations", "Events", "Noise"},
+		Description: "Analyzes Warning events to find noisy namespaces, repeated warnings, and event storms. Helps tune alerting.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Alert fatigue", map[string]interface{}{"noiseScore": 65})},
+	})
+
+	add("/api/deployment/deploy-frequency", "get", OpenAPIOperation{
+		Summary: "Deployment frequency tracker (DORA)", OperationID: "deployFrequency",
+		Tags:        []string{"Deployment", "DORA", "Metrics"},
+		Description: "Tracks deployment rollout history: frequency, success rate, rollback patterns. Key DORA metric.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Deploy frequency", map[string]interface{}{"healthScore": 60})},
+	})
+
+	add("/api/docs/platform-comparison", "get", OpenAPIOperation{
+		Summary: "Platform comparison & trend snapshot", OperationID: "platformComparison",
+		Tags:        []string{"Documentation", "Trend", "Comparison"},
+		Description: "Generates cluster state snapshot with category scores for trend tracking and regression detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Platform comparison", map[string]interface{}{"overallScore": 45})},
+	})
+
 	return spec
 }
 

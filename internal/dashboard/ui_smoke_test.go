@@ -68,6 +68,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/product/label-score",
 		"/api/scalability/storage-tier",
 		"/api/security/trust-chain",
+		"/api/operations/alert-fatigue",
+		"/api/deployment/deploy-frequency",
+		"/api/docs/platform-comparison",
 	}
 
 	missing := []string{}

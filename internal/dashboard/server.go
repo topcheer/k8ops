@@ -553,6 +553,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/label-score", s.cacheMiddleware(120*time.Second, s.handleLabelScore))                           // label hygiene score
 	mux.HandleFunc("/api/scalability/storage-tier", s.cacheMiddleware(120*time.Second, s.handleStorageTier))                     // storage tier analyzer
 	mux.HandleFunc("/api/security/trust-chain", s.cacheMiddleware(120*time.Second, s.handleTrustChain))                          // trust chain auditor
+	mux.HandleFunc("/api/operations/alert-fatigue", s.cacheMiddleware(60*time.Second, s.handleAlertFatigue))                     // event noise & alert fatigue analyzer
+	mux.HandleFunc("/api/deployment/deploy-frequency", s.cacheMiddleware(60*time.Second, s.handleDeployFrequency))               // deployment frequency tracker (DORA)
+	mux.HandleFunc("/api/docs/platform-comparison", s.cacheMiddleware(60*time.Second, s.handlePlatformComparison))               // platform comparison & trend snapshot
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 
