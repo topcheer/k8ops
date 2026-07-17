@@ -607,6 +607,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/mtls-trust-domain", s.cacheMiddleware(120*time.Second, s.handleMTLSTrustDomain))                  // mTLS trust domain auditor
 	mux.HandleFunc("/api/product/latency-budget", s.cacheMiddleware(120*time.Second, s.handleLatencyBudget))                        // latency budget allocator
 	mux.HandleFunc("/api/scalability/pod-disruption-tolerance", s.cacheMiddleware(120*time.Second, s.handlePodDisruptionTolerance)) // pod disruption tolerance analyzer
+	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))               // event noise filter & signal analyzer
+	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))           // progressive delivery readiness
+	mux.HandleFunc("/api/docs/cost-anomaly-deep", s.cacheMiddleware(300*time.Second, s.handleCostAnomalyDeep))                      // deep cost anomaly detector
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)

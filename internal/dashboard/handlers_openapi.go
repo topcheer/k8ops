@@ -5955,6 +5955,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes cluster tolerance to both voluntary (drains, maintenance) and involuntary (node failure) disruptions. Computes per-workload voluntary and involuntary scores, recovery time estimates, data loss risk for StatefulSets, and node spread analysis.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Disruption tolerance", map[string]interface{}{"toleranceScore": 50, "grade": "C"})},
 	})
+	add("/api/operations/event-noise-filter", "get", OpenAPIOperation{
+		Summary: "Event noise filter", OperationID: "eventNoiseFilter",
+		Tags:        []string{"Operations", "Events", "Noise"},
+		Description: "Analyzes Kubernetes events to identify noise patterns, duplicate events, and actionable signal-to-noise ratio. Classifies events by reason, detects noise-dominant patterns.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event noise", map[string]interface{}{"signalScore": 50})},
+	})
+	add("/api/deployment/progressive-rollout", "get", OpenAPIOperation{
+		Summary: "Progressive rollout readiness", OperationID: "progressiveRollout",
+		Tags:        []string{"Deployment", "Canary", "Progressive"},
+		Description: "Evaluates rolling update strategies for progressive delivery: canary readiness, blue-green capability, probe/PDB/replica prerequisites.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Progressive rollout", map[string]interface{}{"readinessScore": 40})},
+	})
+	add("/api/docs/cost-anomaly-deep", "get", OpenAPIOperation{
+		Summary: "Deep cost anomaly", OperationID: "costAnomalyDeep",
+		Tags:        []string{"Documentation", "Cost", "Anomaly"},
+		Description: "Deep cost anomaly detection by comparing per-namespace resource consumption against baselines. Identifies cost spikes and expensive-per-pod anomalies.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cost anomaly", map[string]interface{}{"anomalyScore": 70})},
+	})
 
 	return spec
 }

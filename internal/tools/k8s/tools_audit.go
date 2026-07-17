@@ -352,6 +352,9 @@ var auditRegistry = []auditEndpoint{
 	{"security:mtls-trust-domain", "/api/security/mtls-trust-domain", "mTLS trust domain auditor"},
 	{"product:latency-budget", "/api/product/latency-budget", "Latency budget allocator"},
 	{"scalability:pod-disruption-tolerance", "/api/scalability/pod-disruption-tolerance", "Pod disruption tolerance analyzer"},
+	{"operations:event-noise-filter", "/api/operations/event-noise-filter", "Event noise filter & signal analyzer"},
+	{"deployment:progressive-rollout", "/api/deployment/progressive-rollout", "Progressive delivery readiness"},
+	{"docs:cost-anomaly-deep", "/api/docs/cost-anomaly-deep", "Deep cost anomaly detector"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

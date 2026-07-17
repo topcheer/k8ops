@@ -122,6 +122,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/security/mtls-trust-domain",
 		"/api/product/latency-budget",
 		"/api/scalability/pod-disruption-tolerance",
+		"/api/operations/event-noise-filter",
+		"/api/deployment/progressive-rollout",
+		"/api/docs/cost-anomaly-deep",
 	}
 
 	missing := []string{}
