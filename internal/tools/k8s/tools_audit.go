@@ -328,6 +328,9 @@ var auditRegistry = []auditEndpoint{
 	{"security:disruption-budget-gap", "/api/security/disruption-budget-gap", "PodDisruptionBudget gap & disruption risk analyzer"},
 	{"product:cost-topology", "/api/product/cost-topology", "Per-namespace cost topology & FinOps analysis"},
 	{"scalability:binpack-efficiency", "/api/scalability/binpack-efficiency", "Node bin-packing efficiency & consolidation analyzer"},
+	{"operations:slo-burn-rate", "/api/operations/slo-burn-rate", "SLO error budget burn rate analyzer"},
+	{"deployment:surge-capacity", "/api/deployment/surge-capacity", "Rolling update surge capacity checker"},
+	{"docs:runbook-coverage", "/api/docs/runbook-coverage", "Runbook annotation coverage scanner"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

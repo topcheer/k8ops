@@ -583,6 +583,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/disruption-budget-gap", s.cacheMiddleware(120*time.Second, s.handleDisruptionBudgetGap))       // PDB gap & disruption risk analyzer
 	mux.HandleFunc("/api/product/cost-topology", s.cacheMiddleware(300*time.Second, s.handleCostTopology))                       // per-namespace cost topology
 	mux.HandleFunc("/api/scalability/binpack-efficiency", s.cacheMiddleware(120*time.Second, s.handleBinpackEfficiency))         // node bin-packing efficiency & consolidation
+	mux.HandleFunc("/api/operations/slo-burn-rate", s.cacheMiddleware(60*time.Second, s.handleSLOBurnRate))                      // SLO error budget burn rate analyzer
+	mux.HandleFunc("/api/deployment/surge-capacity", s.cacheMiddleware(120*time.Second, s.handleSurgeCapacity))                  // rolling update surge capacity checker
+	mux.HandleFunc("/api/docs/runbook-coverage", s.cacheMiddleware(300*time.Second, s.handleRunbookCoverage))                    // runbook annotation coverage scanner
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

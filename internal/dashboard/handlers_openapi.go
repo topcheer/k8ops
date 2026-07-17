@@ -5811,6 +5811,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes node bin-packing efficiency by comparing pod resource requests against node allocatable capacity. Classifies nodes as idle/underutilized/moderate/packed. Identifies consolidation opportunities (nodes that can be drained), pod density metrics, and potential savings.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Binpack efficiency", map[string]interface{}{"efficiencyScore": 70, "grade": "B"})},
 	})
+	add("/api/operations/slo-burn-rate", "get", OpenAPIOperation{
+		Summary: "SLO error budget burn rate", OperationID: "sloBurnRate",
+		Tags:        []string{"Operations", "SLO", "SRE"},
+		Description: "Calculates SLO error budget burn rates using SRE methodology. Fast burn rate detects acute incidents (1h window, >14.4x = critical). Slow burn rate detects chronic issues (72h window). Estimates time to budget exhaustion per workload.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SLO burn rate", map[string]interface{}{"burnScore": 75, "grade": "B"})},
+	})
+	add("/api/deployment/surge-capacity", "get", OpenAPIOperation{
+		Summary: "Rolling update surge capacity", OperationID: "surgeCapacity",
+		Tags:        []string{"Deployment", "Capacity", "RollingUpdate"},
+		Description: "Checks whether the cluster has enough resources to absorb maxSurge replicas during rolling updates. Calculates per-pod resource requests, surge requirements (CPU/memory), and compares against cluster-wide available capacity. Identifies workloads that will be blocked during deployment.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Surge capacity", map[string]interface{}{"surgeScore": 80, "grade": "B"})},
+	})
+	add("/api/docs/runbook-coverage", "get", OpenAPIOperation{
+		Summary: "Runbook coverage scanner", OperationID: "runbookCoverage",
+		Tags:        []string{"Documentation", "Runbook", "SRE"},
+		Description: "Scans workloads for documentation annotations (runbook, docs, wiki, oncall, sop, playbook). Identifies undocumented critical services. Supports standard annotations and app.kubernetes.io prefixed variants.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Runbook coverage", map[string]interface{}{"coverageScore": 30, "grade": "F"})},
+	})
 
 	return spec
 }
