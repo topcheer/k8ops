@@ -5521,6 +5521,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Dependency map", map[string]interface{}{"healthScore": 60})},
 	})
 
+	add("/api/scalability/quota-generator", "get", OpenAPIOperation{
+		Summary: "ResourceQuota & LimitRange manifest generator", OperationID: "quotaGenerator",
+		Tags:        []string{"Scalability", "Governance", "Automation"},
+		Description: "Generates ResourceQuota and LimitRange YAML for namespaces lacking resource governance. Provides batch kubectl apply commands.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Quota manifests", map[string]interface{}{"healthScore": 40})},
+	})
+
+	add("/api/deployment/probe-generator", "get", OpenAPIOperation{
+		Summary: "Health probe patch generator", OperationID: "probeGenerator",
+		Tags:        []string{"Deployment", "Reliability", "Automation"},
+		Description: "Generates livenessProbe and readinessProbe kubectl patches for containers missing health checks.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Probe patches", map[string]interface{}{"healthScore": 50})},
+	})
+
+	add("/api/docs/platform-insights", "get", OpenAPIOperation{
+		Summary: "Unified executive platform insights", OperationID: "platformInsights",
+		Tags:        []string{"Documentation", "Executive", "Dashboard"},
+		Description: "Aggregates key metrics from all audit endpoints into a single executive summary with category scores, alerts, and trends.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Platform insights", map[string]interface{}{"overallScore": 45, "grade": "D"})},
+	})
+
 	return spec
 }
 

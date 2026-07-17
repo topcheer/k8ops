@@ -286,6 +286,9 @@ var auditRegistry = []auditEndpoint{
 	{"operations:pdb-generator", "/api/operations/pdb-generator", "PDB manifest generator for multi-replica workloads"},
 	{"security:netpol-generator", "/api/security/netpol-generator", "NetworkPolicy manifest generator"},
 	{"product:service-dependency-map", "/api/product/service-dependency-map", "Service-to-service dependency graph"},
+	{"scalability:quota-generator", "/api/scalability/quota-generator", "ResourceQuota & LimitRange manifest generator"},
+	{"deployment:probe-generator", "/api/deployment/probe-generator", "Health probe patch generator"},
+	{"docs:platform-insights", "/api/docs/platform-insights", "Unified executive platform insights"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

@@ -541,6 +541,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/pdb-generator", s.cacheMiddleware(120*time.Second, s.handlePDBGenerator))                    // PDB manifest generator
 	mux.HandleFunc("/api/security/netpol-generator", s.cacheMiddleware(120*time.Second, s.handleNetpolGenerator))                // NetworkPolicy manifest generator
 	mux.HandleFunc("/api/product/service-dependency-map", s.cacheMiddleware(120*time.Second, s.handleServiceDependencyMap))      // service dependency graph
+	mux.HandleFunc("/api/scalability/quota-generator", s.cacheMiddleware(120*time.Second, s.handleQuotaGenerator))               // ResourceQuota & LimitRange manifest generator
+	mux.HandleFunc("/api/deployment/probe-generator", s.cacheMiddleware(120*time.Second, s.handleProbeGenerator))                // health probe patch generator
+	mux.HandleFunc("/api/docs/platform-insights", s.cacheMiddleware(60*time.Second, s.handlePlatformInsights))                   // unified executive platform insights
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 
