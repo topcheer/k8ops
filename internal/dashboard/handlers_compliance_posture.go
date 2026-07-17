@@ -15,14 +15,14 @@ import (
 // compliance frameworks (SOC2, PCI-DSS, HIPAA, NIST 800-53, GDPR).
 // It cross-references existing k8ops findings with framework control families.
 type ComplianceFrameworkResult struct {
-	ScannedAt       time.Time             `json:"scannedAt"`
-	OverallScore    int                   `json:"overallScore"`
-	OverallGrade    string                `json:"overallGrade"`
-	Frameworks      []ComplianceFwPosture    `json:"frameworks"`
-	ControlResults  []ComplianceCtrlResult       `json:"controlResults"`
-	CrossFramework  []CrossFWGap   `json:"crossFrameworkGaps"`
+	ScannedAt       time.Time               `json:"scannedAt"`
+	OverallScore    int                     `json:"overallScore"`
+	OverallGrade    string                  `json:"overallGrade"`
+	Frameworks      []ComplianceFwPosture   `json:"frameworks"`
+	ControlResults  []ComplianceCtrlResult  `json:"controlResults"`
+	CrossFramework  []CrossFWGap            `json:"crossFrameworkGaps"`
 	RemediationPlan []ComplianceRemediation `json:"remediationPlan"`
-	Recommendations []string              `json:"recommendations"`
+	Recommendations []string                `json:"recommendations"`
 }
 
 // ComplianceFwPosture shows compliance status for one framework.
@@ -31,7 +31,7 @@ type ComplianceFwPosture struct {
 	FullName       string  `json:"fullName"`
 	Score          int     `json:"score"`
 	Grade          string  `json:"grade"`
-	Status         string  `json:"status"`     // compliant, partial, non-compliant
+	Status         string  `json:"status"` // compliant, partial, non-compliant
 	TotalControls  int     `json:"totalControls"`
 	PassedControls int     `json:"passedControls"`
 	FailedControls int     `json:"failedControls"`
@@ -42,32 +42,32 @@ type ComplianceFwPosture struct {
 
 // ComplianceCtrlResult is the assessment of one compliance control.
 type ComplianceCtrlResult struct {
-	ID          string   `json:"id"`
-	Framework   string   `json:"framework"`
-	Category    string   `json:"category"`
-	Title       string   `json:"title"`
-	Description string   `json:"description"`
-	Status      string   `json:"status"`     // pass, fail, warn, na
-	Severity    string   `json:"severity"`
-	Evidence    string   `json:"evidence"`
-	Remediation string   `json:"remediation"`
+	ID          string `json:"id"`
+	Framework   string `json:"framework"`
+	Category    string `json:"category"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Status      string `json:"status"` // pass, fail, warn, na
+	Severity    string `json:"severity"`
+	Evidence    string `json:"evidence"`
+	Remediation string `json:"remediation"`
 }
 
 // CrossFWGap identifies controls that fail across multiple frameworks.
 type CrossFWGap struct {
-	Gap           string   `json:"gap"`
-	Severity      string   `json:"severity"`
-	Frameworks    []string `json:"frameworks"`
-	Impact        string   `json:"impact"`
+	Gap        string   `json:"gap"`
+	Severity   string   `json:"severity"`
+	Frameworks []string `json:"frameworks"`
+	Impact     string   `json:"impact"`
 }
 
 // ComplianceRemediation is a prioritized fix item.
 type ComplianceRemediation struct {
-	Priority     int    `json:"priority"`
-	ControlIDs   []string `json:"controlIds"`
-	Action       string `json:"action"`
-	Effort       string `json:"effort"`
-	Frameworks   []string `json:"frameworksAffected"`
+	Priority   int      `json:"priority"`
+	ControlIDs []string `json:"controlIds"`
+	Action     string   `json:"action"`
+	Effort     string   `json:"effort"`
+	Frameworks []string `json:"frameworksAffected"`
 }
 
 // handleCompliancePosture maps cluster security against compliance frameworks.
@@ -274,11 +274,11 @@ func (s *Server) handleCompliancePosture(w http.ResponseWriter, r *http.Request)
 
 	// Framework mappings (which controls apply to which frameworks)
 	frameworkMap := map[string][]string{
-		"SOC2":   {"AC-1", "AC-2", "AC-3", "DP-1", "DP-2", "SC-1", "SC-2", "RG-1", "RG-2"},
+		"SOC2":    {"AC-1", "AC-2", "AC-3", "DP-1", "DP-2", "SC-1", "SC-2", "RG-1", "RG-2"},
 		"PCI-DSS": {"AC-1", "AC-2", "AC-3", "DP-1", "DP-2", "DP-3", "SC-1", "SC-2", "SC-3", "RG-1"},
-		"HIPAA":  {"AC-1", "AC-2", "DP-1", "DP-2", "DP-3", "SC-2", "RG-1"},
-		"NIST":   {"AC-1", "AC-2", "AC-3", "DP-1", "DP-3", "SC-1", "SC-2", "SC-3", "RG-1", "RG-2"},
-		"GDPR":   {"DP-1", "DP-2", "DP-3", "SC-2", "RG-1"},
+		"HIPAA":   {"AC-1", "AC-2", "DP-1", "DP-2", "DP-3", "SC-2", "RG-1"},
+		"NIST":    {"AC-1", "AC-2", "AC-3", "DP-1", "DP-3", "SC-1", "SC-2", "SC-3", "RG-1", "RG-2"},
+		"GDPR":    {"DP-1", "DP-2", "DP-3", "SC-2", "RG-1"},
 	}
 
 	// Assess all controls
@@ -441,11 +441,11 @@ func generateComplianceRemediation(result ComplianceFrameworkResult) []Complianc
 	// Critical first
 	for _, cr := range critFails {
 		items = append(items, ComplianceRemediation{
-			Priority:     priority,
-			ControlIDs:   []string{cr.ID},
-			Action:       cr.Remediation,
-			Effort:       "low",
-			Frameworks:   getAllFrameworksWithControl(cr.ID),
+			Priority:   priority,
+			ControlIDs: []string{cr.ID},
+			Action:     cr.Remediation,
+			Effort:     "low",
+			Frameworks: getAllFrameworksWithControl(cr.ID),
 		})
 		priority++
 	}
@@ -453,11 +453,11 @@ func generateComplianceRemediation(result ComplianceFrameworkResult) []Complianc
 	// High severity
 	for _, cr := range highFails {
 		items = append(items, ComplianceRemediation{
-			Priority:     priority,
-			ControlIDs:   []string{cr.ID},
-			Action:       cr.Remediation,
-			Effort:       "medium",
-			Frameworks:   getAllFrameworksWithControl(cr.ID),
+			Priority:   priority,
+			ControlIDs: []string{cr.ID},
+			Action:     cr.Remediation,
+			Effort:     "medium",
+			Frameworks: getAllFrameworksWithControl(cr.ID),
 		})
 		priority++
 	}

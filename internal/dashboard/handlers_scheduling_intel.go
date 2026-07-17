@@ -8,70 +8,70 @@ import (
 	"time"
 
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // SchedulingIntelResult analyzes node bin-packing efficiency, resource fragmentation,
 // and scheduling bottlenecks across the cluster.
 type SchedulingIntelResult struct {
-	ScannedAt        time.Time           `json:"scannedAt"`
-	Summary          SchedSummary        `json:"summary"`
-	ByNode           []NodePackAnalysis  `json:"byNode"`
-	FragileNodes     []FragileNode       `json:"fragileNodes"`
+	ScannedAt         time.Time          `json:"scannedAt"`
+	Summary           SchedSummary       `json:"summary"`
+	ByNode            []NodePackAnalysis `json:"byNode"`
+	FragileNodes      []FragileNode      `json:"fragileNodes"`
 	StrandedResources []StrandedResource `json:"strandedResources"`
-	SchedulingScore  int                 `json:"schedulingScore"`
-	Grade            string              `json:"grade"`
-	Recommendations  []string            `json:"recommendations"`
+	SchedulingScore   int                `json:"schedulingScore"`
+	Grade             string             `json:"grade"`
+	Recommendations   []string           `json:"recommendations"`
 }
 
 // SchedSummary aggregates scheduling statistics.
 type SchedSummary struct {
 	TotalNodes         int     `json:"totalNodes"`
-	UnderutilizedNodes int     `json:"underutilizedNodes"`  // <30% utilized
-	OverloadedNodes    int     `json:"overloadedNodes"`     // >85% utilized
-	FragileNodes       int     `json:"fragileNodes"`        // can't fit any standard pod
-	AvgCPUPacking     float64 `json:"avgCPUPacking"`       // % of allocatable CPU used
-	AvgMemPacking     float64 `json:"avgMemPacking"`       // % of allocatable memory used
-	BinPackScore      int     `json:"binPackScore"`        // 0-100 packing efficiency
-	StrandedCPUMilli  int64   `json:"strandedCPUMilli"`    // total stranded CPU (fragmented)
-	StrandedMemMi     int64   `json:"strandedMemMi"`       // total stranded memory
-	FitAssessment     string  `json:"fitAssessment"`       // can a standard pod fit on any node?
+	UnderutilizedNodes int     `json:"underutilizedNodes"` // <30% utilized
+	OverloadedNodes    int     `json:"overloadedNodes"`    // >85% utilized
+	FragileNodes       int     `json:"fragileNodes"`       // can't fit any standard pod
+	AvgCPUPacking      float64 `json:"avgCPUPacking"`      // % of allocatable CPU used
+	AvgMemPacking      float64 `json:"avgMemPacking"`      // % of allocatable memory used
+	BinPackScore       int     `json:"binPackScore"`       // 0-100 packing efficiency
+	StrandedCPUMilli   int64   `json:"strandedCPUMilli"`   // total stranded CPU (fragmented)
+	StrandedMemMi      int64   `json:"strandedMemMi"`      // total stranded memory
+	FitAssessment      string  `json:"fitAssessment"`      // can a standard pod fit on any node?
 }
 
 // NodePackAnalysis shows bin-packing efficiency for one node.
 type NodePackAnalysis struct {
-	Name          string  `json:"name"`
-	AllocatableCPU string `json:"allocatableCPU"`
-	AllocatableMem string `json:"allocatableMem"`
-	RequestedCPU  string  `json:"requestedCPU"`
-	RequestedMem  string  `json:"requestedMem"`
-	CPUUsagePct   float64 `json:"cpuUsagePct"`
-	MemUsagePct   float64 `json:"memUsagePct"`
-	PodCount      int     `json:"podCount"`
-	Capacity      int     `json:"podCapacity"`
-	PodDensity    float64 `json:"podDensity"` // pods/capacity %
-	Status        string  `json:"status"`     // optimal, underutilized, overloaded, fragile
-	LargestFitCPU string  `json:"largestFitCPU"`
-	LargestFitMem string  `json:"largestFitMem"`
+	Name           string  `json:"name"`
+	AllocatableCPU string  `json:"allocatableCPU"`
+	AllocatableMem string  `json:"allocatableMem"`
+	RequestedCPU   string  `json:"requestedCPU"`
+	RequestedMem   string  `json:"requestedMem"`
+	CPUUsagePct    float64 `json:"cpuUsagePct"`
+	MemUsagePct    float64 `json:"memUsagePct"`
+	PodCount       int     `json:"podCount"`
+	Capacity       int     `json:"podCapacity"`
+	PodDensity     float64 `json:"podDensity"` // pods/capacity %
+	Status         string  `json:"status"`     // optimal, underutilized, overloaded, fragile
+	LargestFitCPU  string  `json:"largestFitCPU"`
+	LargestFitMem  string  `json:"largestFitMem"`
 }
 
 // FragileNode is a node with too much fragmentation to schedule new pods.
 type FragileNode struct {
-	Name         string  `json:"name"`
-	CPUUsagePct  float64 `json:"cpuUsagePct"`
-	MemUsagePct  float64 `json:"memUsagePct"`
-	Reason       string  `json:"reason"`
-	StrandedCPU  string  `json:"strandedCPU"`
-	StrandedMem  string  `json:"strandedMem"`
+	Name        string  `json:"name"`
+	CPUUsagePct float64 `json:"cpuUsagePct"`
+	MemUsagePct float64 `json:"memUsagePct"`
+	Reason      string  `json:"reason"`
+	StrandedCPU string  `json:"strandedCPU"`
+	StrandedMem string  `json:"strandedMem"`
 }
 
 // StrandedResource quantifies wasted allocatable resources.
 type StrandedResource struct {
-	Node     string `json:"node"`
-	Type     string `json:"type"`     // cpu or memory
-	Amount   string `json:"amount"`   // human-readable stranded amount
-	Reason   string `json:"reason"`   // fragmentation, pod-limit, etc.
+	Node   string `json:"node"`
+	Type   string `json:"type"`   // cpu or memory
+	Amount string `json:"amount"` // human-readable stranded amount
+	Reason string `json:"reason"` // fragmentation, pod-limit, etc.
 }
 
 // Standard pod sizes for fit assessment
@@ -110,9 +110,9 @@ func (s *Server) handleSchedulingIntel(w http.ResponseWriter, r *http.Request) {
 
 	// Build per-node resource usage map
 	type nodeUsage struct {
-		reqCPU    int64 // milli-cores
-		reqMem    int64 // MiB
-		podCount  int
+		reqCPU   int64 // milli-cores
+		reqMem   int64 // MiB
+		podCount int
 	}
 	nodeUsageMap := make(map[string]*nodeUsage)
 
@@ -256,19 +256,19 @@ func (s *Server) handleSchedulingIntel(w http.ResponseWriter, r *http.Request) {
 		_ = fragile
 
 		result.ByNode = append(result.ByNode, NodePackAnalysis{
-			Name:          node.Name,
+			Name:           node.Name,
 			AllocatableCPU: fmt.Sprintf("%dm", allocCPUMilli),
 			AllocatableMem: fmt.Sprintf("%dMi", allocMemMi),
-			RequestedCPU:  fmt.Sprintf("%dm", nu.reqCPU),
-			RequestedMem:  fmt.Sprintf("%dMi", nu.reqMem),
-			CPUUsagePct:   cpuPct,
-			MemUsagePct:   memPct,
-			PodCount:      nu.podCount,
-			Capacity:      podCap,
-			PodDensity:    podDensity,
-			Status:        status,
-			LargestFitCPU: largestFitCPU,
-			LargestFitMem: largestFitMem,
+			RequestedCPU:   fmt.Sprintf("%dm", nu.reqCPU),
+			RequestedMem:   fmt.Sprintf("%dMi", nu.reqMem),
+			CPUUsagePct:    cpuPct,
+			MemUsagePct:    memPct,
+			PodCount:       nu.podCount,
+			Capacity:       podCap,
+			PodDensity:     podDensity,
+			Status:         status,
+			LargestFitCPU:  largestFitCPU,
+			LargestFitMem:  largestFitMem,
 		})
 
 		totalCPUUsage += cpuPct

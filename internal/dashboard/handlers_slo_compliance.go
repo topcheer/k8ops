@@ -13,12 +13,12 @@ import (
 // availability estimation, error budget burn rate,
 // and per-namespace SLO target tracking.
 type SLOComplianceResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         SLOSummary          `json:"summary"`
-	NamespaceSLOs   []NamespaceSLO      `json:"namespaceSLOs"`
-	ComplianceScore int                  `json:"complianceScore"`
-	Grade           string               `json:"grade"`
-	Recommendations []string             `json:"recommendations"`
+	ScannedAt       time.Time      `json:"scannedAt"`
+	Summary         SLOSummary     `json:"summary"`
+	NamespaceSLOs   []NamespaceSLO `json:"namespaceSLOs"`
+	ComplianceScore int            `json:"complianceScore"`
+	Grade           string         `json:"grade"`
+	Recommendations []string       `json:"recommendations"`
 }
 
 type SLOSummary struct {
@@ -31,11 +31,11 @@ type SLOSummary struct {
 }
 
 type NamespaceSLO struct {
-	Namespace       string  `json:"namespace"`
-	ServiceCount    int     `json:"serviceCount"`
-	HealthyCount    int     `json:"healthyCount"`
-	Availability    float64 `json:"availability"`
-	Status          string  `json:"status"`
+	Namespace    string  `json:"namespace"`
+	ServiceCount int     `json:"serviceCount"`
+	HealthyCount int     `json:"healthyCount"`
+	Availability float64 `json:"availability"`
+	Status       string  `json:"status"`
 }
 
 // handleSLOCompliance analyzes service SLO compliance and error budget.
@@ -56,8 +56,8 @@ func (s *Server) handleSLOCompliance(w http.ResponseWriter, r *http.Request) {
 	pods, _ := rc.clientset.CoreV1().Pods("").List(ctx, metav1.ListOptions{})
 
 	// Build endpoint and pod health maps
-	epReady := map[string]int{}  // ns/name -> ready addresses
-	epTotal := map[string]int{}  // ns/name -> total addresses
+	epReady := map[string]int{} // ns/name -> ready addresses
+	epTotal := map[string]int{} // ns/name -> total addresses
 	for _, ep := range endpoints.Items {
 		key := ep.Namespace + "/" + ep.Name
 		ready := len(ep.Subsets)
@@ -72,14 +72,21 @@ func (s *Server) handleSLOCompliance(w http.ResponseWriter, r *http.Request) {
 	nsPodReady := map[string]int{}
 	nsPodTotal := map[string]int{}
 	for _, pod := range pods.Items {
-		if systemNS[pod.Namespace] { continue }
+		if systemNS[pod.Namespace] {
+			continue
+		}
 		nsPodTotal[pod.Namespace]++
 		if pod.Status.Phase == "Running" {
 			ready := true
 			for _, cs := range pod.Status.ContainerStatuses {
-				if !cs.Ready { ready = false; break }
+				if !cs.Ready {
+					ready = false
+					break
+				}
 			}
-			if ready { nsPodReady[pod.Namespace]++ }
+			if ready {
+				nsPodReady[pod.Namespace]++
+			}
 		}
 	}
 
@@ -87,7 +94,9 @@ func (s *Server) handleSLOCompliance(w http.ResponseWriter, r *http.Request) {
 	nsSvcCount := map[string]int{}
 	nsSvcHealthy := map[string]int{}
 	for _, svc := range services.Items {
-		if systemNS[svc.Namespace] { continue }
+		if systemNS[svc.Namespace] {
+			continue
+		}
 		result.Summary.TotalServices++
 		key := svc.Namespace + "/" + svc.Name
 		nsSvcCount[svc.Namespace]++
@@ -113,8 +122,12 @@ func (s *Server) handleSLOCompliance(w http.ResponseWriter, r *http.Request) {
 			avail = float64(readyPods) / float64(totalPods) * 100
 		}
 		status := "healthy"
-		if avail < 95 { status = "degraded" }
-		if avail < 80 { status = "critical" }
+		if avail < 95 {
+			status = "degraded"
+		}
+		if avail < 80 {
+			status = "critical"
+		}
 
 		result.NamespaceSLOs = append(result.NamespaceSLOs, NamespaceSLO{
 			Namespace: ns, ServiceCount: svcCount,

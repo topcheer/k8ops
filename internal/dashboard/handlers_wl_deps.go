@@ -13,21 +13,21 @@ import (
 // WLDepsResult analyzes workload dependency graph: init containers, config refs,
 // cross-namespace dependencies, and startup ordering risks.
 type WLDepsResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         WLDepsSummary       `json:"summary"`
-	RiskItems       []WLDepRisk         `json:"riskItems"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time     `json:"scannedAt"`
+	Summary         WLDepsSummary `json:"summary"`
+	RiskItems       []WLDepRisk   `json:"riskItems"`
+	HealthScore     int           `json:"healthScore"`
+	Grade           string        `json:"grade"`
+	Recommendations []string      `json:"recommendations"`
 }
 
 type WLDepsSummary struct {
-	TotalWorkloads  int `json:"totalWorkloads"`
+	TotalWorkloads     int `json:"totalWorkloads"`
 	WithInitContainers int `json:"withInitContainers"`
-	CrossNSDeps     int `json:"crossNSDeps"`
-	ConfigRefs      int `json:"configRefs"`
-	SecretRefs      int `json:"secretRefs"`
-	StartupOrderRisks int `json:"startupOrderRisks"`
+	CrossNSDeps        int `json:"crossNSDeps"`
+	ConfigRefs         int `json:"configRefs"`
+	SecretRefs         int `json:"secretRefs"`
+	StartupOrderRisks  int `json:"startupOrderRisks"`
 }
 
 type WLDepRisk struct {
@@ -54,7 +54,9 @@ func (s *Server) handleWLDeps(w http.ResponseWriter, r *http.Request) {
 	deployments, _ := rc.clientset.AppsV1().Deployments("").List(ctx, metav1.ListOptions{})
 
 	for _, dep := range deployments.Items {
-		if systemNS[dep.Namespace] { continue }
+		if systemNS[dep.Namespace] {
+			continue
+		}
 		result.Summary.TotalWorkloads++
 
 		spec := dep.Spec.Template.Spec
@@ -127,7 +129,9 @@ func (s *Server) handleWLDeps(w http.ResponseWriter, r *http.Request) {
 	if result.Summary.StartupOrderRisks > 0 {
 		recs = append(recs, fmt.Sprintf("%d workloads with startup ordering risk — add init containers to verify deps", result.Summary.StartupOrderRisks))
 	}
-	if len(recs) == 1 { recs = append(recs, "Workload dependencies are well-managed") }
+	if len(recs) == 1 {
+		recs = append(recs, "Workload dependencies are well-managed")
+	}
 	result.Recommendations = recs
 
 	writeJSON(w, result)

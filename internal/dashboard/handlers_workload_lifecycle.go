@@ -15,65 +15,65 @@ import (
 // from labels, annotations, namespace patterns, resource patterns, and age to help
 // prioritize operational attention and cleanup.
 type WorkloadLifecycleResult struct {
-	ScannedAt       time.Time             `json:"scannedAt"`
-	Summary         WLLifecycleSummary  `json:"summary"`
-	Workloads       []LifecycleEntry      `json:"workloads"`
-	ByStage         []StageStat           `json:"byStage"`
-	ByNamespace     []LifecycleNSStat     `json:"byNamespace"`
-	CleanupTargets  []CleanupTarget       `json:"cleanupTargets"`
-	HealthScore     int                   `json:"healthScore"`
-	Grade           string                `json:"grade"`
-	Recommendations []string              `json:"recommendations"`
+	ScannedAt       time.Time          `json:"scannedAt"`
+	Summary         WLLifecycleSummary `json:"summary"`
+	Workloads       []LifecycleEntry   `json:"workloads"`
+	ByStage         []StageStat        `json:"byStage"`
+	ByNamespace     []LifecycleNSStat  `json:"byNamespace"`
+	CleanupTargets  []CleanupTarget    `json:"cleanupTargets"`
+	HealthScore     int                `json:"healthScore"`
+	Grade           string             `json:"grade"`
+	Recommendations []string           `json:"recommendations"`
 }
 
 // WLLifecycleSummary aggregates lifecycle statistics.
 type WLLifecycleSummary struct {
-	TotalWorkloads   int     `json:"totalWorkloads"`
-	Production       int     `json:"production"`
-	Staging          int     `json:"staging"`
-	Development      int     `json:"development"`
-	Deprecated       int     `json:"deprecated"`
-	Legacy           int     `json:"legacy"`
-	CleanupCandidates int    `json:"cleanupCandidates"`
-	AvgAge           float64 `json:"avgAgeDays"`
-	StaleWorkloads   int     `json:"staleWorkloads"`
+	TotalWorkloads    int     `json:"totalWorkloads"`
+	Production        int     `json:"production"`
+	Staging           int     `json:"staging"`
+	Development       int     `json:"development"`
+	Deprecated        int     `json:"deprecated"`
+	Legacy            int     `json:"legacy"`
+	CleanupCandidates int     `json:"cleanupCandidates"`
+	AvgAge            float64 `json:"avgAgeDays"`
+	StaleWorkloads    int     `json:"staleWorkloads"`
 }
 
 // LifecycleEntry describes one workload's lifecycle classification.
 type LifecycleEntry struct {
-	Name         string            `json:"name"`
-	Namespace    string            `json:"namespace"`
-	Kind         string            `json:"kind"`
-	Stage        string            `json:"stage"` // production, staging, development, deprecated, legacy
-	Confidence   int               `json:"confidence"` // 0-100
-	AgeDays      int               `json:"ageDays"`
-	Replicas     int               `json:"replicas"`
-	HasHPA       bool              `json:"hasHPA"`
-	HasPDB       bool              `json:"hasPDB"`
-	Signals      []string          `json:"signals"`
-	RiskLevel    string            `json:"riskLevel"`
-	Priority     string            `json:"priority"` // P0, P1, P2, P3
+	Name       string   `json:"name"`
+	Namespace  string   `json:"namespace"`
+	Kind       string   `json:"kind"`
+	Stage      string   `json:"stage"`      // production, staging, development, deprecated, legacy
+	Confidence int      `json:"confidence"` // 0-100
+	AgeDays    int      `json:"ageDays"`
+	Replicas   int      `json:"replicas"`
+	HasHPA     bool     `json:"hasHPA"`
+	HasPDB     bool     `json:"hasPDB"`
+	Signals    []string `json:"signals"`
+	RiskLevel  string   `json:"riskLevel"`
+	Priority   string   `json:"priority"` // P0, P1, P2, P3
 }
 
 // StageStat per-stage statistics.
 type StageStat struct {
-	Stage       string  `json:"stage"`
-	Count       int     `json:"count"`
-	Pct         float64 `json:"pct"`
-	AvgAgeDays  float64 `json:"avgAgeDays"`
-	WithPDB     int     `json:"withPDB"`
-	WithHPA     int     `json:"withHPA"`
+	Stage      string  `json:"stage"`
+	Count      int     `json:"count"`
+	Pct        float64 `json:"pct"`
+	AvgAgeDays float64 `json:"avgAgeDays"`
+	WithPDB    int     `json:"withPDB"`
+	WithHPA    int     `json:"withHPA"`
 }
 
 // LifecycleNSStat per-namespace lifecycle stats.
 type LifecycleNSStat struct {
-	Namespace    string `json:"namespace"`
-	TotalWorkloads int  `json:"totalWorkloads"`
-	Production   int    `json:"production"`
-	Staging      int    `json:"staging"`
-	Development  int    `json:"development"`
-	Deprecated   int    `json:"deprecated"`
-	Legacy       int    `json:"legacy"`
+	Namespace      string `json:"namespace"`
+	TotalWorkloads int    `json:"totalWorkloads"`
+	Production     int    `json:"production"`
+	Staging        int    `json:"staging"`
+	Development    int    `json:"development"`
+	Deprecated     int    `json:"deprecated"`
+	Legacy         int    `json:"legacy"`
 }
 
 // CleanupTarget describes a workload recommended for cleanup.
@@ -118,8 +118,8 @@ func (s *Server) handleWorkloadLifecycle(w http.ResponseWriter, r *http.Request)
 			for _, pod := range pods.Items {
 				if pod.Namespace == pdb.Namespace && podLabelsMatchSelector(pod.Labels, pdb.Spec.Selector) {
 					pdbTargets[pod.Namespace+"/"+pod.OwnerReferences[0].Name] = true
+				}
 			}
-		}
 		}
 	}
 
@@ -204,7 +204,7 @@ func (s *Server) handleWorkloadLifecycle(w http.ResponseWriter, r *http.Request)
 		case "development":
 			nsStats[ns].Development++
 		case "deprecated":
-				nsStats[ns].Deprecated++
+			nsStats[ns].Deprecated++
 		case "legacy":
 			nsStats[ns].Legacy++
 		}
@@ -223,13 +223,13 @@ func (s *Server) handleWorkloadLifecycle(w http.ResponseWriter, r *http.Request)
 				priority = 1
 			}
 			result.CleanupTargets = append(result.CleanupTargets, CleanupTarget{
-				Name:     entry.Name,
+				Name:      entry.Name,
 				Namespace: entry.Namespace,
-				Stage:    entry.Stage,
-				Reason:   fmt.Sprintf("%s workload %d days old — %s", entry.Stage, entry.AgeDays, strings.Join(entry.Signals, "; ")),
-				AgeDays:  entry.AgeDays,
-				Action:   action,
-				Priority: priority,
+				Stage:     entry.Stage,
+				Reason:    fmt.Sprintf("%s workload %d days old — %s", entry.Stage, entry.AgeDays, strings.Join(entry.Signals, "; ")),
+				AgeDays:   entry.AgeDays,
+				Action:    action,
+				Priority:  priority,
 			})
 		}
 
@@ -490,7 +490,7 @@ func generateWLLifecycleRecs(s WLLifecycleSummary, targets []CleanupTarget, stag
 		return recs
 	}
 
-	recs = append(recs, fmt.Sprintf("Lifecycle governance score: %d/100 (grade %s) across %d workloads", 
+	recs = append(recs, fmt.Sprintf("Lifecycle governance score: %d/100 (grade %s) across %d workloads",
 		computeLifecycleScore(s), scoreToGrade(computeLifecycleScore(s)), s.TotalWorkloads))
 
 	// Stage distribution
@@ -526,5 +526,3 @@ func podLabelsMatchSelector(podLabels map[string]string, selector *metav1.LabelS
 	}
 	return true
 }
-
-

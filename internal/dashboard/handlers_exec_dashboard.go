@@ -28,9 +28,9 @@ type DimensionScore struct {
 }
 
 type ExecRisk struct {
-	Category  string `json:"category"`
-	Severity  string `json:"severity"`
-	Detail    string `json:"detail"`
+	Category string `json:"category"`
+	Severity string `json:"severity"`
+	Detail   string `json:"detail"`
 }
 
 // handleExecDashboard produces an executive-level platform health summary.
@@ -78,7 +78,9 @@ func (s *Server) handleExecDashboard(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	if secScore < 0 { secScore = 0 }
+	if secScore < 0 {
+		secScore = 0
+	}
 
 	// Operations: check for running pods, crashloops
 	opsScore := 100
@@ -92,7 +94,9 @@ func (s *Server) handleExecDashboard(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	if opsScore < 0 { opsScore = 0 }
+	if opsScore < 0 {
+		opsScore = 0
+	}
 
 	// Deployment: check for resource requests
 	depScore := 100
@@ -103,7 +107,9 @@ func (s *Server) handleExecDashboard(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	if depScore < 0 { depScore = 0 }
+	if depScore < 0 {
+		depScore = 0
+	}
 
 	// Scalability: check for HPA coverage
 	scaleScore := 70 // default, no deep analysis here
@@ -150,8 +156,14 @@ func (s *Server) handleExecDashboard(w http.ResponseWriter, r *http.Request) {
 }
 
 func scoreStatus(score int) string {
-	if score >= 90 { return "excellent" }
-	if score >= 75 { return "good" }
-	if score >= 50 { return "warning" }
+	if score >= 90 {
+		return "excellent"
+	}
+	if score >= 75 {
+		return "good"
+	}
+	if score >= 50 {
+		return "warning"
+	}
 	return "critical"
 }

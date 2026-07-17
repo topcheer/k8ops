@@ -40,9 +40,9 @@ func TestObsCardinalityScoring(t *testing.T) {
 		expectedMin   int
 		expectedMax   int
 	}{
-		{true, true, 0, 0, 90, 100},    // Everything present
-		{false, false, 20, 3, 0, 30},   // Nothing present, many blind NS
-		{true, false, 5, 1, 45, 75},    // Partial stack
+		{true, true, 0, 0, 90, 100},  // Everything present
+		{false, false, 20, 3, 0, 30}, // Nothing present, many blind NS
+		{true, false, 5, 1, 45, 75},  // Partial stack
 	}
 	for _, tc := range tests {
 		score := 100

@@ -14,36 +14,36 @@ import (
 // GoldenSignalsResult is the SRE Four Golden Signals unified health engine.
 // It synthesizes Latency, Traffic, Errors, and Saturation into a single actionable health view.
 type GoldenSignalsResult struct {
-	ScannedAt      time.Time          `json:"scannedAt"`
-	OverallScore   int                `json:"overallScore"`   // 0-100, weakest-link principle
-	OverallGrade   string             `json:"overallGrade"`   // A-F
-	Signals        []GoldenSignal     `json:"signals"`        // 4 signals
-	TopIssues      []GoldenIssue      `json:"topIssues"`      // cross-signal issues
-	ByNamespace    []GoldenNS         `json:"byNamespace"`    // per-namespace signal scores
-	Recommendations []string          `json:"recommendations"`
+	ScannedAt       time.Time      `json:"scannedAt"`
+	OverallScore    int            `json:"overallScore"` // 0-100, weakest-link principle
+	OverallGrade    string         `json:"overallGrade"` // A-F
+	Signals         []GoldenSignal `json:"signals"`      // 4 signals
+	TopIssues       []GoldenIssue  `json:"topIssues"`    // cross-signal issues
+	ByNamespace     []GoldenNS     `json:"byNamespace"`  // per-namespace signal scores
+	Recommendations []string       `json:"recommendations"`
 }
 
 // GoldenSignal represents one of the four SRE golden signals.
 type GoldenSignal struct {
-	Name        string        `json:"name"`        // latency, traffic, errors, saturation
-	DisplayName string        `json:"displayName"` // human-readable
-	Score       int           `json:"score"`       // 0-100
-	Status      string        `json:"status"`      // healthy, warning, critical
-	Summary     string        `json:"summary"`     // one-line description
-	Metrics     []SignalMetric `json:"metrics"`   // supporting metrics
+	Name        string         `json:"name"`        // latency, traffic, errors, saturation
+	DisplayName string         `json:"displayName"` // human-readable
+	Score       int            `json:"score"`       // 0-100
+	Status      string         `json:"status"`      // healthy, warning, critical
+	Summary     string         `json:"summary"`     // one-line description
+	Metrics     []SignalMetric `json:"metrics"`     // supporting metrics
 }
 
 // SignalMetric is a single data point supporting a signal score.
 type SignalMetric struct {
-	Name     string `json:"name"`
-	Value    string `json:"value"`    // human-readable value
-	Status   string `json:"status"`   // healthy, warning, critical
-	Detail   string `json:"detail,omitempty"`
+	Name   string `json:"name"`
+	Value  string `json:"value"`  // human-readable value
+	Status string `json:"status"` // healthy, warning, critical
+	Detail string `json:"detail,omitempty"`
 }
 
 // GoldenIssue is a cross-cutting issue identified by correlating signals.
 type GoldenIssue struct {
-	Signals    []string `json:"signals"`    // which signals contributed
+	Signals    []string `json:"signals"` // which signals contributed
 	Namespace  string   `json:"namespace,omitempty"`
 	Severity   string   `json:"severity"`
 	Title      string   `json:"title"`
@@ -348,7 +348,7 @@ func analyzeErrorSignal(pods []corev1.Pod, events []corev1.Event, now time.Time)
 		}
 	}
 
-		// Score: penalize for each error indicator
+	// Score: penalize for each error indicator
 	score := 100
 	score -= crashLoopPods * 20
 	score -= highRestartPods * 8
@@ -513,13 +513,13 @@ func analyzeSaturationSignal(pods []corev1.Pod, nodes []corev1.Node) GoldenSigna
 // analyzeGoldenByNamespace computes per-namespace golden signal scores.
 func analyzeGoldenByNamespace(pods []corev1.Pod, events []corev1.Event, systemNS map[string]bool, now time.Time) []GoldenNS {
 	type nsSignals struct {
-		notReady      int
-		totalCont     int
-		restarts      int
-		pendingPods   int
-		crashLoops    int
-		runningPods   int
-		warnings      int
+		notReady    int
+		totalCont   int
+		restarts    int
+		pendingPods int
+		crashLoops  int
+		runningPods int
+		warnings    int
 	}
 
 	nsMap := make(map[string]*nsSignals)
@@ -646,7 +646,7 @@ func findCrossSignalIssues(signals []GoldenSignal, byNS []GoldenNS) []GoldenIssu
 			Signals:    []string{"errors", "latency"},
 			Severity:   "critical",
 			Title:      "Silent failure pattern detected",
-			Detail:      "Pods start quickly but have high error rates — investigate CrashLoopBackOff and OOMKill patterns",
+			Detail:     "Pods start quickly but have high error rates — investigate CrashLoopBackOff and OOMKill patterns",
 			Resolution: "Check container logs, resource limits, and application health endpoints",
 		})
 	}
@@ -657,7 +657,7 @@ func findCrossSignalIssues(signals []GoldenSignal, byNS []GoldenNS) []GoldenIssu
 			Signals:    []string{"saturation", "errors"},
 			Severity:   "critical",
 			Title:      "Potential cascading failure risk",
-			Detail:      "Resource saturation coinciding with high error rate — cluster may be in or approaching cascading failure",
+			Detail:     "Resource saturation coinciding with high error rate — cluster may be in or approaching cascading failure",
 			Resolution: "Reduce load, scale out nodes, or investigate resource contention immediately",
 		})
 	}
@@ -668,7 +668,7 @@ func findCrossSignalIssues(signals []GoldenSignal, byNS []GoldenNS) []GoldenIssu
 			Signals:    []string{"traffic", "latency"},
 			Severity:   "warning",
 			Title:      "Low serving capacity despite healthy pods",
-			Detail:      "Many pods are running but not ready to serve — possible readiness probe misconfiguration or networking issue",
+			Detail:     "Many pods are running but not ready to serve — possible readiness probe misconfiguration or networking issue",
 			Resolution: "Check readiness probes, service selectors, and endpoint health",
 		})
 	}
@@ -692,7 +692,7 @@ func findCrossSignalIssues(signals []GoldenSignal, byNS []GoldenNS) []GoldenIssu
 					Namespace:  ns.Namespace,
 					Severity:   "critical",
 					Title:      fmt.Sprintf("Namespace %s has compound signal degradation", ns.Namespace),
-					Detail:      fmt.Sprintf("Multiple signals failing: latency=%d, traffic=%d, errors=%d, saturation=%d", ns.Latency, ns.Traffic, ns.Errors, ns.Saturation),
+					Detail:     fmt.Sprintf("Multiple signals failing: latency=%d, traffic=%d, errors=%d, saturation=%d", ns.Latency, ns.Traffic, ns.Errors, ns.Saturation),
 					Resolution: fmt.Sprintf("Investigate namespace %s — check events, resource pressure, and pod health", ns.Namespace),
 				})
 			}

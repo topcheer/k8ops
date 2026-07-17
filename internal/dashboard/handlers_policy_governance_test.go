@@ -35,9 +35,9 @@ func TestPolicyGovScoring(t *testing.T) {
 		expectedMin     int
 		expectedMax     int
 	}{
-		{false, 0, 0, 28, 0, 10},     // No engine, no PSA
-		{true, 100, 0, 28, 75, 100},  // Engine + full PSA
-		{true, 50, 5, 28, 55, 75},    // Engine + partial PSA
+		{false, 0, 0, 28, 0, 10},    // No engine, no PSA
+		{true, 100, 0, 28, 75, 100}, // Engine + full PSA
+		{true, 50, 5, 28, 55, 75},   // Engine + partial PSA
 	}
 	for _, tc := range tests {
 		score := 0

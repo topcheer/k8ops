@@ -16,14 +16,14 @@ import (
 // and node drains. It evaluates resilience primitives like PDB coverage,
 // anti-affinity rules, graceful shutdown, health probes, and replica counts.
 type ChaosReadinessResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         ChaosSummary        `json:"summary"`
-	Workloads       []ChaosWorkload     `json:"workloads"`
-	FailureScenarios []ChaosScenario    `json:"failureScenarios"`
-	ByNamespace     []ChaosNS           `json:"byNamespace"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt        time.Time       `json:"scannedAt"`
+	Summary          ChaosSummary    `json:"summary"`
+	Workloads        []ChaosWorkload `json:"workloads"`
+	FailureScenarios []ChaosScenario `json:"failureScenarios"`
+	ByNamespace      []ChaosNS       `json:"byNamespace"`
+	HealthScore      int             `json:"healthScore"`
+	Grade            string          `json:"grade"`
+	Recommendations  []string        `json:"recommendations"`
 }
 
 type ChaosSummary struct {
@@ -40,21 +40,21 @@ type ChaosSummary struct {
 }
 
 type ChaosWorkload struct {
-	Name             string `json:"name"`
-	Namespace        string `json:"namespace"`
-	Kind             string `json:"kind"`
-	Replicas         int    `json:"replicas"`
-	HasPDB           bool   `json:"hasPDB"`
-	HasAntiAffinity  bool   `json:"hasAntiAffinity"`
-	GracefulShutdown bool   `json:"gracefulShutdown"`
-	HealthProbeOK    bool   `json:"healthProbeOK"`
-	ResourceLimitsOK bool   `json:"resourceLimitsOK"`
-	SurvivePodKill   bool   `json:"survivePodKill"`
-	SurviveNodeDrain bool   `json:"surviveNodeDrain"`
-	SurviveNetPartition bool `json:"surviveNetPartition"`
-	ReadinessScore   int    `json:"readinessScore"`
-	RiskLevel        string `json:"riskLevel"`
-	Gaps             []string `json:"gaps"`
+	Name                string   `json:"name"`
+	Namespace           string   `json:"namespace"`
+	Kind                string   `json:"kind"`
+	Replicas            int      `json:"replicas"`
+	HasPDB              bool     `json:"hasPDB"`
+	HasAntiAffinity     bool     `json:"hasAntiAffinity"`
+	GracefulShutdown    bool     `json:"gracefulShutdown"`
+	HealthProbeOK       bool     `json:"healthProbeOK"`
+	ResourceLimitsOK    bool     `json:"resourceLimitsOK"`
+	SurvivePodKill      bool     `json:"survivePodKill"`
+	SurviveNodeDrain    bool     `json:"surviveNodeDrain"`
+	SurviveNetPartition bool     `json:"surviveNetPartition"`
+	ReadinessScore      int      `json:"readinessScore"`
+	RiskLevel           string   `json:"riskLevel"`
+	Gaps                []string `json:"gaps"`
 }
 
 type ChaosScenario struct {
@@ -66,11 +66,11 @@ type ChaosScenario struct {
 }
 
 type ChaosNS struct {
-	Namespace    string `json:"namespace"`
-	Workloads    int    `json:"workloads"`
-	ReadyCount   int    `json:"readyCount"`
-	AtRiskCount  int    `json:"atRiskCount"`
-	AvgScore     int    `json:"avgScore"`
+	Namespace   string `json:"namespace"`
+	Workloads   int    `json:"workloads"`
+	ReadyCount  int    `json:"readyCount"`
+	AtRiskCount int    `json:"atRiskCount"`
+	AvgScore    int    `json:"avgScore"`
 }
 
 // handleChaosReadiness handles GET /api/operations/chaos-readiness
@@ -91,7 +91,7 @@ func (s *Server) handleChaosReadiness(w http.ResponseWriter, r *http.Request) {
 		if pdb.Spec.Selector != nil {
 			for _, l := range pdb.Labels {
 				_ = l
-		}
+			}
 		}
 		// Map by namespace + name pattern from selector matchLabels
 		key := pdb.Namespace + "/" + pdb.Name

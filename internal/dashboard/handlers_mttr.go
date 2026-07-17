@@ -11,15 +11,15 @@ import (
 
 // MTTRResult analyzes mean time to recovery from pod restart patterns and failures.
 type MTTRResult struct {
-	ScannedAt         time.Time           `json:"scannedAt"`
-	Summary           MTTRSummary         `json:"summary"`
-	TopRestarters     []PodRestarter      `json:"topRestarters"`
-	IncidentFrequency IncidentFreqInfo    `json:"incidentFrequency"`
-	MTTREstimate      MTTREstInfo         `json:"mttrEstimate"`
-	ByNamespace       []NSMTTR            `json:"byNamespace"`
-	HealthScore       int                 `json:"healthScore"`
-	Grade             string              `json:"grade"`
-	Recommendations   []string            `json:"recommendations"`
+	ScannedAt         time.Time        `json:"scannedAt"`
+	Summary           MTTRSummary      `json:"summary"`
+	TopRestarters     []PodRestarter   `json:"topRestarters"`
+	IncidentFrequency IncidentFreqInfo `json:"incidentFrequency"`
+	MTTREstimate      MTTREstInfo      `json:"mttrEstimate"`
+	ByNamespace       []NSMTTR         `json:"byNamespace"`
+	HealthScore       int              `json:"healthScore"`
+	Grade             string           `json:"grade"`
+	Recommendations   []string         `json:"recommendations"`
 }
 
 type MTTRSummary struct {
@@ -52,16 +52,20 @@ type NSRestartInfo struct {
 
 // NSMTTR is per-namespace MTTR info.
 type NSMTTR struct {
-	Namespace string  `json:"namespace"`
-	Restarts  int     `json:"restarts"`
-	Pods      int     `json:"pods"`
-	Stability int     `json:"stability"`
+	Namespace string `json:"namespace"`
+	Restarts  int    `json:"restarts"`
+	Pods      int    `json:"pods"`
+	Stability int    `json:"stability"`
 }
 
 // mttrFormatDuration converts seconds to human-readable duration.
 func mttrFormatDuration(seconds float64) string {
-	if seconds < 60 { return fmt.Sprintf("%.0fs", seconds) }
-	if seconds < 3600 { return fmt.Sprintf("%.0fm", seconds/60) }
+	if seconds < 60 {
+		return fmt.Sprintf("%.0fs", seconds)
+	}
+	if seconds < 3600 {
+		return fmt.Sprintf("%.0fm", seconds/60)
+	}
 	return fmt.Sprintf("%.1fh", seconds/3600)
 }
 
@@ -94,7 +98,9 @@ func (s *Server) handleMTTR(w http.ResponseWriter, r *http.Request) {
 	highRestartPods := 0
 
 	for _, pod := range pods.Items {
-		if systemNS[pod.Namespace] || pod.Status.Phase != "Running" { continue }
+		if systemNS[pod.Namespace] || pod.Status.Phase != "Running" {
+			continue
+		}
 		result.Summary.TotalPods++
 
 		podRestarts := 0
@@ -110,8 +116,12 @@ func (s *Server) handleMTTR(w http.ResponseWriter, r *http.Request) {
 		if podRestarts >= 5 {
 			highRestartPods++
 			severity := "medium"
-			if podRestarts >= 10 { severity = "high" }
-			if podRestarts >= 20 { severity = "critical" }
+			if podRestarts >= 10 {
+				severity = "high"
+			}
+			if podRestarts >= 20 {
+				severity = "critical"
+			}
 
 			ageStr := fmt.Sprintf("%dh", int(now.Sub(pod.CreationTimestamp.Time).Hours()))
 			result.TopRestarters = append(result.TopRestarters, PodRestarter{
@@ -131,16 +141,22 @@ func (s *Server) handleMTTR(w http.ResponseWriter, r *http.Request) {
 	// Estimate MTTR from restart patterns
 	// If avg restarts > 5, MTTR is poor; if < 1, good
 	mttr := "<1m"
-	if result.Summary.AvgRestarts > 10 { mttr = ">15m" } else
-	if result.Summary.AvgRestarts > 5 { mttr = "5-15m" } else
-	if result.Summary.AvgRestarts > 1 { mttr = "1-5m" }
+	if result.Summary.AvgRestarts > 10 {
+		mttr = ">15m"
+	} else if result.Summary.AvgRestarts > 5 {
+		mttr = "5-15m"
+	} else if result.Summary.AvgRestarts > 1 {
+		mttr = "1-5m"
+	}
 	result.Summary.EstMTTR = mttr
 
 	// Score: fewer restarts = better
 	score := 100
 	score -= highRestartPods * 40
 	score -= crashedPods * 15
-	if score < 0 { score = 0 }
+	if score < 0 {
+		score = 0
+	}
 	result.Summary.AffectedPods = crashedPods
 	result.Summary.TotalCrashLoops = highRestartPods
 
@@ -148,7 +164,9 @@ func (s *Server) handleMTTR(w http.ResponseWriter, r *http.Request) {
 	nsRestarts := map[string]int{}
 	nsPodCount := map[string]int{}
 	for _, pod := range pods.Items {
-		if systemNS[pod.Namespace] || pod.Status.Phase != "Running" { continue }
+		if systemNS[pod.Namespace] || pod.Status.Phase != "Running" {
+			continue
+		}
 		nsPodCount[pod.Namespace]++
 		for _, cs := range pod.Status.ContainerStatuses {
 			nsRestarts[pod.Namespace] += int(cs.RestartCount)
@@ -191,7 +209,9 @@ func (s *Server) handleMTTR(w http.ResponseWriter, r *http.Request) {
 	if highRestartPods > 0 {
 		recs = append(recs, fmt.Sprintf("%d pods with >=5 restarts — investigate crash causes and add liveness probes", highRestartPods))
 	}
-	if len(recs) == 1 { recs = append(recs, "Pod recovery rate is healthy") }
+	if len(recs) == 1 {
+		recs = append(recs, "Pod recovery rate is healthy")
+	}
 	result.Recommendations = recs
 
 	writeJSON(w, result)

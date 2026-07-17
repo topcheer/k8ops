@@ -16,51 +16,51 @@ import (
 // It identifies workloads that are "flying blind" — no monitoring, no alerts,
 // no dashboards, no runbooks — and scores the cluster's observability completeness.
 type ObsCoverageResult struct {
-	ScannedAt       time.Time          `json:"scannedAt"`
-	Summary         ObsCovSummary      `json:"summary"`
-	BlindWorkloads  []BlindWorkload    `json:"blindWorkloads"`
-	CoverageMatrix  []ObsCovMatrix     `json:"coverageMatrix"`
-	ByNamespace     []ObsCovNS         `json:"byNamespace"`
-	SignalStrength  ObsSignalStrength  `json:"signalStrength"`
-	Recommendations []string           `json:"recommendations"`
+	ScannedAt       time.Time         `json:"scannedAt"`
+	Summary         ObsCovSummary     `json:"summary"`
+	BlindWorkloads  []BlindWorkload   `json:"blindWorkloads"`
+	CoverageMatrix  []ObsCovMatrix    `json:"coverageMatrix"`
+	ByNamespace     []ObsCovNS        `json:"byNamespace"`
+	SignalStrength  ObsSignalStrength `json:"signalStrength"`
+	Recommendations []string          `json:"recommendations"`
 }
 
 // ObsCovSummary aggregates observability coverage statistics.
 type ObsCovSummary struct {
-	TotalWorkloads    int     `json:"totalWorkloads"`
-	WithMetrics       int     `json:"withMetrics"`       // has Prometheus scrape or ServiceMonitor
-	WithTracing       int     `json:"withTracing"`       // has tracing annotations
-	WithDashboard     int     `json:"withDashboard"`    // has dashboard URL annotation
-	WithRunbook       int     `json:"withRunbook"`      // has runbook URL annotation
-	WithAlerts        int     `json:"withAlerts"`       // has PrometheusRule or alert annotations
-	BlindCount        int     `json:"blindCount"`       // workloads with zero observability
-	CoveragePct       float64 `json:"coveragePct"`      // % with at least metrics
-	BlindSpotIndex    int     `json:"blindSpotIndex"`   // 0-100, higher = worse
-	SignalQuality     string  `json:"signalQuality"`    // excellent, good, fair, poor, critical
+	TotalWorkloads int     `json:"totalWorkloads"`
+	WithMetrics    int     `json:"withMetrics"`    // has Prometheus scrape or ServiceMonitor
+	WithTracing    int     `json:"withTracing"`    // has tracing annotations
+	WithDashboard  int     `json:"withDashboard"`  // has dashboard URL annotation
+	WithRunbook    int     `json:"withRunbook"`    // has runbook URL annotation
+	WithAlerts     int     `json:"withAlerts"`     // has PrometheusRule or alert annotations
+	BlindCount     int     `json:"blindCount"`     // workloads with zero observability
+	CoveragePct    float64 `json:"coveragePct"`    // % with at least metrics
+	BlindSpotIndex int     `json:"blindSpotIndex"` // 0-100, higher = worse
+	SignalQuality  string  `json:"signalQuality"`  // excellent, good, fair, poor, critical
 }
 
 // BlindWorkload is a workload with insufficient observability.
 type BlindWorkload struct {
-	Name         string   `json:"name"`
-	Namespace    string   `json:"namespace"`
-	Kind         string   `json:"kind"`
-	Replicas     int32    `json:"replicas"`
-	Missing      []string `json:"missingSignals"`
-	Severity     string   `json:"severity"`
-	Impact       string   `json:"impact"`
+	Name      string   `json:"name"`
+	Namespace string   `json:"namespace"`
+	Kind      string   `json:"kind"`
+	Replicas  int32    `json:"replicas"`
+	Missing   []string `json:"missingSignals"`
+	Severity  string   `json:"severity"`
+	Impact    string   `json:"impact"`
 }
 
 // ObsCovMatrix shows per-workload signal coverage.
 type ObsCovMatrix struct {
-	Name       string `json:"name"`
-	Namespace  string `json:"namespace"`
-	Metrics    bool   `json:"metrics"`
-	Tracing    bool   `json:"tracing"`
-	Dashboard  bool   `json:"dashboard"`
-	Runbook    bool   `json:"runbook"`
-	Alerts     bool   `json:"alerts"`
-	CoverageCount int  `json:"coverageCount"` // 0-5
-	Grade      string `json:"grade"`
+	Name          string `json:"name"`
+	Namespace     string `json:"namespace"`
+	Metrics       bool   `json:"metrics"`
+	Tracing       bool   `json:"tracing"`
+	Dashboard     bool   `json:"dashboard"`
+	Runbook       bool   `json:"runbook"`
+	Alerts        bool   `json:"alerts"`
+	CoverageCount int    `json:"coverageCount"` // 0-5
+	Grade         string `json:"grade"`
 }
 
 // ObsCovNS shows observability coverage per namespace.

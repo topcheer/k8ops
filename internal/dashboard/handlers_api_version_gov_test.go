@@ -28,16 +28,16 @@ func TestAPIVersionTypes(t *testing.T) {
 
 func TestAPIVersionScoring(t *testing.T) {
 	tests := []struct {
-		deprecated int
-		removed    int
-		alpha      int
-		beta       int
+		deprecated  int
+		removed     int
+		alpha       int
+		beta        int
 		expectedMin int
 		expectedMax int
 	}{
-		{0, 0, 0, 0, 95, 100},   // Clean
-		{3, 1, 0, 0, 40, 60},    // Some deprecated
-		{0, 0, 2, 5, 75, 90},    // Alpha/beta only
+		{0, 0, 0, 0, 95, 100}, // Clean
+		{3, 1, 0, 0, 40, 60},  // Some deprecated
+		{0, 0, 2, 5, 75, 90},  // Alpha/beta only
 	}
 	for _, tc := range tests {
 		score := 100

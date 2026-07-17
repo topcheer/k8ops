@@ -25,12 +25,12 @@ func TestNodeOSDriftTypes(t *testing.T) {
 
 func TestNodeOSDriftScoring(t *testing.T) {
 	tests := []struct {
-		kernels   int
-		runtimes  int
-		oldestDays int
+		kernels       int
+		runtimes      int
+		oldestDays    int
 		criticalCount int
-		expectedMin int
-		expectedMax int
+		expectedMin   int
+		expectedMax   int
 	}{
 		{1, 1, 100, 0, 90, 100},
 		{2, 1, 800, 0, 40, 65},
@@ -79,8 +79,8 @@ func TestTrafficFlowTypes(t *testing.T) {
 
 func TestTrafficFlowScoring(t *testing.T) {
 	tests := []struct {
-		isolated int
-		lbCount  int
+		isolated    int
+		lbCount     int
 		expectedMin int
 		expectedMax int
 	}{

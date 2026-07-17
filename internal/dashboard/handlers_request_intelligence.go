@@ -16,17 +16,17 @@ import (
 // It analyzes the gap between resource requests and actual utilization proxies to provide
 // actionable right-sizing recommendations.
 type RequestIntelligenceResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         ReqIntelSummary     `json:"summary"`
-	OverProvisioned []ReqIntelWorkload  `json:"overProvisioned"`  // wasting resources
-	UnderProvisioned []ReqIntelWorkload `json:"underProvisioned"` // at risk of failure
-	OptimalWorkloads int                `json:"optimalWorkloads"`
-	NoRequestWorkloads int              `json:"noRequestWorkloads"`
-	SavingsEstimate  SavingsEstimate    `json:"savingsEstimate"`
-	RiskAssessment   RiskAssessment     `json:"riskAssessment"`
-	Insights         []ReqIntelInsight  `json:"insights"`
-	Recommendations  []string           `json:"recommendations"`
-	PostureScore     int                `json:"postureScore"` // 0-100, higher = better right-sizing
+	ScannedAt          time.Time          `json:"scannedAt"`
+	Summary            ReqIntelSummary    `json:"summary"`
+	OverProvisioned    []ReqIntelWorkload `json:"overProvisioned"`  // wasting resources
+	UnderProvisioned   []ReqIntelWorkload `json:"underProvisioned"` // at risk of failure
+	OptimalWorkloads   int                `json:"optimalWorkloads"`
+	NoRequestWorkloads int                `json:"noRequestWorkloads"`
+	SavingsEstimate    SavingsEstimate    `json:"savingsEstimate"`
+	RiskAssessment     RiskAssessment     `json:"riskAssessment"`
+	Insights           []ReqIntelInsight  `json:"insights"`
+	Recommendations    []string           `json:"recommendations"`
+	PostureScore       int                `json:"postureScore"` // 0-100, higher = better right-sizing
 }
 
 // ReqIntelSummary aggregates right-sizing statistics.
@@ -44,25 +44,25 @@ type ReqIntelSummary struct {
 
 // ReqIntelWorkload describes one workload's right-sizing analysis.
 type ReqIntelWorkload struct {
-	Name            string  `json:"name"`
-	Namespace       string  `json:"namespace"`
-	Kind            string  `json:"kind"` // Deployment, StatefulSet, DaemonSet
-	Verdict         string  `json:"verdict"` // over-provisioned, under-provisioned, optimal, no-requests
-	CPURequest      float64 `json:"cpuRequestMillicores"`
-	MemRequest      float64 `json:"memRequestMB"`
-	CPURecommend    float64 `json:"cpuRecommendMillicores,omitempty"`
-	MemRecommend    float64 `json:"memRecommendMB,omitempty"`
-	Confidence      string  `json:"confidence"` // high, medium, low
-	Signals         []string `json:"signals"`  // evidence for the verdict
-	SavingsPerMonth float64 `json:"savingsPerMonth,omitempty"` // estimated $ savings
-	RiskScore       int     `json:"riskScore,omitempty"` // for under-provisioned
-	PodCount        int     `json:"podCount"`
+	Name            string   `json:"name"`
+	Namespace       string   `json:"namespace"`
+	Kind            string   `json:"kind"`    // Deployment, StatefulSet, DaemonSet
+	Verdict         string   `json:"verdict"` // over-provisioned, under-provisioned, optimal, no-requests
+	CPURequest      float64  `json:"cpuRequestMillicores"`
+	MemRequest      float64  `json:"memRequestMB"`
+	CPURecommend    float64  `json:"cpuRecommendMillicores,omitempty"`
+	MemRecommend    float64  `json:"memRecommendMB,omitempty"`
+	Confidence      string   `json:"confidence"`                // high, medium, low
+	Signals         []string `json:"signals"`                   // evidence for the verdict
+	SavingsPerMonth float64  `json:"savingsPerMonth,omitempty"` // estimated $ savings
+	RiskScore       int      `json:"riskScore,omitempty"`       // for under-provisioned
+	PodCount        int      `json:"podCount"`
 }
 
 // SavingsEstimate quantifies potential cost savings from right-sizing.
 type SavingsEstimate struct {
-	MonthlyCPU     float64 `json:"monthlyCPU"`     // estimated $ / month from CPU right-sizing
-	MonthlyMemory  float64 `json:"monthlyMemory"`  // estimated $ / month from memory right-sizing
+	MonthlyCPU     float64 `json:"monthlyCPU"`    // estimated $ / month from CPU right-sizing
+	MonthlyMemory  float64 `json:"monthlyMemory"` // estimated $ / month from memory right-sizing
 	MonthlyTotal   float64 `json:"monthlyTotal"`
 	NodesReduction int     `json:"nodesReduction"` // estimated nodes that could be removed
 	PercentOfSpend float64 `json:"percentOfSpend"` // % of current spend that could be saved
@@ -70,11 +70,11 @@ type SavingsEstimate struct {
 
 // RiskAssessment quantifies risk from under-provisioning.
 type RiskAssessment struct {
-	HighRiskCount  int     `json:"highRiskCount"`  // workloads likely to fail from under-provisioning
-	MediumRiskCount int    `json:"mediumRiskCount"`
-	LowRiskCount   int     `json:"lowRiskCount"`
-	EstimatedOOM   int     `json:"estimatedOOM"`   // workloads at risk of OOMKill
-	EstimatedThrottle int  `json:"estimatedThrottle"` // workloads at risk of CPU throttle
+	HighRiskCount     int `json:"highRiskCount"` // workloads likely to fail from under-provisioning
+	MediumRiskCount   int `json:"mediumRiskCount"`
+	LowRiskCount      int `json:"lowRiskCount"`
+	EstimatedOOM      int `json:"estimatedOOM"`      // workloads at risk of OOMKill
+	EstimatedThrottle int `json:"estimatedThrottle"` // workloads at risk of CPU throttle
 }
 
 // ReqIntelInsight describes a cross-cutting finding.
@@ -242,10 +242,10 @@ func (s *Server) handleRequestIntelligence(w http.ResponseWriter, r *http.Reques
 
 	// Risk assessment
 	result.RiskAssessment = RiskAssessment{
-		HighRiskCount:    highRisk,
-		MediumRiskCount:  mediumRisk,
-		LowRiskCount:     lowRisk,
-		EstimatedOOM:     estOOM,
+		HighRiskCount:     highRisk,
+		MediumRiskCount:   mediumRisk,
+		LowRiskCount:      lowRisk,
+		EstimatedOOM:      estOOM,
 		EstimatedThrottle: estThrottle,
 	}
 

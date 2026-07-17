@@ -17,20 +17,20 @@ import (
 // It checks deprecated API usage, node version skew, addon compatibility,
 // breaking changes, and workload readiness for the target version.
 type UpgradeImpactResult struct {
-	ScannedAt       time.Time             `json:"scannedAt"`
-	CurrentVersion  string               `json:"currentVersion"`
-	TargetVersion   string               `json:"targetVersion"`
-	Summary         UpgradeImpactSummary `json:"summary"`
+	ScannedAt       time.Time               `json:"scannedAt"`
+	CurrentVersion  string                  `json:"currentVersion"`
+	TargetVersion   string                  `json:"targetVersion"`
+	Summary         UpgradeImpactSummary    `json:"summary"`
 	BreakingChanges []UpgradeBreakingChange `json:"breakingChanges"`
-	Deprecations    []UpgradeDeprecation  `json:"deprecations"`
-	AddonReadiness  []AddonReadiness      `json:"addonReadiness"`
-	NodeSkew        []NodeSkewInfo        `json:"nodeSkew"`
-	WorkloadRisks   []UpgradeWorkloadRisk `json:"workloadRisks"`
-	ActionPlan      []UpgradeAction       `json:"actionPlan"`
-	ReadinessScore  int                  `json:"readinessScore"`
-	Grade           string               `json:"grade"`
-	Verdict         string               `json:"verdict"` // ready, caution, blocked
-	Recommendations []string             `json:"recommendations"`
+	Deprecations    []UpgradeDeprecation    `json:"deprecations"`
+	AddonReadiness  []AddonReadiness        `json:"addonReadiness"`
+	NodeSkew        []NodeSkewInfo          `json:"nodeSkew"`
+	WorkloadRisks   []UpgradeWorkloadRisk   `json:"workloadRisks"`
+	ActionPlan      []UpgradeAction         `json:"actionPlan"`
+	ReadinessScore  int                     `json:"readinessScore"`
+	Grade           string                  `json:"grade"`
+	Verdict         string                  `json:"verdict"` // ready, caution, blocked
+	Recommendations []string                `json:"recommendations"`
 }
 
 // UpgradeImpactSummary aggregates upgrade impact statistics.
@@ -53,18 +53,18 @@ type UpgradeBreakingChange struct {
 	Kind       string `json:"kind"`
 	Namespace  string `json:"namespace"`
 	Change     string `json:"change"`
-	Impact     string `json:"impact"`     // block, warning, info
+	Impact     string `json:"impact"` // block, warning, info
 	Mitigation string `json:"mitigation"`
 }
 
 // UpgradeDeprecation describes a deprecated API that will be removed.
 type UpgradeDeprecation struct {
-	Resource    string `json:"resource"`
-	OldAPI      string `json:"oldAPI"`
-	NewAPI      string `json:"newAPI"`
-	RemovedIn   string `json:"removedIn"`
-	Status      string `json:"status"` // deprecated, removed
-	Workloads   int    `json:"affectedWorkloads"`
+	Resource  string `json:"resource"`
+	OldAPI    string `json:"oldAPI"`
+	NewAPI    string `json:"newAPI"`
+	RemovedIn string `json:"removedIn"`
+	Status    string `json:"status"` // deprecated, removed
+	Workloads int    `json:"affectedWorkloads"`
 }
 
 // AddonReadiness describes an addon's upgrade compatibility.
@@ -80,11 +80,11 @@ type AddonReadiness struct {
 // NodeSkewInfo describes node version skew against control plane.
 type NodeSkewInfo struct {
 	NodeName         string `json:"nodeName"`
-	NodeVersion   string `json:"nodeVersion"`
-	KubeletVer    string `json:"kubeletVersion"`
+	NodeVersion      string `json:"nodeVersion"`
+	KubeletVer       string `json:"kubeletVersion"`
 	ContainerRuntime string `json:"containerRuntime"`
-	SkewRisk      string `json:"skewRisk"` // none, minor, major
-	OSImage       string `json:"osImage"`
+	SkewRisk         string `json:"skewRisk"` // none, minor, major
+	OSImage          string `json:"osImage"`
 }
 
 // UpgradeWorkloadRisk describes a workload at risk during upgrade.
@@ -356,7 +356,7 @@ func checkWorkloadUpgradeRisks(deps []appsv1.Deployment, stss []appsv1.StatefulS
 					Name: name, Namespace: ns, Kind: kind,
 					RiskType: "privileged-container",
 					Severity: "warning",
-					Detail:  fmt.Sprintf("Container %s is privileged — may require PSA privileged policy", c.Name),
+					Detail:   fmt.Sprintf("Container %s is privileged — may require PSA privileged policy", c.Name),
 				})
 			}
 		}
@@ -367,7 +367,7 @@ func checkWorkloadUpgradeRisks(deps []appsv1.Deployment, stss []appsv1.StatefulS
 				Name: name, Namespace: ns, Kind: kind,
 				RiskType: "host-network",
 				Severity: "medium",
-				Detail:  "Uses hostNetwork — may conflict with node-level services after upgrade",
+				Detail:   "Uses hostNetwork — may conflict with node-level services after upgrade",
 			})
 		}
 
@@ -378,7 +378,7 @@ func checkWorkloadUpgradeRisks(deps []appsv1.Deployment, stss []appsv1.StatefulS
 					Name: name, Namespace: ns, Kind: kind,
 					RiskType: "default-sa-token",
 					Severity: "low",
-					Detail:  "Uses default SA with auto-mounted token — consider explicit SA",
+					Detail:   "Uses default SA with auto-mounted token — consider explicit SA",
 				})
 			}
 		}

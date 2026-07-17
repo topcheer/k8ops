@@ -24,42 +24,42 @@ type ResourceGovResult struct {
 }
 
 type ResourceGovSummary struct {
-	TotalNamespaces   int `json:"totalNamespaces"`
-	NSWithQuota       int `json:"nsWithQuota"`
-	NSWithoutQuota    int `json:"nsWithoutQuota"`
-	NSWithLimitRange  int `json:"nsWithLimitRange"`
+	TotalNamespaces     int `json:"totalNamespaces"`
+	NSWithQuota         int `json:"nsWithQuota"`
+	NSWithoutQuota      int `json:"nsWithoutQuota"`
+	NSWithLimitRange    int `json:"nsWithLimitRange"`
 	NSWithoutLimitRange int `json:"nsWithoutLimitRange"`
-	OverQuotaNS       int `json:"overQuotaNS"`
-	NearQuotaNS       int `json:"nearQuotaNS"`
-	TotalQuotas       int `json:"totalQuotas"`
-	TotalLimitRanges  int `json:"totalLimitRanges"`
+	OverQuotaNS         int `json:"overQuotaNS"`
+	NearQuotaNS         int `json:"nearQuotaNS"`
+	TotalQuotas         int `json:"totalQuotas"`
+	TotalLimitRanges    int `json:"totalLimitRanges"`
 }
 
 type UngovernedNS struct {
-	Namespace string `json:"namespace"`
-	PodCount  int    `json:"podCount"`
+	Namespace string   `json:"namespace"`
+	PodCount  int      `json:"podCount"`
 	Missing   []string `json:"missing"`
-	Severity  string `json:"severity"`
-	Impact    string `json:"impact"`
+	Severity  string   `json:"severity"`
+	Impact    string   `json:"impact"`
 }
 
 type QuotaAnalysis struct {
-	Namespace  string `json:"namespace"`
-	QuotaName  string `json:"quotaName"`
-	Resource   string `json:"resource"`
-	Hard       string `json:"hard"`
-	Used       string `json:"used"`
-	UsagePct   float64 `json:"usagePct"`
-	Status     string `json:"status"`
+	Namespace string  `json:"namespace"`
+	QuotaName string  `json:"quotaName"`
+	Resource  string  `json:"resource"`
+	Hard      string  `json:"hard"`
+	Used      string  `json:"used"`
+	UsagePct  float64 `json:"usagePct"`
+	Status    string  `json:"status"`
 }
 
 type ResourceGovNS struct {
-	Namespace    string  `json:"namespace"`
-	HasQuota     bool    `json:"hasQuota"`
+	Namespace     string `json:"namespace"`
+	HasQuota      bool   `json:"hasQuota"`
 	HasLimitRange bool   `json:"hasLimitRange"`
-	PodCount     int     `json:"podCount"`
-	GovScore     int     `json:"govScore"`
-	Status       string  `json:"status"`
+	PodCount      int    `json:"podCount"`
+	GovScore      int    `json:"govScore"`
+	Status        string `json:"status"`
 }
 
 // handleResourceGovernance provides namespace resource governance analysis.

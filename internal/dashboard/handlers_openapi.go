@@ -4540,10 +4540,10 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Pre-flight gate that evaluates whether the cluster is safe for new deployments. Runs 8 checks: node stability (no pressure conditions), active rollouts (<3 concurrent), failed pods (<10 crash-looping), PDB coverage (>50%), capacity headroom (<85% utilized), rollback path (RevisionHistoryLimit > 0), resource limits (containers have CPU/memory limits), health probes (readiness probes configured). Returns gate decision (proceed / proceed-with-caution / blocked), readiness score (0-100), detailed check results, blockers, warnings, recent failures, and capacity metrics. Designed for CI/CD pipeline integration as a deployment gate.",
 		Responses: map[string]OpenAPIResponse{
 			"200": okResponse("Change readiness assessment", map[string]interface{}{
-				"gateDecision":   "proceed",
-				"readinessScore": 95,
-				"summary":        map[string]interface{}{"totalChecks": 8, "passed": 8, "failed": 0, "warnings": 0},
-				"checks":         []map[string]interface{}{{"name": "node-stability", "category": "stability", "status": "pass"}},
+				"gateDecision":     "proceed",
+				"readinessScore":   95,
+				"summary":          map[string]interface{}{"totalChecks": 8, "passed": 8, "failed": 0, "warnings": 0},
+				"checks":           []map[string]interface{}{{"name": "node-stability", "category": "stability", "status": "pass"}},
 				"capacityHeadroom": map[string]interface{}{"totalPodSlots": 110, "usedPodSlots": 45, "available": 65, "utilization": 40.9},
 			}),
 		},
@@ -4557,8 +4557,8 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes resource request right-sizing using multi-signal proxy analysis. Detects over-provisioned workloads (round-number requests on stable pods → potential 30% waste), under-provisioned workloads (OOMKill/restart-loop signals → failure risk), and missing-request workloads. Per-workload verdict (over/under-provisioned/optimal/no-requests) with specific CPU/memory recommendations and confidence levels. Quantifies monthly cost savings ($30/core, $4/GB cloud pricing), estimated node reduction, and risk assessment (OOM/throttle predictions). Cross-cutting insights and posture score (0-100).",
 		Responses: map[string]OpenAPIResponse{
 			"200": okResponse("Request intelligence report", map[string]interface{}{
-				"postureScore": 75,
-				"summary":      map[string]interface{}{"totalWorkloads": 30, "overProvisioned": 8, "underProvisioned": 3, "noRequests": 5},
+				"postureScore":    75,
+				"summary":         map[string]interface{}{"totalWorkloads": 30, "overProvisioned": 8, "underProvisioned": 3, "noRequests": 5},
 				"savingsEstimate": map[string]interface{}{"monthlyTotal": 240.50, "nodesReduction": 1},
 				"overProvisioned": []map[string]interface{}{{"name": "webapp", "verdict": "over-provisioned", "cpuRequestMillicores": 2000, "cpuRecommendMillicores": 1400}},
 			}),
@@ -4575,7 +4575,7 @@ func buildOpenAPISpec() OpenAPISpec {
 			"200": okResponse("Reliability scorecard", map[string]interface{}{
 				"clusterGrade": "B",
 				"clusterScore": 82,
-				"workloads":   []map[string]interface{}{{"name": "api-server", "grade": "A", "score": 92}},
+				"workloads":    []map[string]interface{}{{"name": "api-server", "grade": "A", "score": 92}},
 			}),
 		},
 	})
@@ -4584,21 +4584,21 @@ func buildOpenAPISpec() OpenAPISpec {
 	add("/api/security/posture-scorecard", "get", OpenAPIOperation{
 		Summary: "Cluster-wide security posture scorecard", OperationID: "securityPosture", Tags: []string{"Security", "Posture", "Scorecard"},
 		Description: "Comprehensive security posture across 5 dimensions: pod-security, host-access, network-isolation, resource-boundaries, attack-surface. Per-workload risk scoring with violation tracking. Attack surface quantification (host paths, cap escalation, SA token exposure, unrestricted egress). A-F cluster grade.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Security posture scorecard", map[string]interface{}{"clusterGrade": "C", "clusterScore": 72})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Security posture scorecard", map[string]interface{}{"clusterGrade": "C", "clusterScore": 72})},
 	})
 
 	// --- AIOps Incident Triage & Remediation Action Plan (v17.58) ---
 	add("/api/operations/triage", "get", OpenAPIOperation{
 		Summary: "AIOps incident triage & remediation action plan", OperationID: "triageReport", Tags: []string{"Operations", "AIOps", "Triage"},
 		Description: "Correlates signals across dimensions (crash loops, node pressure, image failures, stuck rollouts, event storms) into prioritized incidents (P0-P3). Generates action plan with kubectl commands, effort estimates, and impact ratings. Separates quick wins from long-term fixes.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Triage report", map[string]interface{}{"priority": "P1-urgent", "healthScore": 65})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Triage report", map[string]interface{}{"priority": "P1-urgent", "healthScore": 65})},
 	})
 
 	// --- Deployment Impact Simulator (v17.59) ---
 	add("/api/deployment/impact-simulator", "get", OpenAPIOperation{
 		Summary: "Deployment impact simulator & blast radius predictor", OperationID: "deployImpact", Tags: []string{"Deployment", "Simulation", "Risk"},
 		Description: "Simulates deployment impact: single-replica risk, PDB coverage, dependent service blast radius, node co-location, cascade chain analysis. Ranks workloads by deployment risk (1=most risky). Per-workload impact level, estimated downtime, blockers, and mitigations.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Impact simulation", map[string]interface{}{"clusterRiskLevel": "medium"})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Impact simulation", map[string]interface{}{"clusterRiskLevel": "medium"})},
 	})
 
 	// --- Cost Intelligence & Spend Forecast Engine (v17.60) ---
@@ -4609,9 +4609,9 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Advanced FinOps intelligence layer beyond static cost snapshots. Provides: (1) per-namespace cost trend analysis with spend velocity tracking (increasing/stable), (2) cost anomaly detection (concentration spikes, over-request ratios, idle waste, runaway growth), (3) monthly spend forecasting with growth rate estimation and budget recommendations, (4) ranked optimization opportunities by estimated annual savings (right-size, remove-idle, consolidate, spot-migrate), (5) FinOps maturity scorecard grading (A-F) across visibility, optimization, budget enforcement, efficiency, and allocation dimensions. Synthesizes data from all cost-related signals into actionable intelligence.",
 		Responses: map[string]OpenAPIResponse{
 			"200": okResponse("Cost intelligence report", map[string]interface{}{
-				"summary":         map[string]interface{}{"monthlySpend": 1200.50, "annualProjection": 14406, "topNSPctOfSpend": 65.2},
-				"forecast":        map[string]interface{}{"projectedMonthly": 1380, "growthRate": 15.0, "confidence": "high"},
-				"finOpsScore":     map[string]interface{}{"grade": "C", "score": 72, "visibilityScore": 85, "budgetScore": 20},
+				"summary":          map[string]interface{}{"monthlySpend": 1200.50, "annualProjection": 14406, "topNSPctOfSpend": 65.2},
+				"forecast":         map[string]interface{}{"projectedMonthly": 1380, "growthRate": 15.0, "confidence": "high"},
+				"finOpsScore":      map[string]interface{}{"grade": "C", "score": 72, "visibilityScore": 85, "budgetScore": 20},
 				"topOpportunities": []map[string]interface{}{{"rank": 1, "type": "spot-migrate", "estimatedSavingsAnnual": 5760}},
 			}),
 		},
@@ -4641,8 +4641,8 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Collects security findings from the live cluster, scores them using CVSS-like methodology (0-100), and prioritizes remediation by risk × effort. Categories: privileged containers (critical, 95), root containers (high, 70), dangerous capabilities (high, 75), host namespaces (high, 72), missing NetworkPolicy (high, 65), mutable image tags (medium, 42), missing resource limits (medium, 40), unused SA tokens (medium, 45), missing PSA labels (medium, 38). Separates findings into quick wins (high risk, fixable in <1 hour) and strategic fixes. Provides ordered remediation plan (top 15 actions) and category risk aggregation.",
 		Responses: map[string]OpenAPIResponse{
 			"200": okResponse("Remediation matrix", map[string]interface{}{
-				"summary":    map[string]interface{}{"totalFindings": 25, "criticalCount": 2, "quickWinCount": 8},
-				"quickWins":  []map[string]interface{}{{"id": "F001", "severity": "critical", "riskScore": 95}},
+				"summary":         map[string]interface{}{"totalFindings": 25, "criticalCount": 2, "quickWinCount": 8},
+				"quickWins":       []map[string]interface{}{{"id": "F001", "severity": "critical", "riskScore": 95}},
 				"remediationPlan": []map[string]interface{}{{"priority": 1, "action": "Set privileged: false"}},
 			}),
 		},
@@ -4656,8 +4656,8 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Estimates MTTD, MTTR, incident frequency, and recovery effectiveness from pod restart patterns, container state transitions, and event history. Tracks OOMKill and CrashLoopBackOff recovery times. Detects restart bursts, hourly incident patterns (peak hours), and per-namespace stability scores. Provides trend analysis (improving/stable/degrading) and actionable recovery recommendations.",
 		Responses: map[string]OpenAPIResponse{
 			"200": okResponse("MTTR report", map[string]interface{}{
-				"summary":        map[string]interface{}{"totalRestarts": 45, "stabilityScore": 72},
-				"mttrEstimate":   map[string]interface{}{"estMTTR": "5.2m", "confidence": "medium"},
+				"summary":           map[string]interface{}{"totalRestarts": 45, "stabilityScore": 72},
+				"mttrEstimate":      map[string]interface{}{"estMTTR": "5.2m", "confidence": "medium"},
 				"incidentFrequency": map[string]interface{}{"incidentsPerDay": 12.5, "burstDetected": true},
 			}),
 		},
@@ -4671,8 +4671,8 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Correlates deployment state, pod conditions, and restart patterns to identify systematic rollout risks and deployment anti-patterns. Per-workload rollout reliability scoring (A-F). Detects: missing probes, Recreate strategy, single-replica, missing resources, no revision history, CrashLoopBackOff, stalled rollouts. Cluster-level risk factors and prioritized recommendations.",
 		Responses: map[string]OpenAPIResponse{
 			"200": okResponse("Rollout forensics", map[string]interface{}{
-				"summary":       map[string]interface{}{"totalDeployments": 50, "failed": 2, "highRiskCount": 8},
-				"antiPatterns":  []map[string]interface{}{{"type": "no-readiness-probe", "affectedCount": 15}},
+				"summary":          map[string]interface{}{"totalDeployments": 50, "failed": 2, "highRiskCount": 8},
+				"antiPatterns":     []map[string]interface{}{{"type": "no-readiness-probe", "affectedCount": 15}},
 				"reliabilityScore": []map[string]interface{}{{"name": "api", "score": 45, "grade": "D"}},
 			}),
 		},
@@ -4686,7 +4686,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes namespace resource governance: ResourceQuota coverage, LimitRange defaults, quota utilization, and policy enforcement gaps. Identifies ungoverned namespaces where pods can consume unlimited resources. Governance score (0-100, A-F grading).",
 		Responses: map[string]OpenAPIResponse{
 			"200": okResponse("Resource governance", map[string]interface{}{
-				"summary": map[string]interface{}{"totalNamespaces": 28, "nsWithQuota": 2, "nsWithoutQuota": 26},
+				"summary":              map[string]interface{}{"totalNamespaces": 28, "nsWithQuota": 2, "nsWithoutQuota": 26},
 				"ungovernedNamespaces": []map[string]interface{}{{"namespace": "default", "podCount": 5, "severity": "high"}},
 			}),
 		},
@@ -4698,9 +4698,8 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "autoscalingIntel",
 		Tags:        []string{"Scalability", "HPA", "Autoscaling"},
 		Description: "Analyzes HPA coverage, scaling gaps, misconfigured HPAs, and provides tuning advice. Per-workload scaling profiles with verdicts (optimal/misconfigured/no-autoscaling).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Autoscaling report", map[string]interface{}{"summary": map[string]interface{}{"hpaCoverage": 35.2, "intelScore": 52}})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Autoscaling report", map[string]interface{}{"summary": map[string]interface{}{"hpaCoverage": 35.2, "intelScore": 52}})},
 	})
-
 
 	// --- Ownership Map (v17.66) ---
 	add("/api/product/ownership-map", "get", OpenAPIOperation{
@@ -4708,7 +4707,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "ownershipMap",
 		Tags:        []string{"Product", "Governance", "Ownership"},
 		Description: "Maps team ownership of workloads, detects orphaned resources lacking ownership metadata, scores accountability, and tracks label coverage.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Ownership map", map[string]interface{}{"summary": map[string]interface{}{"coveragePct": 45.2, "accountabilityScore": 38}})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Ownership map", map[string]interface{}{"summary": map[string]interface{}{"coveragePct": 45.2, "accountabilityScore": 38}})},
 	})
 
 	// --- Platform Maturity (v17.67) ---
@@ -4717,7 +4716,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "platformMaturity",
 		Tags:        []string{"Documentation", "Maturity", "Meta"},
 		Description: "CMMI-style platform maturity assessment across six dimensions. Scores each dimension (0-100), maps blind spot coverage, identifies capability gaps, and generates a prioritized evolution roadmap.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Maturity report", map[string]interface{}{"overallScore": 78, "overallLevel": "defined"})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Maturity report", map[string]interface{}{"overallScore": 78, "overallLevel": "defined"})},
 	})
 
 	// --- Compliance Posture (v17.68) ---
@@ -4726,7 +4725,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "compliancePosture",
 		Tags:        []string{"Security", "Compliance", "Governance"},
 		Description: "Maps cluster security state against SOC2, PCI-DSS, HIPAA, NIST 800-53, and GDPR. Cross-references findings with framework control families, identifies cross-framework gaps, and generates prioritized remediation plan.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Compliance posture", map[string]interface{}{"overallScore": 72, "frameworks": []interface{}{map[string]interface{}{"framework": "SOC2", "score": 80}}})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Compliance posture", map[string]interface{}{"overallScore": 72, "frameworks": []interface{}{map[string]interface{}{"framework": "SOC2", "score": 80}}})},
 	})
 
 	// --- Observability Coverage (v17.69) ---
@@ -4735,7 +4734,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "obsCoverage",
 		Tags:        []string{"Operations", "Observability", "Monitoring"},
 		Description: "Identifies workloads flying blind — no monitoring, tracing, dashboards, runbooks, or alerts. Scores signal coverage across 5 dimensions per workload and cluster-wide.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Coverage report", map[string]interface{}{"summary": map[string]interface{}{"blindCount": 12, "signalQuality": "poor"}})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Coverage report", map[string]interface{}{"summary": map[string]interface{}{"blindCount": 12, "signalQuality": "poor"}})},
 	})
 
 	// --- Config Consistency (v17.70) ---
@@ -4744,7 +4743,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "configConsistency",
 		Tags:        []string{"Deployment", "Configuration", "Governance"},
 		Description: "Detects configuration drift across workloads, identifies non-conformant patterns (missing probes, resources, labels, security contexts), analyzes image registry distribution and resource tier patterns, and scores standardization maturity.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Consistency report", map[string]interface{}{"consistencyScore": 62, "grade": "D"})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Consistency report", map[string]interface{}{"consistencyScore": 62, "grade": "D"})},
 	})
 
 	// --- Scheduling Intelligence (v17.71) ---
@@ -4753,7 +4752,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "schedulingIntel",
 		Tags:        []string{"Scalability", "Scheduling", "BinPacking"},
 		Description: "Analyzes node bin-packing efficiency, resource fragmentation, scheduling bottlenecks, and stranded resources. Per-node packing analysis with standard pod fit assessment.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Scheduling report", map[string]interface{}{"schedulingScore": 72, "summary": map[string]interface{}{"binPackScore": 72, "fragileNodes": 1}})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Scheduling report", map[string]interface{}{"schedulingScore": 72, "summary": map[string]interface{}{"binPackScore": 72, "fragileNodes": 1}})},
 	})
 
 	// --- Dependency Resilience (v17.72) ---
@@ -4762,7 +4761,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "dependencyResilience",
 		Tags:        []string{"Product", "Resilience", "Dependencies"},
 		Description: "Analyzes service-to-service dependency chains, identifies cascade failure risks, orphaned services, single-pod bottlenecks, and missing resilience patterns.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Resilience report", map[string]interface{}{"resilienceScore": 72, "grade": "C"})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Resilience report", map[string]interface{}{"resilienceScore": 72, "grade": "C"})},
 	})
 
 	// --- Change Intelligence (v17.73) ---
@@ -4771,7 +4770,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "changeIntel",
 		Tags:        []string{"Operations", "Change Management", "Risk"},
 		Description: "Correlates recent cluster changes with health signals to identify change-induced degradation. Provides blast radius analysis, change velocity tracking, and change freeze recommendations.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Change intelligence", map[string]interface{}{"summary": map[string]interface{}{"totalChanges": 12, "riskyChangeCount": 2}})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Change intelligence", map[string]interface{}{"summary": map[string]interface{}{"totalChanges": 12, "riskyChangeCount": 2}})},
 	})
 
 	// --- Net Policy Effectiveness (v17.74) ---
@@ -4780,7 +4779,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "netPolicyEffectiveness",
 		Tags:        []string{"Security", "NetworkPolicy", "ZeroTrust"},
 		Description: "Analyzes network policy effectiveness, namespace isolation, default-deny coverage, egress control, and zero-trust posture across the cluster.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Policy report", map[string]interface{}{"isolationScore": 25, "zeroTrustLevel": "low"})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Policy report", map[string]interface{}{"isolationScore": 25, "zeroTrustLevel": "low"})},
 	})
 
 	// --- Service Mesh Readiness (v17.76) ---
@@ -4789,7 +4788,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "meshReadiness",
 		Tags:        []string{"Product", "ServiceMesh", "mTLS"},
 		Description: "Analyzes service mesh readiness: sidecar injection status, mTLS coverage, traffic management policy gaps (circuit breaker, retry, timeout). Detects Istio/Linkerd mesh presence and identifies unmeshed services lacking resilience policies.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Mesh readiness", map[string]interface{}{"readinessScore": 0, "meshDetected": false, "mtlsCoverage": map[string]interface{}{"score": 0, "status": "no-mesh"}})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Mesh readiness", map[string]interface{}{"readinessScore": 0, "meshDetected": false, "mtlsCoverage": map[string]interface{}{"score": 0, "status": "no-mesh"}})},
 	})
 
 	// --- Idle Waste Detection (v17.77) ---
@@ -4798,7 +4797,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "idleWaste",
 		Tags:        []string{"Scalability", "FinOps", "Cost"},
 		Description: "Detects and quantifies idle resource waste: zero-replica workloads, unmounted PVCs, LoadBalancer services. Estimates monthly waste cost and provides resource efficiency scoring (0-100, A-F).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Waste report", map[string]interface{}{"wasteScore": 75, "estimatedWaste": map[string]interface{}{"totalMonthly": 45.5}})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Waste report", map[string]interface{}{"wasteScore": 75, "estimatedWaste": map[string]interface{}{"totalMonthly": 45.5}})},
 	})
 
 	// --- Policy Governance (v17.78) ---
@@ -4807,7 +4806,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "policyGovernance",
 		Tags:        []string{"Security", "Compliance", "OPA", "Gatekeeper"},
 		Description: "Analyzes admission policy governance: OPA Gatekeeper/Kyverno installation status, Pod Security Admission (PSA) label coverage, and policy enforcement gaps across namespaces. Enforcement scoring (0-100, A-F grading).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Policy governance", map[string]interface{}{"enforcementScore": 0, "gatekeeperStatus": "not-installed", "psaCoverage": map[string]interface{}{"coveragePct": 0}})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Policy governance", map[string]interface{}{"enforcementScore": 0, "gatekeeperStatus": "not-installed", "psaCoverage": map[string]interface{}{"coveragePct": 0}})},
 	})
 
 	// --- API Quality (v17.79) ---
@@ -4816,7 +4815,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "apiQuality",
 		Tags:        []string{"Documentation", "Meta", "Quality"},
 		Description: "Meta-analysis of platform API coverage by dimension: endpoint counts, coverage percentages, gap detection, and quality scoring. Identifies weakest dimensions and suggests areas for improvement.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("API quality report", map[string]interface{}{"qualityScore": 85, "avgCoverage": 82.5, "byDimension": []interface{}{}})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API quality report", map[string]interface{}{"qualityScore": 85, "avgCoverage": 82.5, "byDimension": []interface{}{}})},
 	})
 
 	// --- Observability Cardinality (v17.80) ---
@@ -4825,7 +4824,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "obsCardinality",
 		Tags:        []string{"Operations", "Observability", "FinOps"},
 		Description: "Analyzes observability data cardinality risk: Prometheus metric label explosion, log volume per namespace, collector health, and data pipeline cost estimation. Identifies high-cardinality label risks and log collection blind spots.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Cardinality report", map[string]interface{}{"riskScore": 50, "grade": "D", "estMonthlyCost": 15.5})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cardinality report", map[string]interface{}{"riskScore": 50, "grade": "D", "estMonthlyCost": 15.5})},
 	})
 
 	// --- GitOps Drift (v17.81) ---
@@ -4834,7 +4833,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "gitOpsDrift",
 		Tags:        []string{"Deployment", "GitOps", "Drift"},
 		Description: "Deeply analyzes GitOps sync health: ArgoCD/Flux controller detection, Helm release tracking, manual deployment detection, ConfigMap staleness, and drift scoring. Identifies workloads not managed by GitOps.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("GitOps drift report", map[string]interface{}{"driftScore": 60, "grade": "D", "summary": map[string]interface{}{"hasArgoCD": false, "manualChanges": 10}})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("GitOps drift report", map[string]interface{}{"driftScore": 60, "grade": "D", "summary": map[string]interface{}{"hasArgoCD": false, "manualChanges": 10}})},
 	})
 
 	// --- API Version Governance (v17.82) ---
@@ -4843,7 +4842,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "apiVersionGovernance",
 		Tags:        []string{"Product", "API", "Upgrade"},
 		Description: "Analyzes Kubernetes API version governance: deprecated/removed API usage, alpha/beta API detection, CRD version health, and upgrade readiness assessment. Governance scoring (0-100, A-F grading).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("API version report", map[string]interface{}{"governanceScore": 95, "upgradeReadiness": "ready"})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API version report", map[string]interface{}{"governanceScore": 95, "upgradeReadiness": "ready"})},
 	})
 
 	// --- Secret Lifecycle (v17.83) ---
@@ -4852,7 +4851,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "secretLifecycle",
 		Tags:        []string{"Security", "Secrets", "Rotation"},
 		Description: "Analyzes secret management lifecycle: secret age, rotation compliance, plaintext detection, secret sprawl across namespaces, and unused secret identification. Lifecycle scoring (0-100, A-F grading).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Secret lifecycle report", map[string]interface{}{"lifecycleScore": 55, "grade": "D"})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Secret lifecycle report", map[string]interface{}{"lifecycleScore": 55, "grade": "D"})},
 	})
 
 	// --- DR Backup Verify (v17.84) ---
@@ -4861,7 +4860,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "drBackupVerify",
 		Tags:        []string{"Scalability", "DR", "Backup"},
 		Description: "Analyzes DR readiness: backup tool detection (Velero/K8up/Longhorn), namespace backup coverage, unprotected PVC identification, RPO/RTO estimation, and restore readiness assessment.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("DR report", map[string]interface{}{"readinessScore": 0, "drReadiness": "not-ready", "estRPO": "unknown"})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("DR report", map[string]interface{}{"readinessScore": 0, "drReadiness": "not-ready", "estRPO": "unknown"})},
 	})
 
 	// --- Training Readiness (v17.85) ---
@@ -4870,7 +4869,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "trainingReadiness",
 		Tags:        []string{"Documentation", "Onboarding"},
 		Description: "Assesses onboarding quality: owner/team/docs/runbook label coverage on workloads, documentation completeness, and team knowledge transfer readiness. Scoring (0-100, A-F grading).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Training readiness", map[string]interface{}{"onboardingScore": 25})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Training readiness", map[string]interface{}{"onboardingScore": 25})},
 	})
 
 	// --- Certificate Expiry (v17.86) ---
@@ -4879,7 +4878,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "certExpiry",
 		Tags:        []string{"Operations", "Certificate", "TLS"},
 		Description: "Monitors TLS certificate lifecycle: parses all kubernetes.io/tls secrets, checks expiry dates, identifies expired/expiring certs, detects self-signed certificates. Health scoring (0-100, A-F).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Certificate report", map[string]interface{}{"healthScore": 85, "summary": map[string]interface{}{"totalCerts": 60}})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Certificate report", map[string]interface{}{"healthScore": 85, "summary": map[string]interface{}{"totalCerts": 60}})},
 	})
 
 	// --- Supply Chain (v17.87) ---
@@ -4888,7 +4887,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "supplyChain",
 		Tags:        []string{"Security", "SupplyChain", "Image"},
 		Description: "Analyzes supply chain security: registry trust, image digest pinning, :latest tag usage, pull policy compliance, unknown registry detection. Security scoring (0-100, A-F grading).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Supply chain report", map[string]interface{}{"securityScore": 40})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Supply chain report", map[string]interface{}{"securityScore": 40})},
 	})
 
 	// --- Node OS Drift (v17.88) ---
@@ -4897,7 +4896,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "nodeOSDrift",
 		Tags:        []string{"Scalability", "Node", "OS"},
 		Description: "Deeply analyzes node OS lifecycle: kernel version drift, OS image consistency, container runtime versions, node age, GPU availability, and rotation readiness. Health scoring (0-100, A-F).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Node OS report", map[string]interface{}{"healthScore": 70})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node OS report", map[string]interface{}{"healthScore": 70})},
 	})
 
 	// --- Traffic Flow (v17.89) ---
@@ -4906,7 +4905,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "trafficFlow",
 		Tags:        []string{"Product", "Traffic", "Networking"},
 		Description: "Analyzes east-west service communication: service exposure levels, endpoint health, isolated/orphaned service detection, LoadBalancer/NodePort audit. Flow scoring (0-100, A-F grading).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Traffic flow report", map[string]interface{}{"flowScore": 75})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Traffic flow report", map[string]interface{}{"flowScore": 75})},
 	})
 
 	// --- Pipeline Health (v17.90) ---
@@ -4915,7 +4914,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "pipelineHealth",
 		Tags:        []string{"Deployment", "CI/CD", "DORA"},
 		Description: "Analyzes deployment pipeline health: deploy frequency, change failure rate, rollback patterns, CI/CD controller detection, and DORA maturity classification.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Pipeline health", map[string]interface{}{"healthScore": 70, "doraLevel": "Medium"})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pipeline health", map[string]interface{}{"healthScore": 70, "doraLevel": "Medium"})},
 	})
 
 	// --- Alert Rule Quality (v17.91) ---
@@ -4924,7 +4923,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "alertRuleQuality",
 		Tags:        []string{"Operations", "Alerting", "Observability"},
 		Description: "Analyzes alerting rule quality: Prometheus/Alertmanager detection, rule count, workload alerting coverage, noise risk detection.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Alert quality", map[string]interface{}{"qualityScore": 0, "totalRules": 0})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Alert quality", map[string]interface{}{"qualityScore": 0, "totalRules": 0})},
 	})
 
 	// --- Chargeback (v17.92) ---
@@ -4933,7 +4932,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		OperationID: "chargeback",
 		Tags:        []string{"Scalability", "FinOps", "Cost"},
 		Description: "Detailed cost chargeback: per-namespace cost breakdown, shared infrastructure cost, waste cost, team-level budget allocation.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Chargeback", map[string]interface{}{"totalMonthlyCost": 150.0, "namespaceCount": 28})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Chargeback", map[string]interface{}{"totalMonthlyCost": 150.0, "namespaceCount": 28})},
 	})
 
 	// --- Runtime Threat (v17.93) ---
@@ -4966,411 +4965,411 @@ func buildOpenAPISpec() OpenAPISpec {
 	// --- Probe Latency (v17.96) ---
 	add("/api/operations/probe-latency", "get", OpenAPIOperation{
 		Summary: "Health probe latency & readiness performance analyzer", OperationID: "probeLatency",
-		Tags: []string{"Operations", "Probe", "Performance"},
+		Tags:        []string{"Operations", "Probe", "Performance"},
 		Description: "Analyzes health probe latency: startup/readiness/liveness probe configs, slow detection, timeout risks, missing probe detection.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Probe report", map[string]interface{}{"healthScore": 65})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Probe report", map[string]interface{}{"healthScore": 65})},
 	})
 
 	// --- Helm Health Deep (v17.97) ---
 	add("/api/deployment/helm-health-deep", "get", OpenAPIOperation{
 		Summary: "Deep Helm release health & chart staleness analyzer", OperationID: "helmHealthDeep",
-		Tags: []string{"Deployment", "Helm", "GitOps"},
+		Tags:        []string{"Deployment", "Helm", "GitOps"},
 		Description: "Deep analysis of Helm releases: version staleness, failed releases, chart age, release integrity.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Helm report", map[string]interface{}{"healthScore": 85})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Helm report", map[string]interface{}{"healthScore": 85})},
 	})
 
 	// --- Spot Readiness Deep (v17.98) ---
 	add("/api/scalability/spot-readiness-deep", "get", OpenAPIOperation{
 		Summary: "Spot/preemptible instance readiness deep analyzer", OperationID: "spotReadinessDeep",
-		Tags: []string{"Scalability", "Spot", "FinOps"},
+		Tags:        []string{"Scalability", "Spot", "FinOps"},
 		Description: "Analyzes spot instance readiness: node label detection, toleration coverage, PDB gaps, disruption resilience.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Spot report", map[string]interface{}{"readinessScore": 50})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Spot report", map[string]interface{}{"readinessScore": 50})},
 	})
 
 	// --- RBAC Blast (v17.99) ---
 	add("/api/security/rbac-blast", "get", OpenAPIOperation{
 		Summary: "RBAC privilege escalation & blast radius analyzer", OperationID: "rbacBlast",
-		Tags: []string{"Security", "RBAC", "Privilege"},
+		Tags:        []string{"Security", "RBAC", "Privilege"},
 		Description: "Analyzes RBAC privilege escalation paths: cluster-admin bindings, wildcard permissions, privilege escalation roles.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("RBAC report", map[string]interface{}{"riskScore": 70})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("RBAC report", map[string]interface{}{"riskScore": 70})},
 	})
 
 	// --- Gateway Health (v18.00) ---
 	add("/api/product/api-gateway-health", "get", OpenAPIOperation{
 		Summary: "API gateway & ingress controller health analyzer", OperationID: "gatewayHealth",
-		Tags: []string{"Product", "Gateway", "Ingress"},
+		Tags:        []string{"Product", "Gateway", "Ingress"},
 		Description: "Analyzes ingress controller health, TLS coverage, backend service routing, and ingress configuration gaps.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Gateway report", map[string]interface{}{"healthScore": 75})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Gateway report", map[string]interface{}{"healthScore": 75})},
 	})
 
 	// --- Throttle Risk (v18.01) ---
 	add("/api/operations/throttle-risk", "get", OpenAPIOperation{
 		Summary: "Pod resource throttling risk & CPU pressure detector", OperationID: "throttleRisk",
-		Tags: []string{"Operations", "Resource", "Throttling"},
+		Tags:        []string{"Operations", "Resource", "Throttling"},
 		Description: "Analyzes pod resource throttling: CPU/memory limit gaps, node pressure, unbounded resource consumption.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Throttle report", map[string]interface{}{"riskScore": 55})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Throttle report", map[string]interface{}{"riskScore": 55})},
 	})
 
 	// --- Audit Trail (v18.02) ---
 	add("/api/security/audit-trail", "get", OpenAPIOperation{
 		Summary: "Audit logging coverage & compliance trail analyzer", OperationID: "auditTrail",
-		Tags: []string{"Security", "Audit", "Compliance"},
+		Tags:        []string{"Security", "Audit", "Compliance"},
 		Description: "Analyzes K8s audit logging: collector detection, audit policy, sensitive access tracking, compliance trail completeness.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Audit trail report", map[string]interface{}{"complianceScore": 30})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Audit trail report", map[string]interface{}{"complianceScore": 30})},
 	})
 
 	// --- Image Freshness (v18.03) ---
 	add("/api/deployment/image-freshness", "get", OpenAPIOperation{
 		Summary: "Container image freshness & update tracking", OperationID: "imageFreshness",
-		Tags: []string{"Deployment", "Image", "Updates"},
+		Tags:        []string{"Deployment", "Image", "Updates"},
 		Description: "Analyzes image freshness: version pinning, stale image detection, update tracking, :latest tag audit.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Image freshness", map[string]interface{}{"healthScore": 45})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image freshness", map[string]interface{}{"healthScore": 45})},
 	})
 
 	// --- Multi-Cluster Conn (v18.04) ---
 	add("/api/scalability/multi-cluster-conn", "get", OpenAPIOperation{
 		Summary: "Multi-cluster connectivity & federation health", OperationID: "multiClusterConn",
-		Tags: []string{"Scalability", "MultiCluster", "Federation"},
+		Tags:        []string{"Scalability", "MultiCluster", "Federation"},
 		Description: "Detects multi-cluster tools (ClusterAPI/Karmada/ArgoCD fleet), analyzes connectivity, federation health, remote cluster coverage.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Multi-cluster report", map[string]interface{}{"healthScore": 50})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Multi-cluster report", map[string]interface{}{"healthScore": 50})},
 	})
 
 	// --- Admission Audit (v18.05) ---
 	add("/api/security/admission-posture", "get", OpenAPIOperation{
 		Summary: "Admission controller posture & policy engine audit", OperationID: "admissionAudit",
-		Tags: []string{"Security", "Admission", "Policy"},
+		Tags:        []string{"Security", "Admission", "Policy"},
 		Description: "Detects OPA/Gatekeeper/Kyverno, counts validating/mutating webhooks, assesses enforcement coverage.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Admission report", map[string]interface{}{"postureScore": 20})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Admission report", map[string]interface{}{"postureScore": 20})},
 	})
 
 	// --- Dashboard Availability (v18.06) ---
 	add("/api/operations/dashboard-availability", "get", OpenAPIOperation{
 		Summary: "Grafana dashboard availability & observability UI coverage", OperationID: "dashAvail",
-		Tags: []string{"Operations", "Observability", "Dashboard"},
+		Tags:        []string{"Operations", "Observability", "Dashboard"},
 		Description: "Detects Grafana, counts dashboards, checks per-namespace observability coverage, identifies blind spots.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Dashboard report", map[string]interface{}{"healthScore": 0})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Dashboard report", map[string]interface{}{"healthScore": 0})},
 	})
 
 	// --- Storage Orphan (v18.07) ---
 	add("/api/scalability/storage-orphan", "get", OpenAPIOperation{
 		Summary: "Orphaned PVC & storage waste analyzer", OperationID: "storageOrphan",
-		Tags: []string{"Scalability", "Storage", "Waste"},
+		Tags:        []string{"Scalability", "Storage", "Waste"},
 		Description: "Identifies orphaned PVCs, pending PVCs, unused storage, and estimates monthly waste cost.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Storage report", map[string]interface{}{"healthScore": 80})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Storage report", map[string]interface{}{"healthScore": 80})},
 	})
 
 	// --- Workload Deps (v18.08) ---
 	add("/api/deployment/workload-deps", "get", OpenAPIOperation{
 		Summary: "Workload dependency graph analyzer", OperationID: "workloadDeps",
-		Tags: []string{"Deployment", "Dependency", "Startup"},
+		Tags:        []string{"Deployment", "Dependency", "Startup"},
 		Description: "Analyzes workload dependencies: init containers, config/secret refs, startup ordering risks.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Dependency report", map[string]interface{}{"healthScore": 85})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Dependency report", map[string]interface{}{"healthScore": 85})},
 	})
 
 	// --- Metrics Pipeline (v18.09) ---
 	add("/api/operations/metrics-pipe", "get", OpenAPIOperation{
 		Summary: "Metrics pipeline integrity & scraping coverage", OperationID: "metricsPipeline",
-		Tags: []string{"Operations", "Metrics", "Pipeline"},
+		Tags:        []string{"Operations", "Metrics", "Pipeline"},
 		Description: "Analyzes metrics pipeline: Prometheus detection, exporter health, scraping targets, blind workloads.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Metrics pipeline", map[string]interface{}{"healthScore": 0})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Metrics pipeline", map[string]interface{}{"healthScore": 0})},
 	})
 
 	// --- Platform Changelog (v18.10) ---
 	add("/api/docs/platform-changelog", "get", OpenAPIOperation{
 		Summary: "Platform changelog from recent resource changes", OperationID: "platformChangelog",
-		Tags: []string{"Documentation", "Changelog", "Audit"},
+		Tags:        []string{"Documentation", "Changelog", "Audit"},
 		Description: "Generates a platform changelog: new/updated deployments, services, configmaps in last 24h.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Changelog", map[string]interface{}{"totalChanges24h": 10})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Changelog", map[string]interface{}{"totalChanges24h": 10})},
 	})
 
 	// --- Capacity Forecast (v18.11) ---
 	add("/api/scalability/capacity-forecast-deep", "get", OpenAPIOperation{
 		Summary: "Cluster capacity exhaustion forecast", OperationID: "capacityForecast",
-		Tags: []string{"Scalability", "Forecast", "Capacity"},
+		Tags:        []string{"Scalability", "Forecast", "Capacity"},
 		Description: "Forecasts when CPU, memory, and pod slots will be exhausted based on current allocation trends.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Forecast", map[string]interface{}{"healthScore": 70})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Forecast", map[string]interface{}{"healthScore": 70})},
 	})
 
 	// --- Compliance Map (v18.12) ---
 	add("/api/security/compliance-framework", "get", OpenAPIOperation{
 		Summary: "SOC2/PCI-DSS/CIS compliance framework mapping", OperationID: "complianceMap",
-		Tags: []string{"Security", "Compliance", "SOC2"},
+		Tags:        []string{"Security", "Compliance", "SOC2"},
 		Description: "Maps cluster state to SOC2, PCI-DSS, and CIS compliance controls with pass/fail status.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Compliance", map[string]interface{}{"complianceScore": 30})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Compliance", map[string]interface{}{"complianceScore": 30})},
 	})
 
 	// --- MTTR Analysis (v18.13) ---
 	add("/api/product/mttr-analysis", "get", OpenAPIOperation{
 		Summary: "Mean time to recovery from restart patterns", OperationID: "mttrAnalysis",
-		Tags: []string{"Product", "Reliability", "MTTR"},
+		Tags:        []string{"Product", "Reliability", "MTTR"},
 		Description: "Analyzes pod restart patterns to estimate MTTR and identify crash-prone workloads.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("MTTR", map[string]interface{}{"healthScore": 55})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("MTTR", map[string]interface{}{"healthScore": 55})},
 	})
 
 	// --- GitOps Sync (v18.14) ---
 	add("/api/deployment/gitops-sync-status", "get", OpenAPIOperation{
 		Summary: "GitOps sync state & drift detection", OperationID: "gitopsSync",
-		Tags: []string{"Deployment", "GitOps", "Drift"},
+		Tags:        []string{"Deployment", "GitOps", "Drift"},
 		Description: "Detects ArgoCD/Flux controllers, application sync status, out-of-sync apps, configuration drift.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("GitOps report", map[string]interface{}{"healthScore": 30})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("GitOps report", map[string]interface{}{"healthScore": 30})},
 	})
 
 	// --- Endpoint Probe (v18.15) ---
 	add("/api/operations/endpoint-probe", "get", OpenAPIOperation{
 		Summary: "Service endpoint readiness probe", OperationID: "endpointProbe",
-		Tags: []string{"Operations", "Endpoint", "Health"},
+		Tags:        []string{"Operations", "Endpoint", "Health"},
 		Description: "Probes service endpoint readiness: healthy/partial/no-backend services, endpoint count tracking.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Endpoint probe", map[string]interface{}{"healthScore": 75})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Endpoint probe", map[string]interface{}{"healthScore": 75})},
 	})
 
 	// --- Node Decommission (v18.16) ---
 	add("/api/scalability/node-decomm", "get", OpenAPIOperation{
 		Summary: "Node decommissioning & lifecycle rotation", OperationID: "nodeDecomm",
-		Tags: []string{"Scalability", "Node", "Lifecycle"},
+		Tags:        []string{"Scalability", "Node", "Lifecycle"},
 		Description: "Analyzes node rotation candidates: age, readiness, rotation urgency, decommission readiness.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Node decommission", map[string]interface{}{"healthScore": 40})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node decommission", map[string]interface{}{"healthScore": 40})},
 	})
 
 	// --- Backup Coverage (v18.17) ---
 	add("/api/operations/backup-coverage", "get", OpenAPIOperation{
 		Summary: "Backup & disaster recovery posture analyzer", OperationID: "backupCoverage",
-		Tags: []string{"Operations", "Backup", "DR"},
+		Tags:        []string{"Operations", "Backup", "DR"},
 		Description: "Detects Velero/backup tools, PVC backup coverage, schedule presence, restore readiness.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Backup report", map[string]interface{}{"healthScore": 20})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Backup report", map[string]interface{}{"healthScore": 20})},
 	})
 
 	// --- Idle Zombie (v18.18) ---
 	add("/api/deployment/idle-zombie", "get", OpenAPIOperation{
 		Summary: "Idle/zombie workload detector", OperationID: "idleZombie",
-		Tags: []string{"Deployment", "Waste", "Idle"},
+		Tags:        []string{"Deployment", "Waste", "Idle"},
 		Description: "Detects idle workloads consuming resources without traffic, zombie deployments with 0 ready replicas.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Idle report", map[string]interface{}{"healthScore": 75})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Idle report", map[string]interface{}{"healthScore": 75})},
 	})
 
 	// --- Service Mesh (v18.19) ---
 	add("/api/product/service-mesh", "get", OpenAPIOperation{
 		Summary: "Service mesh coverage & mTLS analyzer", OperationID: "serviceMesh",
-		Tags: []string{"Product", "Mesh", "MTLS"},
+		Tags:        []string{"Product", "Mesh", "MTLS"},
 		Description: "Detects Istio/Linkerd/Consul, sidecar injection rate, mTLS status, mesh coverage gaps.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Mesh report", map[string]interface{}{"healthScore": 20})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Mesh report", map[string]interface{}{"healthScore": 20})},
 	})
 
 	// --- Cloud Portability (v18.20) ---
 	add("/api/product/cloud-portability", "get", OpenAPIOperation{
 		Summary: "Cloud vendor lock-in & workload portability assessor", OperationID: "cloudPortability",
-		Tags: []string{"Product", "FinOps", "MultiCloud"},
+		Tags:        []string{"Product", "FinOps", "MultiCloud"},
 		Description: "Assesses cloud vendor lock-in by detecting cloud-specific StorageClasses, annotations, node selectors, and volume types. Detects cloud vendor from node providerIDs (AWS/GCP/Azure). Classifies workloads as portable or cloud-locked. Generates prioritized migration plan with effort estimates. Portability score (0-100, A-F grading). Per-namespace portability stats with risk levels.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Portability report", map[string]interface{}{"healthScore": 85})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Portability report", map[string]interface{}{"healthScore": 85})},
 	})
 
 	// --- Storage Performance (v18.21) ---
 	add("/api/scalability/storage-performance", "get", OpenAPIOperation{
 		Summary: "Storage performance tier classification & mismatch detector", OperationID: "storagePerformance",
-		Tags: []string{"Scalability", "Storage", "Performance"},
+		Tags:        []string{"Scalability", "Storage", "Performance"},
 		Description: "Classifies StorageClasses by performance tier (fast/standard/slow/unknown) based on provisioner and naming. Infers workload storage needs from pod names/labels (database, message-queue, logging, general). Detects performance mismatches (e.g., database on slow-tier storage). Identifies unbound PVCs, unknown-tier storage, and missing fast-tier options. Health score (0-100, A-F grading).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Storage performance report", map[string]interface{}{"healthScore": 75})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Storage performance report", map[string]interface{}{"healthScore": 75})},
 	})
 
 	// --- Workload Lifecycle (v18.22) ---
 	add("/api/deployment/workload-lifecycle", "get", OpenAPIOperation{
 		Summary: "Workload lifecycle stage classifier & cleanup advisor", OperationID: "workloadLifecycle",
-		Tags: []string{"Deployment", "Lifecycle", "FinOps"},
+		Tags:        []string{"Deployment", "Lifecycle", "FinOps"},
 		Description: "Auto-classifies workloads by lifecycle stage (production, staging, development, deprecated, legacy) using namespace patterns, labels, annotations, replica counts, and age. Assigns operational priority (P0-P3) and risk levels. Identifies cleanup candidates (deprecated/legacy workloads consuming resources) with actionable steps (delete, archive, scale-down). Stale workload detection (>90 days, non-production). Lifecycle governance score (0-100, A-F grading).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Lifecycle report", map[string]interface{}{"healthScore": 80})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Lifecycle report", map[string]interface{}{"healthScore": 80})},
 	})
 
 	// --- Upgrade Impact Simulator (v18.23) ---
 	add("/api/deployment/upgrade-impact", "get", OpenAPIOperation{
 		Summary: "K8s version upgrade impact simulator & readiness assessor", OperationID: "upgradeImpact",
-		Tags: []string{"Deployment", "Upgrade", "Platform"},
+		Tags:        []string{"Deployment", "Upgrade", "Platform"},
 		Description: "Simulates the impact of upgrading to the next Kubernetes minor version. Checks: deprecated API versions that will be removed, breaking changes per target version, node version skew risk (kubelet vs control plane), addon compatibility (CoreDNS, CNI, CSI, cert-manager), workload-specific risks (privileged containers, hostNetwork, default SA). Generates prioritized pre-upgrade action plan with phases. Readiness score (0-100), verdict (ready/caution/blocked).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Upgrade impact report", map[string]interface{}{"readinessScore": 85})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Upgrade impact report", map[string]interface{}{"readinessScore": 85})},
 	})
 
 	// --- Resource Inventory (v18.24) ---
 	add("/api/docs/resource-inventory", "get", OpenAPIOperation{
 		Summary: "Comprehensive cluster resource catalog & inventory", OperationID: "resourceInventory",
-		Tags: []string{"Documentation", "Inventory", "Audit"},
+		Tags:        []string{"Documentation", "Inventory", "Audit"},
 		Description: "Full cluster resource inventory documenting every resource type with counts, health status, age distribution, and ownership tracking. Lists: Deployments, StatefulSets, DaemonSets, Pods, Services, ConfigMaps, Secrets, PVCs, Ingresses, NetworkPolicies, ServiceAccounts, Roles, ClusterRoles, HPAs, PDBs, StorageClasses, Nodes. Per-kind health stats (healthy/unhealthy ratio). Per-namespace resource distribution. Orphaned resource detection (services without backing pods). Label hygiene coverage (app/team/env labels). Age distribution (new/week/month/quarter/old). Health score (0-100, A-F grading).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Resource inventory", map[string]interface{}{"healthScore": 90})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Resource inventory", map[string]interface{}{"healthScore": 90})},
 	})
 
 	// --- Unit Economics (v18.25) ---
 	add("/api/scalability/unit-economics", "get", OpenAPIOperation{
 		Summary: "FinOps unit economics: cost per pod/service/namespace", OperationID: "unitEconomics",
-		Tags: []string{"Scalability", "FinOps", "Cost"},
+		Tags:        []string{"Scalability", "FinOps", "Cost"},
 		Description: "Translates infrastructure costs into business-relevant unit metrics: cost per pod, cost per service, cost per namespace. Computes CPU/memory cost shares, efficiency ratios (limit-to-request), cost per core, cost per GB. Identifies savings opportunities (right-size limits, consolidate pods). Top 20 most expensive pods ranked by monthly cost. Per-namespace efficiency rating (high/medium/low). Monthly spend estimation from resource requests using cloud pricing models. Efficiency score (0-100, A-F grading).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Unit economics report", map[string]interface{}{"healthScore": 75})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Unit economics report", map[string]interface{}{"healthScore": 75})},
 	})
 
 	// --- Platform Scorecard (v18.26) ---
 	add("/api/docs/platform-scorecard", "get", OpenAPIOperation{
 		Summary: "Unified platform engineering scorecard", OperationID: "platformScorecard",
-		Tags: []string{"Documentation", "Platform", "Executive"},
+		Tags:        []string{"Documentation", "Platform", "Executive"},
 		Description: "Aggregates signals from infrastructure health, workload reliability, security posture, cost efficiency, operational maturity, and service connectivity into a single executive-level platform score. Weighted scoring with 6 dimensions. Identifies strengths (80+), weaknesses (<60), and generates prioritized improvement roadmap with timeline (quick-win/short-term/long-term) and effort estimates. Maturity level classification (elite/advanced/intermediate/developing/initial). Executive summary with trend direction.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Platform scorecard", map[string]interface{}{"overallScore": 75})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Platform scorecard", map[string]interface{}{"overallScore": 75})},
 	})
 
 	// --- Signal Correlation (v18.27) ---
 	add("/api/operations/signal-correlation", "get", OpenAPIOperation{
 		Summary: "Proactive multi-signal anomaly correlation engine", OperationID: "signalCorrelation",
-		Tags: []string{"Operations", "AIOps", "Proactive"},
+		Tags:        []string{"Operations", "AIOps", "Proactive"},
 		Description: "Correlates signals from pod restart patterns, crash loops, OOM kills, resource pressure, node conditions, event storms, and scheduling failures to detect emerging issues before they become incidents. Identifies signal hotspots (namespaces/nodes with high anomaly density). Detects emerging risks (disk exhaustion, memory pressure, signal saturation) with probability scores and mitigation steps. Signal matrix showing all monitored signal sources and their current status. Health score (0-100).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Signal correlation report", map[string]interface{}{"healthScore": 85})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Signal correlation report", map[string]interface{}{"healthScore": 85})},
 	})
 
 	// --- Green Computing (v18.28) ---
 	add("/api/scalability/green-computing", "get", OpenAPIOperation{
 		Summary: "Green computing & sustainability scorecard", OperationID: "greenComputing",
-		Tags: []string{"Scalability", "Sustainability", "FinOps"},
+		Tags:        []string{"Scalability", "Sustainability", "FinOps"},
 		Description: "Beyond carbon footprint: assesses energy efficiency, PUE estimation, resource waste from idle workloads, workload density (pods/core), and energy-per-pod metrics. Estimates power consumption (kW), annual energy cost, and CO2 emissions. Identifies waste sources (idle CPU, unbounded resources) with their energy and carbon impact. Per-namespace efficiency ratings. Generates sustainability recommendations with annual savings and CO2 reduction estimates. Green verdict (eco-friendly/moderate/wasteful/critical).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Green computing report", map[string]interface{}{"healthScore": 70})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Green computing report", map[string]interface{}{"healthScore": 70})},
 	})
 
 	// --- Deploy Window (v18.29) ---
 	add("/api/deployment/deploy-window", "get", OpenAPIOperation{
 		Summary: "Optimal deployment window analyzer", OperationID: "deployWindow",
-		Tags: []string{"Deployment", "Operations", "Risk"},
+		Tags:        []string{"Deployment", "Operations", "Risk"},
 		Description: "Analyzes cluster event patterns over 7 days to identify the safest deployment windows. Computes per-hour activity scores from events, warnings, and pod restarts. Recommends top 3 low-risk windows and flags high-risk peak hours. Current deployment risk assessment with verdict (safe-to-deploy/caution/wait). Accounts for crash-loop pods, pending pods, and critical workload density.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Deploy window report", map[string]interface{}{"verdict": "safe-to-deploy"})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Deploy window report", map[string]interface{}{"verdict": "safe-to-deploy"})},
 	})
 
 	// --- Workload Criticality (v18.30) ---
 	add("/api/product/workload-criticality", "get", OpenAPIOperation{
 		Summary: "Workload criticality scoring & tier classification", OperationID: "workloadCriticality",
-		Tags: []string{"Product", "SLA", "Operations"},
+		Tags:        []string{"Product", "SLA", "Operations"},
 		Description: "Scores each workload's business criticality (0-100) based on: replica count, PDB presence, HPA coverage, ingress exposure, resource commitment, age stability, and namespace patterns. Classifies into tiers: Tier-0 (critical, 99.99% SLA), Tier-1 (important, 99.9%), Tier-2 (standard, 99.5%), Tier-3 (best-effort). Per-tier PDB/HPA coverage gap analysis. SLA matrix with RTO/MTTR targets.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Criticality report", map[string]interface{}{"healthScore": 75})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Criticality report", map[string]interface{}{"healthScore": 75})},
 	})
 
 	// --- Commit Optimizer (v18.31) ---
 	add("/api/scalability/commit-optimizer", "get", OpenAPIOperation{
 		Summary: "Resource commitment & reserved instance optimizer", OperationID: "commitOptimizer",
-		Tags: []string{"Scalability", "FinOps", "Cost"},
+		Tags:        []string{"Scalability", "FinOps", "Cost"},
 		Description: "Analyzes resource commitment patterns to identify savings through reserved instances, sustained-use discounts, and spot migration. Separates stable (always-on) from volatile (batch/spot) workloads. Computes stability scores per workload. Generates commitment plan with monthly/annual savings estimates and confidence scores. Per-namespace cost breakdown. Savings breakdown by category (reserved, right-size, spot).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Commit optimizer report", map[string]interface{}{"healthScore": 80})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Commit optimizer report", map[string]interface{}{"healthScore": 80})},
 	})
 
 	// --- Change Freeze (v18.32) ---
 	add("/api/deployment/change-freeze", "get", OpenAPIOperation{
 		Summary: "Change freeze detector & deployment risk gate", OperationID: "changeFreeze",
-		Tags: []string{"Deployment", "Operations", "Risk"},
+		Tags:        []string{"Deployment", "Operations", "Risk"},
 		Description: "Evaluates cluster stability to determine if changes should proceed. Checks crash loops, recent failed deployments, warning event volume (1h/24h), pod age stability, and active incidents. Detects seasonal freeze periods (holidays, Black Friday). Provides verdict (proceed/caution/freeze) with stability score. Lists recent changes with health status.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Change freeze report", map[string]interface{}{"verdict": "proceed"})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Change freeze report", map[string]interface{}{"verdict": "proceed"})},
 	})
 
 	// --- Attack Surface (v18.33) ---
 	add("/api/security/attack-surface", "get", OpenAPIOperation{
 		Summary: "External attack surface mapper & TLS gap analyzer", OperationID: "attackSurface",
-		Tags: []string{"Security", "Network", "Audit"},
+		Tags:        []string{"Security", "Network", "Audit"},
 		Description: "Catalogs every externally-reachable endpoint (Ingress, LoadBalancer, NodePort). Classifies exposure levels (public/internal/cluster-only). Identifies TLS gaps on ingress resources. Maps complete external attack surface with port counts, unique hosts, and high-risk endpoint detection. Per-namespace exposure breakdown.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Attack surface map", map[string]interface{}{"healthScore": 85})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Attack surface map", map[string]interface{}{"healthScore": 85})},
 	})
 
 	// --- Density Balance (v18.34) ---
 	add("/api/scalability/density-balance", "get", OpenAPIOperation{
 		Summary: "Pod scheduling density & node balance analyzer", OperationID: "densityBalance",
-		Tags: []string{"Scalability", "Scheduling", "HA"},
+		Tags:        []string{"Scalability", "Scheduling", "HA"},
 		Description: "Analyzes pod distribution across nodes for optimal fault tolerance. Identifies over-packed (>80%) and under-used (<20%) nodes. Computes Gini coefficient and standard deviation for distribution inequality. Detects namespace pod spread (how many nodes each namespace spans). Generates rebalancing recommendations (spread/consolidate). Balance score (0-100).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Density balance report", map[string]interface{}{"healthScore": 75})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Density balance report", map[string]interface{}{"healthScore": 75})},
 	})
 
 	// --- Secret Rotation (v18.35) ---
 	add(" /api/security/secret-rotation-v2", "get", OpenAPIOperation{
 		Summary: "Secret rotation compliance & staleness tracker", OperationID: "secretRotation",
-		Tags: []string{"Security", "Secrets", "Compliance"},
+		Tags:        []string{"Security", "Secrets", "Compliance"},
 		Description: "Evaluates secret rotation freshness across the cluster. Checks each secret against type-specific max age policies (TLS: 90d, Opaque: 180d, DockerConfig: 90d). Identifies stale, never-rotated, and critically expired secrets. Tracks secret usage by pods. Per-type and per-namespace compliance breakdown.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Secret rotation report", map[string]interface{}{"healthScore": 75})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Secret rotation report", map[string]interface{}{"healthScore": 75})},
 	})
 
 	// --- HPA Behavior (v18.36) ---
 	add("/api/scalability/hpa-behavior", "get", OpenAPIOperation{
 		Summary: "HPA scaling behavior & flapping risk analyzer", OperationID: "hpaBehavior",
-		Tags: []string{"Scalability", "Autoscaling", "AIOps"},
+		Tags:        []string{"Scalability", "Autoscaling", "AIOps"},
 		Description: "Analyzes existing HPA configurations for behavioral issues: flapping risk (aggressive scale-up without stabilization), missing behavior configs, min=max constraints, and suboptimal CPU targets. Classifies scale-up/down policies (aggressive/moderate/conservative). Generates per-HPA scores and actionable tuning recommendations.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("HPA behavior report", map[string]interface{}{"healthScore": 80})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("HPA behavior report", map[string]interface{}{"healthScore": 80})},
 	})
 
 	// --- API Access Pattern (v18.37) ---
 	add("/api/operations/api-access-pattern", "get", OpenAPIOperation{
 		Summary: "API server access pattern & anomaly detector", OperationID: "apiAccessPattern",
-		Tags: []string{"Operations", "Audit", "AIOps"},
+		Tags:        []string{"Operations", "Audit", "AIOps"},
 		Description: "Analyzes API server access patterns from event data. Identifies top callers, hot resources, read/write ratios, and access anomalies (high failure rate, dominant callers, resource hotspots). Per-namespace access distribution. Useful for detecting controller misbehavior, excessive API calls, and potential security concerns.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("API access report", map[string]interface{}{"healthScore": 85})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API access report", map[string]interface{}{"healthScore": 85})},
 	})
 
 	// --- Volume Budget (v18.38) ---
 	add("/api/scalability/volume-budget", "get", OpenAPIOperation{
 		Summary: "PVC storage budget & orphan detector", OperationID: "volumeBudget",
-		Tags: []string{"Scalability", "Storage", "FinOps"},
+		Tags:        []string{"Scalability", "Storage", "FinOps"},
 		Description: "Analyzes PVC usage, storage quota consumption, and volume lifecycle. Tracks PVC request vs capacity, identifies orphaned PVCs, detects pending provisioning failures. Per-namespace and per-storage-class breakdown. Monthly cost estimation. Storage budget forecast.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Volume budget report", map[string]interface{}{"healthScore": 85})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Volume budget report", map[string]interface{}{"healthScore": 85})},
 	})
 
 	// --- Restart Pattern (v18.39) ---
 	add("/api/operations/restart-pattern", "get", OpenAPIOperation{
 		Summary: "Pod restart pattern & chronic issue analyzer", OperationID: "restartPattern",
-		Tags: []string{"Operations", "Reliability", "AIOps"},
+		Tags:        []string{"Operations", "Reliability", "AIOps"},
 		Description: "Analyzes pod restart history to detect chronic issues: cyclical restart patterns, periodic OOM kills, configuration-triggered restarts. Classifies patterns (chronic/oom-cycle/periodic/sporadic). Time-correlation analysis for restart spikes. Root cause guessing for each problematic workload.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Restart pattern report", map[string]interface{}{"healthScore": 85})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Restart pattern report", map[string]interface{}{"healthScore": 85})},
 	})
 
 	// --- Cert Inventory (v18.40) ---
 	add("/api/security/cert-inventory", "get", OpenAPIOperation{
 		Summary: "TLS certificate inventory & expiry tracker", OperationID: "certInventory",
-		Tags: []string{"Security", "Compliance", "Certificates"},
+		Tags:        []string{"Security", "Compliance", "Certificates"},
 		Description: "Inventories all TLS certificates from K8s TLS secrets. Checks expiry dates, identifies soon-to-expire and expired certificates. Tracks issuers, self-signed ratio, wildcard coverage. Detects cert-manager presence. Per-namespace breakdown. Compliance-friendly certificate landscape view.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Certificate inventory", map[string]interface{}{"healthScore": 85})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Certificate inventory", map[string]interface{}{"healthScore": 85})},
 	})
 
 	// --- Env Var Audit (v18.41) ---
 	add("/api/product/env-var-audit", "get", OpenAPIOperation{
 		Summary: "Environment variable security & sprawl auditor", OperationID: "envVarAudit",
-		Tags: []string{"Product", "Security", "Configuration"},
+		Tags:        []string{"Product", "Security", "Configuration"},
 		Description: "Audits environment variables across workloads: detects plaintext secrets, hardcoded URLs, config sprawl, missing best practices. Per-namespace breakdown.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Env var audit", map[string]interface{}{"healthScore": 85})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Env var audit", map[string]interface{}{"healthScore": 85})},
 	})
 
 	// --- Scaling Simulator (v18.42) ---
 	add("/api/scalability/scaling-simulator", "get", OpenAPIOperation{
 		Summary: "Cluster scaling scenario simulator", OperationID: "scalingSimulator",
-		Tags: []string{"Scalability", "Capacity", "Planning"},
+		Tags:        []string{"Scalability", "Capacity", "Planning"},
 		Description: "Simulates cluster behavior under 1.5x/2x/3x/5x load. Identifies bottlenecks, additional nodes needed, and cost projections. Capacity headroom analysis.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Scaling simulation", map[string]interface{}{"healthScaleScore": 85})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Scaling simulation", map[string]interface{}{"healthScaleScore": 85})},
 	})
 
 	// --- Placement Score (v18.43) ---
 	add("/api/product/placement-score", "get", OpenAPIOperation{
 		Summary: "Pod scheduling placement quality scorer", OperationID: "placementScore",
-		Tags: []string{"Product", "Scheduling", "HA"},
+		Tags:        []string{"Product", "Scheduling", "HA"},
 		Description: "Evaluates pod placement quality: anti-affinity coverage, topology spread, node diversity, SPOF detection. Per-workload placement scores.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Placement score", map[string]interface{}{"healthScore": 85})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Placement score", map[string]interface{}{"healthScore": 85})},
 	})
 
 	add("/api/operations/chaos-readiness", "get", OpenAPIOperation{
 		Summary: "Chaos engineering readiness & resilience auditor", OperationID: "chaosReadiness",
-		Tags: []string{"Operations", "Reliability", "Resilience"},
+		Tags:        []string{"Operations", "Reliability", "Resilience"},
 		Description: "Assesses workload resilience for chaos engineering experiments. Evaluates PDB coverage, anti-affinity, graceful shutdown, health probes, resource limits, and simulates failure scenarios (pod kill, node drain, network partition).",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Chaos readiness report", map[string]interface{}{"healthScore": 65})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Chaos readiness report", map[string]interface{}{"healthScore": 65})},
 	})
 
 	add("/api/security/supply-chain", "get", OpenAPIOperation{
 		Summary: "Container supply chain security auditor", OperationID: "supplyChain",
-		Tags: []string{"Security", "SupplyChain", "Images"},
+		Tags:        []string{"Security", "SupplyChain", "Images"},
 		Description: "Audits container image supply chain security: digest vs tag references, :latest usage, non-root execution, read-only rootfs, privileged containers, pull policy, and scan readiness.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Supply chain report", map[string]interface{}{"healthScore": 55})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Supply chain report", map[string]interface{}{"healthScore": 55})},
 	})
 
 	add("/api/scalability/capacity-forecast-deep", "get", OpenAPIOperation{
 		Summary: "Cluster capacity exhaustion forecast", OperationID: "capacityForecastDeep",
-		Tags: []string{"Scalability", "Capacity", "Forecast"},
+		Tags:        []string{"Scalability", "Capacity", "Forecast"},
 		Description: "Projects cluster resource consumption using deployment growth indicators. Calculates utilization rates, monthly growth rates, time-to-exhaustion for CPU/memory/pods, and 90/180-day projections.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Capacity forecast", map[string]interface{}{"healthScore": 75})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Capacity forecast", map[string]interface{}{"healthScore": 75})},
 	})
 
 	add("/api/operations/drain-impact", "get", OpenAPIOperation{
 		Summary: "Node drain impact simulator", OperationID: "drainImpact",
-		Tags: []string{"Operations", "Maintenance", "Planning"},
+		Tags:        []string{"Operations", "Maintenance", "Planning"},
 		Description: "Simulates the effect of draining a specific node. Identifies evictable pods, rescheduling feasibility, capacity fit on remaining nodes, and service disruption impact. Pass ?node=<name> query parameter.",
 		Parameters: []OpenAPIParam{
 			{Name: "node", In: "query", Required: true, Schema: map[string]interface{}{"type": "string"}, Description: "Node name to simulate drain"},
@@ -5380,37 +5379,37 @@ func buildOpenAPISpec() OpenAPISpec {
 
 	add("/api/scalability/request-accuracy", "get", OpenAPIOperation{
 		Summary: "Resource request accuracy & right-sizing analyzer", OperationID: "requestAccuracy",
-		Tags: []string{"Scalability", "FinOps", "Optimization"},
+		Tags:        []string{"Scalability", "FinOps", "Optimization"},
 		Description: "Analyzes how accurately workload resource requests match actual needs. Identifies over-provisioned (wasted cost) and under-provisioned (throttle/OOM risk) containers with right-sizing recommendations and cost savings estimates.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Request accuracy report", map[string]interface{}{"healthScore": 65})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Request accuracy report", map[string]interface{}{"healthScore": 65})},
 	})
 
 	add("/api/security/hardening-score", "get", OpenAPIOperation{
 		Summary: "Comprehensive security hardening posture score", OperationID: "hardeningScore",
-		Tags: []string{"Security", "Hardening", "Compliance"},
+		Tags:        []string{"Security", "Hardening", "Compliance"},
 		Description: "Aggregates findings across Pod Security Standards, network policies, secrets management, RBAC, admission control, and image security into a single weighted score with prioritized remediation guidance and compliance framework mapping.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Hardening score", map[string]interface{}{"overallScore": 45, "grade": "D"})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Hardening score", map[string]interface{}{"overallScore": 45, "grade": "D"})},
 	})
 
 	add("/api/security/fix-plan", "get", OpenAPIOperation{
 		Summary: "Security remediation action plan generator", OperationID: "securityFixPlan",
-		Tags: []string{"Security", "Remediation", "Automation"},
+		Tags:        []string{"Security", "Remediation", "Automation"},
 		Description: "Generates actionable kubectl patch commands for security issues. Provides copy-paste-ready fix commands, batch scripts, and prioritized remediation plans ranked by impact and effort.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Security fix plan", map[string]interface{}{"healthScore": 25})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Security fix plan", map[string]interface{}{"healthScore": 25})},
 	})
 
 	add("/api/docs/api-coverage-map", "get", OpenAPIOperation{
 		Summary: "API endpoint coverage map by dimension", OperationID: "apiCoverageMap",
-		Tags: []string{"Documentation", "Quality"},
+		Tags:        []string{"Documentation", "Quality"},
 		Description: "Maps all platform API endpoints grouped by dimension with documentation coverage statistics.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Coverage map", map[string]interface{}{"totalEndpoints": 387})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Coverage map", map[string]interface{}{"totalEndpoints": 387})},
 	})
 
 	add("/api/deployment/release-gate", "get", OpenAPIOperation{
 		Summary: "Pre-deployment release gate evaluator", OperationID: "releaseGate",
-		Tags: []string{"Deployment", "Quality", "Gate"},
+		Tags:        []string{"Deployment", "Quality", "Gate"},
 		Description: "Evaluates whether the cluster is ready for a new deployment release. Checks PDB coverage, health probes, resource limits, security contexts, multi-node HA, update strategy, and anti-affinity.",
-		Responses: map[string]OpenAPIResponse{"200": okResponse("Release gate", map[string]interface{}{"overallVerdict": "fail", "gateScore": 35})},
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Release gate", map[string]interface{}{"overallVerdict": "fail", "gateScore": 35})},
 	})
 
 	return spec

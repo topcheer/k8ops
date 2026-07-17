@@ -29,41 +29,41 @@ type SupplyChainResult struct {
 }
 
 type SupplyChainSummary struct {
-	TotalImages     int `json:"totalImages"`
-	UniqueImages    int `json:"uniqueImages"`
-	ByDigest        int `json:"byDigest"`        // referenced by @sha256:
-	ByTag           int `json:"byTag"`            // referenced by :tag (mutable)
-	ByLatest        int `json:"byLatest"`         // uses :latest
-	NonRoot         int `json:"nonRoot"`           // runs as non-root user
-	ReadOnlyRootFS  int `json:"readOnlyRootFS"`   // readOnlyRootFilesystem=true
-	Privileged      int `json:"privileged"`        // privileged=true (risk)
-	AlwaysPull      int `json:"alwaysPull"`       // imagePullPolicy=Always
-	ScanReady       int `json:"scanReady"`        // has digest (scannable)
-	Annotated       int `json:"annotated"`        // has seccomp/AppArmor annotation
+	TotalImages    int `json:"totalImages"`
+	UniqueImages   int `json:"uniqueImages"`
+	ByDigest       int `json:"byDigest"`       // referenced by @sha256:
+	ByTag          int `json:"byTag"`          // referenced by :tag (mutable)
+	ByLatest       int `json:"byLatest"`       // uses :latest
+	NonRoot        int `json:"nonRoot"`        // runs as non-root user
+	ReadOnlyRootFS int `json:"readOnlyRootFS"` // readOnlyRootFilesystem=true
+	Privileged     int `json:"privileged"`     // privileged=true (risk)
+	AlwaysPull     int `json:"alwaysPull"`     // imagePullPolicy=Always
+	ScanReady      int `json:"scanReady"`      // has digest (scannable)
+	Annotated      int `json:"annotated"`      // has seccomp/AppArmor annotation
 }
 
 type SupplyChainImage struct {
-	Image           string `json:"image"`
-	Registry        string `json:"registry"`
-	ByDigest        bool   `json:"byDigest"`
-	IsLatest        bool   `json:"isLatest"`
-	NonRoot         bool   `json:"nonRoot"`
-	ReadOnlyRootFS  bool   `json:"readOnlyRootFS"`
-	Privileged      bool   `json:"privileged"`
-	PullPolicy      string `json:"pullPolicy"`
-	ScanReady       bool   `json:"scanReady"`
-	SecurityScore   int    `json:"securityScore"`
-	RiskLevel       string `json:"riskLevel"`
-	UsedBy          []string `json:"usedBy"`     // workload references
-	WorkloadCount   int    `json:"workloadCount"`
+	Image          string   `json:"image"`
+	Registry       string   `json:"registry"`
+	ByDigest       bool     `json:"byDigest"`
+	IsLatest       bool     `json:"isLatest"`
+	NonRoot        bool     `json:"nonRoot"`
+	ReadOnlyRootFS bool     `json:"readOnlyRootFS"`
+	Privileged     bool     `json:"privileged"`
+	PullPolicy     string   `json:"pullPolicy"`
+	ScanReady      bool     `json:"scanReady"`
+	SecurityScore  int      `json:"securityScore"`
+	RiskLevel      string   `json:"riskLevel"`
+	UsedBy         []string `json:"usedBy"` // workload references
+	WorkloadCount  int      `json:"workloadCount"`
 }
 
 type SupplyChainRegistry struct {
-	Registry  string `json:"registry"`
-	ImageCount int   `json:"imageCount"`
-	DigestCount int  `json:"digestCount"`
-	LatestCount int  `json:"latestCount"`
-	AvgScore    int  `json:"avgScore"`
+	Registry    string `json:"registry"`
+	ImageCount  int    `json:"imageCount"`
+	DigestCount int    `json:"digestCount"`
+	LatestCount int    `json:"latestCount"`
+	AvgScore    int    `json:"avgScore"`
 }
 
 type SupplyChainRisk struct {

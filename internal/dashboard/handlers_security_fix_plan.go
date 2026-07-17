@@ -17,25 +17,25 @@ import (
 // problems, it provides copy-paste-ready kubectl commands and structured
 // fix priorities ranked by impact and effort.
 type SecurityFixPlanResult struct {
-	ScannedAt       time.Time       `json:"scannedAt"`
-	Summary         SecFixSummary   `json:"summary"`
-	FixPlans        []SecFixPlan    `json:"fixPlans"`
-	QuickWins       []SecFixAction  `json:"quickWins"`
-	CriticalPatches []SecFixAction  `json:"criticalPatches"`
-	BatchCommands   []SecBatchCmd   `json:"batchCommands"`
-	HealthScore     int             `json:"healthScore"`
-	EstEffort       string          `json:"estimatedEffort"`
-	Recommendations []string        `json:"recommendations"`
+	ScannedAt       time.Time      `json:"scannedAt"`
+	Summary         SecFixSummary  `json:"summary"`
+	FixPlans        []SecFixPlan   `json:"fixPlans"`
+	QuickWins       []SecFixAction `json:"quickWins"`
+	CriticalPatches []SecFixAction `json:"criticalPatches"`
+	BatchCommands   []SecBatchCmd  `json:"batchCommands"`
+	HealthScore     int            `json:"healthScore"`
+	EstEffort       string         `json:"estimatedEffort"`
+	Recommendations []string       `json:"recommendations"`
 }
 
 type SecFixSummary struct {
-	TotalIssues        int `json:"totalIssues"`
-	CriticalCount      int `json:"criticalCount"`
-	HighCount          int `json:"highCount"`
-	MediumCount        int `json:"mediumCount"`
-	AffectedWorkloads  int `json:"affectedWorkloads"`
-	AutoFixable        int `json:"autoFixable"`
-	ManualFix          int `json:"manualFix"`
+	TotalIssues       int `json:"totalIssues"`
+	CriticalCount     int `json:"criticalCount"`
+	HighCount         int `json:"highCount"`
+	MediumCount       int `json:"mediumCount"`
+	AffectedWorkloads int `json:"affectedWorkloads"`
+	AutoFixable       int `json:"autoFixable"`
+	ManualFix         int `json:"manualFix"`
 }
 
 type SecFixPlan struct {
@@ -191,8 +191,8 @@ func assessContainerSecurity(name, ns, kind string, c *corev1.Container) []SecFi
 	if c.SecurityContext == nil {
 		actions = append(actions, SecFixAction{
 			Workload: name, Namespace: ns, Kind: kind,
-			Issue:       "容器缺少 securityContext",
-			Severity:    "high", Category: "PSS",
+			Issue:    "容器缺少 securityContext",
+			Severity: "high", Category: "PSS",
 			PatchJSON:   patchBase(`{"runAsNonRoot":true,"allowPrivilegeEscalation":false}`),
 			FixCommand:  cmd(),
 			AutoFixable: true,
@@ -251,8 +251,8 @@ func assessNSFixPlan(namespaces []corev1.Namespace, netpolNS map[string]bool) []
 				Workload: ns.Name, Namespace: ns.Name, Kind: "Namespace",
 				Issue:    "未启用 Pod Security Admission",
 				Severity: "high", Category: "Admission",
-				FixCommand: fmt.Sprintf("kubectl label namespace %s pod-security.kubernetes.io/enforce=restricted", ns.Name),
-				PatchJSON:  `{"metadata":{"labels":{"pod-security.kubernetes.io/enforce":"restricted"}}}`,
+				FixCommand:  fmt.Sprintf("kubectl label namespace %s pod-security.kubernetes.io/enforce=restricted", ns.Name),
+				PatchJSON:   `{"metadata":{"labels":{"pod-security.kubernetes.io/enforce":"restricted"}}}`,
 				AutoFixable: true,
 			})
 		}
@@ -321,10 +321,10 @@ func groupFixPlans(actions []SecFixAction) []SecFixPlan {
 
 func fixPlanDesc(cat string) string {
 	descs := map[string]string{
-		"PSS":        "Pod Security Standards - 安全上下文、特权模式、非 root 运行",
-		"Resources":  "资源限制 - CPU/内存 limits 防止资源争抢",
-		"Admission":  "准入控制 - Pod Security Admission 策略强制执行",
-		"Network":    "网络安全 - 默认拒绝网络策略、流量隔离",
+		"PSS":       "Pod Security Standards - 安全上下文、特权模式、非 root 运行",
+		"Resources": "资源限制 - CPU/内存 limits 防止资源争抢",
+		"Admission": "准入控制 - Pod Security Admission 策略强制执行",
+		"Network":   "网络安全 - 默认拒绝网络策略、流量隔离",
 	}
 	if d, ok := descs[cat]; ok {
 		return d

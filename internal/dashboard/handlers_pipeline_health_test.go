@@ -21,9 +21,9 @@ func TestPipelineHealthTypes(t *testing.T) {
 
 func TestPipelineHealthDORA(t *testing.T) {
 	tests := []struct {
-		deploys    int
-		failRate   float64
-		expected   string
+		deploys  int
+		failRate float64
+		expected string
 	}{
 		{10, 5, "Elite"},
 		{3, 20, "High"},
@@ -47,10 +47,10 @@ func TestPipelineHealthDORA(t *testing.T) {
 
 func TestPipelineHealthScoring(t *testing.T) {
 	tests := []struct {
-		hasCI      bool
-		deploys    int
-		failRate   float64
-		rollbacks  int
+		hasCI       bool
+		deploys     int
+		failRate    float64
+		rollbacks   int
 		expectedMin int
 		expectedMax int
 	}{

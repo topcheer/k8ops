@@ -14,15 +14,15 @@ import (
 // Unlike secret-lifecycle (which tracks existence/types), this engine focuses
 // on rotation freshness: are secrets being rotated regularly?
 type SecretComplianceResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         SecretCompSummary   `json:"summary"`
-	ByType          []SecretCompType    `json:"byType"`
-	ByNamespace     []SecretCompNS      `json:"byNamespace"`
-	StaleSecrets    []SecretCompStale   `json:"staleSecrets"`
-	RotationPolicy  SecretCompPolicy    `json:"rotationPolicy"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time         `json:"scannedAt"`
+	Summary         SecretCompSummary `json:"summary"`
+	ByType          []SecretCompType  `json:"byType"`
+	ByNamespace     []SecretCompNS    `json:"byNamespace"`
+	StaleSecrets    []SecretCompStale `json:"staleSecrets"`
+	RotationPolicy  SecretCompPolicy  `json:"rotationPolicy"`
+	HealthScore     int               `json:"healthScore"`
+	Grade           string            `json:"grade"`
+	Recommendations []string          `json:"recommendations"`
 }
 
 type SecretCompSummary struct {

@@ -13,14 +13,14 @@ import (
 // per-namespace cost breakdown, resource waste cost, shared infrastructure cost,
 // and team-level budget allocation recommendations.
 type ChargebackResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         ChargebackSummary   `json:"summary"`
-	NamespaceCosts  []NamespaceCost     `json:"namespaceCosts"`
-	SharedCosts     []SharedCost        `json:"sharedCosts"`
-	WasteCost       float64             `json:"wasteCost"`
-	QualityScore    int                 `json:"qualityScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time         `json:"scannedAt"`
+	Summary         ChargebackSummary `json:"summary"`
+	NamespaceCosts  []NamespaceCost   `json:"namespaceCosts"`
+	SharedCosts     []SharedCost      `json:"sharedCosts"`
+	WasteCost       float64           `json:"wasteCost"`
+	QualityScore    int               `json:"qualityScore"`
+	Grade           string            `json:"grade"`
+	Recommendations []string          `json:"recommendations"`
 }
 
 type ChargebackSummary struct {
@@ -126,8 +126,8 @@ func (s *Server) handleChargeback(w http.ResponseWriter, r *http.Request) {
 		if svc.Spec.Type == "LoadBalancer" {
 			ns := svc.Namespace
 			if nsCostMap[ns] == nil {
-			nsCostMap[ns] = &NamespaceCost{Namespace: ns}
-		}
+				nsCostMap[ns] = &NamespaceCost{Namespace: ns}
+			}
 			nsCostMap[ns].LBCost += cbLBMonthly
 		}
 	}

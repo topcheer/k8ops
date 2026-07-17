@@ -41,8 +41,8 @@ func TestClassifyScalePolicy(t *testing.T) {
 
 func TestGenerateSecretCompRecs(t *testing.T) {
 	r := SecretComplianceResult{
-		Summary: SecretCompSummary{TotalSecrets: 20, CompliantCount: 15, StaleCount: 5, CompliancePct: 75, OldestAgeDays: 400},
-		HealthScore: 70,
+		Summary:      SecretCompSummary{TotalSecrets: 20, CompliantCount: 15, StaleCount: 5, CompliancePct: 75, OldestAgeDays: 400},
+		HealthScore:  70,
 		StaleSecrets: []SecretCompStale{{Severity: "critical", AgeDays: 400}},
 	}
 	recs := generateSecretCompRecs(r)

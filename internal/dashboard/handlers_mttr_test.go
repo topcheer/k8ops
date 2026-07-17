@@ -269,5 +269,3 @@ func TestMttrFormatDuration(t *testing.T) {
 		}
 	}
 }
-
-

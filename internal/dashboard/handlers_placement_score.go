@@ -15,36 +15,36 @@ import (
 // decisions. It scores workloads on anti-affinity coverage, topology spread,
 // node diversity, co-location efficiency, and single-point-of-failure risk.
 type PlacementScoreResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         PlacementSummary    `json:"summary"`
-	Workloads       []PlacementEntry    `json:"workloads"`
-	Risks           []PlacementRisk     `json:"risks"`
-	ByNamespace     []PlacementNS       `json:"byNamespace"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time        `json:"scannedAt"`
+	Summary         PlacementSummary `json:"summary"`
+	Workloads       []PlacementEntry `json:"workloads"`
+	Risks           []PlacementRisk  `json:"risks"`
+	ByNamespace     []PlacementNS    `json:"byNamespace"`
+	HealthScore     int              `json:"healthScore"`
+	Grade           string           `json:"grade"`
+	Recommendations []string         `json:"recommendations"`
 }
 
 type PlacementSummary struct {
-	TotalWorkloads    int     `json:"totalWorkloads"`
-	WithAntiAffinity  int     `json:"withAntiAffinity"`
-	WithTopoSpread    int     `json:"withTopologySpread"`
-	SingleNodeDeploy  int     `json:"singleNodeDeployment"` // all pods on one node
-	AvgNodeDiversity  float64 `json:"avgNodeDiversity"`    // 0-1, higher = better
-	SPofWorkloads     int     `json:"singlePointOfFailure"`
+	TotalWorkloads   int     `json:"totalWorkloads"`
+	WithAntiAffinity int     `json:"withAntiAffinity"`
+	WithTopoSpread   int     `json:"withTopologySpread"`
+	SingleNodeDeploy int     `json:"singleNodeDeployment"` // all pods on one node
+	AvgNodeDiversity float64 `json:"avgNodeDiversity"`     // 0-1, higher = better
+	SPofWorkloads    int     `json:"singlePointOfFailure"`
 }
 
 type PlacementEntry struct {
-	Name         string  `json:"name"`
-	Namespace    string  `json:"namespace"`
-	Kind         string  `json:"kind"`
-	Replicas     int     `json:"replicas"`
-	PodNodes     int     `json:"podNodes"`     // unique nodes pods run on
-	DiversityScore float64 `json:"diversityScore"`
-	HasAntiAffinity bool  `json:"hasAntiAffinity"`
-	HasTopoSpread   bool  `json:"hasTopologySpread"`
-	Risk         string  `json:"risk"`
-	Score        int     `json:"score"`
+	Name            string  `json:"name"`
+	Namespace       string  `json:"namespace"`
+	Kind            string  `json:"kind"`
+	Replicas        int     `json:"replicas"`
+	PodNodes        int     `json:"podNodes"` // unique nodes pods run on
+	DiversityScore  float64 `json:"diversityScore"`
+	HasAntiAffinity bool    `json:"hasAntiAffinity"`
+	HasTopoSpread   bool    `json:"hasTopologySpread"`
+	Risk            string  `json:"risk"`
+	Score           int     `json:"score"`
 }
 
 type PlacementRisk struct {
@@ -56,10 +56,10 @@ type PlacementRisk struct {
 }
 
 type PlacementNS struct {
-	Namespace  string  `json:"namespace"`
-	Workloads  int     `json:"workloads"`
-	SPofCount  int     `json:"spofCount"`
-	AvgScore   float64 `json:"avgScore"`
+	Namespace string  `json:"namespace"`
+	Workloads int     `json:"workloads"`
+	SPofCount int     `json:"spofCount"`
+	AvgScore  float64 `json:"avgScore"`
 }
 
 // handlePlacementScore handles GET /api/product/placement-score
@@ -138,14 +138,14 @@ func (s *Server) handlePlacementScore(w http.ResponseWriter, r *http.Request) {
 			result.Risks = append(result.Risks, PlacementRisk{
 				Name: name, Namespace: ns, Risk: "single-node",
 				Severity: "high",
-				Detail: fmt.Sprintf("%d replicas all on 1 node — node failure will take down entire workload", replicas),
+				Detail:   fmt.Sprintf("%d replicas all on 1 node — node failure will take down entire workload", replicas),
 			})
 		} else if replicas >= 3 && uniqueNodes == 2 {
 			risk = "limited-spread"
 			result.Risks = append(result.Risks, PlacementRisk{
 				Name: name, Namespace: ns, Risk: "limited-spread",
 				Severity: "medium",
-				Detail: fmt.Sprintf("%d replicas on only %d nodes — consider topology spread constraints", replicas, uniqueNodes),
+				Detail:   fmt.Sprintf("%d replicas on only %d nodes — consider topology spread constraints", replicas, uniqueNodes),
 			})
 		}
 

@@ -16,46 +16,46 @@ import (
 // ReliabilityScorecardResult is the per-service reliability posture scorecard.
 // It aggregates multiple reliability signals into a single A-F grade per workload.
 type ReliabilityScorecardResult struct {
-	ScannedAt      time.Time            `json:"scannedAt"`
-	Summary        ScorecardSummary     `json:"summary"`
-	Workloads      []WorkloadScorecard  `json:"workloads"`
-	ClusterGrade   string               `json:"clusterGrade"` // A-F
-	ClusterScore   int                  `json:"clusterScore"` // 0-100
-	WeakestSignals []WeakSignal         `json:"weakestSignals"`
-	Distribution   GradeDistribution    `json:"distribution"`
+	ScannedAt       time.Time           `json:"scannedAt"`
+	Summary         ScorecardSummary    `json:"summary"`
+	Workloads       []WorkloadScorecard `json:"workloads"`
+	ClusterGrade    string              `json:"clusterGrade"` // A-F
+	ClusterScore    int                 `json:"clusterScore"` // 0-100
+	WeakestSignals  []WeakSignal        `json:"weakestSignals"`
+	Distribution    GradeDistribution   `json:"distribution"`
 	Recommendations []string            `json:"recommendations"`
 }
 
 // ScorecardSummary aggregates scoring statistics.
 type ScorecardSummary struct {
-	TotalWorkloads int `json:"totalWorkloads"`
-	GradeA         int `json:"gradeA"` // >=90
-	GradeB         int `json:"gradeB"` // 80-89
-	GradeC         int `json:"gradeC"` // 70-79
-	GradeD         int `json:"gradeD"` // 60-69
-	GradeF         int `json:"gradeF"` // <60
-	AtRiskWorkloads int `json:"atRiskWorkloads"` // grade D or F
+	TotalWorkloads    int `json:"totalWorkloads"`
+	GradeA            int `json:"gradeA"`            // >=90
+	GradeB            int `json:"gradeB"`            // 80-89
+	GradeC            int `json:"gradeC"`            // 70-79
+	GradeD            int `json:"gradeD"`            // 60-69
+	GradeF            int `json:"gradeF"`            // <60
+	AtRiskWorkloads   int `json:"atRiskWorkloads"`   // grade D or F
 	CriticalWorkloads int `json:"criticalWorkloads"` // grade F
 }
 
 // WorkloadScorecard scores one workload across multiple reliability dimensions.
 type WorkloadScorecard struct {
-	Name      string          `json:"name"`
-	Namespace string          `json:"namespace"`
-	Kind      string          `json:"kind"` // Deployment, StatefulSet, DaemonSet
-	Grade     string          `json:"grade"`     // A, B, C, D, F
-	Score     int             `json:"score"`     // 0-100
-	Replicas  int             `json:"replicas"`
+	Name       string           `json:"name"`
+	Namespace  string           `json:"namespace"`
+	Kind       string           `json:"kind"`  // Deployment, StatefulSet, DaemonSet
+	Grade      string           `json:"grade"` // A, B, C, D, F
+	Score      int              `json:"score"` // 0-100
+	Replicas   int              `json:"replicas"`
 	Dimensions []ScoreDimension `json:"dimensions"`
-	Risks     []string        `json:"risks,omitempty"`
-	TopFix    string          `json:"topFix"` // highest-impact improvement
+	Risks      []string         `json:"risks,omitempty"`
+	TopFix     string           `json:"topFix"` // highest-impact improvement
 }
 
 // ScoreDimension scores one reliability dimension.
 type ScoreDimension struct {
-	Name        string `json:"name"`        // replication, probes, resources, pdb, security, limits, strategy
-	Score       int    `json:"score"`       // 0-100 for this dimension
-	Status      string `json:"status"`      // good, warning, critical
+	Name        string `json:"name"`   // replication, probes, resources, pdb, security, limits, strategy
+	Score       int    `json:"score"`  // 0-100 for this dimension
+	Status      string `json:"status"` // good, warning, critical
 	Description string `json:"description"`
 }
 
@@ -312,9 +312,9 @@ func scoreWorkload(name, namespace, kind string, replicas *int32, available int3
 	}
 
 	dims = append(dims, ScoreDimension{
-		Name:   "probes",
-		Score:  probeScore,
-		Status: dimStatus(probeScore),
+		Name:        "probes",
+		Score:       probeScore,
+		Status:      dimStatus(probeScore),
 		Description: fmt.Sprintf("readiness=%v liveness=%v startup=%v", hasReadiness, hasLiveness, hasStartup),
 	})
 
@@ -356,9 +356,9 @@ func scoreWorkload(name, namespace, kind string, replicas *int32, available int3
 	}
 
 	dims = append(dims, ScoreDimension{
-		Name:   "resources",
-		Score:  resScore,
-		Status: dimStatus(resScore),
+		Name:        "resources",
+		Score:       resScore,
+		Status:      dimStatus(resScore),
 		Description: fmt.Sprintf("req: cpu=%v mem=%v, lim: cpu=%v mem=%v", hasCPUReq, hasMemReq, hasCPULim, hasMemLim),
 	})
 
@@ -385,9 +385,9 @@ func scoreWorkload(name, namespace, kind string, replicas *int32, available int3
 	}
 
 	dims = append(dims, ScoreDimension{
-		Name:   "pdb",
-		Score:  pdbScore,
-		Status: dimStatus(pdbScore),
+		Name:        "pdb",
+		Score:       pdbScore,
+		Status:      dimStatus(pdbScore),
 		Description: fmt.Sprintf("PDB coverage: %v", hasPDB),
 	})
 
@@ -425,9 +425,9 @@ func scoreWorkload(name, namespace, kind string, replicas *int32, available int3
 	}
 
 	dims = append(dims, ScoreDimension{
-		Name:   "security",
-		Score:  secScore,
-		Status: dimStatus(secScore),
+		Name:        "security",
+		Score:       secScore,
+		Status:      dimStatus(secScore),
 		Description: fmt.Sprintf("nonRoot=%v readOnlyFS=%v privileged=%v", hasNonRoot, hasReadOnlyFS, hasPrivileged),
 	})
 
@@ -459,7 +459,12 @@ func scoreWorkload(name, namespace, kind string, replicas *int32, available int3
 		Name:   "strategy",
 		Score:  strategyScore,
 		Status: dimStatus(strategyScore),
-		Description: fmt.Sprintf("grace=%vs", func() int64 { if grace != nil { return *grace }; return 30 }()),
+		Description: fmt.Sprintf("grace=%vs", func() int64 {
+			if grace != nil {
+				return *grace
+			}
+			return 30
+		}()),
 	})
 
 	// ========================================
@@ -484,9 +489,9 @@ func scoreWorkload(name, namespace, kind string, replicas *int32, available int3
 	}
 
 	dims = append(dims, ScoreDimension{
-		Name:   "affinity",
-		Score:  affScore,
-		Status: dimStatus(affScore),
+		Name:        "affinity",
+		Score:       affScore,
+		Status:      dimStatus(affScore),
 		Description: fmt.Sprintf("antiAffinity=%v topologySpread=%v", hasAntiAffinity, hasTopologySpread),
 	})
 

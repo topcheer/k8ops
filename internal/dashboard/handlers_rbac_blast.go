@@ -12,31 +12,31 @@ import (
 
 // RBACBlastResult analyzes RBAC privilege escalation paths and blast radius.
 type RBACBlastResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         RBACBlastSummary    `json:"summary"`
-	HighRiskRoles   []HighRiskRole      `json:"highRiskRoles"`
-	EscalationPaths []RBACEscalationPath    `json:"escalationPaths"`
-	RiskScore       int                 `json:"riskScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time            `json:"scannedAt"`
+	Summary         RBACBlastSummary     `json:"summary"`
+	HighRiskRoles   []HighRiskRole       `json:"highRiskRoles"`
+	EscalationPaths []RBACEscalationPath `json:"escalationPaths"`
+	RiskScore       int                  `json:"riskScore"`
+	Grade           string               `json:"grade"`
+	Recommendations []string             `json:"recommendations"`
 }
 
 type RBACBlastSummary struct {
-	TotalRoles       int `json:"totalRoles"`
-	TotalBindings    int `json:"totalBindings"`
-	ClusterAdmins    int `json:"clusterAdmins"`
-	PrivilegedRoles  int `json:"privilegedRoles"`
-	WildcardRoles    int `json:"wildcardRoles"`
-	SubjectCount     int `json:"subjectCount"`
+	TotalRoles      int `json:"totalRoles"`
+	TotalBindings   int `json:"totalBindings"`
+	ClusterAdmins   int `json:"clusterAdmins"`
+	PrivilegedRoles int `json:"privilegedRoles"`
+	WildcardRoles   int `json:"wildcardRoles"`
+	SubjectCount    int `json:"subjectCount"`
 }
 
 type HighRiskRole struct {
-	Name     string `json:"name"`
-	Kind     string `json:"kind"`
+	Name      string `json:"name"`
+	Kind      string `json:"kind"`
 	Namespace string `json:"namespace"`
-	RiskType string `json:"riskType"`
-	Severity string `json:"severity"`
-	Subjects int    `json:"subjects"`
+	RiskType  string `json:"riskType"`
+	Severity  string `json:"severity"`
+	Subjects  int    `json:"subjects"`
 }
 
 type RBACEscalationPath struct {
@@ -98,8 +98,8 @@ func (s *Server) handleRBACBlast(w http.ResponseWriter, r *http.Request) {
 					for _, v := range rule.Verbs {
 						if v == "escalate" || v == "bind" || v == "*" {
 							riskType = "privilege-escalation"
-						severity = "critical"
-					}
+							severity = "critical"
+						}
 					}
 				}
 			}
@@ -132,7 +132,7 @@ func (s *Server) handleRBACBlast(w http.ResponseWriter, r *http.Request) {
 			for _, subj := range crb.Subjects {
 				result.EscalationPaths = append(result.EscalationPaths, RBACEscalationPath{
 					Subject: subj.Name + " (" + subj.Kind + ")",
-					Via: "cluster-admin binding", Reaches: "full cluster control",
+					Via:     "cluster-admin binding", Reaches: "full cluster control",
 					Severity: "critical",
 				})
 			}
@@ -144,7 +144,9 @@ func (s *Server) handleRBACBlast(w http.ResponseWriter, r *http.Request) {
 	score -= result.Summary.ClusterAdmins * 10
 	score -= result.Summary.PrivilegedRoles * 5
 	score -= result.Summary.WildcardRoles * 8
-	if score < 0 { score = 0 }
+	if score < 0 {
+		score = 0
+	}
 	result.RiskScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.RiskScore)
 

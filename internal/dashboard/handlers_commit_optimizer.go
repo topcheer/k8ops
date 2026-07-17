@@ -17,23 +17,23 @@ import (
 // management (ensuring sufficient resources) by analyzing request patterns
 // over time and recommending commitment strategies.
 type CommitOptimizerResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         CommitSummary       `json:"summary"`
-	StableUsage     []StableResource    `json:"stableUsage"`
-	VolatileUsage   []VolatileResource  `json:"volatileUsage"`
-	CommitmentPlan  []CommitmentItem    `json:"commitmentPlan"`
-	ByNamespace     []CommitNSStat      `json:"byNamespace"`
-	SavingsEstimate SavingsBreakdown    `json:"savingsEstimate"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time          `json:"scannedAt"`
+	Summary         CommitSummary      `json:"summary"`
+	StableUsage     []StableResource   `json:"stableUsage"`
+	VolatileUsage   []VolatileResource `json:"volatileUsage"`
+	CommitmentPlan  []CommitmentItem   `json:"commitmentPlan"`
+	ByNamespace     []CommitNSStat     `json:"byNamespace"`
+	SavingsEstimate SavingsBreakdown   `json:"savingsEstimate"`
+	HealthScore     int                `json:"healthScore"`
+	Grade           string             `json:"grade"`
+	Recommendations []string           `json:"recommendations"`
 }
 
 // CommitSummary aggregates commitment optimization statistics.
 type CommitSummary struct {
-	TotalCPURequested    float64 `json:"totalCPURequested"`     // cores
-	TotalMemRequested    float64 `json:"totalMemRequested"`     // GB
-	StableCPUPercent     float64 `json:"stableCPUPercent"`     // % of CPU that's stable (always-on workloads)
+	TotalCPURequested    float64 `json:"totalCPURequested"` // cores
+	TotalMemRequested    float64 `json:"totalMemRequested"` // GB
+	StableCPUPercent     float64 `json:"stableCPUPercent"`  // % of CPU that's stable (always-on workloads)
 	StableMemPercent     float64 `json:"stableMemPercent"`
 	TotalPods            int     `json:"totalPods"`
 	AlwaysOnPods         int     `json:"alwaysOnPods"`
@@ -46,30 +46,30 @@ type CommitSummary struct {
 
 // StableResource describes a workload with stable resource usage suitable for commitment.
 type StableResource struct {
-	Name        string  `json:"name"`
-	Namespace   string  `json:"namespace"`
-	Kind        string  `json:"kind"`
-	CPUCores    float64 `json:"cpuCores"`
-	MemGB       float64 `json:"memGB"`
-	StabilityScore int   `json:"stabilityScore"` // 0-100
-	MonthlyCost float64 `json:"monthlyCost"`
-	CommitmentType string `json:"commitmentType"` // reserved, sustained-use, on-demand
+	Name           string  `json:"name"`
+	Namespace      string  `json:"namespace"`
+	Kind           string  `json:"kind"`
+	CPUCores       float64 `json:"cpuCores"`
+	MemGB          float64 `json:"memGB"`
+	StabilityScore int     `json:"stabilityScore"` // 0-100
+	MonthlyCost    float64 `json:"monthlyCost"`
+	CommitmentType string  `json:"commitmentType"` // reserved, sustained-use, on-demand
 }
 
 // VolatileResource describes a workload with volatile usage patterns.
 type VolatileResource struct {
-	Name      string  `json:"name"`
-	Namespace string  `json:"namespace"`
-	Kind      string  `json:"kind"`
-	CPUCores  float64 `json:"cpuCores"`
-	MemGB     float64 `json:"memGB"`
-	Volatility string `json:"volatility"` // high, medium, low
-	Reason    string  `json:"reason"`
+	Name       string  `json:"name"`
+	Namespace  string  `json:"namespace"`
+	Kind       string  `json:"kind"`
+	CPUCores   float64 `json:"cpuCores"`
+	MemGB      float64 `json:"memGB"`
+	Volatility string  `json:"volatility"` // high, medium, low
+	Reason     string  `json:"reason"`
 }
 
 // CommitmentItem describes a recommended commitment action.
 type CommitmentItem struct {
-	Type           string  `json:"type"`           // reserved-instance, sustained-use, spot-migrate, right-size
+	Type           string  `json:"type"` // reserved-instance, sustained-use, spot-migrate, right-size
 	Resource       string  `json:"resource"`
 	CurrentCost    float64 `json:"currentMonthlyCost"`
 	OptimizedCost  float64 `json:"optimizedMonthlyCost"`
@@ -100,11 +100,11 @@ type SavingsBreakdown struct {
 
 // Pricing constants
 const (
-	onDemandCPUPrice = 28.0  // $/core/month on-demand
-	onDemandMemPrice = 3.8   // $/GB/month on-demand
-	reservedDiscount  = 0.40  // 40% off with 1-yr reserved
-	sustainedDiscount = 0.25  // 25% off sustained use
-	spotDiscount      = 0.70  // 70% off with spot
+	onDemandCPUPrice  = 28.0 // $/core/month on-demand
+	onDemandMemPrice  = 3.8  // $/GB/month on-demand
+	reservedDiscount  = 0.40 // 40% off with 1-yr reserved
+	sustainedDiscount = 0.25 // 25% off sustained use
+	spotDiscount      = 0.70 // 70% off with spot
 )
 
 // handleCommitOptimizer handles GET /api/scalability/commit-optimizer
@@ -175,10 +175,10 @@ func (s *Server) handleCommitOptimizer(w http.ResponseWriter, r *http.Request) {
 			if stability >= 60 {
 				result.StableUsage = append(result.StableUsage, StableResource{
 					Name: name, Namespace: ns, Kind: kind,
-					CPUCores:    wkCPU * float64(replicas),
-					MemGB:       wkMem * float64(replicas),
+					CPUCores:       wkCPU * float64(replicas),
+					MemGB:          wkMem * float64(replicas),
 					StabilityScore: stability,
-					MonthlyCost: monthlyCost,
+					MonthlyCost:    monthlyCost,
 					CommitmentType: recommendCommitment(stability, kind),
 				})
 			}

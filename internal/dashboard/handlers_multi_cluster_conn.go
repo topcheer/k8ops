@@ -21,13 +21,13 @@ type MultiClusterConnResult struct {
 }
 
 type MultiClusterSummary struct {
-	TotalClusters   int     `json:"totalClusters"`
-	RemoteClusters  int     `json:"remoteClusters"`
-	HealthyClusters int     `json:"healthyClusters"`
-	UnhealthyClusters int   `json:"unhealthyClusters"`
-	HasClusterAPI   bool    `json:"hasClusterAPI"`
-	HasArgoFleet    bool    `json:"hasArgoFleet"`
-	HasKarmada      bool    `json:"hasKarmada"`
+	TotalClusters     int  `json:"totalClusters"`
+	RemoteClusters    int  `json:"remoteClusters"`
+	HealthyClusters   int  `json:"healthyClusters"`
+	UnhealthyClusters int  `json:"unhealthyClusters"`
+	HasClusterAPI     bool `json:"hasClusterAPI"`
+	HasArgoFleet      bool `json:"hasArgoFleet"`
+	HasKarmada        bool `json:"hasKarmada"`
 }
 
 type ClusterConnection struct {
@@ -66,9 +66,15 @@ func (s *Server) handleMultiClusterConn(w http.ResponseWriter, r *http.Request) 
 			imgLower := strings.ToLower(c.Image)
 			for kw, tool := range mcKeywords {
 				if strings.Contains(imgLower, kw) {
-					if tool == "ClusterAPI" { result.Summary.HasClusterAPI = true }
-					if tool == "ArgoCD Fleet" { result.Summary.HasArgoFleet = true }
-					if tool == "Karmada" { result.Summary.HasKarmada = true }
+					if tool == "ClusterAPI" {
+						result.Summary.HasClusterAPI = true
+					}
+					if tool == "ArgoCD Fleet" {
+						result.Summary.HasArgoFleet = true
+					}
+					if tool == "Karmada" {
+						result.Summary.HasKarmada = true
+					}
 					result.Connections = append(result.Connections, ClusterConnection{
 						Name: pod.Name, Type: tool, Status: "active", Severity: "low",
 					})
@@ -79,7 +85,9 @@ func (s *Server) handleMultiClusterConn(w http.ResponseWriter, r *http.Request) 
 
 	// Count namespaces that look like remote clusters
 	for _, ns := range nsList.Items {
-		if systemNS[ns.Name] { continue }
+		if systemNS[ns.Name] {
+			continue
+		}
 		result.Summary.TotalClusters++
 		// Check for cluster-like namespaces
 		if strings.Contains(ns.Name, "cluster") || strings.Contains(ns.Name, "remote") || strings.Contains(ns.Name, "fleet") {
@@ -104,10 +112,18 @@ func (s *Server) handleMultiClusterConn(w http.ResponseWriter, r *http.Request) 
 
 	// Score
 	score := 50 // base for single cluster
-	if result.Summary.HasClusterAPI { score += 15 }
-	if result.Summary.HasArgoFleet { score += 15 }
-	if result.Summary.HasKarmada { score += 20 }
-	if result.Summary.RemoteClusters > 0 { score += 10 }
+	if result.Summary.HasClusterAPI {
+		score += 15
+	}
+	if result.Summary.HasArgoFleet {
+		score += 15
+	}
+	if result.Summary.HasKarmada {
+		score += 20
+	}
+	if result.Summary.RemoteClusters > 0 {
+		score += 10
+	}
 	result.HealthScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.HealthScore)
 

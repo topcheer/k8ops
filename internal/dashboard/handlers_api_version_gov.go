@@ -16,24 +16,24 @@ import (
 // deprecated API usage, removed API detection, API version drift,
 // and upgrade readiness from an API compatibility perspective.
 type APIVersionResult struct {
-	ScannedAt       time.Time            `json:"scannedAt"`
-	Summary         APIVersionSummary    `json:"summary"`
-	DeprecatedAPIs  []DeprecatedAPI      `json:"deprecatedAPIs"`
-	VersionRisks    []VersionRisk        `json:"versionRisks"`
-	UpgradeReadiness string              `json:"upgradeReadiness"`
-	GovernanceScore int                  `json:"governanceScore"`
-	Grade           string               `json:"grade"`
-	Recommendations []string             `json:"recommendations"`
+	ScannedAt        time.Time         `json:"scannedAt"`
+	Summary          APIVersionSummary `json:"summary"`
+	DeprecatedAPIs   []DeprecatedAPI   `json:"deprecatedAPIs"`
+	VersionRisks     []VersionRisk     `json:"versionRisks"`
+	UpgradeReadiness string            `json:"upgradeReadiness"`
+	GovernanceScore  int               `json:"governanceScore"`
+	Grade            string            `json:"grade"`
+	Recommendations  []string          `json:"recommendations"`
 }
 
 type APIVersionSummary struct {
-	ServerVersion     string `json:"serverVersion"`
-	TotalResources    int    `json:"totalResources"`
-	DeprecatedCount   int    `json:"deprecatedCount"`
-	RemovedAPICount   int    `json:"removedAPICount"`
-	StableAPIUsage    int    `json:"stableAPIUsage"`
-	BetaAPIUsage      int    `json:"betaAPIUsage"`
-	AlphaAPIUsage     int    `json:"alphaAPIUsage"`
+	ServerVersion   string `json:"serverVersion"`
+	TotalResources  int    `json:"totalResources"`
+	DeprecatedCount int    `json:"deprecatedCount"`
+	RemovedAPICount int    `json:"removedAPICount"`
+	StableAPIUsage  int    `json:"stableAPIUsage"`
+	BetaAPIUsage    int    `json:"betaAPIUsage"`
+	AlphaAPIUsage   int    `json:"alphaAPIUsage"`
 }
 
 type DeprecatedAPI struct {
@@ -47,9 +47,9 @@ type DeprecatedAPI struct {
 }
 
 type VersionRisk struct {
-	Risk      string `json:"risk"`
-	Severity  string `json:"severity"`
-	Detail    string `json:"detail"`
+	Risk     string `json:"risk"`
+	Severity string `json:"severity"`
+	Detail   string `json:"detail"`
 }
 
 // handleAPIVersionGov analyzes Kubernetes API version governance.
@@ -78,16 +78,16 @@ func (s *Server) handleAPIVersionGov(w http.ResponseWriter, r *http.Request) {
 		severity    string
 		minVersion  string
 	}{
-		"extensions/v1beta1":             {"apps/v1", "removed", "critical", "1.16"},
-		"apps/v1beta1":                   {"apps/v1", "removed", "critical", "1.16"},
-		"apps/v1beta2":                   {"apps/v1", "removed", "critical", "1.16"},
-		"networking.k8s.io/v1beta1":      {"networking.k8s.io/v1", "removed", "critical", "1.19"},
-		"policy/v1beta1":                 {"policy/v1", "removed", "high", "1.25"},
+		"extensions/v1beta1":                {"apps/v1", "removed", "critical", "1.16"},
+		"apps/v1beta1":                      {"apps/v1", "removed", "critical", "1.16"},
+		"apps/v1beta2":                      {"apps/v1", "removed", "critical", "1.16"},
+		"networking.k8s.io/v1beta1":         {"networking.k8s.io/v1", "removed", "critical", "1.19"},
+		"policy/v1beta1":                    {"policy/v1", "removed", "high", "1.25"},
 		"rbac.authorization.k8s.io/v1beta1": {"rbac.authorization.k8s.io/v1", "deprecated", "medium", "1.17"},
-		"storage.k8s.io/v1beta1":         {"storage.k8s.io/v1", "removed", "high", "1.22"},
-		"batch/v1beta1":                  {"batch/v1", "removed", "high", "1.25"},
-		"autoscaling/v2beta1":            {"autoscaling/v2", "deprecated", "medium", "1.23"},
-		"autoscaling/v2beta2":            {"autoscaling/v2", "removed", "high", "1.26"},
+		"storage.k8s.io/v1beta1":            {"storage.k8s.io/v1", "removed", "high", "1.22"},
+		"batch/v1beta1":                     {"batch/v1", "removed", "high", "1.25"},
+		"autoscaling/v2beta1":               {"autoscaling/v2", "deprecated", "medium", "1.23"},
+		"autoscaling/v2beta2":               {"autoscaling/v2", "removed", "high", "1.26"},
 	}
 
 	// Check resources for deprecated API usage

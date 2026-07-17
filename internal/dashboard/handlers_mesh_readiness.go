@@ -13,51 +13,51 @@ import (
 // MeshReadinessResult analyzes service mesh readiness, sidecar injection status,
 // mTLS coverage, and traffic management policy gaps.
 type MeshReadinessResult struct {
-	ScannedAt        time.Time           `json:"scannedAt"`
-	Summary          MeshSummary         `json:"summary"`
-	MeshDetected     bool                `json:"meshDetected"`
-	MeshType         string              `json:"meshType"`
-	InjectionGaps    []MeshInjectionGap  `json:"injectionGaps"`
-	MTLSCoverage     MeshMTLSCoverage    `json:"mtlsCoverage"`
-	TrafficPolicy    []TrafficPolicyGap  `json:"trafficPolicyGaps"`
-	ReadinessScore   int                 `json:"readinessScore"`
-	Grade            string              `json:"grade"`
-	Recommendations  []string            `json:"recommendations"`
+	ScannedAt       time.Time          `json:"scannedAt"`
+	Summary         MeshSummary        `json:"summary"`
+	MeshDetected    bool               `json:"meshDetected"`
+	MeshType        string             `json:"meshType"`
+	InjectionGaps   []MeshInjectionGap `json:"injectionGaps"`
+	MTLSCoverage    MeshMTLSCoverage   `json:"mtlsCoverage"`
+	TrafficPolicy   []TrafficPolicyGap `json:"trafficPolicyGaps"`
+	ReadinessScore  int                `json:"readinessScore"`
+	Grade           string             `json:"grade"`
+	Recommendations []string           `json:"recommendations"`
 }
 
 type MeshSummary struct {
-	TotalServices    int `json:"totalServices"`
-	MeshedServices   int `json:"meshedServices"`
-	UnmeshedServices int `json:"unmeshedServices"`
-	NamespacesOptIn  int `json:"namespacesOptIn"`
-	NamespacesMeshed int `json:"namespacesMeshed"`
+	TotalServices     int `json:"totalServices"`
+	MeshedServices    int `json:"meshedServices"`
+	UnmeshedServices  int `json:"unmeshedServices"`
+	NamespacesOptIn   int `json:"namespacesOptIn"`
+	NamespacesMeshed  int `json:"namespacesMeshed"`
 	HasCircuitBreaker int `json:"hasCircuitBreaker"`
 	HasRetryPolicy    int `json:"hasRetryPolicy"`
 	HasTimeoutPolicy  int `json:"hasTimeoutPolicy"`
 }
 
 type MeshInjectionGap struct {
-	Namespace    string `json:"namespace"`
-	ServiceName  string `json:"serviceName"`
-	PortCount    int    `json:"portCount"`
-	Reason       string `json:"reason"`
-	Impact       string `json:"impact"`
-	Priority     string `json:"priority"`
+	Namespace   string `json:"namespace"`
+	ServiceName string `json:"serviceName"`
+	PortCount   int    `json:"portCount"`
+	Reason      string `json:"reason"`
+	Impact      string `json:"impact"`
+	Priority    string `json:"priority"`
 }
 
 type MeshMTLSCoverage struct {
-	Mode          string  `json:"mode"`
-	Score         int     `json:"score"`
-	MeshedPct     float64 `json:"meshedPct"`
-	UnmeshedPct   float64 `json:"unmeshedPct"`
-	Status        string  `json:"status"`
+	Mode        string  `json:"mode"`
+	Score       int     `json:"score"`
+	MeshedPct   float64 `json:"meshedPct"`
+	UnmeshedPct float64 `json:"unmeshedPct"`
+	Status      string  `json:"status"`
 }
 
 type TrafficPolicyGap struct {
-	ServiceName  string `json:"serviceName"`
-	Namespace    string `json:"namespace"`
+	ServiceName   string `json:"serviceName"`
+	Namespace     string `json:"namespace"`
 	MissingPolicy string `json:"missingPolicy"`
-	Risk         string `json:"risk"`
+	Risk          string `json:"risk"`
 }
 
 // handleMeshReadiness provides service mesh readiness and mTLS gap analysis.

@@ -17,13 +17,13 @@ import (
 // It analyzes HPA/VPA coverage, scaling gap detection, scale-up/down latency estimation,
 // and provides actionable autoscaling tuning recommendations.
 type AutoscalingIntelResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         AutoscalingSummary  `json:"summary"`
-	ScalingProfiles []ScalingProfile    `json:"scalingProfiles"`
-	ScalingGaps     []ScalingGap        `json:"scalingGaps"`
-	ByNamespace     []NSAutoscaling     `json:"byNamespace"`
-	TuningAdvice    []TuningAdvice      `json:"tuningAdvice"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time          `json:"scannedAt"`
+	Summary         AutoscalingSummary `json:"summary"`
+	ScalingProfiles []ScalingProfile   `json:"scalingProfiles"`
+	ScalingGaps     []ScalingGap       `json:"scalingGaps"`
+	ByNamespace     []NSAutoscaling    `json:"byNamespace"`
+	TuningAdvice    []TuningAdvice     `json:"tuningAdvice"`
+	Recommendations []string           `json:"recommendations"`
 }
 
 // AutoscalingSummary aggregates autoscaling statistics.
@@ -44,41 +44,41 @@ type AutoscalingSummary struct {
 
 // ScalingProfile profiles one workload's autoscaling posture.
 type ScalingProfile struct {
-	Name           string  `json:"name"`
-	Namespace      string  `json:"namespace"`
-	Kind           string  `json:"kind"`
-	HasHPA         bool    `json:"hasHPA"`
-	HasResources   bool    `json:"hasResources"`
-	CurrentReplicas int32  `json:"currentReplicas"`
-	MinReplicas    int32   `json:"minReplicas,omitempty"`
-	MaxReplicas    int32   `json:"maxReplicas,omitempty"`
-	TargetCPU      int32   `json:"targetCPUUtilization,omitempty"` // %
-	TargetMemory   int32   `json:"targetMemoryUtilization,omitempty"`
-	ScalingBehavior string  `json:"scalingBehavior"`               // aggressive, moderate, conservative
-	HeadroomPct    float64 `json:"headroomPct"`                    // available scaling headroom
-	ScaleUpTime    string  `json:"scaleUpTimeEstimate"`            // estimated time to scale up
-	Verdict        string  `json:"verdict"`                        // optimal, over-provisioned, under-provisioned, no-autoscaling, misconfigured
-	RiskScore      int     `json:"riskScore"`
+	Name            string  `json:"name"`
+	Namespace       string  `json:"namespace"`
+	Kind            string  `json:"kind"`
+	HasHPA          bool    `json:"hasHPA"`
+	HasResources    bool    `json:"hasResources"`
+	CurrentReplicas int32   `json:"currentReplicas"`
+	MinReplicas     int32   `json:"minReplicas,omitempty"`
+	MaxReplicas     int32   `json:"maxReplicas,omitempty"`
+	TargetCPU       int32   `json:"targetCPUUtilization,omitempty"` // %
+	TargetMemory    int32   `json:"targetMemoryUtilization,omitempty"`
+	ScalingBehavior string  `json:"scalingBehavior"`     // aggressive, moderate, conservative
+	HeadroomPct     float64 `json:"headroomPct"`         // available scaling headroom
+	ScaleUpTime     string  `json:"scaleUpTimeEstimate"` // estimated time to scale up
+	Verdict         string  `json:"verdict"`             // optimal, over-provisioned, under-provisioned, no-autoscaling, misconfigured
+	RiskScore       int     `json:"riskScore"`
 }
 
 // ScalingGap identifies workloads that should have autoscaling but don't.
 type ScalingGap struct {
-	Name        string `json:"name"`
-	Namespace   string `json:"namespace"`
-	Kind        string `json:"kind"`
-	Reason      string `json:"reason"`
-	Impact      string `json:"impact"`
-	Severity    string `json:"severity"`
-	Suggestion  string `json:"suggestion"`
+	Name       string `json:"name"`
+	Namespace  string `json:"namespace"`
+	Kind       string `json:"kind"`
+	Reason     string `json:"reason"`
+	Impact     string `json:"impact"`
+	Severity   string `json:"severity"`
+	Suggestion string `json:"suggestion"`
 }
 
 // NSAutoscaling shows per-namespace autoscaling stats.
 type NSAutoscaling struct {
-	Namespace    string  `json:"namespace"`
-	TotalWorkloads int   `json:"totalWorkloads"`
-	WithHPA      int     `json:"withHPA"`
-	Coverage     float64 `json:"coveragePct"`
-	Gaps         int     `json:"gaps"`
+	Namespace      string  `json:"namespace"`
+	TotalWorkloads int     `json:"totalWorkloads"`
+	WithHPA        int     `json:"withHPA"`
+	Coverage       float64 `json:"coveragePct"`
+	Gaps           int     `json:"gaps"`
 }
 
 // TuningAdvice provides specific HPA tuning recommendations.
@@ -231,9 +231,9 @@ func (s *Server) handleAutoscalingIntel(w http.ResponseWriter, r *http.Request) 
 				profile.RiskScore = 70
 				result.ScalingGaps = append(result.ScalingGaps, ScalingGap{
 					Name: dep.Name, Namespace: dep.Namespace, Kind: "Deployment",
-					Reason: "HPA exists but no CPU requests set — HPA cannot calculate utilization",
-					Impact: "Autoscaling will not work properly",
-					Severity: "critical",
+					Reason:     "HPA exists but no CPU requests set — HPA cannot calculate utilization",
+					Impact:     "Autoscaling will not work properly",
+					Severity:   "critical",
 					Suggestion: "Add CPU resource requests to enable HPA resource metrics",
 				})
 			} else if profile.TargetCPU == 0 && profile.TargetMemory == 0 && result.Summary.HPAWithCustom == 0 {
@@ -260,16 +260,16 @@ func (s *Server) handleAutoscalingIntel(w http.ResponseWriter, r *http.Request) 
 				}
 				result.TuningAdvice = append(result.TuningAdvice, TuningAdvice{
 					Name: dep.Name, Namespace: dep.Namespace,
-					Issue: fmt.Sprintf("HPA target CPU utilization is %d%% (recommended: 50-80%%)", profile.TargetCPU),
-					Advice: "Adjust target CPU utilization to 50-80%% for balanced scaling responsiveness",
+					Issue:    fmt.Sprintf("HPA target CPU utilization is %d%% (recommended: 50-80%%)", profile.TargetCPU),
+					Advice:   "Adjust target CPU utilization to 50-80%% for balanced scaling responsiveness",
 					Priority: priority,
 				})
 			}
 			if profile.MaxReplicas > 0 && profile.MaxReplicas == profile.MinReplicas {
 				result.TuningAdvice = append(result.TuningAdvice, TuningAdvice{
 					Name: dep.Name, Namespace: dep.Namespace,
-					Issue: fmt.Sprintf("HPA minReplicas == maxReplicas (%d) — no scaling possible", profile.MaxReplicas),
-					Advice: fmt.Sprintf("Increase maxReplicas above %d to enable scaling", profile.MaxReplicas),
+					Issue:    fmt.Sprintf("HPA minReplicas == maxReplicas (%d) — no scaling possible", profile.MaxReplicas),
+					Advice:   fmt.Sprintf("Increase maxReplicas above %d to enable scaling", profile.MaxReplicas),
 					Priority: "high",
 				})
 			}
@@ -297,9 +297,9 @@ func (s *Server) handleAutoscalingIntel(w http.ResponseWriter, r *http.Request) 
 				}
 				result.ScalingGaps = append(result.ScalingGaps, ScalingGap{
 					Name: dep.Name, Namespace: dep.Namespace, Kind: "Deployment",
-					Reason: "Multi-replica deployment without HPA — cannot auto-scale with demand",
-					Impact: fmt.Sprintf("Traffic spikes will cause degradation (current replicas: %d)", replicas),
-					Severity: severity,
+					Reason:     "Multi-replica deployment without HPA — cannot auto-scale with demand",
+					Impact:     fmt.Sprintf("Traffic spikes will cause degradation (current replicas: %d)", replicas),
+					Severity:   severity,
 					Suggestion: fmt.Sprintf("Add HPA: kubectl autoscale deployment %s --cpu-percent=70 --min=%d --max=%d", dep.Name, replicas, replicas*3),
 				})
 			} else if replicas == 1 {

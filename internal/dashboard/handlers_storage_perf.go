@@ -52,15 +52,15 @@ type SCPerfInfo struct {
 
 // StorageMismatch describes a workload-storage performance mismatch.
 type StorageMismatch struct {
-	Workload   string `json:"workload"`
-	Namespace  string `json:"namespace"`
-	PVCName    string `json:"pvcName"`
-	SCName     string `json:"scName"`
-	CurrentTier string `json:"currentTier"`
+	Workload     string `json:"workload"`
+	Namespace    string `json:"namespace"`
+	PVCName      string `json:"pvcName"`
+	SCName       string `json:"scName"`
+	CurrentTier  string `json:"currentTier"`
 	ExpectedTier string `json:"expectedTier"`
 	WorkloadType string `json:"workloadType"`
-	Severity   string `json:"severity"`
-	Reason     string `json:"reason"`
+	Severity     string `json:"severity"`
+	Reason       string `json:"reason"`
 }
 
 // StoragePerfNSStat per-namespace storage stats.
@@ -174,7 +174,7 @@ func (s *Server) handleStoragePerf(w http.ResponseWriter, r *http.Request) {
 	scs, _ := rc.clientset.StorageV1().StorageClasses().List(ctx, metav1.ListOptions{})
 
 	// Build SC tier map
-	scTierMap := map[string]string{}     // scName -> tier
+	scTierMap := map[string]string{} // scName -> tier
 	scDefaultName := ""
 	scInfoMap := map[string]*SCPerfInfo{}
 	for _, sc := range scs.Items {

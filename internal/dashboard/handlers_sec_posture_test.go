@@ -109,7 +109,7 @@ func TestSecPostureGoodWorkload(t *testing.T) {
 									},
 								},
 								SecurityContext: &corev1.SecurityContext{
-									RunAsNonRoot:         &nonRoot,
+									RunAsNonRoot:           &nonRoot,
 									ReadOnlyRootFilesystem: &readOnly,
 								},
 							},
@@ -178,12 +178,12 @@ func TestClampScore(t *testing.T) {
 // TestCategorizeViolation verifies violation categorization.
 func TestCategorizeViolation(t *testing.T) {
 	tests := map[string]string{
-		"privileged":      "pod-security",
-		"hostNetwork":     "host-access",
-		"hostPath: /data": "host-access",
+		"privileged":           "pod-security",
+		"hostNetwork":          "host-access",
+		"hostPath: /data":      "host-access",
 		"SYS_ADMIN capability": "capabilities",
-		"no NetworkPolicy": "network-isolation",
-		"no resource limits": "resource-boundaries",
+		"no NetworkPolicy":     "network-isolation",
+		"no resource limits":   "resource-boundaries",
 	}
 	for input, want := range tests {
 		got := categorizeViolation(input)

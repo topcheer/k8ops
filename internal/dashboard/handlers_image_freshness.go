@@ -12,22 +12,22 @@ import (
 
 // ImageFreshResult analyzes container image freshness and update tracking.
 type ImageFreshResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         ImageFreshSummary   `json:"summary"`
-	StaleImages     []StaleImageInfo    `json:"staleImages"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time         `json:"scannedAt"`
+	Summary         ImageFreshSummary `json:"summary"`
+	StaleImages     []StaleImageInfo  `json:"staleImages"`
+	HealthScore     int               `json:"healthScore"`
+	Grade           string            `json:"grade"`
+	Recommendations []string          `json:"recommendations"`
 }
 
 type ImageFreshSummary struct {
-	TotalImages     int     `json:"totalImages"`
-	UniqueImages    int     `json:"uniqueImages"`
-	FreshImages     int     `json:"freshImages"`
-	StaleImages     int     `json:"staleImages"`
-	AvgImageAge     string  `json:"avgImageAge"`
-	UnknownAge      int     `json:"unknownAge"`
-	UpdateNeeded    int     `json:"updateNeeded"`
+	TotalImages  int    `json:"totalImages"`
+	UniqueImages int    `json:"uniqueImages"`
+	FreshImages  int    `json:"freshImages"`
+	StaleImages  int    `json:"staleImages"`
+	AvgImageAge  string `json:"avgImageAge"`
+	UnknownAge   int    `json:"unknownAge"`
+	UpdateNeeded int    `json:"updateNeeded"`
 }
 
 type StaleImageInfo struct {
@@ -55,7 +55,9 @@ func (s *Server) handleImageFreshness(w http.ResponseWriter, r *http.Request) {
 
 	imageSet := map[string]bool{}
 	for _, pod := range pods.Items {
-		if systemNS[pod.Namespace] { continue }
+		if systemNS[pod.Namespace] {
+			continue
+		}
 		for _, c := range pod.Spec.Containers {
 			image := c.Image
 			result.Summary.TotalImages++
@@ -85,7 +87,7 @@ func (s *Server) handleImageFreshness(w http.ResponseWriter, r *http.Request) {
 					severity = "medium"
 					result.Summary.UpdateNeeded++
 					break
-			}
+				}
 			}
 
 			if status == "fresh" {
@@ -109,7 +111,9 @@ func (s *Server) handleImageFreshness(w http.ResponseWriter, r *http.Request) {
 	}
 	score := int(freshRatio * 100)
 	score -= result.Summary.StaleImages * 5
-	if score < 0 { score = 0 }
+	if score < 0 {
+		score = 0
+	}
 	result.HealthScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.HealthScore)
 

@@ -41,7 +41,7 @@ func TestGenerateFreezeRecs(t *testing.T) {
 	r2 := ChangeFreezeResult{
 		FreezeStatus: "active",
 		Verdict:      "freeze",
-		Summary: FreezeSummary{CrashLoopPods: 2, StabilityScore: 55},
+		Summary:      FreezeSummary{CrashLoopPods: 2, StabilityScore: 55},
 	}
 	recs2 := generateFreezeRecs(r2)
 	found := false

@@ -263,8 +263,8 @@ func TestRequestIntelligenceNoRequests(t *testing.T) {
 				Containers: []corev1.Container{{Name: "c", Image: "nginx"}},
 			},
 			Status: corev1.PodStatus{
-				Phase:              corev1.PodRunning,
-				ContainerStatuses:  []corev1.ContainerStatus{{RestartCount: 0, Ready: true}},
+				Phase:             corev1.PodRunning,
+				ContainerStatuses: []corev1.ContainerStatus{{RestartCount: 0, Ready: true}},
 			},
 		},
 	)
@@ -329,7 +329,7 @@ func TestRequestIntelligenceOptimal(t *testing.T) {
 								Image: "nginx:1.25",
 								Resources: corev1.ResourceRequirements{
 									Requests: corev1.ResourceList{
-										corev1.ResourceCPU:    resource.MustParse("250m"), // non-round
+										corev1.ResourceCPU:    resource.MustParse("250m"),  // non-round
 										corev1.ResourceMemory: resource.MustParse("384Mi"), // non-round
 									},
 								},
@@ -392,14 +392,14 @@ func TestIsRoundNumber(t *testing.T) {
 		input float64
 		want  bool
 	}{
-		{1000, true},  // round
-		{2000, true},  // round
-		{512, true},   // round
-		{250, false},  // not round
-		{384, false},  // not round
-		{100, true},   // round
-		{1024, true},  // round
-		{0, false},    // edge case
+		{1000, true}, // round
+		{2000, true}, // round
+		{512, true},  // round
+		{250, false}, // not round
+		{384, false}, // not round
+		{100, true},  // round
+		{1024, true}, // round
+		{0, false},   // edge case
 	}
 	for _, tt := range tests {
 		got := isRoundNumber(tt.input)

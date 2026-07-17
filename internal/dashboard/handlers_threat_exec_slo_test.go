@@ -25,12 +25,12 @@ func TestRuntimeThreatTypes(t *testing.T) {
 
 func TestRuntimeThreatScoring(t *testing.T) {
 	tests := []struct {
-		privileged int
-		hostNet    int
-		hostPID    int
-		hostPath   int
-		dangerCaps int
-		runAsRoot  int
+		privileged  int
+		hostNet     int
+		hostPID     int
+		hostPath    int
+		dangerCaps  int
+		runAsRoot   int
 		expectedMin int
 		expectedMax int
 	}{
@@ -46,7 +46,9 @@ func TestRuntimeThreatScoring(t *testing.T) {
 		score -= tc.hostPath * 3
 		score -= tc.dangerCaps * 5
 		score -= tc.runAsRoot * 2
-		if score < 0 { score = 0 }
+		if score < 0 {
+			score = 0
+		}
 		score = min(100, score)
 		if score < tc.expectedMin || score > tc.expectedMax {
 			t.Errorf("priv=%d hostNet=%d hostPID=%d hostPath=%d caps=%d root=%d: expected %d-%d, got %d",
@@ -62,9 +64,13 @@ func TestExecDashboardTypes(t *testing.T) {
 		t.Error("struct error")
 	}
 	ds := DimensionScore{Dimension: "Security", Score: 45, Status: "warning"}
-	if ds.Status != "warning" { t.Error("dimScore error") }
+	if ds.Status != "warning" {
+		t.Error("dimScore error")
+	}
 	er := ExecRisk{Category: "Security", Severity: "high"}
-	if er.Severity != "high" { t.Error("risk error") }
+	if er.Severity != "high" {
+		t.Error("risk error")
+	}
 }
 
 func TestScoreStatus(t *testing.T) {
@@ -95,7 +101,9 @@ func TestSLOComplianceTypes(t *testing.T) {
 		t.Error("summary error")
 	}
 	ns := NamespaceSLO{Namespace: "app", Availability: 98.5, Status: "healthy"}
-	if ns.Availability != 98.5 { t.Error("nsSLO error") }
+	if ns.Availability != 98.5 {
+		t.Error("nsSLO error")
+	}
 }
 
 func TestSLOScoring(t *testing.T) {

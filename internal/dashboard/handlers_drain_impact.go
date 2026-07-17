@@ -15,52 +15,52 @@ import (
 // rescheduled on remaining nodes, and what the service disruption
 // impact would be. This helps operators plan safe maintenance windows.
 type DrainImpactResult struct {
-	ScannedAt        time.Time          `json:"scannedAt"`
-	TargetNode       string             `json:"targetNode"`
-	NodeInfo         DrainNodeInfo      `json:"nodeInfo"`
-	ImpactSummary    DrainImpactSummary `json:"impactSummary"`
-	AffectedPods     []DrainPodImpact   `json:"affectedPods"`
-	RescheduleFeas   DrainReschedule    `json:"rescheduleFeasibility"`
-	ServiceImpact    []DrainServiceBlip `json:"serviceImpact"`
-	SafeToDrain      bool               `json:"safeToDrain"`
-	RiskLevel        string             `json:"riskLevel"`
-	Recommendations  []string           `json:"recommendations"`
+	ScannedAt       time.Time          `json:"scannedAt"`
+	TargetNode      string             `json:"targetNode"`
+	NodeInfo        DrainNodeInfo      `json:"nodeInfo"`
+	ImpactSummary   DrainImpactSummary `json:"impactSummary"`
+	AffectedPods    []DrainPodImpact   `json:"affectedPods"`
+	RescheduleFeas  DrainReschedule    `json:"rescheduleFeasibility"`
+	ServiceImpact   []DrainServiceBlip `json:"serviceImpact"`
+	SafeToDrain     bool               `json:"safeToDrain"`
+	RiskLevel       string             `json:"riskLevel"`
+	Recommendations []string           `json:"recommendations"`
 }
 
 type DrainNodeInfo struct {
-	Name        string `json:"name"`
-	Role        string `json:"role"`
-	CPUCapacity float64 `json:"cpuCapacity"`
-	MemCapacity float64 `json:"memCapacityGB"`
-	PodCapacity int    `json:"podCapacity"`
+	Name        string   `json:"name"`
+	Role        string   `json:"role"`
+	CPUCapacity float64  `json:"cpuCapacity"`
+	MemCapacity float64  `json:"memCapacityGB"`
+	PodCapacity int      `json:"podCapacity"`
 	Taints      []string `json:"taints"`
-	Zone       string `json:"zone"`
+	Zone        string   `json:"zone"`
 }
 
 type DrainImpactSummary struct {
-	TotalPods        int `json:"totalPodsOnNode"`
-	EvictablePods    int `json:"evictablePods"`
-	DaemonSetPods    int `json:"daemonSetPods"` // not evicted
-	StaticPods      int `json:"staticPods"`
-	WithPDB          int `json:"withPDB"`
-	ProtectedPods    int `json:"protectedPods"` // PDB blocks eviction
-	Reschedulable    int `json:"reschedulable"`
-	NotReschedulable int `json:"notReschedulable"`
+	TotalPods         int `json:"totalPodsOnNode"`
+	EvictablePods     int `json:"evictablePods"`
+	DaemonSetPods     int `json:"daemonSetPods"` // not evicted
+	StaticPods        int `json:"staticPods"`
+	WithPDB           int `json:"withPDB"`
+	ProtectedPods     int `json:"protectedPods"` // PDB blocks eviction
+	Reschedulable     int `json:"reschedulable"`
+	NotReschedulable  int `json:"notReschedulable"`
 	CriticalWorkloads int `json:"criticalWorkloads"`
 }
 
 type DrainPodImpact struct {
-	Name           string `json:"name"`
-	Namespace      string `json:"namespace"`
-	Kind           string `json:"kind"`
-	OwnerName      string `json:"ownerName"`
-	Replicas       int    `json:"replicas"`
-	HasPDB         bool   `json:"hasPDB"`
-	PDBMinAvail    int    `json:"pdbMinAvailable"`
-	CanEvict       bool   `json:"canEvict"`
-	CanReschedule  bool   `json:"canReschedule"`
+	Name             string `json:"name"`
+	Namespace        string `json:"namespace"`
+	Kind             string `json:"kind"`
+	OwnerName        string `json:"ownerName"`
+	Replicas         int    `json:"replicas"`
+	HasPDB           bool   `json:"hasPDB"`
+	PDBMinAvail      int    `json:"pdbMinAvailable"`
+	CanEvict         bool   `json:"canEvict"`
+	CanReschedule    bool   `json:"canReschedule"`
 	RescheduleReason string `json:"rescheduleReason"`
-	DisruptionRisk string `json:"disruptionRisk"`
+	DisruptionRisk   string `json:"disruptionRisk"`
 }
 
 type DrainReschedule struct {

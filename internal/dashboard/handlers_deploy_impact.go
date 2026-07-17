@@ -16,42 +16,42 @@ import (
 // DeployImpactResult is the deployment impact simulator.
 // It answers: "what will happen if I change/deploy workload X?"
 type DeployImpactResult struct {
-	ScannedAt      time.Time           `json:"scannedAt"`
-	Summary        ImpactSummary       `json:"summary"`
-	TargetWorkload string              `json:"targetWorkload,omitempty"`
-	TargetNamespace string             `json:"targetNamespace,omitempty"`
-	Simulations    []ImpactSimulation `json:"simulations"`
-	RankedWorkloads []RankedWorkload   `json:"rankedWorkloads"` // workloads ranked by deployment risk
-	CascadeRisks   []CascadeRisk       `json:"cascadeRisks"`
-	Recommendations []string           `json:"recommendations"`
-	ClusterRiskLevel string            `json:"clusterRiskLevel"` // low, medium, high
+	ScannedAt        time.Time          `json:"scannedAt"`
+	Summary          ImpactSummary      `json:"summary"`
+	TargetWorkload   string             `json:"targetWorkload,omitempty"`
+	TargetNamespace  string             `json:"targetNamespace,omitempty"`
+	Simulations      []ImpactSimulation `json:"simulations"`
+	RankedWorkloads  []RankedWorkload   `json:"rankedWorkloads"` // workloads ranked by deployment risk
+	CascadeRisks     []CascadeRisk      `json:"cascadeRisks"`
+	Recommendations  []string           `json:"recommendations"`
+	ClusterRiskLevel string             `json:"clusterRiskLevel"` // low, medium, high
 }
 
 // ImpactSummary aggregates impact simulation stats.
 type ImpactSummary struct {
-	TotalWorkloads     int `json:"totalWorkloads"`
-	HighImpactWorkloads int `json:"highImpactWorkloads"` // deploying them risks cascading
-	MediumImpactWorkloads int `json:"mediumImpactWorkloads"`
-	LowImpactWorkloads int `json:"lowImpactWorkloads"`
-	CriticalDependencies int `json:"criticalDependencies"` // workloads others depend on
+	TotalWorkloads         int `json:"totalWorkloads"`
+	HighImpactWorkloads    int `json:"highImpactWorkloads"` // deploying them risks cascading
+	MediumImpactWorkloads  int `json:"mediumImpactWorkloads"`
+	LowImpactWorkloads     int `json:"lowImpactWorkloads"`
+	CriticalDependencies   int `json:"criticalDependencies"` // workloads others depend on
 	SingleReplicaWorkloads int `json:"singleReplicaWorkloads"`
-	NoPDBWorkloads     int `json:"noPDBWorkloads"`
+	NoPDBWorkloads         int `json:"noPDBWorkloads"`
 }
 
 // ImpactSimulation simulates deployment impact for one workload.
 type ImpactSimulation struct {
-	Workload       string   `json:"workload"`
-	Namespace      string   `json:"namespace"`
-	Kind           string   `json:"kind"`
-	ImpactLevel    string   `json:"impactLevel"` // high, medium, low
-	RiskScore      int      `json:"riskScore"`   // 0-100, higher = more risky to deploy
-	PodsAffected   int      `json:"podsAffected"`
-	EstimatedDowntime string `json:"estimatedDowntime"`
-	DirectDependents int   `json:"directDependents"` // services selecting this workload
-	SharesNode      int    `json:"sharesNode"`       // other workloads sharing node
-	CascadeRisk     string `json:"cascadeRisk"`      // none, low, medium, high
-	Blockers        []string `json:"blockers,omitempty"`
-	Mitigations     []string `json:"mitigations,omitempty"`
+	Workload          string   `json:"workload"`
+	Namespace         string   `json:"namespace"`
+	Kind              string   `json:"kind"`
+	ImpactLevel       string   `json:"impactLevel"` // high, medium, low
+	RiskScore         int      `json:"riskScore"`   // 0-100, higher = more risky to deploy
+	PodsAffected      int      `json:"podsAffected"`
+	EstimatedDowntime string   `json:"estimatedDowntime"`
+	DirectDependents  int      `json:"directDependents"` // services selecting this workload
+	SharesNode        int      `json:"sharesNode"`       // other workloads sharing node
+	CascadeRisk       string   `json:"cascadeRisk"`      // none, low, medium, high
+	Blockers          []string `json:"blockers,omitempty"`
+	Mitigations       []string `json:"mitigations,omitempty"`
 }
 
 // RankedWorkload ranks workloads by deployment risk.
@@ -66,10 +66,10 @@ type RankedWorkload struct {
 
 // CascadeRisk describes a potential cascading failure path.
 type CascadeRisk struct {
-	From      string   `json:"from"`
-	To        []string `json:"to"`
-	Chain     string   `json:"chain"`     // human-readable chain
-	Severity  string   `json:"severity"`
+	From     string   `json:"from"`
+	To       []string `json:"to"`
+	Chain    string   `json:"chain"` // human-readable chain
+	Severity string   `json:"severity"`
 }
 
 // handleDeployImpact simulates deployment impact across the cluster.
@@ -271,10 +271,10 @@ func (s *Server) handleDeployImpact(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 			cascadeRisks = append(cascadeRisks, CascadeRisk{
-				From: fmt.Sprintf("%s/%s", namespace, name),
-				To:   depNames,
-				Chain: fmt.Sprintf("%s/%s → [%s]", namespace, name, strings.Join(depNames, ", ")),
-				Severity: "high" ,
+				From:     fmt.Sprintf("%s/%s", namespace, name),
+				To:       depNames,
+				Chain:    fmt.Sprintf("%s/%s → [%s]", namespace, name, strings.Join(depNames, ", ")),
+				Severity: "high",
 			})
 		}
 	}

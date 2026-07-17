@@ -11,21 +11,21 @@ import (
 
 // NodeDecommResult analyzes node decommissioning readiness and lifecycle rotation.
 type NodeDecommResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         NodeDecommSummary   `json:"summary"`
-	RotationCandidates []NodeRotation  `json:"rotationCandidates"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt          time.Time         `json:"scannedAt"`
+	Summary            NodeDecommSummary `json:"summary"`
+	RotationCandidates []NodeRotation    `json:"rotationCandidates"`
+	HealthScore        int               `json:"healthScore"`
+	Grade              string            `json:"grade"`
+	Recommendations    []string          `json:"recommendations"`
 }
 
 type NodeDecommSummary struct {
-	TotalNodes       int     `json:"totalNodes"`
-	OldNodes         int     `json:"oldNodes"`
-	NotReadyNodes    int     `json:"notReadyNodes"`
-	AvgAge           string  `json:"avgAge"`
-	RotationUrgency  string  `json:"rotationUrgency"`
-	PodsPerNode      float64 `json:"podsPerNode"`
+	TotalNodes      int     `json:"totalNodes"`
+	OldNodes        int     `json:"oldNodes"`
+	NotReadyNodes   int     `json:"notReadyNodes"`
+	AvgAge          string  `json:"avgAge"`
+	RotationUrgency string  `json:"rotationUrgency"`
+	PodsPerNode     float64 `json:"podsPerNode"`
 }
 
 type NodeRotation struct {
@@ -75,7 +75,9 @@ func (s *Server) handleNodeDecomm(w http.ResponseWriter, r *http.Request) {
 		// Count pods on this node
 		nodePods := 0
 		for _, pod := range pods.Items {
-			if pod.Spec.NodeName == node.Name { nodePods++ }
+			if pod.Spec.NodeName == node.Name {
+				nodePods++
+			}
 		}
 		podsPerNode += float64(nodePods)
 
@@ -123,7 +125,9 @@ func (s *Server) handleNodeDecomm(w http.ResponseWriter, r *http.Request) {
 	score := 100
 	score -= notReady * 30
 	score -= oldNodes * 10
-	if score < 0 { score = 0 }
+	if score < 0 {
+		score = 0
+	}
 	result.HealthScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.HealthScore)
 
@@ -139,7 +143,9 @@ func (s *Server) handleNodeDecomm(w http.ResponseWriter, r *http.Request) {
 	if oldNodes > 0 {
 		recs = append(recs, fmt.Sprintf("%d nodes older than 1 year — plan rotation for security patches", oldNodes))
 	}
-	if len(recs) == 1 { recs = append(recs, "Node lifecycle is healthy — no rotation needed") }
+	if len(recs) == 1 {
+		recs = append(recs, "Node lifecycle is healthy — no rotation needed")
+	}
 	result.Recommendations = recs
 
 	writeJSON(w, result)

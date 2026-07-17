@@ -32,76 +32,76 @@ type CapForecast struct {
 // It calculates utilization rates, growth rates, and time-to-exhaustion
 // for CPU, memory, and storage resources.
 type CapacityForecastResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Current         CapacityCurrent     `json:"current"`
+	ScannedAt       time.Time          `json:"scannedAt"`
+	Current         CapacityCurrent    `json:"current"`
 	Forecast        CapForecastData    `json:"forecast"`
-	ByNamespace     []CapacityNS        `json:"byNamespace"`
-	TopConsumers    []CapacityConsumer  `json:"topConsumers"`
-	GrowthTrend     []GrowthPoint       `json:"growthTrend"`
-	HealthScore     int                 `json:"healthScore"`
-		Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ByNamespace     []CapacityNS       `json:"byNamespace"`
+	TopConsumers    []CapacityConsumer `json:"topConsumers"`
+	GrowthTrend     []GrowthPoint      `json:"growthTrend"`
+	HealthScore     int                `json:"healthScore"`
+	Grade           string             `json:"grade"`
+	Recommendations []string           `json:"recommendations"`
 }
 
 type CapacityCurrent struct {
-	NodeCount       int `json:"nodeCount"`
-	TotalCPU        float64 `json:"totalCPU"`        // cores
-	TotalMemory     float64 `json:"totalMemory"`     // GB
-	TotalStorage    float64 `json:"totalStorage"`    // GB (ephemeral)
-	AllocatableCPU  float64 `json:"allocatableCPU"`  // cores
-	AllocatableMem  float64 `json:"allocatableMemory"` // GB
-	RequestedCPU    float64 `json:"requestedCPU"`    // cores
-	RequestedMem    float64 `json:"requestedMemory"`  // GB
-	LimitCPU        float64 `json:"limitCPU"`        // cores
-	LimitMem        float64 `json:"limitMemory"`     // GB
-	CPUUtilization  float64 `json:"cpuUtilization"`  // 0-1
-	MemUtilization  float64 `json:"memUtilization"`  // 0-1
-	PodCount        int `json:"podCount"`
-	PodCapacity     int `json:"podCapacity"`
-	PodUtilization  float64 `json:"podUtilization"`  // 0-1
+	NodeCount      int     `json:"nodeCount"`
+	TotalCPU       float64 `json:"totalCPU"`          // cores
+	TotalMemory    float64 `json:"totalMemory"`       // GB
+	TotalStorage   float64 `json:"totalStorage"`      // GB (ephemeral)
+	AllocatableCPU float64 `json:"allocatableCPU"`    // cores
+	AllocatableMem float64 `json:"allocatableMemory"` // GB
+	RequestedCPU   float64 `json:"requestedCPU"`      // cores
+	RequestedMem   float64 `json:"requestedMemory"`   // GB
+	LimitCPU       float64 `json:"limitCPU"`          // cores
+	LimitMem       float64 `json:"limitMemory"`       // GB
+	CPUUtilization float64 `json:"cpuUtilization"`    // 0-1
+	MemUtilization float64 `json:"memUtilization"`    // 0-1
+	PodCount       int     `json:"podCount"`
+	PodCapacity    int     `json:"podCapacity"`
+	PodUtilization float64 `json:"podUtilization"` // 0-1
 }
 
 type CapForecastData struct {
-	GrowthRate30d    CapacityGrowth `json:"growthRate30d"`
+	GrowthRate30d    CapacityGrowth     `json:"growthRate30d"`
 	Projection90d    CapacityProjection `json:"projection90d"`
 	Projection180d   CapacityProjection `json:"projection180d"`
-	TimeToExhaustion CapacityTTE `json:"timeToExhaustion"`
+	TimeToExhaustion CapacityTTE        `json:"timeToExhaustion"`
 }
 
 type CapacityGrowth struct {
-	CPUPercentPerMonth  float64 `json:"cpuPercentPerMonth"`
-	MemPercentPerMonth  float64 `json:"memPercentPerMonth"`
-	PodPercentPerMonth  float64 `json:"podPercentPerMonth"`
-	NewPodsPerWeek      float64 `json:"newPodsPerWeek"`
-	DataPoints          int     `json:"dataPoints"`
+	CPUPercentPerMonth float64 `json:"cpuPercentPerMonth"`
+	MemPercentPerMonth float64 `json:"memPercentPerMonth"`
+	PodPercentPerMonth float64 `json:"podPercentPerMonth"`
+	NewPodsPerWeek     float64 `json:"newPodsPerWeek"`
+	DataPoints         int     `json:"dataPoints"`
 }
 
 type CapacityProjection struct {
-	HorizonDays    int     `json:"horizonDays"`
-	ProjectedCPU   float64 `json:"projectedCPU"`
-	ProjectedMem   float64 `json:"projectedMemory"`
-		ProjectedPods  int     `json:"projectedPods"`
-	CPUHeadroom    float64 `json:"cpuHeadroomPct"`    // remaining capacity %
-	MemHeadroom    float64 `json:"memHeadroomPct"`
-	PodHeadroom    float64 `json:"podHeadroomPct"`
-	Status         string  `json:"status"`             // ok/warning/critical
+	HorizonDays   int     `json:"horizonDays"`
+	ProjectedCPU  float64 `json:"projectedCPU"`
+	ProjectedMem  float64 `json:"projectedMemory"`
+	ProjectedPods int     `json:"projectedPods"`
+	CPUHeadroom   float64 `json:"cpuHeadroomPct"` // remaining capacity %
+	MemHeadroom   float64 `json:"memHeadroomPct"`
+	PodHeadroom   float64 `json:"podHeadroomPct"`
+	Status        string  `json:"status"` // ok/warning/critical
 }
 
 type CapacityTTE struct {
-	CPUExhaustionDays  int    `json:"cpuExhaustionDays"`  // 0 = already exhausted or no growth
-	MemExhaustionDays  int    `json:"memExhaustionDays"`
-	PodExhaustionDays  int    `json:"podExhaustionDays"`
-	FirstBottleneck    string `json:"firstBottleneck"`
+	CPUExhaustionDays int    `json:"cpuExhaustionDays"` // 0 = already exhausted or no growth
+	MemExhaustionDays int    `json:"memExhaustionDays"`
+	PodExhaustionDays int    `json:"podExhaustionDays"`
+	FirstBottleneck   string `json:"firstBottleneck"`
 }
 
 type CapacityNS struct {
-	Namespace    string  `json:"namespace"`
-	PodCount     int     `json:"podCount"`
-	ReqCPU       float64 `json:"reqCPU"`
-	ReqMem       float64 `json:"reqMem"`
-	CPUPercent   float64 `json:"cpuPercent"`
-	MemPercent   float64 `json:"memPercent"`
-	GrowthRate   float64 `json:"growthRate"` // pods per week
+	Namespace  string  `json:"namespace"`
+	PodCount   int     `json:"podCount"`
+	ReqCPU     float64 `json:"reqCPU"`
+	ReqMem     float64 `json:"reqMem"`
+	CPUPercent float64 `json:"cpuPercent"`
+	MemPercent float64 `json:"memPercent"`
+	GrowthRate float64 `json:"growthRate"` // pods per week
 }
 
 type CapacityConsumer struct {
@@ -114,7 +114,7 @@ type CapacityConsumer struct {
 }
 
 type GrowthPoint struct {
-	Date    string  `json:"date"`
+	Date     string `json:"date"`
 	PodCount int    `json:"podCount"`
 }
 
@@ -177,7 +177,7 @@ func (s *Server) handleCapacityForecastDeep(w http.ResponseWriter, r *http.Reque
 			if req, ok := c.Resources.Requests[corev1.ResourceCPU]; ok {
 				v := req.AsApproximateFloat64()
 				current.RequestedCPU += v
-			podReqCPU += v
+				podReqCPU += v
 			}
 			if req, ok := c.Resources.Requests[corev1.ResourceMemory]; ok {
 				v := req.AsApproximateFloat64() / 1e9

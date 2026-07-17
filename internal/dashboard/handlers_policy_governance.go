@@ -13,33 +13,33 @@ import (
 // PolicyGovResult analyzes admission policy governance: OPA Gatekeeper constraints,
 // Kyverno policies, PSA levels, and policy enforcement coverage across namespaces.
 type PolicyGovResult struct {
-	ScannedAt        time.Time          `json:"scannedAt"`
-	Summary          PolicyGovSummary   `json:"summary"`
-	GatekeeperStatus string             `json:"gatekeeperStatus"`
-	KyvernoStatus    string             `json:"kyvernoStatus"`
-	PSACoverage      PSACoverage        `json:"psaCoverage"`
-	PolicyGaps       []PolicyGap        `json:"policyGaps"`
-	EnforcementScore int                `json:"enforcementScore"`
-	Grade            string             `json:"grade"`
-	Recommendations  []string           `json:"recommendations"`
+	ScannedAt        time.Time        `json:"scannedAt"`
+	Summary          PolicyGovSummary `json:"summary"`
+	GatekeeperStatus string           `json:"gatekeeperStatus"`
+	KyvernoStatus    string           `json:"kyvernoStatus"`
+	PSACoverage      PSACoverage      `json:"psaCoverage"`
+	PolicyGaps       []PolicyGap      `json:"policyGaps"`
+	EnforcementScore int              `json:"enforcementScore"`
+	Grade            string           `json:"grade"`
+	Recommendations  []string         `json:"recommendations"`
 }
 
 type PolicyGovSummary struct {
-	TotalNamespaces   int `json:"totalNamespaces"`
-	NSWithEnforcePSA  int `json:"nsWithEnforcePSA"`
-	NSWithAuditPSA    int `json:"nsWithAuditPSA"`
-	NSWithNoPSA       int `json:"nsWithNoPSA"`
-	HasGatekeeper     bool `json:"hasGatekeeper"`
-	HasKyverno        bool `json:"hasKyverno"`
-	ConstraintCount   int `json:"constraintCount"`
-	PolicyCount       int `json:"policyCount"`
+	TotalNamespaces  int  `json:"totalNamespaces"`
+	NSWithEnforcePSA int  `json:"nsWithEnforcePSA"`
+	NSWithAuditPSA   int  `json:"nsWithAuditPSA"`
+	NSWithNoPSA      int  `json:"nsWithNoPSA"`
+	HasGatekeeper    bool `json:"hasGatekeeper"`
+	HasKyverno       bool `json:"hasKyverno"`
+	ConstraintCount  int  `json:"constraintCount"`
+	PolicyCount      int  `json:"policyCount"`
 }
 
 type PSACoverage struct {
-	EnforceLevel  string  `json:"enforceLevel"`
-	Score         int     `json:"score"`
-	CoveragePct   float64 `json:"coveragePct"`
-	GapCount      int     `json:"gapCount"`
+	EnforceLevel string  `json:"enforceLevel"`
+	Score        int     `json:"score"`
+	CoveragePct  float64 `json:"coveragePct"`
+	GapCount     int     `json:"gapCount"`
 }
 
 type PolicyGap struct {

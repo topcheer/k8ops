@@ -17,14 +17,14 @@ import (
 // across Pod Security Standards, RBAC, network policies, secrets management,
 // admission control, and runtime security into a single actionable score// with prioritized remediation guidance.
 type HardeningScoreResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	OverallScore    int                 `json:"overallScore"`
-	Grade           string              `json:"grade"`
-	Dimensions      []HardeningDim      `json:"dimensions"`
-	TopRisks        []HardeningRisk     `json:"topRisks"`
-	ByNamespace     []HardeningNS       `json:"byNamespace"`
-	ComplianceMap   map[string]int      `json:"complianceMap"` // framework -> score
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time       `json:"scannedAt"`
+	OverallScore    int             `json:"overallScore"`
+	Grade           string          `json:"grade"`
+	Dimensions      []HardeningDim  `json:"dimensions"`
+	TopRisks        []HardeningRisk `json:"topRisks"`
+	ByNamespace     []HardeningNS   `json:"byNamespace"`
+	ComplianceMap   map[string]int  `json:"complianceMap"` // framework -> score
+	Recommendations []string        `json:"recommendations"`
 }
 
 type HardeningDim struct {
@@ -40,12 +40,12 @@ type HardeningDim struct {
 }
 
 type HardeningRisk struct {
-	Workload   string `json:"workload"`
-	Namespace  string `json:"namespace"`
-	Category   string `json:"category"`
-	Severity   string `json:"severity"`
-	Finding    string `json:"finding"`
-	FixAction  string `json:"fixAction"`
+	Workload  string `json:"workload"`
+	Namespace string `json:"namespace"`
+	Category  string `json:"category"`
+	Severity  string `json:"severity"`
+	Finding   string `json:"finding"`
+	FixAction string `json:"fixAction"`
 }
 
 type HardeningNS struct {
@@ -92,7 +92,7 @@ func (s *Server) handleHardeningScore(w http.ResponseWriter, r *http.Request) {
 				allRisks = append(allRisks, HardeningRisk{
 					Workload: d.Name, Namespace: d.Namespace,
 					Category: "PSS", Severity: "medium",
-					Finding: "容器缺少 securityContext",
+					Finding:   "容器缺少 securityContext",
 					FixAction: "添加 securityContext.runAsNonRoot: true",
 				})
 				continue
@@ -103,7 +103,7 @@ func (s *Server) handleHardeningScore(w http.ResponseWriter, r *http.Request) {
 				allRisks = append(allRisks, HardeningRisk{
 					Workload: d.Name, Namespace: d.Namespace,
 					Category: "PSS", Severity: "critical",
-					Finding: "特权容器运行",
+					Finding:   "特权容器运行",
 					FixAction: "设置 privileged: false",
 				})
 			}
@@ -113,7 +113,7 @@ func (s *Server) handleHardeningScore(w http.ResponseWriter, r *http.Request) {
 				allRisks = append(allRisks, HardeningRisk{
 					Workload: d.Name, Namespace: d.Namespace,
 					Category: "PSS", Severity: "medium",
-					Finding: "以 root 用户运行",
+					Finding:   "以 root 用户运行",
 					FixAction: "设置 runAsNonRoot: true",
 				})
 			}
@@ -160,7 +160,7 @@ func (s *Server) handleHardeningScore(w http.ResponseWriter, r *http.Request) {
 			allRisks = append(allRisks, HardeningRisk{
 				Workload: "*", Namespace: "*",
 				Category: "Network", Severity: "high",
-				Finding: fmt.Sprintf("仅 %d/%d 命名空间有网络策略", nsNetpolCoverage, nsCount),
+				Finding:   fmt.Sprintf("仅 %d/%d 命名空间有网络策略", nsNetpolCoverage, nsCount),
 				FixAction: "为所有命名空间添加默认拒绝网络策略",
 			})
 		}
@@ -192,7 +192,7 @@ func (s *Server) handleHardeningScore(w http.ResponseWriter, r *http.Request) {
 					allRisks = append(allRisks, HardeningRisk{
 						Workload: d.Name, Namespace: d.Namespace,
 						Category: "Secrets", Severity: "high",
-						Finding: fmt.Sprintf("环境变量 %s 包含明文敏感信息", env.Name),
+						Finding:   fmt.Sprintf("环境变量 %s 包含明文敏感信息", env.Name),
 						FixAction: "使用 SecretKeyRef 引用 Kubernetes Secret",
 					})
 				}
@@ -229,7 +229,7 @@ func (s *Server) handleHardeningScore(w http.ResponseWriter, r *http.Request) {
 		allRisks = append(allRisks, HardeningRisk{
 			Workload: "*", Namespace: "*",
 			Category: "RBAC", Severity: "medium",
-			Finding: fmt.Sprintf("%d 个 cluster-admin 角色绑定，存在权限过大的风险", clusterAdminBindings),
+			Finding:   fmt.Sprintf("%d 个 cluster-admin 角色绑定，存在权限过大的风险", clusterAdminBindings),
 			FixAction: "使用最小权限原则，以 namespace-scoped 角色替代",
 		})
 	}
@@ -272,7 +272,7 @@ func (s *Server) handleHardeningScore(w http.ResponseWriter, r *http.Request) {
 			allRisks = append(allRisks, HardeningRisk{
 				Workload: "*", Namespace: "*",
 				Category: "Admission", Severity: "high",
-				Finding: fmt.Sprintf("仅 %.0f%% 命名空间启用了 Pod Security Admission", psPct),
+				Finding:   fmt.Sprintf("仅 %.0f%% 命名空间启用了 Pod Security Admission", psPct),
 				FixAction: "为所有命名空间设置 pod-security.kubernetes.io/enforce=restricted",
 			})
 		}
@@ -297,11 +297,11 @@ func (s *Server) handleHardeningScore(w http.ResponseWriter, r *http.Request) {
 	if len(pods.Items) > 0 && latestCount > 5 {
 		imageScore -= 20
 		allRisks = append(allRisks, HardeningRisk{
-				Workload: "*", Namespace: "*",
-				Category: "Image", Severity: "medium",
-				Finding: fmt.Sprintf("%d 个容器使用 :latest 或无标签镜像", latestCount),
-				FixAction: "使用固定版本标签或 digest 引用",
-			})
+			Workload: "*", Namespace: "*",
+			Category: "Image", Severity: "medium",
+			Finding:   fmt.Sprintf("%d 个容器使用 :latest 或无标签镜像", latestCount),
+			FixAction: "使用固定版本标签或 digest 引用",
+		})
 	}
 	if imageScore < 0 {
 		imageScore = 0

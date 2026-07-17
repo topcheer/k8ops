@@ -15,25 +15,25 @@ import (
 // scaling events) and correlates them with health signals to identify change-induced
 // degradation. Provides blast radius analysis for each change.
 type ChangeIntelResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         ChangeIntelSummary  `json:"summary"`
-	RecentChanges   []RecentChange      `json:"recentChanges"`
-	RiskyChanges    []RiskyChange       `json:"riskyChanges"`
-	ByHour          []HourlyChangeRate  `json:"changeVelocity"`
-	ChangeFreeze    ChangeFreezeStatus  `json:"changeFreeze"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time          `json:"scannedAt"`
+	Summary         ChangeIntelSummary `json:"summary"`
+	RecentChanges   []RecentChange     `json:"recentChanges"`
+	RiskyChanges    []RiskyChange      `json:"riskyChanges"`
+	ByHour          []HourlyChangeRate `json:"changeVelocity"`
+	ChangeFreeze    ChangeFreezeStatus `json:"changeFreeze"`
+	Recommendations []string           `json:"recommendations"`
 }
 
 // ChangeIntelSummary aggregates change statistics.
 type ChangeIntelSummary struct {
-	TotalChanges      int     `json:"totalChanges"`      // changes in last 24h
-	DeploymentChanges int     `json:"deploymentChanges"`
-	ConfigChanges     int     `json:"configChanges"`
-	ScalingEvents     int     `json:"scalingEvents"`
-	RiskyChangeCount  int     `json:"riskyChangeCount"`  // changes correlated with health issues
-	AvgChangesPerHour float64 `json:"avgChangesPerHour"`
-	ChangeStability   float64 `json:"changeStability"`   // % of changes without issues
-	LargestBlastRadius int    `json:"largestBlastRadius"` // max pods affected by single change
+	TotalChanges       int     `json:"totalChanges"` // changes in last 24h
+	DeploymentChanges  int     `json:"deploymentChanges"`
+	ConfigChanges      int     `json:"configChanges"`
+	ScalingEvents      int     `json:"scalingEvents"`
+	RiskyChangeCount   int     `json:"riskyChangeCount"` // changes correlated with health issues
+	AvgChangesPerHour  float64 `json:"avgChangesPerHour"`
+	ChangeStability    float64 `json:"changeStability"`    // % of changes without issues
+	LargestBlastRadius int     `json:"largestBlastRadius"` // max pods affected by single change
 }
 
 // RecentChange describes one cluster change event.
@@ -51,28 +51,28 @@ type RecentChange struct {
 
 // RiskyChange is a change correlated with health degradation.
 type RiskyChange struct {
-	Name         string `json:"name"`
-	Namespace    string `json:"namespace"`
-	ChangeType   string `json:"changeType"`
-	Age          string `json:"age"`
-	BlastRadius  int    `json:"blastRadius"`
-	Issue        string `json:"issue"`
-	Severity     string `json:"severity"`
+	Name        string `json:"name"`
+	Namespace   string `json:"namespace"`
+	ChangeType  string `json:"changeType"`
+	Age         string `json:"age"`
+	BlastRadius int    `json:"blastRadius"`
+	Issue       string `json:"issue"`
+	Severity    string `json:"severity"`
 }
 
 // HourlyChangeRate shows change velocity over 24 hours.
 type HourlyChangeRate struct {
-	Hour       string `json:"hour"`       // HH:00
-	HourOffset int    `json:"hourOffset"` // -23 to 0
-	ChangeCount int   `json:"changeCount"`
+	Hour        string `json:"hour"`       // HH:00
+	HourOffset  int    `json:"hourOffset"` // -23 to 0
+	ChangeCount int    `json:"changeCount"`
 }
 
 // ChangeFreezeStatus indicates if a change freeze should be active.
 type ChangeFreezeStatus struct {
-	Recommended     bool   `json:"recommended"`
-	Reason          string `json:"reason"`
-	Window          string `json:"window"` // e.g., "next 2 hours"
-	RiskLevel       string `json:"riskLevel"`
+	Recommended bool   `json:"recommended"`
+	Reason      string `json:"reason"`
+	Window      string `json:"window"` // e.g., "next 2 hours"
+	RiskLevel   string `json:"riskLevel"`
 }
 
 // handleChangeIntel provides change intelligence & blast radius analysis.

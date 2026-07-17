@@ -15,53 +15,53 @@ import (
 // DependencyResilienceResult analyzes service-to-service dependency resilience,
 // identifying critical paths, cascade failure risks, and missing circuit breakers.
 type DependencyResilienceResult struct {
-	ScannedAt        time.Time          `json:"scannedAt"`
-	Summary          DepResSummary      `json:"summary"`
-	CriticalPaths    []CriticalPath     `json:"criticalPaths"`
-	ResilienceGaps   []ResilienceGap    `json:"resilienceGaps"`
-	ByNamespace      []DepResNS         `json:"byNamespace"`
-	ResilienceScore  int                `json:"resilienceScore"`
-	Grade            string             `json:"grade"`
-	Recommendations  []string           `json:"recommendations"`
+	ScannedAt       time.Time       `json:"scannedAt"`
+	Summary         DepResSummary   `json:"summary"`
+	CriticalPaths   []CriticalPath  `json:"criticalPaths"`
+	ResilienceGaps  []ResilienceGap `json:"resilienceGaps"`
+	ByNamespace     []DepResNS      `json:"byNamespace"`
+	ResilienceScore int             `json:"resilienceScore"`
+	Grade           string          `json:"grade"`
+	Recommendations []string        `json:"recommendations"`
 }
 
 // DepResSummary aggregates dependency resilience statistics.
 type DepResSummary struct {
-	TotalServices     int `json:"totalServices"`
+	TotalServices         int `json:"totalServices"`
 	ServicesWithSelectors int `json:"servicesWithSelectors"`
-	SinglePodServices int `json:"singlePodServices"` // services pointing to single pod
-	NoPDBServices     int `json:"noPDBServices"`     // services without PDB protection
-	CrossNSServices   int `json:"crossNSServices"`   // services referenced cross-namespace
-	OrphanedServices  int `json:"orphanedServices"`  // no backing pods
-	MultiBackendSvc   int `json:"multiBackendSvc"`   // service with multiple endpoints
-	StaleEndpoints    int `json:"staleEndpoints"`    // endpoints not ready
+	SinglePodServices     int `json:"singlePodServices"` // services pointing to single pod
+	NoPDBServices         int `json:"noPDBServices"`     // services without PDB protection
+	CrossNSServices       int `json:"crossNSServices"`   // services referenced cross-namespace
+	OrphanedServices      int `json:"orphanedServices"`  // no backing pods
+	MultiBackendSvc       int `json:"multiBackendSvc"`   // service with multiple endpoints
+	StaleEndpoints        int `json:"staleEndpoints"`    // endpoints not ready
 }
 
 // CriticalPath identifies a high-risk dependency chain.
 type CriticalPath struct {
-	Source      string `json:"source"`
-	Target      string `json:"target"`
-	Type        string `json:"type"` // ingress->svc, svc->svc
-	RiskLevel   string `json:"riskLevel"`
-	Reason      string `json:"reason"`
+	Source    string `json:"source"`
+	Target    string `json:"target"`
+	Type      string `json:"type"` // ingress->svc, svc->svc
+	RiskLevel string `json:"riskLevel"`
+	Reason    string `json:"reason"`
 }
 
 // ResilienceGap identifies missing resilience patterns.
 type ResilienceGap struct {
-	Service    string `json:"service"`
-	Namespace  string `json:"namespace"`
-	GapType    string `json:"gapType"` // no-pdb, single-pod, no-probe, orphaned
-	Severity   string `json:"severity"`
-	Impact     string `json:"impact"`
+	Service   string `json:"service"`
+	Namespace string `json:"namespace"`
+	GapType   string `json:"gapType"` // no-pdb, single-pod, no-probe, orphaned
+	Severity  string `json:"severity"`
+	Impact    string `json:"impact"`
 }
 
 // DepResNS shows per-namespace dependency health.
 type DepResNS struct {
-	Namespace      string  `json:"namespace"`
-	TotalServices  int     `json:"totalServices"`
-	Gaps           int     `json:"gaps"`
-	CriticalPaths  int     `json:"criticalPaths"`
-	ResiliencePct  float64 `json:"resiliencePct"`
+	Namespace     string  `json:"namespace"`
+	TotalServices int     `json:"totalServices"`
+	Gaps          int     `json:"gaps"`
+	CriticalPaths int     `json:"criticalPaths"`
+	ResiliencePct float64 `json:"resiliencePct"`
 }
 
 // handleDependencyResilience provides service dependency resilience analysis.
@@ -84,9 +84,9 @@ func (s *Server) handleDependencyResilience(w http.ResponseWriter, r *http.Reque
 
 	// Build endpoint map
 	type epInfo struct {
-		readyCount   int
+		readyCount    int
 		notReadyCount int
-		podNames     map[string]bool
+		podNames      map[string]bool
 	}
 	epMap := make(map[string]*epInfo)
 	for _, ep := range endpoints.Items {
@@ -189,11 +189,11 @@ func (s *Server) handleDependencyResilience(w http.ResponseWriter, r *http.Reque
 			result.Summary.CrossNSServices++
 			extName := svc.Spec.ExternalName
 			result.CriticalPaths = append(result.CriticalPaths, CriticalPath{
-				Source: svc.Namespace + "/" + svc.Name,
-				Target: extName,
-				Type: "external-name",
+				Source:    svc.Namespace + "/" + svc.Name,
+				Target:    extName,
+				Type:      "external-name",
 				RiskLevel: "medium",
-				Reason: "ExternalName service — external dependency not controlled by Kubernetes",
+				Reason:    "ExternalName service — external dependency not controlled by Kubernetes",
 			})
 			nsd.critical++
 		}
@@ -223,11 +223,11 @@ func (s *Server) handleDependencyResilience(w http.ResponseWriter, r *http.Reque
 				ep := epMap[svcKey]
 				if ep == nil || ep.readyCount == 0 {
 					result.CriticalPaths = append(result.CriticalPaths, CriticalPath{
-						Source: fmt.Sprintf("ingress/%s", ing.Name),
-						Target: svcKey,
-						Type:   "ingress-to-service",
+						Source:    fmt.Sprintf("ingress/%s", ing.Name),
+						Target:    svcKey,
+						Type:      "ingress-to-service",
 						RiskLevel: "critical",
-						Reason: "Ingress routes to service with no ready endpoints",
+						Reason:    "Ingress routes to service with no ready endpoints",
 					})
 					if nsd, ok := nsStats[ing.Namespace]; ok {
 						nsd.critical++

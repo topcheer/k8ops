@@ -25,7 +25,7 @@ func TestDeployImpactSingleReplica(t *testing.T) {
 				Selector: &metav1.LabelSelector{MatchLabels: map[string]string{"app": "single"}},
 				Template: corev1.PodTemplateSpec{
 					ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "single"}},
-					Spec: corev1.PodSpec{Containers: []corev1.Container{{Name: "c", Image: "app:v1"}}},
+					Spec:       corev1.PodSpec{Containers: []corev1.Container{{Name: "c", Image: "app:v1"}}},
 				},
 			},
 			Status: appsv1.DeploymentStatus{Replicas: 1, AvailableReplicas: 1},
@@ -137,7 +137,7 @@ func TestDeployImpactWithDependents(t *testing.T) {
 				Selector: &metav1.LabelSelector{MatchLabels: map[string]string{"app": "backend"}},
 				Template: corev1.PodTemplateSpec{
 					ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "backend"}},
-					Spec: corev1.PodSpec{Containers: []corev1.Container{{Name: "c", Image: "app:v1"}}},
+					Spec:       corev1.PodSpec{Containers: []corev1.Container{{Name: "c", Image: "app:v1"}}},
 				},
 			},
 			Status: appsv1.DeploymentStatus{Replicas: 1, AvailableReplicas: 1},

@@ -12,24 +12,24 @@ import (
 
 // StorageOrphanResult analyzes orphaned PVCs, unused PVs, storage class waste.
 type StorageOrphanResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
+	ScannedAt       time.Time            `json:"scannedAt"`
 	Summary         StorageOrphanSummary `json:"summary"`
-	OrphanPVCs      []OrphanPVCInfo     `json:"orphanPVCs"`
-	WasteEstimate   float64             `json:"wasteEstimate"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	OrphanPVCs      []OrphanPVCInfo      `json:"orphanPVCs"`
+	WasteEstimate   float64              `json:"wasteEstimate"`
+	HealthScore     int                  `json:"healthScore"`
+	Grade           string               `json:"grade"`
+	Recommendations []string             `json:"recommendations"`
 }
 
 type StorageOrphanSummary struct {
-	TotalPVCs       int     `json:"totalPVCs"`
-	BoundPVCs       int     `json:"boundPVCs"`
-	PendingPVCs     int     `json:"pendingPVCs"`
-	OrphanedPVCs    int     `json:"orphanedPVCs"`
-	TotalPVCGB      float64 `json:"totalPVCGB"`
-	OrphanGB        float64 `json:"orphanGB"`
-	StorageClasses  int     `json:"storageClasses"`
-	Snapshots       int     `json:"snapshots"`
+	TotalPVCs      int     `json:"totalPVCs"`
+	BoundPVCs      int     `json:"boundPVCs"`
+	PendingPVCs    int     `json:"pendingPVCs"`
+	OrphanedPVCs   int     `json:"orphanedPVCs"`
+	TotalPVCGB     float64 `json:"totalPVCGB"`
+	OrphanGB       float64 `json:"orphanGB"`
+	StorageClasses int     `json:"storageClasses"`
+	Snapshots      int     `json:"snapshots"`
 }
 
 type OrphanPVCInfo struct {
@@ -89,7 +89,9 @@ func (s *Server) handleStorageOrphan(w http.ResponseWriter, r *http.Request) {
 				result.Summary.OrphanGB += sizeGB
 				ageDays := int(now.Sub(pvc.CreationTimestamp.Time).Hours() / 24)
 				severity := "medium"
-				if ageDays > 90 { severity = "high" }
+				if ageDays > 90 {
+					severity = "high"
+				}
 				result.OrphanPVCs = append(result.OrphanPVCs, OrphanPVCInfo{
 					Name: pvc.Name, Namespace: pvc.Namespace, SizeGB: sizeGB,
 					Status: "orphaned", Age: fmt.Sprintf("%dd", ageDays),
@@ -116,7 +118,9 @@ func (s *Server) handleStorageOrphan(w http.ResponseWriter, r *http.Request) {
 	}
 	score -= int(orphanRatio * 60)
 	score -= result.Summary.PendingPVCs * 5
-	if score < 0 { score = 0 }
+	if score < 0 {
+		score = 0
+	}
 	result.HealthScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.HealthScore)
 
@@ -126,9 +130,15 @@ func (s *Server) handleStorageOrphan(w http.ResponseWriter, r *http.Request) {
 
 	var recs []string
 	recs = append(recs, fmt.Sprintf("Storage orphan: %d/100 (grade %s) — %d PVCs, %d orphaned (%.1f GB), $%.2f/mo waste", result.HealthScore, result.Grade, result.Summary.TotalPVCs, result.Summary.OrphanedPVCs, result.Summary.OrphanGB, result.WasteEstimate))
-	if result.Summary.OrphanedPVCs > 0 { recs = append(recs, fmt.Sprintf("%d orphaned PVCs — delete or reattach to workloads", result.Summary.OrphanedPVCs)) }
-	if result.Summary.PendingPVCs > 0 { recs = append(recs, fmt.Sprintf("%d pending PVCs — check storage class provisioning", result.Summary.PendingPVCs)) }
-	if len(recs) == 1 { recs = append(recs, "Storage utilization is efficient — no orphaned PVCs") }
+	if result.Summary.OrphanedPVCs > 0 {
+		recs = append(recs, fmt.Sprintf("%d orphaned PVCs — delete or reattach to workloads", result.Summary.OrphanedPVCs))
+	}
+	if result.Summary.PendingPVCs > 0 {
+		recs = append(recs, fmt.Sprintf("%d pending PVCs — check storage class provisioning", result.Summary.PendingPVCs))
+	}
+	if len(recs) == 1 {
+		recs = append(recs, "Storage utilization is efficient — no orphaned PVCs")
+	}
 	result.Recommendations = recs
 
 	writeJSON(w, result)

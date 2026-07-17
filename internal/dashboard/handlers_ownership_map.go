@@ -16,55 +16,55 @@ import (
 // It maps which teams own which workloads, detects orphaned resources lacking ownership
 // metadata, and provides accountability scoring per namespace.
 type OwnershipMapResult struct {
-	ScannedAt        time.Time           `json:"scannedAt"`
-	Summary          OwnershipSummary    `json:"summary"`
-	ByTeam           []TeamOwnership     `json:"byTeam"`
+	ScannedAt         time.Time          `json:"scannedAt"`
+	Summary           OwnershipSummary   `json:"summary"`
+	ByTeam            []TeamOwnership    `json:"byTeam"`
 	OrphanedWorkloads []OrphanedWorkload `json:"orphanedWorkloads"`
-	ByNamespace      []NSOwnership       `json:"byNamespace"`
-	LabelCoverage    LabelCoverage       `json:"labelCoverage"`
-	Recommendations  []string            `json:"recommendations"`
+	ByNamespace       []NSOwnership      `json:"byNamespace"`
+	LabelCoverage     LabelCoverage      `json:"labelCoverage"`
+	Recommendations   []string           `json:"recommendations"`
 }
 
 // OwnershipSummary aggregates ownership statistics.
 type OwnershipSummary struct {
-	TotalWorkloads   int     `json:"totalWorkloads"`
-	WithOwnerLabel   int     `json:"withOwnerLabel"`   // has team/owner/app label
-	WithoutOwnerLabel int    `json:"withoutOwnerLabel"` // orphaned (no ownership metadata)
-	WithContactLabel int     `json:"withContactLabel"` // has slack/email/contact annotation
-	UniqueTeams      int     `json:"uniqueTeams"`
-	OrphanedNSCount  int     `json:"orphanedNamespaceCount"` // namespaces where >50% workloads lack ownership
-	CoveragePct      float64 `json:"coveragePct"`            // % with ownership
-	AccountabilityScore int  `json:"accountabilityScore"`    // 0-100
+	TotalWorkloads      int     `json:"totalWorkloads"`
+	WithOwnerLabel      int     `json:"withOwnerLabel"`    // has team/owner/app label
+	WithoutOwnerLabel   int     `json:"withoutOwnerLabel"` // orphaned (no ownership metadata)
+	WithContactLabel    int     `json:"withContactLabel"`  // has slack/email/contact annotation
+	UniqueTeams         int     `json:"uniqueTeams"`
+	OrphanedNSCount     int     `json:"orphanedNamespaceCount"` // namespaces where >50% workloads lack ownership
+	CoveragePct         float64 `json:"coveragePct"`            // % with ownership
+	AccountabilityScore int     `json:"accountabilityScore"`    // 0-100
 }
 
 // TeamOwnership shows workloads owned by one team.
 type TeamOwnership struct {
-	Team         string   `json:"team"`
-	WorkloadCount int     `json:"workloadCount"`
-	Namespaces   []string `json:"namespaces"`
-	Workloads    []string `json:"workloads,omitempty"` // sample workload names
-	RiskLevel    string   `json:"riskLevel"`           // based on count concentration
+	Team          string   `json:"team"`
+	WorkloadCount int      `json:"workloadCount"`
+	Namespaces    []string `json:"namespaces"`
+	Workloads     []string `json:"workloads,omitempty"` // sample workload names
+	RiskLevel     string   `json:"riskLevel"`           // based on count concentration
 }
 
 // OrphanedWorkload identifies a workload without ownership metadata.
 type OrphanedWorkload struct {
-	Name      string `json:"name"`
-	Namespace string `json:"namespace"`
-	Kind      string `json:"kind"`
+	Name      string            `json:"name"`
+	Namespace string            `json:"namespace"`
+	Kind      string            `json:"kind"`
 	Labels    map[string]string `json:"labels"`
-	Age       string `json:"age"`
-	Replicas  int32  `json:"replicas"`
-	Severity  string `json:"severity"`
+	Age       string            `json:"age"`
+	Replicas  int32             `json:"replicas"`
+	Severity  string            `json:"severity"`
 }
 
 // NSOwnership shows ownership metadata per namespace.
 type NSOwnership struct {
-	Namespace       string  `json:"namespace"`
-	TotalWorkloads  int     `json:"totalWorkloads"`
-	WithOwner       int     `json:"withOwner"`
-	CoveragePct     float64 `json:"coveragePct"`
-	HasNSTeamLabel  bool    `json:"hasNSTeamLabel"`
-	Status          string  `json:"status"` // healthy, partial, orphaned
+	Namespace      string  `json:"namespace"`
+	TotalWorkloads int     `json:"totalWorkloads"`
+	WithOwner      int     `json:"withOwner"`
+	CoveragePct    float64 `json:"coveragePct"`
+	HasNSTeamLabel bool    `json:"hasNSTeamLabel"`
+	Status         string  `json:"status"` // healthy, partial, orphaned
 }
 
 // LabelCoverage analyzes metadata label adoption across key labels.

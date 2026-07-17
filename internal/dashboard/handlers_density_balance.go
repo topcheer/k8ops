@@ -15,15 +15,15 @@ import (
 // under-utilized nodes, checks anti-affinity effectiveness, and recommends
 // rebalancing actions for optimal fault tolerance.
 type DensityBalanceResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
+	ScannedAt       time.Time             `json:"scannedAt"`
 	Summary         DensityBalanceSummary `json:"summary"`
-	Nodes           []DensityNode       `json:"nodes"`
-	Imbalance       ImbalanceInfo       `json:"imbalance"`
-	RebalancingOps []RebalancingOp     `json:"rebalancingOps"`
-	ByNamespace     []DensityNSStat     `json:"byNamespace"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	Nodes           []DensityNode         `json:"nodes"`
+	Imbalance       ImbalanceInfo         `json:"imbalance"`
+	RebalancingOps  []RebalancingOp       `json:"rebalancingOps"`
+	ByNamespace     []DensityNSStat       `json:"byNamespace"`
+	HealthScore     int                   `json:"healthScore"`
+	Grade           string                `json:"grade"`
+	Recommendations []string              `json:"recommendations"`
 }
 
 // DensityBalanceSummary aggregates pod density statistics.
@@ -56,17 +56,17 @@ type DensityNode struct {
 
 // ImbalanceInfo describes cluster-wide distribution imbalance.
 type ImbalanceInfo struct {
-	PodDistribution string             `json:"podDistribution"` // balanced, imbalanced, severely-imbalanced
-	CpuDistribution string             `json:"cpuDistribution"`
-	MemDistribution string             `json:"memDistribution"`
-	ZoneBalance     string             `json:"zoneBalance"`
-	MaxMinRatio     float64            `json:"maxMinRatio"` // max pods / min pods across nodes
-	GiniCoefficient float64            `json:"giniCoefficient"`
+	PodDistribution string  `json:"podDistribution"` // balanced, imbalanced, severely-imbalanced
+	CpuDistribution string  `json:"cpuDistribution"`
+	MemDistribution string  `json:"memDistribution"`
+	ZoneBalance     string  `json:"zoneBalance"`
+	MaxMinRatio     float64 `json:"maxMinRatio"` // max pods / min pods across nodes
+	GiniCoefficient float64 `json:"giniCoefficient"`
 }
 
 // RebalancingOp describes a recommended rebalancing action.
 type RebalancingOp struct {
-	Type     string `json:"type"`     // evacuate, spread, consolidate
+	Type     string `json:"type"` // evacuate, spread, consolidate
 	Node     string `json:"node"`
 	Detail   string `json:"detail"`
 	PodCount int    `json:"podCount"`
@@ -251,7 +251,7 @@ func (s *Server) handleDensityBalance(w http.ResponseWriter, r *http.Request) {
 			if excessPods > 0 {
 				result.RebalancingOps = append(result.RebalancingOps, RebalancingOp{
 					Type: "spread", Node: n.Name,
-					Detail: fmt.Sprintf("%s has %d pods (%.0f%% density) — move %d pod(s) to other nodes", n.Name, n.PodCount, n.DensityPct, excessPods),
+					Detail:   fmt.Sprintf("%s has %d pods (%.0f%% density) — move %d pod(s) to other nodes", n.Name, n.PodCount, n.DensityPct, excessPods),
 					PodCount: excessPods, Priority: 1,
 				})
 			}
@@ -259,9 +259,9 @@ func (s *Server) handleDensityBalance(w http.ResponseWriter, r *http.Request) {
 		if n.IsUnderUsed {
 			result.RebalancingOps = append(result.RebalancingOps, RebalancingOp{
 				Type: "consolidate", Node: n.Name,
-				Detail: fmt.Sprintf("%s has only %d pods (%.0f%% density) — consider cordoning and draining", n.Name, n.PodCount, n.DensityPct),
+				Detail:   fmt.Sprintf("%s has only %d pods (%.0f%% density) — consider cordoning and draining", n.Name, n.PodCount, n.DensityPct),
 				PodCount: n.PodCount, Priority: 2,
-				})
+			})
 		}
 	}
 
@@ -348,7 +348,7 @@ func computeGini(values []float64) float64 {
 		return 0
 	}
 	n := float64(len(sorted))
-	return (2*sum) / (n * total) - (n+1)/n
+	return (2*sum)/(n*total) - (n+1)/n
 }
 
 // computeBalanceScore computes pod distribution balance score.

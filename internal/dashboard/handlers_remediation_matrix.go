@@ -15,41 +15,41 @@ import (
 // It collects security findings from the live cluster, scores them using CVSS-like methodology,
 // and prioritizes remediation by risk × effort.
 type RemediationMatrixResult struct {
-	ScannedAt      time.Time           `json:"scannedAt"`
-	Summary        RemediationSummary  `json:"summary"`
-	Findings       []RemediationFinding   `json:"findings"`
-	QuickWins      []RemediationFinding   `json:"quickWins"`     // high risk, low effort
-	StrategicFixes []RemediationFinding   `json:"strategicFixes"` // high risk, high effort
-	ByCategory     []CategoryRisk      `json:"byCategory"`
-	RemediationPlan []RemediationStep  `json:"remediationPlan"`
-	Recommendations []string           `json:"recommendations"`
+	ScannedAt       time.Time            `json:"scannedAt"`
+	Summary         RemediationSummary   `json:"summary"`
+	Findings        []RemediationFinding `json:"findings"`
+	QuickWins       []RemediationFinding `json:"quickWins"`      // high risk, low effort
+	StrategicFixes  []RemediationFinding `json:"strategicFixes"` // high risk, high effort
+	ByCategory      []CategoryRisk       `json:"byCategory"`
+	RemediationPlan []RemediationStep    `json:"remediationPlan"`
+	Recommendations []string             `json:"recommendations"`
 }
 
 // RemediationSummary aggregates findings statistics.
 type RemediationSummary struct {
-	TotalFindings   int     `json:"totalFindings"`
-	CriticalCount   int     `json:"criticalCount"`
-	HighCount       int     `json:"highCount"`
-	MediumCount     int     `json:"mediumCount"`
-	LowCount        int     `json:"lowCount"`
-	QuickWinCount   int     `json:"quickWinCount"`   // fixable in <1 hour
-	TotalRiskScore  int     `json:"totalRiskScore"`  // sum of all finding risk scores
-	AvgRiskScore    float64 `json:"avgRiskScore"`
+	TotalFindings         int     `json:"totalFindings"`
+	CriticalCount         int     `json:"criticalCount"`
+	HighCount             int     `json:"highCount"`
+	MediumCount           int     `json:"mediumCount"`
+	LowCount              int     `json:"lowCount"`
+	QuickWinCount         int     `json:"quickWinCount"`  // fixable in <1 hour
+	TotalRiskScore        int     `json:"totalRiskScore"` // sum of all finding risk scores
+	AvgRiskScore          float64 `json:"avgRiskScore"`
 	EstimatedFixTimeHours float64 `json:"estimatedFixTimeHours"` // total effort to fix all
 }
 
 // RemediationFinding is a single security issue with risk scoring.
 type RemediationFinding struct {
-	ID           string  `json:"id"`
-	Category     string  `json:"category"`     // pod-security, rbac, network, secrets, image, admission
-	Title        string  `json:"title"`
-	Severity     string  `json:"severity"`     // critical, high, medium, low
-	RiskScore    int     `json:"riskScore"`    // 0-100, CVSS-like
-	Effort       string  `json:"effort"`       // quick (≤1h), moderate (1-4h), strategic (>4h)
-	Resource     string  `json:"resource"`     // affected resource
-	Namespace    string  `json:"namespace,omitempty"`
-	Detail       string  `json:"detail"`
-	FixCommand   string  `json:"fixCommand,omitempty"` // kubectl command or config change
+	ID         string `json:"id"`
+	Category   string `json:"category"` // pod-security, rbac, network, secrets, image, admission
+	Title      string `json:"title"`
+	Severity   string `json:"severity"`  // critical, high, medium, low
+	RiskScore  int    `json:"riskScore"` // 0-100, CVSS-like
+	Effort     string `json:"effort"`    // quick (≤1h), moderate (1-4h), strategic (>4h)
+	Resource   string `json:"resource"`  // affected resource
+	Namespace  string `json:"namespace,omitempty"`
+	Detail     string `json:"detail"`
+	FixCommand string `json:"fixCommand,omitempty"` // kubectl command or config change
 }
 
 // CategoryRisk aggregates risk by category.
@@ -63,11 +63,11 @@ type CategoryRisk struct {
 
 // RemediationStep is an ordered action in the remediation plan.
 type RemediationStep struct {
-	Priority    int    `json:"priority"`
-	FindingID   string `json:"findingId"`
-	Action      string `json:"action"`
-	Impact      string `json:"impact"`
-	Effort      string `json:"effort"`
+	Priority  int    `json:"priority"`
+	FindingID string `json:"findingId"`
+	Action    string `json:"action"`
+	Impact    string `json:"impact"`
+	Effort    string `json:"effort"`
 }
 
 // handleRemediationMatrix provides the security remediation priority matrix.
@@ -120,15 +120,15 @@ func (s *Server) handleRemediationMatrix(w http.ResponseWriter, r *http.Request)
 			// Privileged container
 			if c.SecurityContext != nil && c.SecurityContext.Privileged != nil && *c.SecurityContext.Privileged {
 				result.Findings = append(result.Findings, RemediationFinding{
-					ID:        nextID(),
-					Category:  "pod-security",
-					Title:     "Privileged container detected",
-					Severity:  "critical",
-					RiskScore: 95,
-					Effort:    "quick",
-					Resource:  fmt.Sprintf("%s/%s (%s)", pod.Namespace, pod.Name, c.Name),
-					Namespace: pod.Namespace,
-					Detail:    "Container runs in privileged mode, granting full host access",
+					ID:         nextID(),
+					Category:   "pod-security",
+					Title:      "Privileged container detected",
+					Severity:   "critical",
+					RiskScore:  95,
+					Effort:     "quick",
+					Resource:   fmt.Sprintf("%s/%s (%s)", pod.Namespace, pod.Name, c.Name),
+					Namespace:  pod.Namespace,
+					Detail:     "Container runs in privileged mode, granting full host access",
 					FixCommand: fmt.Sprintf("kubectl set resources deployment %s -n %s --containers=%s  # Set privileged: false", pod.Name, pod.Namespace, c.Name),
 				})
 			}
@@ -137,15 +137,15 @@ func (s *Server) handleRemediationMatrix(w http.ResponseWriter, r *http.Request)
 			if c.SecurityContext == nil || c.SecurityContext.RunAsNonRoot == nil || !*c.SecurityContext.RunAsNonRoot {
 				if c.SecurityContext == nil || c.SecurityContext.RunAsUser == nil || *c.SecurityContext.RunAsUser == 0 {
 					result.Findings = append(result.Findings, RemediationFinding{
-						ID:        nextID(),
-						Category:  "pod-security",
-						Title:     "Container runs as root",
-						Severity:  "high",
-						RiskScore: 70,
-						Effort:    "quick",
-						Resource:  fmt.Sprintf("%s/%s (%s)", pod.Namespace, pod.Name, c.Name),
-						Namespace: pod.Namespace,
-						Detail:    "Container runs as UID 0 or without runAsNonRoot=true",
+						ID:         nextID(),
+						Category:   "pod-security",
+						Title:      "Container runs as root",
+						Severity:   "high",
+						RiskScore:  70,
+						Effort:     "quick",
+						Resource:   fmt.Sprintf("%s/%s (%s)", pod.Namespace, pod.Name, c.Name),
+						Namespace:  pod.Namespace,
+						Detail:     "Container runs as UID 0 or without runAsNonRoot=true",
 						FixCommand: fmt.Sprintf("Add securityContext.runAsNonRoot: true and runAsUser: >0 to container %s", c.Name),
 					})
 				}
@@ -156,15 +156,15 @@ func (s *Server) handleRemediationMatrix(w http.ResponseWriter, r *http.Request)
 				for _, cap := range c.SecurityContext.Capabilities.Add {
 					if cap == "SYS_ADMIN" || cap == "NET_ADMIN" || cap == "DAC_OVERRIDE" || cap == "ALL" {
 						result.Findings = append(result.Findings, RemediationFinding{
-							ID:        nextID(),
-							Category:  "pod-security",
-							Title:     fmt.Sprintf("Dangerous capability %s granted", cap),
-							Severity:  "high",
-							RiskScore: 75,
-							Effort:    "quick",
-							Resource:  fmt.Sprintf("%s/%s (%s)", pod.Namespace, pod.Name, c.Name),
-							Namespace: pod.Namespace,
-							Detail:    fmt.Sprintf("Container has %s capability which can be used for container escape or privilege escalation", cap),
+							ID:         nextID(),
+							Category:   "pod-security",
+							Title:      fmt.Sprintf("Dangerous capability %s granted", cap),
+							Severity:   "high",
+							RiskScore:  75,
+							Effort:     "quick",
+							Resource:   fmt.Sprintf("%s/%s (%s)", pod.Namespace, pod.Name, c.Name),
+							Namespace:  pod.Namespace,
+							Detail:     fmt.Sprintf("Container has %s capability which can be used for container escape or privilege escalation", cap),
 							FixCommand: fmt.Sprintf("Remove %s from securityContext.capabilities.add", cap),
 						})
 					}
@@ -174,15 +174,15 @@ func (s *Server) handleRemediationMatrix(w http.ResponseWriter, r *http.Request)
 			// No resource limits
 			if c.Resources.Limits == nil || len(c.Resources.Limits) == 0 {
 				result.Findings = append(result.Findings, RemediationFinding{
-					ID:        nextID(),
-					Category:  "pod-security",
-					Title:     "Container without resource limits",
-					Severity:  "medium",
-					RiskScore: 40,
-					Effort:    "quick",
-					Resource:  fmt.Sprintf("%s/%s (%s)", pod.Namespace, pod.Name, c.Name),
-					Namespace: pod.Namespace,
-					Detail:    "No resource limits set — vulnerable to resource exhaustion DoS",
+					ID:         nextID(),
+					Category:   "pod-security",
+					Title:      "Container without resource limits",
+					Severity:   "medium",
+					RiskScore:  40,
+					Effort:     "quick",
+					Resource:   fmt.Sprintf("%s/%s (%s)", pod.Namespace, pod.Name, c.Name),
+					Namespace:  pod.Namespace,
+					Detail:     "No resource limits set — vulnerable to resource exhaustion DoS",
 					FixCommand: fmt.Sprintf("Add resources.limits to container %s", c.Name),
 				})
 			}
@@ -201,15 +201,15 @@ func (s *Server) handleRemediationMatrix(w http.ResponseWriter, r *http.Request)
 				nsList = append(nsList, "hostIPC")
 			}
 			result.Findings = append(result.Findings, RemediationFinding{
-				ID:        nextID(),
-				Category:  "pod-security",
-				Title:     fmt.Sprintf("Pod uses host namespaces: %s", strings.Join(nsList, ", ")),
-				Severity:  "high",
-				RiskScore: 72,
-				Effort:    "moderate",
-				Resource:  fmt.Sprintf("%s/%s", pod.Namespace, pod.Name),
-				Namespace: pod.Namespace,
-				Detail:    "Pod shares host network/PID/IPC namespace, increasing attack surface",
+				ID:         nextID(),
+				Category:   "pod-security",
+				Title:      fmt.Sprintf("Pod uses host namespaces: %s", strings.Join(nsList, ", ")),
+				Severity:   "high",
+				RiskScore:  72,
+				Effort:     "moderate",
+				Resource:   fmt.Sprintf("%s/%s", pod.Namespace, pod.Name),
+				Namespace:  pod.Namespace,
+				Detail:     "Pod shares host network/PID/IPC namespace, increasing attack surface",
 				FixCommand: fmt.Sprintf("Disable %s in pod spec for %s", strings.Join(nsList, ", "), pod.Name),
 			})
 		}
@@ -227,15 +227,15 @@ func (s *Server) handleRemediationMatrix(w http.ResponseWriter, r *http.Request)
 	}
 	for ns := range nsWithoutNetPol {
 		result.Findings = append(result.Findings, RemediationFinding{
-			ID:        nextID(),
-			Category:  "network",
-			Title:     "Namespace without NetworkPolicy (no traffic isolation)",
-			Severity:  "high",
-			RiskScore: 65,
-			Effort:    "moderate",
-			Resource:  fmt.Sprintf("namespace/%s", ns),
-			Namespace: ns,
-			Detail:    "No NetworkPolicy exists — all pods can communicate freely, lateral movement risk",
+			ID:         nextID(),
+			Category:   "network",
+			Title:      "Namespace without NetworkPolicy (no traffic isolation)",
+			Severity:   "high",
+			RiskScore:  65,
+			Effort:     "moderate",
+			Resource:   fmt.Sprintf("namespace/%s", ns),
+			Namespace:  ns,
+			Detail:     "No NetworkPolicy exists — all pods can communicate freely, lateral movement risk",
 			FixCommand: fmt.Sprintf("kubectl apply -f default-deny.yaml -n %s  # Create default deny NetworkPolicy", ns),
 		})
 	}
@@ -247,15 +247,15 @@ func (s *Server) handleRemediationMatrix(w http.ResponseWriter, r *http.Request)
 		}
 		if svc.Spec.Type == corev1.ServiceTypeLoadBalancer || svc.Spec.Type == corev1.ServiceTypeNodePort {
 			result.Findings = append(result.Findings, RemediationFinding{
-				ID:        nextID(),
-				Category:  "network",
-				Title:     fmt.Sprintf("Externally exposed service (%s)", svc.Spec.Type),
-				Severity:  "medium",
-				RiskScore: 50,
-				Effort:    "moderate",
-				Resource:  fmt.Sprintf("%s/%s", svc.Namespace, svc.Name),
-				Namespace: svc.Namespace,
-				Detail:    fmt.Sprintf("Service type %s exposes workload to external traffic without network policy protection", svc.Spec.Type),
+				ID:         nextID(),
+				Category:   "network",
+				Title:      fmt.Sprintf("Externally exposed service (%s)", svc.Spec.Type),
+				Severity:   "medium",
+				RiskScore:  50,
+				Effort:     "moderate",
+				Resource:   fmt.Sprintf("%s/%s", svc.Namespace, svc.Name),
+				Namespace:  svc.Namespace,
+				Detail:     fmt.Sprintf("Service type %s exposes workload to external traffic without network policy protection", svc.Spec.Type),
 				FixCommand: fmt.Sprintf("Consider Ingress with TLS or add NetworkPolicy for service %s", svc.Name),
 			})
 		}
@@ -279,15 +279,15 @@ func (s *Server) handleRemediationMatrix(w http.ResponseWriter, r *http.Request)
 			}
 			if !hasPods && sa.Name != "default" {
 				result.Findings = append(result.Findings, RemediationFinding{
-					ID:        nextID(),
-					Category:  "rbac",
-					Title:     "Unused ServiceAccount with automounted token",
-					Severity:  "medium",
-					RiskScore: 45,
-					Effort:    "quick",
-					Resource:  fmt.Sprintf("%s/%s", sa.Namespace, sa.Name),
-					Namespace: sa.Namespace,
-					Detail:    "ServiceAccount has no associated pods but automounts API tokens, creating unused credentials",
+					ID:         nextID(),
+					Category:   "rbac",
+					Title:      "Unused ServiceAccount with automounted token",
+					Severity:   "medium",
+					RiskScore:  45,
+					Effort:     "quick",
+					Resource:   fmt.Sprintf("%s/%s", sa.Namespace, sa.Name),
+					Namespace:  sa.Namespace,
+					Detail:     "ServiceAccount has no associated pods but automounts API tokens, creating unused credentials",
 					FixCommand: fmt.Sprintf("kubectl delete serviceaccount %s -n %s  # Or set automountServiceAccountToken: false", sa.Name, sa.Namespace),
 				})
 			}
@@ -307,15 +307,15 @@ func (s *Server) handleRemediationMatrix(w http.ResponseWriter, r *http.Request)
 				if !imageSet[img] {
 					imageSet[img] = true
 					result.Findings = append(result.Findings, RemediationFinding{
-						ID:        nextID(),
-						Category:  "image",
-						Title:     "Image uses mutable tag (latest or no tag)",
-						Severity:  "medium",
-						RiskScore: 42,
-						Effort:    "quick",
-						Resource:  img,
-						Namespace: pod.Namespace,
-						Detail:    "Using mutable tags like 'latest' makes deployments non-reproducible and vulnerable to supply chain attacks",
+						ID:         nextID(),
+						Category:   "image",
+						Title:      "Image uses mutable tag (latest or no tag)",
+						Severity:   "medium",
+						RiskScore:  42,
+						Effort:     "quick",
+						Resource:   img,
+						Namespace:  pod.Namespace,
+						Detail:     "Using mutable tags like 'latest' makes deployments non-reproducible and vulnerable to supply chain attacks",
 						FixCommand: fmt.Sprintf("Pin image to specific digest: %s@sha256:...", img),
 					})
 				}
@@ -340,15 +340,15 @@ func (s *Server) handleRemediationMatrix(w http.ResponseWriter, r *http.Request)
 		}
 		if !hasPSA {
 			result.Findings = append(result.Findings, RemediationFinding{
-				ID:        nextID(),
-				Category:  "admission",
-				Title:     "Namespace without Pod Security Admission labels",
-				Severity:  "medium",
-				RiskScore: 38,
-				Effort:    "quick",
-				Resource:  fmt.Sprintf("namespace/%s", ns.Name),
-				Namespace: ns.Name,
-				Detail:    "No Pod Security Admission labels — no policy enforcement for pod security standards",
+				ID:         nextID(),
+				Category:   "admission",
+				Title:      "Namespace without Pod Security Admission labels",
+				Severity:   "medium",
+				RiskScore:  38,
+				Effort:     "quick",
+				Resource:   fmt.Sprintf("namespace/%s", ns.Name),
+				Namespace:  ns.Name,
+				Detail:     "No Pod Security Admission labels — no policy enforcement for pod security standards",
 				FixCommand: fmt.Sprintf("kubectl label namespace %s pod-security.kubernetes.io/enforce=restricted", ns.Name),
 			})
 		}

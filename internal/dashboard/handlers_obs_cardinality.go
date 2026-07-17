@@ -14,55 +14,55 @@ import (
 // Prometheus metric label explosion, log volume distribution, trace span volume,
 // and observability data cost optimization opportunities.
 type ObsCardinalityResult struct {
-	ScannedAt       time.Time            `json:"scannedAt"`
-	Summary         ObsCardSummary       `json:"summary"`
-	CardinalityRisks []CardinalityRisk   `json:"cardinalityRisks"`
-	LogVolumeByNS   []LogVolumeNS        `json:"logVolumeByNS"`
-	CollectorHealth []CollectorHealth    `json:"collectorHealth"`
-	RiskScore       int                  `json:"riskScore"`
-	Grade           string               `json:"grade"`
-	EstMonthlyCost  float64              `json:"estMonthlyCost"`
-	Recommendations []string             `json:"recommendations"`
+	ScannedAt        time.Time         `json:"scannedAt"`
+	Summary          ObsCardSummary    `json:"summary"`
+	CardinalityRisks []CardinalityRisk `json:"cardinalityRisks"`
+	LogVolumeByNS    []LogVolumeNS     `json:"logVolumeByNS"`
+	CollectorHealth  []CollectorHealth `json:"collectorHealth"`
+	RiskScore        int               `json:"riskScore"`
+	Grade            string            `json:"grade"`
+	EstMonthlyCost   float64           `json:"estMonthlyCost"`
+	Recommendations  []string          `json:"recommendations"`
 }
 
 type ObsCardSummary struct {
-	HasPrometheus      bool    `json:"hasPrometheus"`
-	HasFluentBit       bool    `json:"hasFluentBit"`
-	HasLoki            bool    `json:"hasLoki"`
-	HasJaeger          bool    `json:"hasJaeger"`
-	HasOTelCollector   bool    `json:"hasOTelCollector"`
-	CollectorPods      int     `json:"collectorPods"`
-	HighCardLabels     int     `json:"highCardLabels"`
-	TotalNamespaces    int     `json:"totalNamespaces"`
-	NSWithLogAgent     int     `json:"nsWithLogAgent"`
-	NSWithoutLogAgent  int     `json:"nsWithoutLogAgent"`
-	EstActiveSeries    int64   `json:"estActiveSeries"`
+	HasPrometheus     bool  `json:"hasPrometheus"`
+	HasFluentBit      bool  `json:"hasFluentBit"`
+	HasLoki           bool  `json:"hasLoki"`
+	HasJaeger         bool  `json:"hasJaeger"`
+	HasOTelCollector  bool  `json:"hasOTelCollector"`
+	CollectorPods     int   `json:"collectorPods"`
+	HighCardLabels    int   `json:"highCardLabels"`
+	TotalNamespaces   int   `json:"totalNamespaces"`
+	NSWithLogAgent    int   `json:"nsWithLogAgent"`
+	NSWithoutLogAgent int   `json:"nsWithoutLogAgent"`
+	EstActiveSeries   int64 `json:"estActiveSeries"`
 }
 
 type CardinalityRisk struct {
-	Source     string  `json:"source"`
-	Namespace  string  `json:"namespace"`
-	RiskType   string  `json:"riskType"`
-	Severity   string  `json:"severity"`
-	Impact     string  `json:"impact"`
-	Suggestion string  `json:"suggestion"`
+	Source     string `json:"source"`
+	Namespace  string `json:"namespace"`
+	RiskType   string `json:"riskType"`
+	Severity   string `json:"severity"`
+	Impact     string `json:"impact"`
+	Suggestion string `json:"suggestion"`
 }
 
 type LogVolumeNS struct {
-	Namespace    string `json:"namespace"`
-	PodCount     int    `json:"podCount"`
-	HasLogAgent  bool   `json:"hasLogAgent"`
-	EstVolumeMB  int64  `json:"estVolumeMB"`
-	Status       string `json:"status"`
+	Namespace   string `json:"namespace"`
+	PodCount    int    `json:"podCount"`
+	HasLogAgent bool   `json:"hasLogAgent"`
+	EstVolumeMB int64  `json:"estVolumeMB"`
+	Status      string `json:"status"`
 }
 
 type CollectorHealth struct {
-	Name       string `json:"name"`
-	Namespace  string `json:"namespace"`
-	Kind       string `json:"kind"`
-	Ready      bool   `json:"ready"`
-	Restarts   int    `json:"restarts"`
-	Status     string `json:"status"`
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+	Kind      string `json:"kind"`
+	Ready     bool   `json:"ready"`
+	Restarts  int    `json:"restarts"`
+	Status    string `json:"status"`
 }
 
 // handleObsCardinality analyzes observability data cardinality and volume.

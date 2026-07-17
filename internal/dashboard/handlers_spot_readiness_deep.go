@@ -14,29 +14,29 @@ import (
 // interruption handling, PDB coverage, node labels for spot,
 // and pod disruption budget adequacy for spot workloads.
 type SpotReadinessDeepResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         SpotDeepSummary     `json:"summary"`
-	SpotWorkloads   []SpotWorkload      `json:"spotWorkloads"`
-	DisruptionGaps  []DisruptionGap     `json:"disruptionGaps"`
-	ReadinessScore  int                 `json:"readinessScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time       `json:"scannedAt"`
+	Summary         SpotDeepSummary `json:"summary"`
+	SpotWorkloads   []SpotWorkload  `json:"spotWorkloads"`
+	DisruptionGaps  []DisruptionGap `json:"disruptionGaps"`
+	ReadinessScore  int             `json:"readinessScore"`
+	Grade           string          `json:"grade"`
+	Recommendations []string        `json:"recommendations"`
 }
 
 type SpotDeepSummary struct {
-	TotalNodes      int  `json:"totalNodes"`
-	SpotNodes       int  `json:"spotNodes"`
-	HasSpotLabel    bool `json:"hasSpotLabel"`
-	WorkloadsWithToleration int `json:"workloadsWithToleration"`
-	WorkloadsWithNodeSelector int `json:"workloadsWithNodeSelector"`
-	PDBCoverage     int  `json:"pdbCoverage"`
+	TotalNodes                int  `json:"totalNodes"`
+	SpotNodes                 int  `json:"spotNodes"`
+	HasSpotLabel              bool `json:"hasSpotLabel"`
+	WorkloadsWithToleration   int  `json:"workloadsWithToleration"`
+	WorkloadsWithNodeSelector int  `json:"workloadsWithNodeSelector"`
+	PDBCoverage               int  `json:"pdbCoverage"`
 }
 
 type SpotWorkload struct {
-	Name       string `json:"name"`
-	Namespace  string `json:"namespace"`
-	HasSpotToleration bool `json:"hasSpotToleration"`
-	HasNodeAffinity   bool `json:"hasNodeAffinity"`
+	Name              string `json:"name"`
+	Namespace         string `json:"namespace"`
+	HasSpotToleration bool   `json:"hasSpotToleration"`
+	HasNodeAffinity   bool   `json:"hasNodeAffinity"`
 }
 
 type DisruptionGap struct {
@@ -87,7 +87,9 @@ func (s *Server) handleSpotReadinessDeep(w http.ResponseWriter, r *http.Request)
 
 	// Check deployment spot readiness
 	for _, dep := range deployments.Items {
-		if systemNS[dep.Namespace] { continue }
+		if systemNS[dep.Namespace] {
+			continue
+		}
 		hasSpotTol := false
 		hasNodeAff := false
 
@@ -114,11 +116,13 @@ func (s *Server) handleSpotReadinessDeep(w http.ResponseWriter, r *http.Request)
 		// PDB gap
 		if !pdbNS[dep.Namespace] {
 			replicas := int32(1)
-			if dep.Spec.Replicas != nil { replicas = *dep.Spec.Replicas }
+			if dep.Spec.Replicas != nil {
+				replicas = *dep.Spec.Replicas
+			}
 			if replicas > 1 {
 				result.DisruptionGaps = append(result.DisruptionGaps, DisruptionGap{
 					Workload: dep.Name, Namespace: dep.Namespace,
-					Gap: "No PDB — pods can be evicted without quorum guarantee",
+					Gap:      "No PDB — pods can be evicted without quorum guarantee",
 					Severity: "high",
 				})
 			}
@@ -127,9 +131,15 @@ func (s *Server) handleSpotReadinessDeep(w http.ResponseWriter, r *http.Request)
 
 	// Score
 	score := 50
-	if result.Summary.HasSpotLabel { score += 20 }
-	if result.Summary.WorkloadsWithToleration > 0 { score += 15 }
-	if result.Summary.PDBCoverage > 0 { score += 15 }
+	if result.Summary.HasSpotLabel {
+		score += 20
+	}
+	if result.Summary.WorkloadsWithToleration > 0 {
+		score += 15
+	}
+	if result.Summary.PDBCoverage > 0 {
+		score += 15
+	}
 	result.ReadinessScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.ReadinessScore)
 

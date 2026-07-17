@@ -14,23 +14,23 @@ import (
 // rule coverage per workload, alerting gaps, noise potential,
 // and SLO-bound alerting maturity.
 type AlertRuleResult struct {
-	ScannedAt       time.Time          `json:"scannedAt"`
-	Summary         AlertRuleSummary   `json:"summary"`
-	CoverageGaps    []AlertGap         `json:"coverageGaps"`
-	NoiseRisks      []NoiseRisk        `json:"noiseRisks"`
-	QualityScore    int                `json:"qualityScore"`
-	Grade           string             `json:"grade"`
-	Recommendations []string           `json:"recommendations"`
+	ScannedAt       time.Time        `json:"scannedAt"`
+	Summary         AlertRuleSummary `json:"summary"`
+	CoverageGaps    []AlertGap       `json:"coverageGaps"`
+	NoiseRisks      []NoiseRisk      `json:"noiseRisks"`
+	QualityScore    int              `json:"qualityScore"`
+	Grade           string           `json:"grade"`
+	Recommendations []string         `json:"recommendations"`
 }
 
 type AlertRuleSummary struct {
-	TotalWorkloads   int  `json:"totalWorkloads"`
-	HasAlertManager  bool `json:"hasAlertManager"`
-	HasPrometheus    bool `json:"hasPrometheus"`
-	HasGrafana       bool `json:"hasGrafana"`
-	TotalRules       int  `json:"totalRules"`
-	WorkloadsWithAlerts int `json:"workloadsWithAlerts"`
-	WorkloadsWithoutAlerts int `json:"workloadsWithoutAlerts"`
+	TotalWorkloads         int  `json:"totalWorkloads"`
+	HasAlertManager        bool `json:"hasAlertManager"`
+	HasPrometheus          bool `json:"hasPrometheus"`
+	HasGrafana             bool `json:"hasGrafana"`
+	TotalRules             int  `json:"totalRules"`
+	WorkloadsWithAlerts    int  `json:"workloadsWithAlerts"`
+	WorkloadsWithoutAlerts int  `json:"workloadsWithoutAlerts"`
 }
 
 type AlertGap struct {
@@ -42,9 +42,9 @@ type AlertGap struct {
 }
 
 type NoiseRisk struct {
-	Source    string `json:"source"`
-	RiskType  string `json:"riskType"`
-	Severity  string `json:"severity"`
+	Source     string `json:"source"`
+	RiskType   string `json:"riskType"`
+	Severity   string `json:"severity"`
 	Suggestion string `json:"suggestion"`
 }
 

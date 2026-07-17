@@ -53,7 +53,7 @@ func TestPredictiveHealthBasic(t *testing.T) {
 			},
 		},
 		Status: corev1.PodStatus{
-			Phase: corev1.PodRunning,
+			Phase:    corev1.PodRunning,
 			QOSClass: corev1.PodQOSGuaranteed,
 			ContainerStatuses: []corev1.ContainerStatus{
 				{RestartCount: 0},

@@ -14,23 +14,23 @@ import (
 
 // PredictiveHealthResult is the cluster predictive health & risk forecast engine.
 type PredictiveHealthResult struct {
-	ScannedAt        time.Time             `json:"scannedAt"`
-	Summary          PredictiveSummary     `json:"summary"`
-	ForecastHorizon  string                `json:"forecastHorizon"`
-	Predictions      []RiskPrediction      `json:"predictions"`
-	NodeRisks        []NodeRiskForecast    `json:"nodeRisks"`
-	PodRisks         []PodRiskForecast     `json:"podRisks"`
-	ResourceTrends   []ResourceTrend       `json:"resourceTrends"`
-	RiskTimeline     []TimelineEvent       `json:"riskTimeline"`
-	Recommendations  []string              `json:"recommendations"`
-	ConfidenceScore  int                   `json:"confidenceScore"`
-	OverallRiskLevel string                `json:"overallRiskLevel"`
+	ScannedAt        time.Time          `json:"scannedAt"`
+	Summary          PredictiveSummary  `json:"summary"`
+	ForecastHorizon  string             `json:"forecastHorizon"`
+	Predictions      []RiskPrediction   `json:"predictions"`
+	NodeRisks        []NodeRiskForecast `json:"nodeRisks"`
+	PodRisks         []PodRiskForecast  `json:"podRisks"`
+	ResourceTrends   []ResourceTrend    `json:"resourceTrends"`
+	RiskTimeline     []TimelineEvent    `json:"riskTimeline"`
+	Recommendations  []string           `json:"recommendations"`
+	ConfidenceScore  int                `json:"confidenceScore"`
+	OverallRiskLevel string             `json:"overallRiskLevel"`
 }
 
 // PredictiveSummary aggregates prediction statistics.
 type PredictiveSummary struct {
-	TotalNodes         int `json:"totalNodes"`
-	TotalPods          int `json:"totalPods"`
+	TotalNodes          int `json:"totalNodes"`
+	TotalPods           int `json:"totalPods"`
 	CriticalPredictions int `json:"criticalPredictions"` // predicted within 24h
 	HighPredictions     int `json:"highPredictions"`     // predicted within 7d
 	MediumPredictions   int `json:"mediumPredictions"`   // predicted within 30d
@@ -42,37 +42,37 @@ type PredictiveSummary struct {
 
 // RiskPrediction describes a predicted risk event.
 type RiskPrediction struct {
-	Category    string    `json:"category"`    // disk-exhaustion, memory-pressure, cert-expiry, node-failure, capacity-exhaustion
-	Severity    string    `json:"severity"`    // critical, high, medium, low
-	Resource    string    `json:"resource"`    // node name, namespace/workload, or cluster-wide
-	Description string    `json:"description"`
-	ETA         string    `json:"eta"`         // estimated time to impact
-	ETADays     float64   `json:"etaDays"`     // estimated days to impact
-	Confidence  string    `json:"confidence"`  // high, medium, low
-	Mitigation  string    `json:"mitigation"`
+	Category    string  `json:"category"` // disk-exhaustion, memory-pressure, cert-expiry, node-failure, capacity-exhaustion
+	Severity    string  `json:"severity"` // critical, high, medium, low
+	Resource    string  `json:"resource"` // node name, namespace/workload, or cluster-wide
+	Description string  `json:"description"`
+	ETA         string  `json:"eta"`        // estimated time to impact
+	ETADays     float64 `json:"etaDays"`    // estimated days to impact
+	Confidence  string  `json:"confidence"` // high, medium, low
+	Mitigation  string  `json:"mitigation"`
 }
 
 // NodeRiskForecast per-node risk prediction.
 type NodeRiskForecast struct {
-	NodeName       string  `json:"nodeName"`
-	RiskScore      int     `json:"riskScore"`      // 0-100, higher = more risk
-	DiskRisk       string  `json:"diskRisk"`       // none, low, medium, high, critical
-	MemoryRisk     string  `json:"memoryRisk"`
-	CPUThrottleRisk string `json:"cpuThrottleRisk"`
-	FailureRisk    string  `json:"failureRisk"`    // based on conditions and events
-	PodPressure    int     `json:"podPressure"`    // pods under pressure
-	Conditions     []string `json:"conditions,omitempty"`
+	NodeName        string   `json:"nodeName"`
+	RiskScore       int      `json:"riskScore"` // 0-100, higher = more risk
+	DiskRisk        string   `json:"diskRisk"`  // none, low, medium, high, critical
+	MemoryRisk      string   `json:"memoryRisk"`
+	CPUThrottleRisk string   `json:"cpuThrottleRisk"`
+	FailureRisk     string   `json:"failureRisk"` // based on conditions and events
+	PodPressure     int      `json:"podPressure"` // pods under pressure
+	Conditions      []string `json:"conditions,omitempty"`
 }
 
 // PodRiskForecast per-pod risk prediction.
 type PodRiskForecast struct {
-	Name         string `json:"name"`
-	Namespace    string `json:"namespace"`
-	RiskType     string `json:"riskType"`     // oom-predicted, restart-loop, resource-starvation, eviction-risk
-	Severity     string `json:"severity"`
-	RiskScore    int    `json:"riskScore"`
-	Description  string `json:"description"`
-	ETA          string `json:"eta"`
+	Name        string `json:"name"`
+	Namespace   string `json:"namespace"`
+	RiskType    string `json:"riskType"` // oom-predicted, restart-loop, resource-starvation, eviction-risk
+	Severity    string `json:"severity"`
+	RiskScore   int    `json:"riskScore"`
+	Description string `json:"description"`
+	ETA         string `json:"eta"`
 }
 
 // ResourceTrend describes a resource consumption trend.
@@ -86,7 +86,7 @@ type ResourceTrend struct {
 
 // TimelineEvent describes a future risk event on a timeline.
 type TimelineEvent struct {
-	When     string `json:"when"`     // relative time (e.g., "2d", "7d", "30d+")
+	When     string `json:"when"` // relative time (e.g., "2d", "7d", "30d+")
 	Category string `json:"category"`
 	Severity string `json:"severity"`
 	Count    int    `json:"count"`
@@ -560,10 +560,10 @@ func setIfHigher(current, newLevel string) string {
 // buildRiskTimeline converts predictions into time-bucketed timeline.
 func buildRiskTimeline(predictions []RiskPrediction) []TimelineEvent {
 	buckets := map[string]*TimelineEvent{
-		"24h":    {When: "< 24h", Category: "immediate", Severity: "critical"},
-		"7d":     {When: "1-7 days", Category: "short-term", Severity: "high"},
-		"30d":    {When: "7-30 days", Category: "medium-term", Severity: "medium"},
-		"30d+":   {When: "> 30 days", Category: "long-term", Severity: "low"},
+		"24h":  {When: "< 24h", Category: "immediate", Severity: "critical"},
+		"7d":   {When: "1-7 days", Category: "short-term", Severity: "high"},
+		"30d":  {When: "7-30 days", Category: "medium-term", Severity: "medium"},
+		"30d+": {When: "> 30 days", Category: "long-term", Severity: "low"},
 	}
 	details := map[string][]string{"24h": {}, "7d": {}, "30d": {}, "30d+": {}}
 

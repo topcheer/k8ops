@@ -13,32 +13,32 @@ import (
 // GitOpsSyncResult analyzes GitOps synchronization state: ArgoCD/Flux
 // application health, sync status, and configuration drift detection.
 type GitOpsSyncResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         GitOpsSummary       `json:"summary"`
-	OutOfSyncApps   []OutOfSyncApp      `json:"outOfSyncApps"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time      `json:"scannedAt"`
+	Summary         GitOpsSummary  `json:"summary"`
+	OutOfSyncApps   []OutOfSyncApp `json:"outOfSyncApps"`
+	HealthScore     int            `json:"healthScore"`
+	Grade           string         `json:"grade"`
+	Recommendations []string       `json:"recommendations"`
 }
 
 type GitOpsSummary struct {
-	HasArgoCD       bool `json:"hasArgoCD"`
-	HasFlux         bool `json:"hasFlux"`
-	TotalApps      int  `json:"totalApps"`
-	SyncedApps     int  `json:"syncedApps"`
-	HealthyApps    int  `json:"healthyApps"`
-	OutOfSyncApps  int  `json:"outOfSyncApps"`
-	OutOfSyncCount int  `json:"outOfSyncCount"`
-	DegradedApps   int  `json:"degradedApps"`
-	SyncFailedApps int  `json:"syncFailedApps"`
-	ArgoCDDetected bool  `json:"argoCDDetected"`
-	ArgoCDApps     int   `json:"argoCDApps"`
-	FluxDetected   bool  `json:"fluxDetected"`
-	FluxSources    int   `json:"fluxSources"`
-	FluxKustomizations int `json:"fluxKustomizations"`
-	StaleApps      int   `json:"staleApps"`
-	NoAutoSyncApps int   `json:"noAutoSyncApps"`
-	DriftDetected  int   `json:"driftDetected"`
+	HasArgoCD          bool `json:"hasArgoCD"`
+	HasFlux            bool `json:"hasFlux"`
+	TotalApps          int  `json:"totalApps"`
+	SyncedApps         int  `json:"syncedApps"`
+	HealthyApps        int  `json:"healthyApps"`
+	OutOfSyncApps      int  `json:"outOfSyncApps"`
+	OutOfSyncCount     int  `json:"outOfSyncCount"`
+	DegradedApps       int  `json:"degradedApps"`
+	SyncFailedApps     int  `json:"syncFailedApps"`
+	ArgoCDDetected     bool `json:"argoCDDetected"`
+	ArgoCDApps         int  `json:"argoCDApps"`
+	FluxDetected       bool `json:"fluxDetected"`
+	FluxSources        int  `json:"fluxSources"`
+	FluxKustomizations int  `json:"fluxKustomizations"`
+	StaleApps          int  `json:"staleApps"`
+	NoAutoSyncApps     int  `json:"noAutoSyncApps"`
+	DriftDetected      int  `json:"driftDetected"`
 }
 
 // formatGitOpsSummary produces a human-readable summary string.
@@ -154,7 +154,9 @@ func (s *Server) handleGitOpsSync(w http.ResponseWriter, r *http.Request) {
 	// If no GitOps tool detected, count deployments as potentially-managed
 	if !result.Summary.HasArgoCD && !result.Summary.HasFlux {
 		for _, dep := range deployments.Items {
-			if systemNS[dep.Namespace] { continue }
+			if systemNS[dep.Namespace] {
+				continue
+			}
 			result.Summary.TotalApps++
 			// Check for sync annotations
 			hasSyncAnno := false
@@ -175,11 +177,15 @@ func (s *Server) handleGitOpsSync(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result.Summary.SyncedApps = result.Summary.TotalApps - result.Summary.OutOfSyncCount
-	if result.Summary.SyncedApps < 0 { result.Summary.SyncedApps = 0 }
+	if result.Summary.SyncedApps < 0 {
+		result.Summary.SyncedApps = 0
+	}
 
 	// Score
 	score := 30
-	if result.Summary.HasArgoCD || result.Summary.HasFlux { score += 40 }
+	if result.Summary.HasArgoCD || result.Summary.HasFlux {
+		score += 40
+	}
 	if result.Summary.TotalApps > 0 {
 		score += result.Summary.SyncedApps * 30 / result.Summary.TotalApps
 	}
@@ -198,7 +204,9 @@ func (s *Server) handleGitOpsSync(w http.ResponseWriter, r *http.Request) {
 	if result.Summary.OutOfSyncCount > 0 {
 		recs = append(recs, fmt.Sprintf("%d apps not under GitOps control — adopt into GitOps for drift prevention", result.Summary.OutOfSyncCount))
 	}
-	if len(recs) == 1 { recs = append(recs, "GitOps sync is healthy — all apps declaratively managed") }
+	if len(recs) == 1 {
+		recs = append(recs, "GitOps sync is healthy — all apps declaratively managed")
+	}
 	result.Recommendations = recs
 
 	writeJSON(w, result)

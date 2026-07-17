@@ -23,20 +23,20 @@ type ProbeLatencyResult struct {
 }
 
 type ProbeLatencySummary struct {
-	TotalWorkloads  int `json:"totalWorkloads"`
-	WithStartupProbe int `json:"withStartupProbe"`
+	TotalWorkloads     int `json:"totalWorkloads"`
+	WithStartupProbe   int `json:"withStartupProbe"`
 	WithReadinessProbe int `json:"withReadinessProbe"`
 	WithLivenessProbe  int `json:"withLivenessProbe"`
-	MissingProbes   int `json:"missingProbes"`
-	SlowStartup     int `json:"slowStartup"`
-	TimeoutRisks    int `json:"timeoutRisks"`
+	MissingProbes      int `json:"missingProbes"`
+	SlowStartup        int `json:"slowStartup"`
+	TimeoutRisks       int `json:"timeoutRisks"`
 }
 
 type SlowWorkload struct {
-	Name       string `json:"name"`
-	Namespace  string `json:"namespace"`
-	Issue      string `json:"issue"`
-	Severity   string `json:"severity"`
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+	Issue     string `json:"issue"`
+	Severity  string `json:"severity"`
 }
 
 type MisconfigProbe struct {
@@ -80,7 +80,7 @@ func (s *Server) handleProbeLatency(w http.ResponseWriter, r *http.Request) {
 					result.Summary.TimeoutRisks++
 					result.MisconfigProbes = append(result.MisconfigProbes, MisconfigProbe{
 						Name: dep.Name, Namespace: dep.Namespace, Probe: "startup",
-						Issue: fmt.Sprintf("timeoutSeconds=%d (>10s risks slow detection)", c.StartupProbe.TimeoutSeconds),
+						Issue:    fmt.Sprintf("timeoutSeconds=%d (>10s risks slow detection)", c.StartupProbe.TimeoutSeconds),
 						Severity: "medium",
 					})
 				}
@@ -88,7 +88,7 @@ func (s *Server) handleProbeLatency(w http.ResponseWriter, r *http.Request) {
 					result.Summary.SlowStartup++
 					result.SlowWorkloads = append(result.SlowWorkloads, SlowWorkload{
 						Name: dep.Name, Namespace: dep.Namespace,
-						Issue: fmt.Sprintf("startup probe periodSeconds=%d (>30s = slow detection)", c.StartupProbe.PeriodSeconds),
+						Issue:    fmt.Sprintf("startup probe periodSeconds=%d (>30s = slow detection)", c.StartupProbe.PeriodSeconds),
 						Severity: "medium",
 					})
 				}
@@ -100,7 +100,7 @@ func (s *Server) handleProbeLatency(w http.ResponseWriter, r *http.Request) {
 					result.Summary.SlowStartup++
 					result.SlowWorkloads = append(result.SlowWorkloads, SlowWorkload{
 						Name: dep.Name, Namespace: dep.Namespace,
-						Issue: fmt.Sprintf("readiness initialDelaySeconds=%d (>60s delays traffic)", c.ReadinessProbe.InitialDelaySeconds),
+						Issue:    fmt.Sprintf("readiness initialDelaySeconds=%d (>60s delays traffic)", c.ReadinessProbe.InitialDelaySeconds),
 						Severity: "high",
 					})
 				}
@@ -111,7 +111,7 @@ func (s *Server) handleProbeLatency(w http.ResponseWriter, r *http.Request) {
 				if c.LivenessProbe.InitialDelaySeconds > 120 {
 					result.MisconfigProbes = append(result.MisconfigProbes, MisconfigProbe{
 						Name: dep.Name, Namespace: dep.Namespace, Probe: "liveness",
-						Issue: fmt.Sprintf("initialDelaySeconds=%d (>120s = slow restart)", c.LivenessProbe.InitialDelaySeconds),
+						Issue:    fmt.Sprintf("initialDelaySeconds=%d (>120s = slow restart)", c.LivenessProbe.InitialDelaySeconds),
 						Severity: "medium",
 					})
 				}
@@ -122,7 +122,7 @@ func (s *Server) handleProbeLatency(w http.ResponseWriter, r *http.Request) {
 			result.Summary.MissingProbes++
 			result.MisconfigProbes = append(result.MisconfigProbes, MisconfigProbe{
 				Name: dep.Name, Namespace: dep.Namespace, Probe: "readiness",
-				Issue: "No readiness probe — traffic sent before pod is ready",
+				Issue:    "No readiness probe — traffic sent before pod is ready",
 				Severity: "high",
 			})
 		}
@@ -139,7 +139,9 @@ func (s *Server) handleProbeLatency(w http.ResponseWriter, r *http.Request) {
 	}
 	score -= result.Summary.SlowStartup * 5
 	score -= result.Summary.MissingProbes * 3
-	if score < 0 { score = 0 }
+	if score < 0 {
+		score = 0
+	}
 	result.HealthScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.HealthScore)
 

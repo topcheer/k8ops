@@ -13,30 +13,30 @@ import (
 // AdmissionAuditResult analyzes admission controller posture: webhook configs,
 // OPA/Gatekeeper policies, Kyverno rules, and enforcement coverage.
 type AdmissionAuditResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         AdmissionSummary    `json:"summary"`
+	ScannedAt       time.Time          `json:"scannedAt"`
+	Summary         AdmissionSummary   `json:"summary"`
 	Findings        []AdmissionFinding `json:"findings"`
-	PostureScore    int                 `json:"postureScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	PostureScore    int                `json:"postureScore"`
+	Grade           string             `json:"grade"`
+	Recommendations []string           `json:"recommendations"`
 }
 
 type AdmissionSummary struct {
-	HasGatekeeper   bool `json:"hasGatekeeper"`
-	HasKyverno      bool `json:"hasKyverno"`
-	HasOPA          bool `json:"hasOPA"`
-	ValidatingWebhooks int `json:"validatingWebhooks"`
-	MutatingWebhooks  int `json:"mutatingWebhooks"`
-	EnforceMode     bool `json:"enforceMode"`
-	PolicyCount     int  `json:"policyCount"`
-	NoCABundle         int `json:"noCABundle"`
-	FailurePolicyIgnore int `json:"failurePolicyIgnore"`
-	NoNamespaceSelector int `json:"noNamespaceSelector"`
-	TotalValidating     int `json:"totalValidating"`
-	TotalMutating       int `json:"totalMutating"`
-	BroadScope          int `json:"broadScope"`
-	TimeoutShort        int `json:"timeoutShort"`
-	SecurityScore      int `json:"securityScore"`
+	HasGatekeeper       bool `json:"hasGatekeeper"`
+	HasKyverno          bool `json:"hasKyverno"`
+	HasOPA              bool `json:"hasOPA"`
+	ValidatingWebhooks  int  `json:"validatingWebhooks"`
+	MutatingWebhooks    int  `json:"mutatingWebhooks"`
+	EnforceMode         bool `json:"enforceMode"`
+	PolicyCount         int  `json:"policyCount"`
+	NoCABundle          int  `json:"noCABundle"`
+	FailurePolicyIgnore int  `json:"failurePolicyIgnore"`
+	NoNamespaceSelector int  `json:"noNamespaceSelector"`
+	TotalValidating     int  `json:"totalValidating"`
+	TotalMutating       int  `json:"totalMutating"`
+	BroadScope          int  `json:"broadScope"`
+	TimeoutShort        int  `json:"timeoutShort"`
+	SecurityScore       int  `json:"securityScore"`
 }
 
 func assessAdmissionRisk(entry WebhookEntry) string {
@@ -72,7 +72,9 @@ func calculateAdmissionScore(s AdmissionSummary) int {
 	score -= s.FailurePolicyIgnore * 5
 	score -= s.NoNamespaceSelector * 3
 	score -= s.BroadScope * 2
-	if score < 0 { score = 0 }
+	if score < 0 {
+		score = 0
+	}
 	return score
 }
 
@@ -101,19 +103,26 @@ func generateAdmissionRecs(s AdmissionSummary) []string {
 
 func admissionRiskRank(risk string) int {
 	switch risk {
-	case "critical": return 0
-	case "high": return 1
-	case "medium": return 2
-	case "low": return 3
+	case "critical":
+		return 0
+	case "high":
+		return 1
+	case "medium":
+		return 2
+	case "low":
+		return 3
 	}
 	return 4
 }
 
 func admissionIssueRank(severity string) int {
 	switch severity {
-	case "critical": return 0
-	case "warning": return 1
-	case "info": return 2
+	case "critical":
+		return 0
+	case "warning":
+		return 1
+	case "info":
+		return 2
 	}
 	return 3
 }
@@ -124,10 +133,10 @@ func strContains(s, substr string) bool {
 }
 
 type AdmissionFinding struct {
-	Category  string `json:"category"`
-	Finding   string `json:"finding"`
-	Severity  string `json:"severity"`
-	Impact    string `json:"impact"`
+	Category string `json:"category"`
+	Finding  string `json:"finding"`
+	Severity string `json:"severity"`
+	Impact   string `json:"impact"`
 }
 
 // handleAdmissionAudit analyzes admission controller posture.
@@ -191,10 +200,18 @@ func (s *Server) handleAdmissionAudit(w http.ResponseWriter, r *http.Request) {
 
 	// Score
 	score := 20
-	if result.Summary.HasGatekeeper || result.Summary.HasKyverno { score += 40 }
-	if result.Summary.ValidatingWebhooks > 0 { score += 20 }
-	if result.Summary.MutatingWebhooks > 0 { score += 10 }
-	if result.Summary.EnforceMode { score += 10 }
+	if result.Summary.HasGatekeeper || result.Summary.HasKyverno {
+		score += 40
+	}
+	if result.Summary.ValidatingWebhooks > 0 {
+		score += 20
+	}
+	if result.Summary.MutatingWebhooks > 0 {
+		score += 10
+	}
+	if result.Summary.EnforceMode {
+		score += 10
+	}
 	result.PostureScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.PostureScore)
 
@@ -210,7 +227,9 @@ func (s *Server) handleAdmissionAudit(w http.ResponseWriter, r *http.Request) {
 	if result.Summary.ValidatingWebhooks == 0 {
 		recs = append(recs, "Add validating webhooks for security-critical resources (secrets, RBAC, pods)")
 	}
-	if len(recs) == 1 { recs = append(recs, "Admission control posture is comprehensive") }
+	if len(recs) == 1 {
+		recs = append(recs, "Admission control posture is comprehensive")
+	}
 	result.Recommendations = recs
 
 	writeJSON(w, result)
@@ -230,18 +249,18 @@ func isSystemWebhook(name string) bool {
 
 // WebhookEntry represents a single webhook configuration entry.
 type WebhookEntry struct {
-	Name            string `json:"name"`
-	Type            string `json:"type"`
-	Namespace       string `json:"namespace"`
-	IsSystem        bool   `json:"isSystem"`
-	Severity        string `json:"severity"`
-	ServiceNS       string `json:"serviceNamespace"`
-	Enforced        bool   `json:"enforced"`
-	HasCABundle     bool   `json:"hasCABundle"`
-	FailurePolicy   string `json:"failurePolicy"`
-	TimeoutSeconds  int32  `json:"timeoutSeconds"`
-	HasNSSelector   bool   `json:"hasNSSelector"`
-	Rules           []string `json:"rules"`
+	Name           string   `json:"name"`
+	Type           string   `json:"type"`
+	Namespace      string   `json:"namespace"`
+	IsSystem       bool     `json:"isSystem"`
+	Severity       string   `json:"severity"`
+	ServiceNS      string   `json:"serviceNamespace"`
+	Enforced       bool     `json:"enforced"`
+	HasCABundle    bool     `json:"hasCABundle"`
+	FailurePolicy  string   `json:"failurePolicy"`
+	TimeoutSeconds int32    `json:"timeoutSeconds"`
+	HasNSSelector  bool     `json:"hasNSSelector"`
+	Rules          []string `json:"rules"`
 }
 
 // AdmissionIssue represents a finding from the admission audit.

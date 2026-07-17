@@ -12,9 +12,9 @@ func makeNodesWithProviderID(pid string) []corev1.Node {
 
 func TestDetectCloudVendor(t *testing.T) {
 	tests := []struct {
-		name     string
+		name       string
 		providerID string
-		expected string
+		expected   string
 	}{
 		{"aws-node", "aws:///us-east-1a/i-abc123", "aws"},
 		{"gcp-node", "gce:///project/zone/instance", "gcp"},

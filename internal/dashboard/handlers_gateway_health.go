@@ -12,22 +12,22 @@ import (
 
 // GatewayHealthResult analyzes API gateway and ingress controller health.
 type GatewayHealthResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         GatewayHealthSummary `json:"summary"`
-	ControllerHealth []GatewayControllerEntry  `json:"controllerHealth"`
-	IngressGaps     []GatewayIngressGap    `json:"ingressGaps"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt        time.Time                `json:"scannedAt"`
+	Summary          GatewayHealthSummary     `json:"summary"`
+	ControllerHealth []GatewayControllerEntry `json:"controllerHealth"`
+	IngressGaps      []GatewayIngressGap      `json:"ingressGaps"`
+	HealthScore      int                      `json:"healthScore"`
+	Grade            string                   `json:"grade"`
+	Recommendations  []string                 `json:"recommendations"`
 }
 
 type GatewayHealthSummary struct {
-	ControllerType  string `json:"controllerType"`
-	ControllerRunning bool `json:"controllerRunning"`
-	TotalIngresses  int    `json:"totalIngresses"`
-	HealthyIngresses int   `json:"healthyIngresses"`
-	IngressesWithoutTLS int `json:"ingressesWithoutTLS"`
-	IngressesWithoutBackend int `json:"ingressesWithoutBackend"`
+	ControllerType          string `json:"controllerType"`
+	ControllerRunning       bool   `json:"controllerRunning"`
+	TotalIngresses          int    `json:"totalIngresses"`
+	HealthyIngresses        int    `json:"healthyIngresses"`
+	IngressesWithoutTLS     int    `json:"ingressesWithoutTLS"`
+	IngressesWithoutBackend int    `json:"ingressesWithoutBackend"`
 }
 
 type GatewayControllerEntry struct {
@@ -102,7 +102,9 @@ func (s *Server) handleGatewayHealth(w http.ResponseWriter, r *http.Request) {
 
 	// Analyze ingresses
 	for _, ing := range ingresses.Items {
-		if systemNS[ing.Namespace] { continue }
+		if systemNS[ing.Namespace] {
+			continue
+		}
 		result.Summary.TotalIngresses++
 
 		// Check TLS
@@ -138,7 +140,9 @@ func (s *Server) handleGatewayHealth(w http.ResponseWriter, r *http.Request) {
 
 	// Score
 	score := 50
-	if result.Summary.ControllerRunning { score += 25 }
+	if result.Summary.ControllerRunning {
+		score += 25
+	}
 	if result.Summary.TotalIngresses > 0 {
 		score += result.Summary.HealthyIngresses * 25 / result.Summary.TotalIngresses
 	}

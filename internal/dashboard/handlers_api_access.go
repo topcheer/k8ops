@@ -13,16 +13,16 @@ import (
 // It identifies hot resources, high-frequency callers, unusual access patterns,
 // and potential security concerns from API server interactions.
 type APIAccessResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         AccessSummary       `json:"summary"`
-	TopCallers      []AccessCaller      `json:"topCallers"`
-	TopResources    []AccessResource    `json:"topResources"`
-	ByVerb          []VerbStat          `json:"byVerb"`
-	ByNamespace     []AccessNSStat      `json:"byNamespace"`
-	Anomalies       []AccessAnomaly     `json:"anomalies"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time        `json:"scannedAt"`
+	Summary         AccessSummary    `json:"summary"`
+	TopCallers      []AccessCaller   `json:"topCallers"`
+	TopResources    []AccessResource `json:"topResources"`
+	ByVerb          []VerbStat       `json:"byVerb"`
+	ByNamespace     []AccessNSStat   `json:"byNamespace"`
+	Anomalies       []AccessAnomaly  `json:"anomalies"`
+	HealthScore     int              `json:"healthScore"`
+	Grade           string           `json:"grade"`
+	Recommendations []string         `json:"recommendations"`
 }
 
 // AccessSummary aggregates API access statistics.
@@ -42,11 +42,11 @@ type AccessSummary struct {
 
 // AccessCaller describes a top API caller.
 type AccessCaller struct {
-	Username   string `json:"username"`
-	UserAgent  string `json:"userAgent"`
-	Count      int    `json:"count"`
-	Verb       string `json:"topVerb"`
-	Resource   string `json:"topResource"`
+	Username  string `json:"username"`
+	UserAgent string `json:"userAgent"`
+	Count     int    `json:"count"`
+	Verb      string `json:"topVerb"`
+	Resource  string `json:"topResource"`
 }
 
 // AccessResource describes a hot resource.
@@ -59,26 +59,26 @@ type AccessResource struct {
 
 // VerbStat per-verb statistics.
 type VerbStat struct {
-	Verb  string `json:"verb"`
-	Count int    `json:"count"`
+	Verb  string  `json:"verb"`
+	Count int     `json:"count"`
 	Pct   float64 `json:"pct"`
 }
 
 // AccessNSStat per-namespace access stats.
 type AccessNSStat struct {
-	Namespace string `json:"namespace"`
-	ReadCount int    `json:"readCount"`
-	WriteCount int   `json:"writeCount"`
+	Namespace  string `json:"namespace"`
+	ReadCount  int    `json:"readCount"`
+	WriteCount int    `json:"writeCount"`
 	Total      int    `json:"total"`
 }
 
 // AccessAnomaly describes an unusual access pattern.
 type AccessAnomaly struct {
-	Type       string `json:"type"`
-	Detail     string `json:"detail"`
-	Severity   string `json:"severity"`
-	User       string `json:"user,omitempty"`
-	Resource   string `json:"resource,omitempty"`
+	Type     string `json:"type"`
+	Detail   string `json:"detail"`
+	Severity string `json:"severity"`
+	User     string `json:"user,omitempty"`
+	Resource string `json:"resource,omitempty"`
 }
 
 // handleAPIAccess handles GET /api/operations/api-access-pattern
@@ -131,7 +131,7 @@ func (s *Server) handleAPIAccess(w http.ResponseWriter, r *http.Request) {
 		resKey := evt.InvolvedObject.Kind + "/" + evt.InvolvedObject.Namespace
 		if resourceCounts[resKey] == nil {
 			resourceCounts[resKey] = &AccessResource{
-				Resource: evt.InvolvedObject.Kind,
+				Resource:  evt.InvolvedObject.Kind,
 				Namespace: evt.InvolvedObject.Namespace,
 			}
 		}
@@ -208,13 +208,13 @@ func (s *Server) handleAPIAccess(w http.ResponseWriter, r *http.Request) {
 
 	// Summary
 	result.Summary = AccessSummary{
-		TotalEvents: totalEvents,
-		UniqueUsers: len(userCounts),
+		TotalEvents:     totalEvents,
+		UniqueUsers:     len(userCounts),
 		UniqueResources: len(resourceCounts),
-		GetCount: readCount,
-		ListCount: 0, // not available from events
-		FailedCount: failedEvents,
-		AvgPerMinute: float64(totalEvents) / 60.0,
+		GetCount:        readCount,
+		ListCount:       0, // not available from events
+		FailedCount:     failedEvents,
+		AvgPerMinute:    float64(totalEvents) / 60.0,
 	}
 
 	// Detect anomalies
@@ -239,8 +239,8 @@ func detectAccessAnomalies(s AccessSummary, users map[string]*AccessCaller, reso
 		failRate := float64(s.FailedCount) / float64(s.TotalEvents) * 100
 		if failRate > 30 {
 			anomalies = append(anomalies, AccessAnomaly{
-				Type: "high-failure-rate",
-				Detail: fmt.Sprintf("%.1f%% of API events are warnings/failures (%d/%d)", failRate, s.FailedCount, s.TotalEvents),
+				Type:     "high-failure-rate",
+				Detail:   fmt.Sprintf("%.1f%% of API events are warnings/failures (%d/%d)", failRate, s.FailedCount, s.TotalEvents),
 				Severity: "high",
 			})
 		}
@@ -250,10 +250,10 @@ func detectAccessAnomalies(s AccessSummary, users map[string]*AccessCaller, reso
 	for name, uc := range users {
 		if s.TotalEvents > 0 && uc.Count > s.TotalEvents/2 {
 			anomalies = append(anomalies, AccessAnomaly{
-				Type: "dominant-caller",
-				Detail: fmt.Sprintf("User %s generates %d/%d events (>50%%)", name, uc.Count, s.TotalEvents),
+				Type:     "dominant-caller",
+				Detail:   fmt.Sprintf("User %s generates %d/%d events (>50%%)", name, uc.Count, s.TotalEvents),
 				Severity: "medium",
-				User: name,
+				User:     name,
 			})
 		}
 	}
@@ -262,8 +262,8 @@ func detectAccessAnomalies(s AccessSummary, users map[string]*AccessCaller, reso
 	for key, rc := range resources {
 		if rc.Count > 100 {
 			anomalies = append(anomalies, AccessAnomaly{
-				Type: "resource-hotspot",
-				Detail: fmt.Sprintf("%s has %d events in 1h — high access pattern", key, rc.Count),
+				Type:     "resource-hotspot",
+				Detail:   fmt.Sprintf("%s has %d events in 1h — high access pattern", key, rc.Count),
 				Severity: "low",
 				Resource: rc.Resource,
 			})

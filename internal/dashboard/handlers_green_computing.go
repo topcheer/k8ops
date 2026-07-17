@@ -16,31 +16,31 @@ import (
 // waste heat utilization, renewable energy readiness, and resource efficiency
 // from a sustainability perspective.
 type GreenComputingResult struct {
-	ScannedAt       time.Time            `json:"scannedAt"`
-	Summary         GreenSummary         `json:"summary"`
-	Efficiency      GreenEfficiency      `json:"efficiency"`
-	WasteBreakdown  []GreenWasteItem    `json:"wasteBreakdown"`
-	ByNamespace     []GreenNSStat        `json:"byNamespace"`
-	Recommendations []GreenRec           `json:"greenRecommendations"`
-	HealthScore     int                  `json:"healthScore"`
-	Grade           string               `json:"grade"`
-	Verdict         string               `json:"verdict"`
-	Tips            []string             `json:"tips"`
+	ScannedAt       time.Time        `json:"scannedAt"`
+	Summary         GreenSummary     `json:"summary"`
+	Efficiency      GreenEfficiency  `json:"efficiency"`
+	WasteBreakdown  []GreenWasteItem `json:"wasteBreakdown"`
+	ByNamespace     []GreenNSStat    `json:"byNamespace"`
+	Recommendations []GreenRec       `json:"greenRecommendations"`
+	HealthScore     int              `json:"healthScore"`
+	Grade           string           `json:"grade"`
+	Verdict         string           `json:"verdict"`
+	Tips            []string         `json:"tips"`
 }
 
 // GreenSummary aggregates sustainability statistics.
 type GreenSummary struct {
-	TotalCPUCores     float64 `json:"totalCPUCores"`
-	TotalMemoryGB     float64 `json:"totalMemoryGB"`
-	TotalStorageGB    float64 `json:"totalStorageGB"`
-	IdleCPUPercent    float64 `json:"idleCPUPercent"`
-	IdleMemPercent    float64 `json:"idleMemPercent"`
-	EstimatedPowerKW  float64 `json:"estimatedPowerKW"`
-	AnnualEnergyKWh   float64 `json:"annualEnergyKWh"`
-	AnnualCostUSD     float64 `json:"annualCostUSD"`
-	CarbonIntensity   float64 `json:"carbonIntensity"` // gCO2/kWh
-	AnnualCO2Kg       float64 `json:"annualCO2Kg"`
-	PUEstimate        float64 `json:"pueEstimate"`
+	TotalCPUCores    float64 `json:"totalCPUCores"`
+	TotalMemoryGB    float64 `json:"totalMemoryGB"`
+	TotalStorageGB   float64 `json:"totalStorageGB"`
+	IdleCPUPercent   float64 `json:"idleCPUPercent"`
+	IdleMemPercent   float64 `json:"idleMemPercent"`
+	EstimatedPowerKW float64 `json:"estimatedPowerKW"`
+	AnnualEnergyKWh  float64 `json:"annualEnergyKWh"`
+	AnnualCostUSD    float64 `json:"annualCostUSD"`
+	CarbonIntensity  float64 `json:"carbonIntensity"` // gCO2/kWh
+	AnnualCO2Kg      float64 `json:"annualCO2Kg"`
+	PUEstimate       float64 `json:"pueEstimate"`
 }
 
 // GreenEfficiency holds efficiency metrics.
@@ -65,13 +65,13 @@ type GreenWasteItem struct {
 
 // GreenNSStat per-namespace sustainability stats.
 type GreenNSStat struct {
-	Namespace    string  `json:"namespace"`
-	CPUCores     float64 `json:"cpuCores"`
-	MemGB        float64 `json:"memGB"`
-	PodCount     int     `json:"podCount"`
-	IdleCPU      float64 `json:"idleCPU"`
-	PowerWatts   float64 `json:"powerWatts"`
-	Efficiency   string  `json:"efficiency"`
+	Namespace  string  `json:"namespace"`
+	CPUCores   float64 `json:"cpuCores"`
+	MemGB      float64 `json:"memGB"`
+	PodCount   int     `json:"podCount"`
+	IdleCPU    float64 `json:"idleCPU"`
+	PowerWatts float64 `json:"powerWatts"`
+	Efficiency string  `json:"efficiency"`
 }
 
 // GreenRec is a sustainability recommendation.
@@ -85,12 +85,12 @@ type GreenRec struct {
 
 // Energy cost constants (approximate)
 const (
-	wattsPerCPUCore    = 8.0  // idle-to-active average
-	wattsPerGBMemory   = 0.4
-	wattsPerGBStorage  = 0.1
-	electricityPerKWh  = 0.12 // USD
-	worldAvgCarbonInt  = 475  // gCO2/kWh world average
-	estimatedPUE       = 1.55 // typical data center PUE
+	wattsPerCPUCore   = 8.0 // idle-to-active average
+	wattsPerGBMemory  = 0.4
+	wattsPerGBStorage = 0.1
+	electricityPerKWh = 0.12 // USD
+	worldAvgCarbonInt = 475  // gCO2/kWh world average
+	estimatedPUE      = 1.55 // typical data center PUE
 )
 
 // handleGreenComputing handles GET /api/scalability/green-computing
@@ -269,7 +269,7 @@ func (s *Server) handleGreenComputing(w http.ResponseWriter, r *http.Request) {
 		}
 		for _, c := range pod.Spec.Containers {
 			if c.Resources.Limits == nil || len(c.Resources.Limits) == 0 {
-			noLimitPods++
+				noLimitPods++
 				break
 			}
 		}

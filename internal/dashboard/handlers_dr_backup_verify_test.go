@@ -35,9 +35,9 @@ func TestDRBackupScoring(t *testing.T) {
 		expectedMin int
 		expectedMax int
 	}{
-		{false, false, 0, 28, 0, 5},        // No backup
-		{true, false, 25, 28, 80, 95},      // Velero, most protected
-		{true, true, 28, 28, 95, 100},      // Full coverage
+		{false, false, 0, 28, 0, 5},   // No backup
+		{true, false, 25, 28, 80, 95}, // Velero, most protected
+		{true, true, 28, 28, 95, 100}, // Full coverage
 	}
 	for _, tc := range tests {
 		score := 0

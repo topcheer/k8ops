@@ -14,13 +14,13 @@ import (
 // deployment frequency, change failure rate, lead time indicators,
 // rollback patterns, and DORA maturity classification.
 type PipelineHealthResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         PipelineSummary     `json:"summary"`
-	RecentDeploys   []PipelineDeploy    `json:"recentDeploys"`
-	DORALevel       string              `json:"doraLevel"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time        `json:"scannedAt"`
+	Summary         PipelineSummary  `json:"summary"`
+	RecentDeploys   []PipelineDeploy `json:"recentDeploys"`
+	DORALevel       string           `json:"doraLevel"`
+	HealthScore     int              `json:"healthScore"`
+	Grade           string           `json:"grade"`
+	Recommendations []string         `json:"recommendations"`
 }
 
 type PipelineSummary struct {

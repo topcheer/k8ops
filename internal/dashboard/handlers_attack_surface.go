@@ -16,15 +16,15 @@ import (
 // classifies exposure level, identifies TLS gaps, and maps the complete external
 // attack surface for security auditing.
 type EndpointExposureResult struct {
-	ScannedAt       time.Time              `json:"scannedAt"`
-	Summary         EPExposureSummary    `json:"summary"`
-	ExposedEndpoints []ExposedEndpoint     `json:"exposedEndpoints"`
-	ByNamespace     []EPExposureNSStat   `json:"byNamespace"`
-	TLSGaps         []EPTLSGap           `json:"tlsGaps"`
-	AttackSurface   AttackSurfaceMap       `json:"attackSurface"`
-	HealthScore     int                    `json:"healthScore"`
-	Grade           string                 `json:"grade"`
-	Recommendations []string               `json:"recommendations"`
+	ScannedAt        time.Time          `json:"scannedAt"`
+	Summary          EPExposureSummary  `json:"summary"`
+	ExposedEndpoints []ExposedEndpoint  `json:"exposedEndpoints"`
+	ByNamespace      []EPExposureNSStat `json:"byNamespace"`
+	TLSGaps          []EPTLSGap         `json:"tlsGaps"`
+	AttackSurface    AttackSurfaceMap   `json:"attackSurface"`
+	HealthScore      int                `json:"healthScore"`
+	Grade            string             `json:"grade"`
+	Recommendations  []string           `json:"recommendations"`
 }
 
 // ExposureSummary aggregates exposure statistics.
@@ -43,27 +43,27 @@ type EPExposureSummary struct {
 
 // ExposedEndpoint describes one externally-reachable endpoint.
 type ExposedEndpoint struct {
-	Name        string   `json:"name"`
-	Namespace   string   `json:"namespace"`
-	ServiceType string   `json:"serviceType"`
-	Ports       []int    `json:"ports"`
-	Protocol    string   `json:"protocol"`
-	ExposureLevel string `json:"exposureLevel"` // public, internal, cluster-only
-	HasIngress  bool     `json:"hasIngress"`
-	HasTLS      bool     `json:"hasTLS"`
-	Hosts       []string `json:"hosts,omitempty"`
-	BackendWorkload string `json:"backendWorkload"`
-	Risk        string   `json:"risk"`
+	Name            string   `json:"name"`
+	Namespace       string   `json:"namespace"`
+	ServiceType     string   `json:"serviceType"`
+	Ports           []int    `json:"ports"`
+	Protocol        string   `json:"protocol"`
+	ExposureLevel   string   `json:"exposureLevel"` // public, internal, cluster-only
+	HasIngress      bool     `json:"hasIngress"`
+	HasTLS          bool     `json:"hasTLS"`
+	Hosts           []string `json:"hosts,omitempty"`
+	BackendWorkload string   `json:"backendWorkload"`
+	Risk            string   `json:"risk"`
 }
 
 // ExposureNSStat per-namespace exposure stats.
 type EPExposureNSStat struct {
-	Namespace      string  `json:"namespace"`
-	TotalServices  int     `json:"totalServices"`
-	ExposedCount   int     `json:"exposedCount"`
-	TLSCount       int     `json:"tlsCount"`
-	PortCount      int     `json:"portCount"`
-	ExposurePct    float64 `json:"exposurePct"`
+	Namespace     string  `json:"namespace"`
+	TotalServices int     `json:"totalServices"`
+	ExposedCount  int     `json:"exposedCount"`
+	TLSCount      int     `json:"tlsCount"`
+	PortCount     int     `json:"portCount"`
+	ExposurePct   float64 `json:"exposurePct"`
 }
 
 // TLSGap describes a missing TLS configuration.
@@ -77,12 +77,12 @@ type EPTLSGap struct {
 
 // AttackSurfaceMap summarizes the external attack surface.
 type AttackSurfaceMap struct {
-	TotalExposedPorts  int `json:"totalExposedPorts"`
-	PublicEndpoints    int `json:"publicEndpoints"`
-	InternalEndpoints  int `json:"internalEndpoints"`
-	ClusterOnlyCount   int `json:"clusterOnlyCount"`
-	UniqueHosts        int `json:"uniqueHosts"`
-	HighRiskEndpoints  int `json:"highRiskEndpoints"`
+	TotalExposedPorts int `json:"totalExposedPorts"`
+	PublicEndpoints   int `json:"publicEndpoints"`
+	InternalEndpoints int `json:"internalEndpoints"`
+	ClusterOnlyCount  int `json:"clusterOnlyCount"`
+	UniqueHosts       int `json:"uniqueHosts"`
+	HighRiskEndpoints int `json:"highRiskEndpoints"`
 }
 
 // handleEndpointExposureMap handles GET /api/security/endpoint-exposure-map

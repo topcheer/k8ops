@@ -24,17 +24,17 @@ func TestCertExpiryTypes(t *testing.T) {
 
 func TestCertExpiryScoring(t *testing.T) {
 	tests := []struct {
-		total      int
-		valid      int
-		expired    int
-		expiring30 int
-		expiring90 int
+		total       int
+		valid       int
+		expired     int
+		expiring30  int
+		expiring90  int
 		expectedMin int
 		expectedMax int
 	}{
-		{60, 60, 0, 0, 0, 95, 100},        // All valid
-		{60, 50, 2, 5, 3, 0, 40},          // Some expired/expiring
-		{60, 58, 0, 2, 0, 70, 80},         // Some expiring
+		{60, 60, 0, 0, 0, 95, 100}, // All valid
+		{60, 50, 2, 5, 3, 0, 40},   // Some expired/expiring
+		{60, 58, 0, 2, 0, 70, 80},  // Some expiring
 	}
 	for _, tc := range tests {
 		validRatio := 1.0

@@ -2,10 +2,10 @@ package dashboard
 
 import (
 	"encoding/json"
-		"fmt"
+	"fmt"
+	runtime "k8s.io/apimachinery/pkg/runtime"
 	"net/http"
 	"net/http/httptest"
-	runtime "k8s.io/apimachinery/pkg/runtime"
 	"testing"
 
 	corev1 "k8s.io/api/core/v1"
@@ -26,7 +26,7 @@ func TestTriageCrashLoop(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		objs = append(objs, &corev1.Pod{
 			ObjectMeta: metav1.ObjectMeta{Name: fmt.Sprintf("crash-%d", i), Namespace: "broken"},
-			Spec: corev1.PodSpec{NodeName: "n1", Containers: []corev1.Container{{Name: "c", Image: "app:v1"}}},
+			Spec:       corev1.PodSpec{NodeName: "n1", Containers: []corev1.Container{{Name: "c", Image: "app:v1"}}},
 			Status: corev1.PodStatus{
 				Phase: corev1.PodRunning,
 				ContainerStatuses: []corev1.ContainerStatus{

@@ -12,31 +12,31 @@ import (
 // HelmHealthResult provides deep Helm release health analysis:
 // release age, chart version staleness, values drift, and release integrity.
 type HelmHealthDeepResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         HelmHealthDeepSummary   `json:"summary"`
-	StaleReleases   []StaleRelease      `json:"staleReleases"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time             `json:"scannedAt"`
+	Summary         HelmHealthDeepSummary `json:"summary"`
+	StaleReleases   []StaleRelease        `json:"staleReleases"`
+	HealthScore     int                   `json:"healthScore"`
+	Grade           string                `json:"grade"`
+	Recommendations []string              `json:"recommendations"`
 }
 
 type HelmHealthDeepSummary struct {
-	TotalReleases   int     `json:"totalReleases"`
-	StaleReleases   int     `json:"staleReleases"`
+	TotalReleases    int    `json:"totalReleases"`
+	StaleReleases    int    `json:"staleReleases"`
 	DeployedReleases int    `json:"deployedReleases"`
-	FailedReleases  int     `json:"failedReleases"`
-	AvgChartAge     string  `json:"avgChartAge"`
+	FailedReleases   int    `json:"failedReleases"`
+	AvgChartAge      string `json:"avgChartAge"`
 }
 
 type StaleRelease struct {
-	Name       string `json:"name"`
-	Namespace  string `json:"namespace"`
-	Chart      string `json:"chart"`
-	Version    string `json:"version"`
-	Status     string `json:"status"`
-	Updated    string `json:"updated"`
-	Severity   string `json:"severity"`
-	Issue      string `json:"issue"`
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+	Chart     string `json:"chart"`
+	Version   string `json:"version"`
+	Status    string `json:"status"`
+	Updated   string `json:"updated"`
+	Severity  string `json:"severity"`
+	Issue     string `json:"issue"`
 }
 
 // handleHelmHealthDeep provides deep Helm release health analysis.
@@ -85,9 +85,9 @@ func (s *Server) handleHelmHealthDeep(w http.ResponseWriter, r *http.Request) {
 			result.StaleReleases = append(result.StaleReleases, StaleRelease{
 				Name: name, Namespace: ns, Chart: chart,
 				Version: version, Status: status,
-				Updated: sec.CreationTimestamp.Time.Format("2006-01-02"),
+				Updated:  sec.CreationTimestamp.Time.Format("2006-01-02"),
 				Severity: severity,
-				Issue: fmt.Sprintf("Release not updated since %s", sec.CreationTimestamp.Time.Format("2006-01")),
+				Issue:    fmt.Sprintf("Release not updated since %s", sec.CreationTimestamp.Time.Format("2006-01")),
 			})
 		}
 
@@ -96,9 +96,9 @@ func (s *Server) handleHelmHealthDeep(w http.ResponseWriter, r *http.Request) {
 			result.StaleReleases = append(result.StaleReleases, StaleRelease{
 				Name: name, Namespace: ns, Chart: chart,
 				Version: version, Status: status,
-				Updated: sec.CreationTimestamp.Time.Format("2006-01-02"),
+				Updated:  sec.CreationTimestamp.Time.Format("2006-01-02"),
 				Severity: "critical",
-				Issue: "Release status is 'failed' — needs rollback or fix",
+				Issue:    "Release status is 'failed' — needs rollback or fix",
 			})
 		}
 	}
@@ -111,7 +111,9 @@ func (s *Server) handleHelmHealthDeep(w http.ResponseWriter, r *http.Request) {
 		staleRatio := float64(result.Summary.StaleReleases) / float64(result.Summary.TotalReleases)
 		score -= int(staleRatio * 30)
 	}
-	if score < 0 { score = 0 }
+	if score < 0 {
+		score = 0
+	}
 	result.HealthScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.HealthScore)
 

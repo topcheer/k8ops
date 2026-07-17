@@ -11,9 +11,9 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	runtime "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	k8sfake "k8s.io/client-go/kubernetes/fake"
-	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
 // TestChangeReadinessAllPass verifies a healthy cluster returns proceed gate.
@@ -159,7 +159,7 @@ func TestChangeReadinessActiveRollouts(t *testing.T) {
 				Selector: &metav1.LabelSelector{MatchLabels: map[string]string{"app": "r"}},
 				Template: corev1.PodTemplateSpec{
 					ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "r"}},
-					Spec: corev1.PodSpec{Containers: []corev1.Container{{Name: "c", Image: "nginx:v2"}}},
+					Spec:       corev1.PodSpec{Containers: []corev1.Container{{Name: "c", Image: "nginx:v2"}}},
 				},
 			},
 			Status: appsv1.DeploymentStatus{Replicas: 3, UpdatedReplicas: 1, AvailableReplicas: 1},

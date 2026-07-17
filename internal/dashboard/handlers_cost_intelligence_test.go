@@ -152,7 +152,7 @@ func TestCostIntelligenceWithWorkloads(t *testing.T) {
 func TestCostIntelligenceFinOpsScore(t *testing.T) {
 	clientset := k8sfake.NewSimpleClientset(
 		&corev1.Namespace{ObjectMeta: metav1.ObjectMeta{
-			Name: "default",
+			Name:   "default",
 			Labels: map[string]string{"team": "platform"},
 		}},
 		&corev1.Pod{
@@ -425,9 +425,9 @@ func TestGetRSSuffix(t *testing.T) {
 	}{
 		{"myapp-abc123def", "abc123def"},
 		{"nginx-deployment-7f8b9c6d5", "7f8b9c6d5"},
-		{"simple-pod", ""},   // no hash suffix
-		{"test", ""},         // too short
-		{"app-xyz", ""},      // too short suffix
+		{"simple-pod", ""}, // no hash suffix
+		{"test", ""},       // too short
+		{"app-xyz", ""},    // too short suffix
 		{"app-1a2b3c4d5e", "1a2b3c4d5e"},
 	}
 

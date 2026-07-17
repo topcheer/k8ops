@@ -14,13 +14,13 @@ import (
 // Helm release vs Git source drift, ConfigMap/Secret staleness,
 // ArgoCD/Flux sync status, and deployment pipeline integrity.
 type GitOpsDriftResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         GitOpsDriftSummary  `json:"summary"`
-	DriftDetected   []DriftItem         `json:"driftDetected"`
-	SyncHealth      []SyncHealthItem    `json:"syncHealth"`
-	DriftScore      int                 `json:"driftScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time          `json:"scannedAt"`
+	Summary         GitOpsDriftSummary `json:"summary"`
+	DriftDetected   []DriftItem        `json:"driftDetected"`
+	SyncHealth      []SyncHealthItem   `json:"syncHealth"`
+	DriftScore      int                `json:"driftScore"`
+	Grade           string             `json:"grade"`
+	Recommendations []string           `json:"recommendations"`
 }
 
 type GitOpsDriftSummary struct {
@@ -34,21 +34,21 @@ type GitOpsDriftSummary struct {
 }
 
 type DriftItem struct {
-	Name       string `json:"name"`
-	Namespace  string `json:"namespace"`
-	Kind       string `json:"kind"`
-	DriftType  string `json:"driftType"`
-	Severity   string `json:"severity"`
-	Detail     string `json:"detail"`
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+	Kind      string `json:"kind"`
+	DriftType string `json:"driftType"`
+	Severity  string `json:"severity"`
+	Detail    string `json:"detail"`
 }
 
 type SyncHealthItem struct {
-	Name       string `json:"name"`
-	Namespace  string `json:"namespace"`
-	Source     string `json:"source"`
-	Status     string `json:"status"`
-	LastSync   string `json:"lastSync"`
-	Healthy    bool   `json:"healthy"`
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+	Source    string `json:"source"`
+	Status    string `json:"status"`
+	LastSync  string `json:"lastSync"`
+	Healthy   bool   `json:"healthy"`
 }
 
 // handleGitOpsDrift deeply analyzes GitOps sync health and configuration drift.

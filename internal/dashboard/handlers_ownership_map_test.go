@@ -37,7 +37,7 @@ func TestOwnershipMapWithLabels(t *testing.T) {
 		&appsv1.Deployment{
 			ObjectMeta: metav1.ObjectMeta{
 				Name: "web", Namespace: "default",
-				Labels: map[string]string{"app": "web", "team": "platform", "version": "v1"},
+				Labels:      map[string]string{"app": "web", "team": "platform", "version": "v1"},
 				Annotations: map[string]string{"contact": "platform@team.io"},
 			},
 			Spec: appsv1.DeploymentSpec{Replicas: &replicas},
@@ -82,7 +82,7 @@ func TestOwnershipMapOrphaned(t *testing.T) {
 		&corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: "default"}},
 		&appsv1.Deployment{
 			ObjectMeta: metav1.ObjectMeta{Name: "orphan", Namespace: "default"}, // No labels!
-			Spec: appsv1.DeploymentSpec{Replicas: &replicas},
+			Spec:       appsv1.DeploymentSpec{Replicas: &replicas},
 		},
 	)
 	s := &Server{}
@@ -124,7 +124,7 @@ func TestOwnershipMapNSTeamLabel(t *testing.T) {
 		}},
 		&appsv1.Deployment{
 			ObjectMeta: metav1.ObjectMeta{Name: "svc", Namespace: "team-ns"}, // No workload labels but NS has team
-			Spec: appsv1.DeploymentSpec{Replicas: &replicas},
+			Spec:       appsv1.DeploymentSpec{Replicas: &replicas},
 		},
 	)
 	s := &Server{}
@@ -149,7 +149,7 @@ func TestOwnershipMapSystemNSExcluded(t *testing.T) {
 		&corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: "kube-system"}},
 		&appsv1.Deployment{
 			ObjectMeta: metav1.ObjectMeta{Name: "dns", Namespace: "kube-system"},
-			Spec: appsv1.DeploymentSpec{Replicas: &replicas},
+			Spec:       appsv1.DeploymentSpec{Replicas: &replicas},
 		},
 	)
 	s := &Server{}
@@ -178,7 +178,7 @@ func TestOwnershipMapByNamespace(t *testing.T) {
 		},
 		&appsv1.Deployment{
 			ObjectMeta: metav1.ObjectMeta{Name: "a2", Namespace: "ns-a"}, // orphaned
-			Spec: appsv1.DeploymentSpec{Replicas: &replicas},
+			Spec:       appsv1.DeploymentSpec{Replicas: &replicas},
 		},
 		&appsv1.Deployment{
 			ObjectMeta: metav1.ObjectMeta{Name: "b1", Namespace: "ns-b",
@@ -220,7 +220,7 @@ func TestOwnershipMapRecommendations(t *testing.T) {
 		&corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: "default"}},
 		&appsv1.Deployment{
 			ObjectMeta: metav1.ObjectMeta{Name: "orphan", Namespace: "default"},
-			Spec: appsv1.DeploymentSpec{Replicas: &replicas},
+			Spec:       appsv1.DeploymentSpec{Replicas: &replicas},
 		},
 	)
 	s := &Server{}

@@ -13,29 +13,29 @@ import (
 
 // SecPostureResult is the cluster-wide security posture scorecard.
 type SecPostureResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         PostureSummary      `json:"summary"`
-	ClusterGrade    string              `json:"clusterGrade"`
-	ClusterScore    int                 `json:"clusterScore"`
-	Dimensions      []PostureDimension  `json:"dimensions"`
-	HighRiskWorkloads []PostureWorkload `json:"highRiskWorkloads"`
-	AttackSurface   AttackSurface       `json:"attackSurface"`
-	Risks           []PostureRisk       `json:"risks"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt         time.Time          `json:"scannedAt"`
+	Summary           PostureSummary     `json:"summary"`
+	ClusterGrade      string             `json:"clusterGrade"`
+	ClusterScore      int                `json:"clusterScore"`
+	Dimensions        []PostureDimension `json:"dimensions"`
+	HighRiskWorkloads []PostureWorkload  `json:"highRiskWorkloads"`
+	AttackSurface     AttackSurface      `json:"attackSurface"`
+	Risks             []PostureRisk      `json:"risks"`
+	Recommendations   []string           `json:"recommendations"`
 }
 
 // PostureSummary aggregates security posture statistics.
 type PostureSummary struct {
-	TotalWorkloads    int `json:"totalWorkloads"`
-	CriticalRisk      int `json:"criticalRisk"` // immediate exploitation risk
-	HighRisk          int `json:"highRisk"`
-	MediumRisk        int `json:"mediumRisk"`
-	LowRisk           int `json:"lowRisk"`
-	PrivilegedPods    int `json:"privilegedPods"`
-	HostNetworkPods   int `json:"hostNetworkPods"`
-	NoNetworkPolicy   int `json:"noNetworkPolicy"` // workloads without NSP
-	RootContainers    int `json:"rootContainers"`  // running as root
-	NoResourceLimit   int `json:"noResourceLimit"`
+	TotalWorkloads  int `json:"totalWorkloads"`
+	CriticalRisk    int `json:"criticalRisk"` // immediate exploitation risk
+	HighRisk        int `json:"highRisk"`
+	MediumRisk      int `json:"mediumRisk"`
+	LowRisk         int `json:"lowRisk"`
+	PrivilegedPods  int `json:"privilegedPods"`
+	HostNetworkPods int `json:"hostNetworkPods"`
+	NoNetworkPolicy int `json:"noNetworkPolicy"` // workloads without NSP
+	RootContainers  int `json:"rootContainers"`  // running as root
+	NoResourceLimit int `json:"noResourceLimit"`
 }
 
 // PostureDimension scores one security dimension.

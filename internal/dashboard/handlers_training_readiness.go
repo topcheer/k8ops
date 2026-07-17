@@ -14,32 +14,32 @@ import (
 // documentation completeness, runbook coverage, labeling standardization,
 // annotation governance, and team knowledge transfer readiness.
 type TrainingReadinessResult struct {
-	ScannedAt        time.Time             `json:"scannedAt"`
-	Summary          TrainingSummary       `json:"summary"`
-	LabelGaps        []LabelGap            `json:"labelGaps"`
-	OnboardingScore  int                   `json:"onboardingScore"`
-	Grade            string                `json:"grade"`
-	Recommendations  []string              `json:"recommendations"`
+	ScannedAt       time.Time       `json:"scannedAt"`
+	Summary         TrainingSummary `json:"summary"`
+	LabelGaps       []LabelGap      `json:"labelGaps"`
+	OnboardingScore int             `json:"onboardingScore"`
+	Grade           string          `json:"grade"`
+	Recommendations []string        `json:"recommendations"`
 }
 
 type TrainingSummary struct {
-	TotalWorkloads    int     `json:"totalWorkloads"`
-	WithOwnerLabel    int     `json:"withOwnerLabel"`
-	WithTeamLabel     int     `json:"withTeamLabel"`
-	WithDocsLabel     int     `json:"withDocsLabel"`
-	WithRunbookLabel  int     `json:"withRunbookLabel"`
-	WithVersionLabel  int     `json:"withVersionLabel"`
-	OwnerCoverage     float64 `json:"ownerCoverage"`
-	TeamCoverage      float64 `json:"teamCoverage"`
-	DocsCoverage      float64 `json:"docsCoverage"`
-	RunbookCoverage   float64 `json:"runbookCoverage"`
+	TotalWorkloads   int     `json:"totalWorkloads"`
+	WithOwnerLabel   int     `json:"withOwnerLabel"`
+	WithTeamLabel    int     `json:"withTeamLabel"`
+	WithDocsLabel    int     `json:"withDocsLabel"`
+	WithRunbookLabel int     `json:"withRunbookLabel"`
+	WithVersionLabel int     `json:"withVersionLabel"`
+	OwnerCoverage    float64 `json:"ownerCoverage"`
+	TeamCoverage     float64 `json:"teamCoverage"`
+	DocsCoverage     float64 `json:"docsCoverage"`
+	RunbookCoverage  float64 `json:"runbookCoverage"`
 }
 
 type LabelGap struct {
-	Workload  string `json:"workload"`
-	Namespace string `json:"namespace"`
+	Workload  string   `json:"workload"`
+	Namespace string   `json:"namespace"`
 	Missing   []string `json:"missing"`
-	Severity  string `json:"severity"`
+	Severity  string   `json:"severity"`
 }
 
 // handleTrainingReadiness assesses platform onboarding and documentation quality.

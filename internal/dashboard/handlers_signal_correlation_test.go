@@ -59,7 +59,7 @@ func TestBuildSignalMatrix(t *testing.T) {
 func TestGenerateCorrelationRecs(t *testing.T) {
 	// Empty correlations
 	r0 := SignalCorrelationResult{
-		Summary: CorrelationSummary{},
+		Summary:     CorrelationSummary{},
 		HealthScore: 100,
 	}
 	recs := generateCorrelationRecs(r0)

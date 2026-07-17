@@ -12,13 +12,13 @@ import (
 
 // IdleZombieResult detects idle/zombie workloads consuming resources without traffic.
 type IdleZombieResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         IdleZombieSummary   `json:"summary"`
-	IdleWorkloads   []ZombieWorkloadInfo      `json:"idleWorkloads"`
-	WasteCost       float64             `json:"wasteCost"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time            `json:"scannedAt"`
+	Summary         IdleZombieSummary    `json:"summary"`
+	IdleWorkloads   []ZombieWorkloadInfo `json:"idleWorkloads"`
+	WasteCost       float64              `json:"wasteCost"`
+	HealthScore     int                  `json:"healthScore"`
+	Grade           string               `json:"grade"`
+	Recommendations []string             `json:"recommendations"`
 }
 
 type IdleZombieSummary struct {
@@ -71,7 +71,9 @@ func (s *Server) handleIdleZombie(w http.ResponseWriter, r *http.Request) {
 	// Build service map (namespaces with services)
 	nsHasService := map[string]bool{}
 	for _, svc := range services.Items {
-		if systemNS[svc.Namespace] { continue }
+		if systemNS[svc.Namespace] {
+			continue
+		}
 		nsHasService[svc.Namespace+"/"+svc.Name] = true
 	}
 
@@ -79,11 +81,15 @@ func (s *Server) handleIdleZombie(w http.ResponseWriter, r *http.Request) {
 	idleMem := 0.0
 
 	for _, dep := range deployments.Items {
-		if systemNS[dep.Namespace] { continue }
+		if systemNS[dep.Namespace] {
+			continue
+		}
 		result.Summary.TotalWorkloads++
 
 		replicas := int32(0)
-		if dep.Spec.Replicas != nil { replicas = *dep.Spec.Replicas }
+		if dep.Spec.Replicas != nil {
+			replicas = *dep.Spec.Replicas
+		}
 
 		// Calculate resource usage
 		wlCPU := 0.0
@@ -94,7 +100,7 @@ func (s *Server) handleIdleZombie(w http.ResponseWriter, r *http.Request) {
 					wlCPU += float64(q.MilliValue()) / 1000.0 * float64(replicas)
 				}
 				if q, ok := c.Resources.Requests[corev1.ResourceMemory]; ok {
-					wlMem += float64(q.Value()) / (1024*1024*1024) * float64(replicas)
+					wlMem += float64(q.Value()) / (1024 * 1024 * 1024) * float64(replicas)
 				}
 			}
 		}
@@ -114,7 +120,9 @@ func (s *Server) handleIdleZombie(w http.ResponseWriter, r *http.Request) {
 			isIdle = true
 			wkType = "idle"
 			severity = "medium"
-			if ageDays > 30 { severity = "high" }
+			if ageDays > 30 {
+				severity = "high"
+			}
 			result.Summary.IdleWorkloads++
 			idleCPU += wlCPU
 			idleMem += wlMem
@@ -148,8 +156,12 @@ func (s *Server) handleIdleZombie(w http.ResponseWriter, r *http.Request) {
 		idleRatio = float64(result.Summary.IdleWorkloads+result.Summary.ZombieWorkloads) / float64(result.Summary.TotalWorkloads)
 	}
 	score -= int(idleRatio * 50)
-	if result.Summary.ZombieWorkloads > 0 { score -= result.Summary.ZombieWorkloads * 10 }
-	if score < 0 { score = 0 }
+	if result.Summary.ZombieWorkloads > 0 {
+		score -= result.Summary.ZombieWorkloads * 10
+	}
+	if score < 0 {
+		score = 0
+	}
 	result.HealthScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.HealthScore)
 
@@ -159,9 +171,15 @@ func (s *Server) handleIdleZombie(w http.ResponseWriter, r *http.Request) {
 
 	var recs []string
 	recs = append(recs, fmt.Sprintf("Idle/zombie: %d/100 (grade %s) — %d idle, %d zombie, $%.2f/mo waste", result.HealthScore, result.Grade, result.Summary.IdleWorkloads, result.Summary.ZombieWorkloads, result.WasteCost))
-	if result.Summary.IdleWorkloads > 0 { recs = append(recs, fmt.Sprintf("%d idle workloads consuming CPU/memory without traffic — scale down", result.Summary.IdleWorkloads)) }
-	if result.Summary.ZombieWorkloads > 0 { recs = append(recs, fmt.Sprintf("%d zombie deployments (0 ready) — delete or fix", result.Summary.ZombieWorkloads)) }
-	if len(recs) == 1 { recs = append(recs, "No idle or zombie workloads detected") }
+	if result.Summary.IdleWorkloads > 0 {
+		recs = append(recs, fmt.Sprintf("%d idle workloads consuming CPU/memory without traffic — scale down", result.Summary.IdleWorkloads))
+	}
+	if result.Summary.ZombieWorkloads > 0 {
+		recs = append(recs, fmt.Sprintf("%d zombie deployments (0 ready) — delete or fix", result.Summary.ZombieWorkloads))
+	}
+	if len(recs) == 1 {
+		recs = append(recs, "No idle or zombie workloads detected")
+	}
 	result.Recommendations = recs
 
 	writeJSON(w, result)

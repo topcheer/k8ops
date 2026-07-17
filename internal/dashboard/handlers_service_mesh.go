@@ -13,22 +13,22 @@ import (
 // ServiceMeshResult analyzes service mesh coverage: sidecar injection,
 // mTLS status, circuit breakers, retry policies.
 type ServiceMeshResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         MeshCovSummary      `json:"summary"`
-	Gaps            []MeshGap           `json:"gaps"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time      `json:"scannedAt"`
+	Summary         MeshCovSummary `json:"summary"`
+	Gaps            []MeshGap      `json:"gaps"`
+	HealthScore     int            `json:"healthScore"`
+	Grade           string         `json:"grade"`
+	Recommendations []string       `json:"recommendations"`
 }
 
 type MeshCovSummary struct {
-	HasIstio       bool   `json:"hasIstio"`
-	HasLinkerd     bool   `json:"hasLinkerd"`
-	HasConsul      bool   `json:"hasConsul"`
-	SidecarInjected int   `json:"sidecarInjected"`
-	TotalPods      int    `json:"totalPods"`
-	MTLSEnabled    bool   `json:"mtlsEnabled"`
-	MeshCoverage   float64 `json:"meshCoverage"`
+	HasIstio        bool    `json:"hasIstio"`
+	HasLinkerd      bool    `json:"hasLinkerd"`
+	HasConsul       bool    `json:"hasConsul"`
+	SidecarInjected int     `json:"sidecarInjected"`
+	TotalPods       int     `json:"totalPods"`
+	MTLSEnabled     bool    `json:"mtlsEnabled"`
+	MeshCoverage    float64 `json:"meshCoverage"`
 }
 
 type MeshGap struct {
@@ -71,7 +71,9 @@ func (s *Server) handleServiceMesh(w http.ResponseWriter, r *http.Request) {
 
 	// Check namespace mesh injection labels
 	for _, ns := range nsList.Items {
-		if systemNS[ns.Name] { continue }
+		if systemNS[ns.Name] {
+			continue
+		}
 		for k, v := range ns.Labels {
 			if strings.Contains(k, "istio-injection") && v == "enabled" {
 				result.Summary.MTLSEnabled = true
@@ -84,7 +86,9 @@ func (s *Server) handleServiceMesh(w http.ResponseWriter, r *http.Request) {
 
 	// Count sidecar-injected pods
 	for _, pod := range pods.Items {
-		if systemNS[pod.Namespace] || pod.Status.Phase != "Running" { continue }
+		if systemNS[pod.Namespace] || pod.Status.Phase != "Running" {
+			continue
+		}
 		result.Summary.TotalPods++
 		hasSidecar := false
 		for _, c := range pod.Spec.Containers {
@@ -126,8 +130,12 @@ func (s *Server) handleServiceMesh(w http.ResponseWriter, r *http.Request) {
 
 	// Score
 	score := 20
-	if result.Summary.HasIstio || result.Summary.HasLinkerd || result.Summary.HasConsul { score += 40 }
-	if result.Summary.MTLSEnabled { score += 20 }
+	if result.Summary.HasIstio || result.Summary.HasLinkerd || result.Summary.HasConsul {
+		score += 40
+	}
+	if result.Summary.MTLSEnabled {
+		score += 20
+	}
 	score += int(result.Summary.MeshCoverage / 5) // 0-20 points
 	result.HealthScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.HealthScore)
@@ -136,10 +144,18 @@ func (s *Server) handleServiceMesh(w http.ResponseWriter, r *http.Request) {
 
 	var recs []string
 	recs = append(recs, fmt.Sprintf("Service mesh: %d/100 (grade %s) — Istio:%v Linkerd:%v coverage:%.0f%%", result.HealthScore, result.Grade, result.Summary.HasIstio, result.Summary.HasLinkerd, result.Summary.MeshCoverage))
-	if !result.Summary.HasIstio && !result.Summary.HasLinkerd { recs = append(recs, "Deploy Istio or Linkerd for mTLS, traffic control, and observability") }
-	if !result.Summary.MTLSEnabled { recs = append(recs, "Enable mTLS for zero-trust inter-service communication") }
-	if result.Summary.MeshCoverage < 50 { recs = append(recs, fmt.Sprintf("%.0f%% mesh coverage — enable sidecar injection in more namespaces", 100-result.Summary.MeshCoverage)) }
-	if len(recs) == 1 { recs = append(recs, "Service mesh coverage is comprehensive") }
+	if !result.Summary.HasIstio && !result.Summary.HasLinkerd {
+		recs = append(recs, "Deploy Istio or Linkerd for mTLS, traffic control, and observability")
+	}
+	if !result.Summary.MTLSEnabled {
+		recs = append(recs, "Enable mTLS for zero-trust inter-service communication")
+	}
+	if result.Summary.MeshCoverage < 50 {
+		recs = append(recs, fmt.Sprintf("%.0f%% mesh coverage — enable sidecar injection in more namespaces", 100-result.Summary.MeshCoverage))
+	}
+	if len(recs) == 1 {
+		recs = append(recs, "Service mesh coverage is comprehensive")
+	}
 	result.Recommendations = recs
 
 	writeJSON(w, result)

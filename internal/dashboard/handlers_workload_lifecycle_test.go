@@ -6,12 +6,12 @@ import (
 
 func TestClassifyLifecycleStage(t *testing.T) {
 	tests := []struct {
-		name       string
-		ns         string
-		labels     map[string]string
-		ageDays    int
-		replicas   int
-		wantStage  string
+		name      string
+		ns        string
+		labels    map[string]string
+		ageDays   int
+		replicas  int
+		wantStage string
 	}{
 		{"my-app", "production", map[string]string{"env": "prod"}, 30, 3, "production"},
 		{"api-server", "prod-backend", nil, 60, 5, "production"},

@@ -15,15 +15,15 @@ import (
 // It detects cloud-specific resources, annotations, storage classes, node selectors,
 // and volume types to produce a portability score and migration readiness assessment.
 type CloudPortabilityResult struct {
-	ScannedAt      time.Time           `json:"scannedAt"`
-	Summary        PortabilitySummary `json:"summary"`
-	CloudVendor    string             `json:"cloudVendor"`
-	LockinFindings []LockinFinding     `json:"lockinFindings"`
-	ByNamespace    []PortabilityNSStat `json:"byNamespace"`
-	MigrationPlan  []MigrationStep    `json:"migrationPlan"`
-	HealthScore    int                `json:"healthScore"`
-	Grade          string             `json:"grade"`
-	Recommendations []string           `json:"recommendations"`
+	ScannedAt       time.Time           `json:"scannedAt"`
+	Summary         PortabilitySummary  `json:"summary"`
+	CloudVendor     string              `json:"cloudVendor"`
+	LockinFindings  []LockinFinding     `json:"lockinFindings"`
+	ByNamespace     []PortabilityNSStat `json:"byNamespace"`
+	MigrationPlan   []MigrationStep     `json:"migrationPlan"`
+	HealthScore     int                 `json:"healthScore"`
+	Grade           string              `json:"grade"`
+	Recommendations []string            `json:"recommendations"`
 }
 
 // PortabilitySummary aggregates portability statistics.
@@ -53,11 +53,11 @@ type LockinFinding struct {
 
 // PortabilityNSStat per-namespace portability stats.
 type PortabilityNSStat struct {
-	Namespace    string  `json:"namespace"`
-	Workloads    int     `json:"workloads"`
-	LockinCount  int     `json:"lockinCount"`
-	PortablePct  float64 `json:"portablePct"`
-	RiskLevel    string  `json:"riskLevel"`
+	Namespace   string  `json:"namespace"`
+	Workloads   int     `json:"workloads"`
+	LockinCount int     `json:"lockinCount"`
+	PortablePct float64 `json:"portablePct"`
+	RiskLevel   string  `json:"riskLevel"`
 }
 
 // MigrationStep describes one action needed for cloud migration.
@@ -70,42 +70,42 @@ type MigrationStep struct {
 
 // Known cloud-specific patterns
 var cloudStoragePatterns = map[string]string{
-	"kubernetes.io/aws-ebs":          "aws",
-	"kubernetes.io/gce-pd":           "gcp",
-	"kubernetes.io/azure-disk":       "azure",
-	"kubernetes.io/azure-file":       "azure",
-	"ebs.csi.aws.com":                "aws",
-	"gp2":                            "aws",
-	"gp3":                            "aws",
-	"io1":                            "aws",
-	"standard":                       "gcp",
-	"pd-standard":                    "gcp",
-	"pd-ssd":                         "gcp",
-	"default":                        "generic",
-	"managed-csi":                    "azure",
-	"managed-premium":                "azure",
-	"managed-standard":               "azure",
-	"azurefile":                      "azure",
-	"rancher.io/local-path":          "generic",
-	"openebs-hostpath":               "generic",
-	"rook-ceph-block":                "generic",
-	"longhorn":                       "generic",
+	"kubernetes.io/aws-ebs":    "aws",
+	"kubernetes.io/gce-pd":     "gcp",
+	"kubernetes.io/azure-disk": "azure",
+	"kubernetes.io/azure-file": "azure",
+	"ebs.csi.aws.com":          "aws",
+	"gp2":                      "aws",
+	"gp3":                      "aws",
+	"io1":                      "aws",
+	"standard":                 "gcp",
+	"pd-standard":              "gcp",
+	"pd-ssd":                   "gcp",
+	"default":                  "generic",
+	"managed-csi":              "azure",
+	"managed-premium":          "azure",
+	"managed-standard":         "azure",
+	"azurefile":                "azure",
+	"rancher.io/local-path":    "generic",
+	"openebs-hostpath":         "generic",
+	"rook-ceph-block":          "generic",
+	"longhorn":                 "generic",
 }
 
 var cloudAnnotationPrefixes = map[string]string{
-	"service.beta.kubernetes.io/aws":             "aws",
-	"service.kubernetes.io/aws":                  "aws",
-	"pod.beta.kubernetes.io/aws":                 "aws",
-	"service.beta.kubernetes.io/azure":           "azure",
-	"service.beta.kubernetes.io/gce":             "gcp",
-	"networking.gke.io":                          "gcp",
-	"cloud.google.com":                           "gcp",
-	"controller.kubernetes.io/cloud-provider":    "generic",
-	"kubernetes.azure.com":                       "azure",
-	"volume.beta.kubernetes.io/storage-class":     "generic",
-	"volume.beta.kubernetes.io/mount-options":     "generic",
-	"eks.amazonaws.com":                          "aws",
-	"gke.io":                                     "gcp",
+	"service.beta.kubernetes.io/aws":          "aws",
+	"service.kubernetes.io/aws":               "aws",
+	"pod.beta.kubernetes.io/aws":              "aws",
+	"service.beta.kubernetes.io/azure":        "azure",
+	"service.beta.kubernetes.io/gce":          "gcp",
+	"networking.gke.io":                       "gcp",
+	"cloud.google.com":                        "gcp",
+	"controller.kubernetes.io/cloud-provider": "generic",
+	"kubernetes.azure.com":                    "azure",
+	"volume.beta.kubernetes.io/storage-class": "generic",
+	"volume.beta.kubernetes.io/mount-options": "generic",
+	"eks.amazonaws.com":                       "aws",
+	"gke.io":                                  "gcp",
 }
 
 var cloudNodeSelectorKeys = map[string]string{
@@ -189,13 +189,13 @@ func (s *Server) handleCloudPortability(w http.ResponseWriter, r *http.Request) 
 					result.Summary.CloudVolumes++
 					hasLockin = true
 					result.LockinFindings = append(result.LockinFindings, LockinFinding{
-						Resource:  wkName,
-						Namespace: pod.Namespace,
-						Kind:      "Pod",
+						Resource:   wkName,
+						Namespace:  pod.Namespace,
+						Kind:       "Pod",
 						LockinType: "volume-type",
-						Detail:    fmt.Sprintf("Uses PVC '%s' backed by cloud-specific StorageClass '%s'", vol.PersistentVolumeClaim.ClaimName, sc),
-						Cloud:     cloudVendor,
-						Severity:  "high",
+						Detail:     fmt.Sprintf("Uses PVC '%s' backed by cloud-specific StorageClass '%s'", vol.PersistentVolumeClaim.ClaimName, sc),
+						Cloud:      cloudVendor,
+						Severity:   "high",
 					})
 				}
 			}
@@ -209,13 +209,13 @@ func (s *Server) handleCloudPortability(w http.ResponseWriter, r *http.Request) 
 					result.Summary.CloudNodeSelectors++
 					hasLockin = true
 					result.LockinFindings = append(result.LockinFindings, LockinFinding{
-						Resource:  wkName,
-						Namespace: pod.Namespace,
-						Kind:      "Pod",
+						Resource:   wkName,
+						Namespace:  pod.Namespace,
+						Kind:       "Pod",
 						LockinType: "node-selector",
-						Detail:    fmt.Sprintf("Node selector '%s=%s' is cloud-specific", key, val),
-						Cloud:     cloudVendor,
-						Severity:  "medium",
+						Detail:     fmt.Sprintf("Node selector '%s=%s' is cloud-specific", key, val),
+						Cloud:      cloudVendor,
+						Severity:   "medium",
 					})
 				}
 				_ = cloud
@@ -229,13 +229,13 @@ func (s *Server) handleCloudPortability(w http.ResponseWriter, r *http.Request) 
 					result.Summary.CloudAnnotations++
 					hasLockin = true
 					result.LockinFindings = append(result.LockinFindings, LockinFinding{
-						Resource:  wkName,
-						Namespace: pod.Namespace,
-						Kind:      "Pod",
+						Resource:   wkName,
+						Namespace:  pod.Namespace,
+						Kind:       "Pod",
 						LockinType: "annotation",
-						Detail:    fmt.Sprintf("Annotation '%s' is cloud-specific to %s", key, cloud),
-						Cloud:     cloud,
-						Severity:  "low",
+						Detail:     fmt.Sprintf("Annotation '%s' is cloud-specific to %s", key, cloud),
+						Cloud:      cloud,
+						Severity:   "low",
 					})
 				}
 			}
@@ -266,13 +266,13 @@ func (s *Server) handleCloudPortability(w http.ResponseWriter, r *http.Request) 
 				if strings.HasPrefix(key, prefix) && cloud != "generic" {
 					result.Summary.CloudAnnotations++
 					result.LockinFindings = append(result.LockinFindings, LockinFinding{
-						Resource:  "Service/" + svc.Namespace + "/" + svc.Name,
-						Namespace: svc.Namespace,
-						Kind:      "Service",
+						Resource:   "Service/" + svc.Namespace + "/" + svc.Name,
+						Namespace:  svc.Namespace,
+						Kind:       "Service",
 						LockinType: "annotation",
-						Detail:    fmt.Sprintf("Service annotation '%s' ties to %s cloud", key, cloud),
-						Cloud:     cloud,
-						Severity:  "medium",
+						Detail:     fmt.Sprintf("Service annotation '%s' ties to %s cloud", key, cloud),
+						Cloud:      cloud,
+						Severity:   "medium",
 					})
 				}
 			}
@@ -289,13 +289,13 @@ func (s *Server) handleCloudPortability(w http.ResponseWriter, r *http.Request) 
 				if strings.HasPrefix(key, prefix) && cloud != "generic" {
 					result.Summary.CloudAnnotations++
 					result.LockinFindings = append(result.LockinFindings, LockinFinding{
-						Resource:  "Ingress/" + ing.Namespace + "/" + ing.Name,
-						Namespace: ing.Namespace,
-						Kind:      "Ingress",
+						Resource:   "Ingress/" + ing.Namespace + "/" + ing.Name,
+						Namespace:  ing.Namespace,
+						Kind:       "Ingress",
 						LockinType: "annotation",
-						Detail:    fmt.Sprintf("Ingress annotation '%s' ties to %s cloud", key, cloud),
-						Cloud:     cloud,
-						Severity:  "medium",
+						Detail:     fmt.Sprintf("Ingress annotation '%s' ties to %s cloud", key, cloud),
+						Cloud:      cloud,
+						Severity:   "medium",
 					})
 				}
 			}
@@ -328,7 +328,7 @@ func (s *Server) handleCloudPortability(w http.ResponseWriter, r *http.Request) 
 			ns.PortablePct = float64(ns.Workloads-ns.LockinCount) / float64(ns.Workloads) * 100
 		}
 		switch {
-			case ns.PortablePct < 50:
+		case ns.PortablePct < 50:
 			ns.RiskLevel = "high"
 		case ns.PortablePct < 80:
 			ns.RiskLevel = "medium"
@@ -468,7 +468,7 @@ func generatePortabilityRecs(s PortabilitySummary, findings []LockinFinding, ven
 		return recs
 	}
 
-	recs = append(recs, fmt.Sprintf("Portability score: %d/100 (grade %s) — %.1f%% of workloads are cloud-portable", 
+	recs = append(recs, fmt.Sprintf("Portability score: %d/100 (grade %s) — %.1f%% of workloads are cloud-portable",
 		computePortabilityScore(s, len(findings)), scoreToGrade(computePortabilityScore(s, len(findings))), s.PortabilityPct))
 
 	if s.LockinRiskLevel == "critical" || s.LockinRiskLevel == "high" {
@@ -505,5 +505,3 @@ func minInt(a, b int) int {
 	}
 	return b
 }
-
-

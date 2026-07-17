@@ -12,22 +12,22 @@ import (
 
 // DashAvailResult analyzes Grafana dashboard availability and observability UI coverage.
 type DashAvailResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         DashAvailSummary    `json:"summary"`
-	CoverageGaps    []DashCoverageGap   `json:"coverageGaps"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time         `json:"scannedAt"`
+	Summary         DashAvailSummary  `json:"summary"`
+	CoverageGaps    []DashCoverageGap `json:"coverageGaps"`
+	HealthScore     int               `json:"healthScore"`
+	Grade           string            `json:"grade"`
+	Recommendations []string          `json:"recommendations"`
 }
 
 type DashAvailSummary struct {
-	HasGrafana       bool   `json:"hasGrafana"`
-	GrafanaNamespace string `json:"grafanaNamespace"`
-	DashboardsFound  int    `json:"dashboardsFound"`
-	NamespacesCovered int   `json:"namespacesCovered"`
-	NamespacesBlind  int    `json:"namespacesBlind"`
-	HasMetrics       bool   `json:"hasMetrics"`
-	HasLogs          bool   `json:"hasLogs"`
+	HasGrafana        bool   `json:"hasGrafana"`
+	GrafanaNamespace  string `json:"grafanaNamespace"`
+	DashboardsFound   int    `json:"dashboardsFound"`
+	NamespacesCovered int    `json:"namespacesCovered"`
+	NamespacesBlind   int    `json:"namespacesBlind"`
+	HasMetrics        bool   `json:"hasMetrics"`
+	HasLogs           bool   `json:"hasLogs"`
 }
 
 type DashCoverageGap struct {
@@ -84,7 +84,9 @@ func (s *Server) handleDashAvail(w http.ResponseWriter, r *http.Request) {
 	// Check namespace coverage
 	nsCount := 0
 	for _, ns := range nsList.Items {
-		if systemNS[ns.Name] { continue }
+		if systemNS[ns.Name] {
+			continue
+		}
 		nsCount++
 		// Check if namespace has any dashboard ConfigMap
 		hasDash := false
@@ -107,10 +109,18 @@ func (s *Server) handleDashAvail(w http.ResponseWriter, r *http.Request) {
 
 	// Score
 	score := 0
-	if result.Summary.HasGrafana { score += 30 }
-	if result.Summary.HasMetrics { score += 20 }
-	if result.Summary.HasLogs { score += 15 }
-	if nsCount > 0 { score += result.Summary.NamespacesCovered * 35 / nsCount }
+	if result.Summary.HasGrafana {
+		score += 30
+	}
+	if result.Summary.HasMetrics {
+		score += 20
+	}
+	if result.Summary.HasLogs {
+		score += 15
+	}
+	if nsCount > 0 {
+		score += result.Summary.NamespacesCovered * 35 / nsCount
+	}
 	result.HealthScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.HealthScore)
 
@@ -120,9 +130,15 @@ func (s *Server) handleDashAvail(w http.ResponseWriter, r *http.Request) {
 
 	var recs []string
 	recs = append(recs, fmt.Sprintf("Dashboard availability: %d/100 (grade %s) — Grafana:%v dashboards:%d covered:%d blind:%d", result.HealthScore, result.Grade, result.Summary.HasGrafana, result.Summary.DashboardsFound, result.Summary.NamespacesCovered, result.Summary.NamespacesBlind))
-	if !result.Summary.HasGrafana { recs = append(recs, "No Grafana detected — deploy for observability dashboards") }
-	if result.Summary.NamespacesBlind > 0 { recs = append(recs, fmt.Sprintf("%d namespaces without dashboards — create Grafana dashboards per namespace", result.Summary.NamespacesBlind)) }
-	if len(recs) == 1 { recs = append(recs, "Observability dashboard coverage is comprehensive") }
+	if !result.Summary.HasGrafana {
+		recs = append(recs, "No Grafana detected — deploy for observability dashboards")
+	}
+	if result.Summary.NamespacesBlind > 0 {
+		recs = append(recs, fmt.Sprintf("%d namespaces without dashboards — create Grafana dashboards per namespace", result.Summary.NamespacesBlind))
+	}
+	if len(recs) == 1 {
+		recs = append(recs, "Observability dashboard coverage is comprehensive")
+	}
 	result.Recommendations = recs
 
 	writeJSON(w, result)

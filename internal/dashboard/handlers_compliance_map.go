@@ -12,23 +12,23 @@ import (
 
 // ComplianceMapResult maps cluster state to compliance frameworks (SOC2, PCI-DSS, CIS).
 type ComplianceMapResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
+	ScannedAt       time.Time            `json:"scannedAt"`
 	Summary         ComplianceMapSummary `json:"summary"`
-	Controls        []ComplianceControl `json:"controls"`
-	Frameworks      []FrameworkResult   `json:"frameworks"`
-	FailingControls []ControlFinding    `json:"failingControls"`
-	OverallScore    int                 `json:"overallScore"`
-	ComplianceScore int                 `json:"complianceScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	Controls        []ComplianceControl  `json:"controls"`
+	Frameworks      []FrameworkResult    `json:"frameworks"`
+	FailingControls []ControlFinding     `json:"failingControls"`
+	OverallScore    int                  `json:"overallScore"`
+	ComplianceScore int                  `json:"complianceScore"`
+	Grade           string               `json:"grade"`
+	Recommendations []string             `json:"recommendations"`
 }
 
 type FrameworkResult struct {
-	Name           string  `json:"name"`
-	PassRate       float64 `json:"passRate"`
-	Passing        int     `json:"passing"`
-	TotalControls  int     `json:"totalControls"`
-	Status         string  `json:"status"`
+	Name          string  `json:"name"`
+	PassRate      float64 `json:"passRate"`
+	Passing       int     `json:"passing"`
+	TotalControls int     `json:"totalControls"`
+	Status        string  `json:"status"`
 }
 
 type ControlFinding struct {
@@ -48,11 +48,11 @@ type ComplianceMapSummary struct {
 }
 
 type ComplianceControl struct {
-	ID         string `json:"id"`
-	Framework  string `json:"framework"`
-	Category   string `json:"category"`
-	Status     string `json:"status"`
-	Detail     string `json:"detail"`
+	ID        string `json:"id"`
+	Framework string `json:"framework"`
+	Category  string `json:"category"`
+	Status    string `json:"status"`
+	Detail    string `json:"detail"`
 }
 
 // handleComplianceMap maps cluster state to compliance frameworks.
@@ -76,46 +76,58 @@ func (s *Server) handleComplianceMap(w http.ResponseWriter, r *http.Request) {
 	// Check various compliance controls
 	checks := []struct {
 		id, framework, category string
-		check                  func() (bool, string)
+		check                   func() (bool, string)
 	}{
 		// SOC2
 		{"SOC2-CC1", "SOC2", "Access Control", func() (bool, string) {
 			for _, ns := range nsList.Items {
-				if ns.Labels["pod-security.kubernetes.io/enforce"] != "" { return true, "PSA enforced on at least one namespace" }
+				if ns.Labels["pod-security.kubernetes.io/enforce"] != "" {
+					return true, "PSA enforced on at least one namespace"
+				}
 			}
 			return false, "No Pod Security Admission labels found on any namespace"
 		}},
 		{"SOC2-CC2", "SOC2", "Encryption", func() (bool, string) {
 			for _, sec := range secrets.Items {
-				if sec.Type == "kubernetes.io/tls" { return true, "TLS certificates detected" }
+				if sec.Type == "kubernetes.io/tls" {
+					return true, "TLS certificates detected"
+				}
 			}
 			return false, "No TLS secrets found — data in transit may be unencrypted"
 		}},
 		{"SOC2-CC3", "SOC2", "Monitoring", func() (bool, string) {
 			for _, pod := range pods.Items {
 				img := strings.ToLower(pod.Spec.Containers[0].Image)
-				if strings.Contains(img, "prometheus") || strings.Contains(img, "fluent") { return true, "Monitoring/logging detected" }
+				if strings.Contains(img, "prometheus") || strings.Contains(img, "fluent") {
+					return true, "Monitoring/logging detected"
+				}
 			}
 			return false, "No monitoring/logging agent detected"
 		}},
 		// PCI-DSS
 		{"PCI-1", "PCI-DSS", "Network Segmentation", func() (bool, string) {
 			for _, ns := range nsList.Items {
-				if strings.Contains(strings.ToLower(ns.Name), "pci") || strings.Contains(strings.ToLower(ns.Name), "payment") { return true, "PCI namespace isolated" }
+				if strings.Contains(strings.ToLower(ns.Name), "pci") || strings.Contains(strings.ToLower(ns.Name), "payment") {
+					return true, "PCI namespace isolated"
+				}
 			}
 			return false, "No dedicated PCI namespace found"
 		}},
 		{"PCI-2", "PCI-DSS", "Audit Logging", func() (bool, string) {
 			for _, pod := range pods.Items {
 				img := strings.ToLower(pod.Spec.Containers[0].Image)
-				if strings.Contains(img, "fluent") || strings.Contains(img, "vector") { return true, "Log forwarding detected" }
+				if strings.Contains(img, "fluent") || strings.Contains(img, "vector") {
+					return true, "Log forwarding detected"
+				}
 			}
 			return false, "No log forwarding agent detected"
 		}},
 		// CIS
 		{"CIS-1", "CIS", "Privileged Pods", func() (bool, string) {
 			for _, pod := range pods.Items {
-				if systemNS[pod.Namespace] { continue }
+				if systemNS[pod.Namespace] {
+					continue
+				}
 				for _, c := range pod.Spec.Containers {
 					if c.SecurityContext != nil && c.SecurityContext.Privileged != nil && *c.SecurityContext.Privileged {
 						return false, "Privileged containers detected in user namespaces"
@@ -126,7 +138,9 @@ func (s *Server) handleComplianceMap(w http.ResponseWriter, r *http.Request) {
 		}},
 		{"CIS-2", "CIS", "Resource Limits", func() (bool, string) {
 			for _, dep := range deployments.Items {
-				if systemNS[dep.Namespace] { continue }
+				if systemNS[dep.Namespace] {
+					continue
+				}
 				for _, c := range dep.Spec.Template.Spec.Containers {
 					if c.Resources.Limits == nil || len(c.Resources.Limits) == 0 {
 						return false, "Deployments without resource limits detected"
@@ -138,7 +152,9 @@ func (s *Server) handleComplianceMap(w http.ResponseWriter, r *http.Request) {
 		{"CIS-3", "CIS", "Secret Management", func() (bool, string) {
 			for _, pod := range pods.Items {
 				img := strings.ToLower(pod.Spec.Containers[0].Image)
-				if strings.Contains(img, "external-secrets") || strings.Contains(img, "vault") { return true, "External secret management detected" }
+				if strings.Contains(img, "external-secrets") || strings.Contains(img, "vault") {
+					return true, "External secret management detected"
+				}
 			}
 			return false, "No External Secrets or Vault detected"
 		}},
@@ -148,7 +164,9 @@ func (s *Server) handleComplianceMap(w http.ResponseWriter, r *http.Request) {
 	for _, chk := range checks {
 		ok, detail := chk.check()
 		status := "pass"
-		if !ok { status = "fail" }
+		if !ok {
+			status = "fail"
+		}
 		result.Controls = append(result.Controls, ComplianceControl{
 			ID: chk.id, Framework: chk.framework, Category: chk.category, Status: status, Detail: detail,
 		})
@@ -156,23 +174,35 @@ func (s *Server) handleComplianceMap(w http.ResponseWriter, r *http.Request) {
 		if ok {
 			result.Summary.Passed++
 			switch chk.framework {
-			case "SOC2": soc2Pass++
-			case "PCI-DSS": pciPass++
-			case "CIS": cisPass++
+			case "SOC2":
+				soc2Pass++
+			case "PCI-DSS":
+				pciPass++
+			case "CIS":
+				cisPass++
 			}
 		} else {
 			result.Summary.Failed++
 		}
 		switch chk.framework {
-		case "SOC2": soc2Total++
-		case "PCI-DSS": pciTotal++
-		case "CIS": cisTotal++
+		case "SOC2":
+			soc2Total++
+		case "PCI-DSS":
+			pciTotal++
+		case "CIS":
+			cisTotal++
 		}
 	}
 
-	if soc2Total > 0 { result.Summary.SOC2Pct = float64(soc2Pass) / float64(soc2Total) * 100 }
-	if pciTotal > 0 { result.Summary.PCIPct = float64(pciPass) / float64(pciTotal) * 100 }
-	if cisTotal > 0 { result.Summary.CISPct = float64(cisPass) / float64(cisTotal) * 100 }
+	if soc2Total > 0 {
+		result.Summary.SOC2Pct = float64(soc2Pass) / float64(soc2Total) * 100
+	}
+	if pciTotal > 0 {
+		result.Summary.PCIPct = float64(pciPass) / float64(pciTotal) * 100
+	}
+	if cisTotal > 0 {
+		result.Summary.CISPct = float64(cisPass) / float64(cisTotal) * 100
+	}
 
 	result.ComplianceScore = int(float64(result.Summary.Passed) / float64(result.Summary.TotalControls) * 100)
 	result.OverallScore = result.ComplianceScore
@@ -199,9 +229,9 @@ func (s *Server) handleComplianceMap(w http.ResponseWriter, r *http.Request) {
 	})
 
 	recs := generateComplianceMapRecs(ComplianceMapResult{
-		Frameworks: result.Frameworks,
+		Frameworks:      result.Frameworks,
 		FailingControls: result.FailingControls,
-		OverallScore: result.ComplianceScore,
+		OverallScore:    result.ComplianceScore,
 	})
 	result.Recommendations = recs
 
@@ -219,12 +249,18 @@ func generateComplianceMapRecs(r ComplianceMapResult) []string {
 	for _, fc := range r.FailingControls {
 		recs = append(recs, fmt.Sprintf("[%s] %s — %s", fc.Severity, fc.Title, fc.Remediation))
 	}
-	if len(recs) == 1 { recs = append(recs, "All compliance frameworks passing") }
+	if len(recs) == 1 {
+		recs = append(recs, "All compliance frameworks passing")
+	}
 	return recs
 }
 
 func fwStatus(pct float64) string {
-	if pct >= 100 { return "passing" }
-	if pct >= 50 { return "partial" }
+	if pct >= 100 {
+		return "passing"
+	}
+	if pct >= 50 {
+		return "partial"
+	}
 	return "failing"
 }

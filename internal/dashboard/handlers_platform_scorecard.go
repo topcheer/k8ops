@@ -6,8 +6,8 @@ import (
 	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
-	corev1 "k8s.io/api/core/v1"
 	autoscalingv2 "k8s.io/api/autoscaling/v2"
+	corev1 "k8s.io/api/core/v1"
 	policyv1 "k8s.io/api/policy/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -16,27 +16,27 @@ import (
 // It aggregates signals from health, DORA, reliability, security, cost,
 // and maturity dimensions into a single executive-level platform score.
 type PlatformScorecardResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	OverallScore    int                 `json:"overallScore"`
-	Grade           string              `json:"grade"`
-	Level           string              `json:"level"` // elite, advanced, intermediate, developing, initial
-	Dimensions      []ScorecardDim      `json:"dimensions"`
-	Strengths       []ScorecardStrength `json:"strengths"`
-	Weaknesses      []ScorecardWeakness `json:"weaknesses"`
+	ScannedAt          time.Time              `json:"scannedAt"`
+	OverallScore       int                    `json:"overallScore"`
+	Grade              string                 `json:"grade"`
+	Level              string                 `json:"level"` // elite, advanced, intermediate, developing, initial
+	Dimensions         []ScorecardDim         `json:"dimensions"`
+	Strengths          []ScorecardStrength    `json:"strengths"`
+	Weaknesses         []ScorecardWeakness    `json:"weaknesses"`
 	ImprovementRoadmap []ScorecardRoadmapItem `json:"improvementRoadmap"`
-	TrendDirection  string              `json:"trendDirection"` // improving, stable, declining
-	ExecutiveSummary string             `json:"executiveSummary"`
-	Recommendations []string            `json:"recommendations"`
+	TrendDirection     string                 `json:"trendDirection"` // improving, stable, declining
+	ExecutiveSummary   string                 `json:"executiveSummary"`
+	Recommendations    []string               `json:"recommendations"`
 }
 
 // ScorecardDim is one dimension of the platform scorecard.
 type ScorecardDim struct {
-	Name        string  `json:"name"`
-	Score       int     `json:"score"`
-	Weight      float64 `json:"weight"`
-	Status      string  `json:"status"`
-	Detail      string  `json:"detail"`
-	SubMetrics  []ScorecardSubMetric `json:"subMetrics,omitempty"`
+	Name       string               `json:"name"`
+	Score      int                  `json:"score"`
+	Weight     float64              `json:"weight"`
+	Status     string               `json:"status"`
+	Detail     string               `json:"detail"`
+	SubMetrics []ScorecardSubMetric `json:"subMetrics,omitempty"`
 }
 
 // ScorecardSubMetric is a granular metric within a dimension.
@@ -61,12 +61,12 @@ type ScorecardWeakness struct {
 
 // RoadmapItem is a prioritized improvement action.
 type ScorecardRoadmapItem struct {
-	Priority    int    `json:"priority"`
-	Dimension   string `json:"dimension"`
-	Action      string `json:"action"`
-	Impact      string `json:"impact"`  // high, medium, low
-	Effort      string `json:"effort"`  // high, medium, low
-	Timeline    string `json:"timeline"` // quick-win, short-term, long-term
+	Priority  int    `json:"priority"`
+	Dimension string `json:"dimension"`
+	Action    string `json:"action"`
+	Impact    string `json:"impact"`   // high, medium, low
+	Effort    string `json:"effort"`   // high, medium, low
+	Timeline  string `json:"timeline"` // quick-win, short-term, long-term
 }
 
 // handlePlatformScorecard handles GET /api/docs/platform-scorecard
@@ -199,7 +199,7 @@ func computeInfraScore(nodes []corev1.Node, pods []corev1.Pod) (int, string) {
 		}
 	}
 	if len(nodes) > 0 && readyNodes < len(nodes) {
-			badRatio := float64(len(nodes)-readyNodes) / float64(len(nodes))
+		badRatio := float64(len(nodes)-readyNodes) / float64(len(nodes))
 		score -= int(badRatio * 30)
 	}
 	crashLoop := 0
@@ -284,7 +284,7 @@ func computeSecurityScoreQuick(pods []corev1.Pod, namespaces []corev1.Namespace,
 		}
 		for _, c := range pod.Spec.Containers {
 			if c.SecurityContext == nil {
-			noSC++
+				noSC++
 				continue
 			}
 			if c.SecurityContext.Privileged != nil && *c.SecurityContext.Privileged {

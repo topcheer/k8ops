@@ -17,63 +17,63 @@ import (
 // over-provisioned (wasted cost) and under-provisioned (throttle/OOM risk)
 // workloads. Provides actionable right-sizing recommendations.
 type RequestAccuracyResult struct {
-	ScannedAt       time.Time              `json:"scannedAt"`
-	Summary         ReqAccSummary          `json:"summary"`
-	Containers      []ReqAccContainer      `json:"containers"`
-	ByNamespace     []ReqAccNS             `json:"byNamespace"`
-	RightsizingSavings ReqAccSavings      `json:"rightsizingSavings"`
-	HealthScore     int                    `json:"healthScore"`
-	Grade           string                 `json:"grade"`
-	Recommendations []string               `json:"recommendations"`
+	ScannedAt          time.Time         `json:"scannedAt"`
+	Summary            ReqAccSummary     `json:"summary"`
+	Containers         []ReqAccContainer `json:"containers"`
+	ByNamespace        []ReqAccNS        `json:"byNamespace"`
+	RightsizingSavings ReqAccSavings     `json:"rightsizingSavings"`
+	HealthScore        int               `json:"healthScore"`
+	Grade              string            `json:"grade"`
+	Recommendations    []string          `json:"recommendations"`
 }
 
 type ReqAccSummary struct {
-	TotalContainers   int     `json:"totalContainers"`
-	WithRequests      int     `json:"withRequests"`
-	WithLimits        int     `json:"withLimits"`
-	NoRequests        int     `json:"noRequests"`     // containers without any requests
-	NoLimits          int     `json:"noLimits"`       // containers without any limits
-	OverProvisioned   int     `json:"overProvisioned"`  // request >> actual need (heuristic)
-	UnderProvisioned  int     `json:"underProvisioned"` // limit < request (risk)
-	Balanced          int     `json:"balanced"`
-	OvercommitRatio   float64 `json:"overcommitRatio"`  // total limits / total requests for CPU
+	TotalContainers    int     `json:"totalContainers"`
+	WithRequests       int     `json:"withRequests"`
+	WithLimits         int     `json:"withLimits"`
+	NoRequests         int     `json:"noRequests"`       // containers without any requests
+	NoLimits           int     `json:"noLimits"`         // containers without any limits
+	OverProvisioned    int     `json:"overProvisioned"`  // request >> actual need (heuristic)
+	UnderProvisioned   int     `json:"underProvisioned"` // limit < request (risk)
+	Balanced           int     `json:"balanced"`
+	OvercommitRatio    float64 `json:"overcommitRatio"` // total limits / total requests for CPU
 	MemOvercommitRatio float64 `json:"memOvercommitRatio"`
 }
 
 type ReqAccContainer struct {
-	Name          string  `json:"name"`
-	Namespace     string  `json:"namespace"`
-	Workload      string  `json:"workload"`
-	Kind          string  `json:"kind"`
-	ReqCPU        float64 `json:"reqCPU"`        // cores
-	ReqMem        float64 `json:"reqMemGB"`
-	LimitCPU      float64 `json:"limitCPU"`
-	LimitMem      float64 `json:"limitMemGB"`
-	CPUOvercommit float64 `json:"cpuOvercommit"` // limit/req ratio, >1 = overcommitted
-	MemOvercommit float64 `json:"memOvercommit"`
-	Status        string  `json:"status"`        // balanced, over-provisioned, under-provisioned, no-limits
-	RiskLevel     string  `json:"riskLevel"`
-	SuggestedReqCPU float64 `json:"suggestedReqCPU"`
-	SuggestedReqMem float64 `json:"suggestedReqMemGB"`
+	Name             string  `json:"name"`
+	Namespace        string  `json:"namespace"`
+	Workload         string  `json:"workload"`
+	Kind             string  `json:"kind"`
+	ReqCPU           float64 `json:"reqCPU"` // cores
+	ReqMem           float64 `json:"reqMemGB"`
+	LimitCPU         float64 `json:"limitCPU"`
+	LimitMem         float64 `json:"limitMemGB"`
+	CPUOvercommit    float64 `json:"cpuOvercommit"` // limit/req ratio, >1 = overcommitted
+	MemOvercommit    float64 `json:"memOvercommit"`
+	Status           string  `json:"status"` // balanced, over-provisioned, under-provisioned, no-limits
+	RiskLevel        string  `json:"riskLevel"`
+	SuggestedReqCPU  float64 `json:"suggestedReqCPU"`
+	SuggestedReqMem  float64 `json:"suggestedReqMemGB"`
 	PotentialSaveCPU float64 `json:"potentialSaveCPU"`
 	PotentialSaveMem float64 `json:"potentialSaveMemGB"`
 }
 
 type ReqAccNS struct {
-	Namespace     string  `json:"namespace"`
-	ContainerCount int    `json:"containerCount"`
-	TotalReqCPU   float64 `json:"totalReqCPU"`
-	TotalReqMem   float64 `json:"totalReqMemGB"`
-	OverprovCount int    `json:"overprovCount"`
-	UnderprovCount int   `json:"underprovCount"`
-	NoReqCount    int    `json:"noReqCount"`
+	Namespace      string  `json:"namespace"`
+	ContainerCount int     `json:"containerCount"`
+	TotalReqCPU    float64 `json:"totalReqCPU"`
+	TotalReqMem    float64 `json:"totalReqMemGB"`
+	OverprovCount  int     `json:"overprovCount"`
+	UnderprovCount int     `json:"underprovCount"`
+	NoReqCount     int     `json:"noReqCount"`
 }
 
 type ReqAccSavings struct {
-	WastedCPU     float64 `json:"wastedCPU"`     // cores that could be freed
-	WastedMem     float64 `json:"wastedMemGB"`
+	WastedCPU            float64 `json:"wastedCPU"` // cores that could be freed
+	WastedMem            float64 `json:"wastedMemGB"`
 	EstimatedMonthlyCost float64 `json:"estimatedMonthlyCostUSD"`
-	AffectedContainers int `json:"affectedContainers"`
+	AffectedContainers   int     `json:"affectedContainers"`
 }
 
 // handleRequestAccuracy handles GET /api/scalability/request-accuracy
@@ -232,10 +232,10 @@ func (s *Server) handleRequestAccuracy(w http.ResponseWriter, r *http.Request) {
 
 	// Savings estimate ($0.03/CPU-hour, $0.004/GB-hour)
 	result.RightsizingSavings = ReqAccSavings{
-		WastedCPU:     wastedCPU,
-		WastedMem:     wastedMem,
+		WastedCPU:            wastedCPU,
+		WastedMem:            wastedMem,
 		EstimatedMonthlyCost: wastedCPU*0.03*24*30 + wastedMem*0.004*24*30,
-		AffectedContainers: result.Summary.OverProvisioned,
+		AffectedContainers:   result.Summary.OverProvisioned,
 	}
 
 	// Health score

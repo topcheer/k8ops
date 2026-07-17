@@ -15,14 +15,14 @@ import (
 // deployment release. It acts as a pre-deployment checklist that verifies
 // all reliability, security, and operational prerequisites.
 type ReleaseGateResult struct {
-	ScannedAt      time.Time           `json:"scannedAt"`
-	OverallVerdict string              `json:"overallVerdict"` // pass, conditional, fail
-	GateScore      int                 `json:"gateScore"`
-	Checks         []ReleaseGateCheck  `json:"checks"`
-	Blockers       []ReleaseBlocker    `json:"blockers"`
-	Warnings       []ReleaseWarning    `json:"warnings"`
-	PassRate       float64             `json:"passRate"`
-	ByCategory     []GateCategory      `json:"byCategory"`
+	ScannedAt       time.Time          `json:"scannedAt"`
+	OverallVerdict  string             `json:"overallVerdict"` // pass, conditional, fail
+	GateScore       int                `json:"gateScore"`
+	Checks          []ReleaseGateCheck `json:"checks"`
+	Blockers        []ReleaseBlocker   `json:"blockers"`
+	Warnings        []ReleaseWarning   `json:"warnings"`
+	PassRate        float64            `json:"passRate"`
+	ByCategory      []GateCategory     `json:"byCategory"`
 	Recommendations []string           `json:"recommendations"`
 }
 
@@ -36,9 +36,9 @@ type ReleaseGateCheck struct {
 }
 
 type ReleaseBlocker struct {
-	Check     string `json:"check"`
-	Severity  string `json:"severity"`
-	Action    string `json:"action"`
+	Check    string `json:"check"`
+	Severity string `json:"severity"`
+	Action   string `json:"action"`
 }
 
 type ReleaseWarning struct {

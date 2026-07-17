@@ -16,30 +16,30 @@ import (
 // ChangeReadinessResult is the deployment change readiness pre-flight gate.
 // It evaluates whether the cluster is in a safe state to accept new deployments.
 type ChangeReadinessResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         ReadinessSummary    `json:"summary"`
-	GateDecision    string              `json:"gateDecision"` // proceed, proceed-with-caution, blocked
-	ReadinessScore  int                 `json:"readinessScore"` // 0-100, higher = more ready
-	Checks          []ReadinessCheck    `json:"checks"`
-	Blockers        []ReadinessBlocker  `json:"blockers,omitempty"`
-	Warnings        []ReadinessWarning  `json:"warnings,omitempty"`
-	AffectedWorkloads int               `json:"affectedWorkloads"`
-	RecentFailures  []RecentFailure     `json:"recentFailures,omitempty"`
-	CapacityHeadroom CapacityHeadroom   `json:"capacityHeadroom"`
-	RollbackPaths   int                 `json:"rollbackPaths"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt         time.Time          `json:"scannedAt"`
+	Summary           ReadinessSummary   `json:"summary"`
+	GateDecision      string             `json:"gateDecision"`   // proceed, proceed-with-caution, blocked
+	ReadinessScore    int                `json:"readinessScore"` // 0-100, higher = more ready
+	Checks            []ReadinessCheck   `json:"checks"`
+	Blockers          []ReadinessBlocker `json:"blockers,omitempty"`
+	Warnings          []ReadinessWarning `json:"warnings,omitempty"`
+	AffectedWorkloads int                `json:"affectedWorkloads"`
+	RecentFailures    []RecentFailure    `json:"recentFailures,omitempty"`
+	CapacityHeadroom  CapacityHeadroom   `json:"capacityHeadroom"`
+	RollbackPaths     int                `json:"rollbackPaths"`
+	Recommendations   []string           `json:"recommendations"`
 }
 
 // ReadinessSummary aggregates gate check results.
 type ReadinessSummary struct {
-	TotalChecks     int `json:"totalChecks"`
-	Passed          int `json:"passed"`
-	Failed          int `json:"failed"`
-	Warnings        int `json:"warnings"`
-	Skipped         int `json:"skipped"`
-	ActiveRollouts  int `json:"activeRollouts"`  // workloads currently rolling out
-	FailedPods      int `json:"failedPods"`      // pods in CrashLoopBackOff or ImagePullBackOff
-	NodePressure    int `json:"nodePressure"`    // nodes with pressure conditions
+	TotalChecks    int `json:"totalChecks"`
+	Passed         int `json:"passed"`
+	Failed         int `json:"failed"`
+	Warnings       int `json:"warnings"`
+	Skipped        int `json:"skipped"`
+	ActiveRollouts int `json:"activeRollouts"` // workloads currently rolling out
+	FailedPods     int `json:"failedPods"`     // pods in CrashLoopBackOff or ImagePullBackOff
+	NodePressure   int `json:"nodePressure"`   // nodes with pressure conditions
 }
 
 // ReadinessCheck describes one pre-flight gate check.
@@ -53,10 +53,10 @@ type ReadinessCheck struct {
 
 // ReadinessBlocker is a hard blocker that prevents deployment.
 type ReadinessBlocker struct {
-	Check     string `json:"check"`
-	Severity  string `json:"severity"` // critical, high
-	Message   string `json:"message"`
-	Workload  string `json:"workload,omitempty"`
+	Check    string `json:"check"`
+	Severity string `json:"severity"` // critical, high
+	Message  string `json:"message"`
+	Workload string `json:"workload,omitempty"`
 }
 
 // ReadinessWarning is a soft warning that doesn't block but should be reviewed.
@@ -75,12 +75,12 @@ type RecentFailure struct {
 
 // CapacityHeadroom describes available scheduling capacity.
 type CapacityHeadroom struct {
-	TotalPodSlots int `json:"totalPodSlots"`
-	UsedPodSlots  int `json:"usedPodSlots"`
-	Available     int `json:"available"`
+	TotalPodSlots int     `json:"totalPodSlots"`
+	UsedPodSlots  int     `json:"usedPodSlots"`
+	Available     int     `json:"available"`
 	Utilization   float64 `json:"utilization"` // percentage
-	NodesReady    int `json:"nodesReady"`
-	NodesNotReady int `json:"nodesNotReady"`
+	NodesReady    int     `json:"nodesReady"`
+	NodesNotReady int     `json:"nodesNotReady"`
 }
 
 // handleChangeReadiness evaluates cluster readiness for accepting new deployments.

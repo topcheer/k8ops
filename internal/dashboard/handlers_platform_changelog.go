@@ -12,20 +12,20 @@ import (
 
 // ChangeLogResult generates a platform changelog from recent resource changes.
 type ChangeLogResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         ChangeLogSummary    `json:"summary"`
-	RecentChanges   []ChangeEntry       `json:"recentChanges"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time        `json:"scannedAt"`
+	Summary         ChangeLogSummary `json:"summary"`
+	RecentChanges   []ChangeEntry    `json:"recentChanges"`
+	HealthScore     int              `json:"healthScore"`
+	Grade           string           `json:"grade"`
+	Recommendations []string         `json:"recommendations"`
 }
 
 type ChangeLogSummary struct {
-	TotalChanges24h int `json:"totalChanges24h"`
-	NewWorkloads    int `json:"newWorkloads"`
+	TotalChanges24h  int `json:"totalChanges24h"`
+	NewWorkloads     int `json:"newWorkloads"`
 	UpdatedWorkloads int `json:"updatedWorkloads"`
-	NewServices     int `json:"newServices"`
-	NewConfigMaps   int `json:"newConfigMaps"`
+	NewServices      int `json:"newServices"`
+	NewConfigMaps    int `json:"newConfigMaps"`
 	DeletedResources int `json:"deletedResources"`
 }
 
@@ -62,7 +62,9 @@ func (s *Server) handleChangeLog(w http.ResponseWriter, r *http.Request) {
 	_ = collectChanges
 
 	for _, dep := range deployments.Items {
-		if systemNS[dep.Namespace] { continue }
+		if systemNS[dep.Namespace] {
+			continue
+		}
 		created := dep.CreationTimestamp.Time
 		ageStr := fmt.Sprintf("%dh", int(now.Sub(created).Hours()))
 
@@ -90,7 +92,9 @@ func (s *Server) handleChangeLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, svc := range services.Items {
-		if systemNS[svc.Namespace] { continue }
+		if systemNS[svc.Namespace] {
+			continue
+		}
 		if svc.CreationTimestamp.Time.After(twentyFourHoursAgo) {
 			result.Summary.TotalChanges24h++
 			result.Summary.NewServices++
@@ -102,8 +106,12 @@ func (s *Server) handleChangeLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, cm := range configmaps.Items {
-		if systemNS[cm.Namespace] { continue }
-		if strings.Contains(cm.Name, "leader") || strings.Contains(cm.Name, "kube-root-ca") { continue }
+		if systemNS[cm.Namespace] {
+			continue
+		}
+		if strings.Contains(cm.Name, "leader") || strings.Contains(cm.Name, "kube-root-ca") {
+			continue
+		}
 		if cm.CreationTimestamp.Time.After(twentyFourHoursAgo) {
 			result.Summary.TotalChanges24h++
 			result.Summary.NewConfigMaps++
@@ -116,9 +124,15 @@ func (s *Server) handleChangeLog(w http.ResponseWriter, r *http.Request) {
 
 	// Score: more recent changes = higher activity score
 	score := 50
-	if result.Summary.TotalChanges24h > 0 { score += 20 }
-	if result.Summary.NewWorkloads > 0 { score += 15 }
-	if result.Summary.UpdatedWorkloads > 0 { score += 15 }
+	if result.Summary.TotalChanges24h > 0 {
+		score += 20
+	}
+	if result.Summary.NewWorkloads > 0 {
+		score += 15
+	}
+	if result.Summary.UpdatedWorkloads > 0 {
+		score += 15
+	}
 	result.HealthScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.HealthScore)
 
@@ -128,8 +142,12 @@ func (s *Server) handleChangeLog(w http.ResponseWriter, r *http.Request) {
 
 	var recs []string
 	recs = append(recs, fmt.Sprintf("Platform activity: %d changes in 24h (%d new, %d updated)", result.Summary.TotalChanges24h, result.Summary.NewWorkloads, result.Summary.UpdatedWorkloads))
-	if result.Summary.NewWorkloads > 5 { recs = append(recs, fmt.Sprintf("%d new workloads deployed — review for resource limits and probes", result.Summary.NewWorkloads)) }
-	if len(recs) == 1 { recs = append(recs, "Platform change rate is stable") }
+	if result.Summary.NewWorkloads > 5 {
+		recs = append(recs, fmt.Sprintf("%d new workloads deployed — review for resource limits and probes", result.Summary.NewWorkloads))
+	}
+	if len(recs) == 1 {
+		recs = append(recs, "Platform change rate is stable")
+	}
 	result.Recommendations = recs
 
 	writeJSON(w, result)

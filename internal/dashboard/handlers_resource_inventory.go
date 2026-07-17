@@ -17,40 +17,40 @@ import (
 // It serves as a documentation/audit tool listing every resource type,
 // counts, health status, age distribution, and ownership tracking.
 type ResourceInventoryResult struct {
-	ScannedAt       time.Time              `json:"scannedAt"`
-	Summary         InventorySummary       `json:"summary"`
-	ByKind          []KindInventory        `json:"byKind"`
-	ByNamespace     []NSInventory          `json:"byNamespace"`
-	HealthSummary   InventoryHealth        `json:"healthSummary"`
-	AgeDistribution AgeDistribution        `json:"ageDistribution"`
-	LabelsCoverage  LabelsCoverage         `json:"labelsCoverage"`
-	Orphaned        []OrphanedResource     `json:"orphaned"`
-	HealthScore     int                    `json:"healthScore"`
-	Grade           string                 `json:"grade"`
-	Recommendations []string               `json:"recommendations"`
+	ScannedAt       time.Time          `json:"scannedAt"`
+	Summary         InventorySummary   `json:"summary"`
+	ByKind          []KindInventory    `json:"byKind"`
+	ByNamespace     []NSInventory      `json:"byNamespace"`
+	HealthSummary   InventoryHealth    `json:"healthSummary"`
+	AgeDistribution AgeDistribution    `json:"ageDistribution"`
+	LabelsCoverage  LabelsCoverage     `json:"labelsCoverage"`
+	Orphaned        []OrphanedResource `json:"orphaned"`
+	HealthScore     int                `json:"healthScore"`
+	Grade           string             `json:"grade"`
+	Recommendations []string           `json:"recommendations"`
 }
 
 // InventorySummary aggregates resource counts.
 type InventorySummary struct {
-	TotalResources   int `json:"totalResources"`
-	Namespaces       int `json:"namespaces"`
-	Deployments      int `json:"deployments"`
-	StatefulSets     int `json:"statefulSets"`
-	DaemonSets       int `json:"daemonSets"`
-	Pods             int `json:"pods"`
-	Services         int `json:"services"`
-	ConfigMaps       int `json:"configMaps"`
-	Secrets          int `json:"secrets"`
-	PVCs             int `json:"pvcs"`
-	Ingresses        int `json:"ingresses"`
-	NetworkPolicies  int `json:"networkPolicies"`
-	ServiceAccounts  int `json:"serviceAccounts"`
-	Roles            int `json:"roles"`
-	ClusterRoles     int `json:"clusterRoles"`
-	HPAs             int `json:"hpas"`
-	PDBs             int `json:"pdbs"`
-	StorageClasses   int `json:"storageClasses"`
-	Nodes            int `json:"nodes"`
+	TotalResources  int `json:"totalResources"`
+	Namespaces      int `json:"namespaces"`
+	Deployments     int `json:"deployments"`
+	StatefulSets    int `json:"statefulSets"`
+	DaemonSets      int `json:"daemonSets"`
+	Pods            int `json:"pods"`
+	Services        int `json:"services"`
+	ConfigMaps      int `json:"configMaps"`
+	Secrets         int `json:"secrets"`
+	PVCs            int `json:"pvcs"`
+	Ingresses       int `json:"ingresses"`
+	NetworkPolicies int `json:"networkPolicies"`
+	ServiceAccounts int `json:"serviceAccounts"`
+	Roles           int `json:"roles"`
+	ClusterRoles    int `json:"clusterRoles"`
+	HPAs            int `json:"hpas"`
+	PDBs            int `json:"pdbs"`
+	StorageClasses  int `json:"storageClasses"`
+	Nodes           int `json:"nodes"`
 }
 
 // KindInventory per-kind resource count and status.
@@ -64,14 +64,14 @@ type KindInventory struct {
 
 // NSInventory per-namespace resource counts.
 type NSInventory struct {
-	Namespace    string `json:"namespace"`
-	Workloads    int    `json:"workloads"`
-	Pods         int    `json:"pods"`
-	Services     int    `json:"services"`
-	ConfigMaps   int    `json:"configMaps"`
-	Secrets      int `json:"secrets"`
-	IsSystem     bool   `json:"isSystem"`
-	ResourcePct  float64 `json:"resourcePct"`
+	Namespace   string  `json:"namespace"`
+	Workloads   int     `json:"workloads"`
+	Pods        int     `json:"pods"`
+	Services    int     `json:"services"`
+	ConfigMaps  int     `json:"configMaps"`
+	Secrets     int     `json:"secrets"`
+	IsSystem    bool    `json:"isSystem"`
+	ResourcePct float64 `json:"resourcePct"`
 }
 
 // InventoryHealth aggregates health status.
@@ -95,11 +95,11 @@ type AgeDistribution struct {
 
 // LabelsCoverage tracks label hygiene.
 type LabelsCoverage struct {
-	WithAppLabel      int     `json:"withAppLabel"`
-	WithTeamLabel     int     `json:"withTeamLabel"`
-	WithEnvLabel      int     `json:"withEnvLabel"`
-	WithoutLabels     int     `json:"withoutLabels"`
-	AppLabelPct       float64 `json:"appLabelPct"`
+	WithAppLabel  int     `json:"withAppLabel"`
+	WithTeamLabel int     `json:"withTeamLabel"`
+	WithEnvLabel  int     `json:"withEnvLabel"`
+	WithoutLabels int     `json:"withoutLabels"`
+	AppLabelPct   float64 `json:"appLabelPct"`
 }
 
 // OrphanedResource describes a resource with no owner.

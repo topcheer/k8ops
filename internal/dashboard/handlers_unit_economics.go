@@ -15,80 +15,80 @@ import (
 // per namespace, efficiency ratios, and cost-per-unit metrics that translate
 // infrastructure costs into business-relevant unit costs.
 type UnitEconomicsResult struct {
-	ScannedAt       time.Time            `json:"scannedAt"`
-	Summary         UnitEconSummary      `json:"summary"`
-	CostPerPod      float64             `json:"costPerPod"`
-	CostPerService  float64             `json:"costPerService"`
-	CostPerNS       []NSUnitEcon         `json:"costPerNamespace"`
-	EfficiencyRatios EfficiencyRatios    `json:"efficiencyRatios"`
-	TopCostPods     []PodCostEntry       `json:"topCostPods"`
-	SavingsOpportunities []UnitSavings  `json:"savingsOpportunities"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt            time.Time        `json:"scannedAt"`
+	Summary              UnitEconSummary  `json:"summary"`
+	CostPerPod           float64          `json:"costPerPod"`
+	CostPerService       float64          `json:"costPerService"`
+	CostPerNS            []NSUnitEcon     `json:"costPerNamespace"`
+	EfficiencyRatios     EfficiencyRatios `json:"efficiencyRatios"`
+	TopCostPods          []PodCostEntry   `json:"topCostPods"`
+	SavingsOpportunities []UnitSavings    `json:"savingsOpportunities"`
+	HealthScore          int              `json:"healthScore"`
+	Grade                string           `json:"grade"`
+	Recommendations      []string         `json:"recommendations"`
 }
 
 // UnitEconSummary aggregates unit economics statistics.
 type UnitEconSummary struct {
-	MonthlySpend      float64 `json:"monthlySpend"`
-	TotalPods         int     `json:"totalPods"`
-	TotalServices     int     `json:"totalServices"`
-	TotalNamespaces   int     `json:"totalNamespaces"`
-	TotalCPURequests  float64 `json:"totalCPURequests"`  // cores
-	TotalMemRequests  float64 `json:"totalMemRequests"`  // GB
-	TotalCPULimits    float64 `json:"totalCPULimits"`
-	TotalMemLimits    float64 `json:"totalMemLimits"`
-	CPUPerPod         float64 `json:"cpuPerPod"`
-	MemPerPod         float64 `json:"memPerPod"`
-	CPUCostShare      float64 `json:"cpuCostShare"`  // % of cost from CPU
-	MemCostShare      float64 `json:"memCostShare"`
+	MonthlySpend     float64 `json:"monthlySpend"`
+	TotalPods        int     `json:"totalPods"`
+	TotalServices    int     `json:"totalServices"`
+	TotalNamespaces  int     `json:"totalNamespaces"`
+	TotalCPURequests float64 `json:"totalCPURequests"` // cores
+	TotalMemRequests float64 `json:"totalMemRequests"` // GB
+	TotalCPULimits   float64 `json:"totalCPULimits"`
+	TotalMemLimits   float64 `json:"totalMemLimits"`
+	CPUPerPod        float64 `json:"cpuPerPod"`
+	MemPerPod        float64 `json:"memPerPod"`
+	CPUCostShare     float64 `json:"cpuCostShare"` // % of cost from CPU
+	MemCostShare     float64 `json:"memCostShare"`
 }
 
 // NSUnitEcon per-namespace unit economics.
 type NSUnitEcon struct {
-	Namespace     string  `json:"namespace"`
-	PodCount      int     `json:"podCount"`
-	ServiceCount  int     `json:"serviceCount"`
-	MonthlyCost   float64 `json:"monthlyCost"`
-	CostPerPod    float64 `json:"costPerPod"`
-	CPURequests   float64 `json:"cpuRequests"`
-	MemRequests   float64 `json:"memRequestsGB"`
-	CostSharePct  float64 `json:"costSharePct"`
-	Efficiency    string  `json:"efficiency"` // high, medium, low
+	Namespace    string  `json:"namespace"`
+	PodCount     int     `json:"podCount"`
+	ServiceCount int     `json:"serviceCount"`
+	MonthlyCost  float64 `json:"monthlyCost"`
+	CostPerPod   float64 `json:"costPerPod"`
+	CPURequests  float64 `json:"cpuRequests"`
+	MemRequests  float64 `json:"memRequestsGB"`
+	CostSharePct float64 `json:"costSharePct"`
+	Efficiency   string  `json:"efficiency"` // high, medium, low
 }
 
 // EfficiencyRatios computes various efficiency metrics.
 type EfficiencyRatios struct {
-	LimitToRequestCPU  float64 `json:"limitToRequestCPU"`
-	LimitToRequestMem  float64 `json:"limitToRequestMem"`
-	UtilToRequest      float64 `json:"utilToRequest"`   // estimated
-	CostPerCore        float64 `json:"costPerCore"`
-	CostPerGB          float64 `json:"costPerGB"`
-	WastePct           float64 `json:"wastePct"`
+	LimitToRequestCPU float64 `json:"limitToRequestCPU"`
+	LimitToRequestMem float64 `json:"limitToRequestMem"`
+	UtilToRequest     float64 `json:"utilToRequest"` // estimated
+	CostPerCore       float64 `json:"costPerCore"`
+	CostPerGB         float64 `json:"costPerGB"`
+	WastePct          float64 `json:"wastePct"`
 }
 
 // PodCostEntry describes per-pod cost.
 type PodCostEntry struct {
-	Name       string  `json:"name"`
-	Namespace  string  `json:"namespace"`
-	CPUCores   float64 `json:"cpuCores"`
-	MemGB      float64 `json:"memGB"`
+	Name        string  `json:"name"`
+	Namespace   string  `json:"namespace"`
+	CPUCores    float64 `json:"cpuCores"`
+	MemGB       float64 `json:"memGB"`
 	MonthlyCost float64 `json:"monthlyCost"`
 	CostPerCore float64 `json:"costPerCore"`
 }
 
 // UnitSavings describes a cost optimization opportunity.
 type UnitSavings struct {
-	Type        string  `json:"type"`
-	Description string  `json:"description"`
+	Type           string  `json:"type"`
+	Description    string  `json:"description"`
 	MonthlySavings float64 `json:"monthlySavings"`
 	AnnualSavings  float64 `json:"annualSavings"`
 }
 
 // Cost estimates (USD per month)
 const (
-	cpuCostPerCoreMonth = 28.0  // ~$28/core/month (on-demand average)
-	memCostPerGBMonth   = 3.8   // ~$3.8/GB/month (on-demand average)
+	cpuCostPerCoreMonth = 28.0 // ~$28/core/month (on-demand average)
+	memCostPerGBMonth   = 3.8  // ~$3.8/GB/month (on-demand average)
 )
 
 // handleUnitEconomics handles GET /api/scalability/unit-economics
@@ -281,29 +281,29 @@ func generateUnitSavings(s UnitEconSummary, r EfficiencyRatios, pods []PodCostEn
 	if r.LimitToRequestCPU > 3 {
 		estSavings := s.MonthlySpend * 0.15
 		savings = append(savings, UnitSavings{
-			Type:            "right-size-limits",
-			Description:     fmt.Sprintf("CPU limit/request ratio is %.1fx — right-size to reduce waste", r.LimitToRequestCPU),
-			MonthlySavings:  estSavings,
-			AnnualSavings:   estSavings * 12,
+			Type:           "right-size-limits",
+			Description:    fmt.Sprintf("CPU limit/request ratio is %.1fx — right-size to reduce waste", r.LimitToRequestCPU),
+			MonthlySavings: estSavings,
+			AnnualSavings:  estSavings * 12,
 		})
 	}
 	if r.LimitToRequestMem > 3 {
 		estSavings := s.MonthlySpend * 0.10
 		savings = append(savings, UnitSavings{
-			Type:            "right-size-mem-limits",
-			Description:     fmt.Sprintf("Memory limit/request ratio is %.1fx — reduce limits", r.LimitToRequestMem),
-			MonthlySavings:  estSavings,
-			AnnualSavings:   estSavings * 12,
+			Type:           "right-size-mem-limits",
+			Description:    fmt.Sprintf("Memory limit/request ratio is %.1fx — reduce limits", r.LimitToRequestMem),
+			MonthlySavings: estSavings,
+			AnnualSavings:  estSavings * 12,
 		})
 	}
 
 	// High cost per pod
 	if s.TotalPods > 0 && s.MonthlySpend/float64(s.TotalPods) > 50 {
 		savings = append(savings, UnitSavings{
-			Type:            "consolidate-pods",
-			Description:     fmt.Sprintf("Average cost per pod is $%.2f — consolidate to reduce overhead", s.MonthlySpend/float64(s.TotalPods)),
-			MonthlySavings:  s.MonthlySpend * 0.05,
-			AnnualSavings:   s.MonthlySpend * 0.6,
+			Type:           "consolidate-pods",
+			Description:    fmt.Sprintf("Average cost per pod is $%.2f — consolidate to reduce overhead", s.MonthlySpend/float64(s.TotalPods)),
+			MonthlySavings: s.MonthlySpend * 0.05,
+			AnnualSavings:  s.MonthlySpend * 0.6,
 		})
 	}
 
@@ -356,7 +356,7 @@ func generateUnitEconRecs(r UnitEconomicsResult) []string {
 		r.Summary.TotalCPURequests, r.Summary.TotalMemRequests, r.Summary.CPUCostShare, r.Summary.MemCostShare))
 
 	if r.EfficiencyRatios.LimitToRequestCPU > 3 {
-		recs = append(recs, fmt.Sprintf("CPU limit/request ratio is %.1fx — reduce limits to save ~$%.0f/month", 
+		recs = append(recs, fmt.Sprintf("CPU limit/request ratio is %.1fx — reduce limits to save ~$%.0f/month",
 			r.EfficiencyRatios.LimitToRequestCPU, r.Summary.MonthlySpend*0.15))
 	}
 

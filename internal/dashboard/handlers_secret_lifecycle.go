@@ -15,25 +15,25 @@ import (
 // secret age, rotation policy compliance, plaintext detection,
 // key management integration, and secret sprawl analysis.
 type SecretLifecycleResult struct {
-	ScannedAt       time.Time             `json:"scannedAt"`
+	ScannedAt       time.Time              `json:"scannedAt"`
 	Summary         SecretLifecycleSummary `json:"summary"`
-	AgedSecrets     []AgedSecret          `json:"agedSecrets"`
-	PlaintextRisk   []PlaintextRisk       `json:"plaintextRisks"`
-	SecretSprawl    []SecretSprawl        `json:"secretSprawl"`
-	LifecycleScore  int                   `json:"lifecycleScore"`
-	Grade           string                `json:"grade"`
-	Recommendations []string              `json:"recommendations"`
+	AgedSecrets     []AgedSecret           `json:"agedSecrets"`
+	PlaintextRisk   []PlaintextRisk        `json:"plaintextRisks"`
+	SecretSprawl    []SecretSprawl         `json:"secretSprawl"`
+	LifecycleScore  int                    `json:"lifecycleScore"`
+	Grade           string                 `json:"grade"`
+	Recommendations []string               `json:"recommendations"`
 }
 
 type SecretLifecycleSummary struct {
-	TotalSecrets      int     `json:"totalSecrets"`
-	DockerconfigJSON  int     `json:"dockerconfigJson"`
-	OPAQUE            int     `json:"opaque"`
-	TLS               int     `json:"tls"`
-	OlderThan90Days   int     `json:"olderThan90Days"`
-	OlderThan365Days  int     `json:"olderThan365Days"`
-	DuplicateCount    int     `json:"duplicateCount"`
-	UnusedCount       int     `json:"unusedCount"`
+	TotalSecrets     int `json:"totalSecrets"`
+	DockerconfigJSON int `json:"dockerconfigJson"`
+	OPAQUE           int `json:"opaque"`
+	TLS              int `json:"tls"`
+	OlderThan90Days  int `json:"olderThan90Days"`
+	OlderThan365Days int `json:"olderThan365Days"`
+	DuplicateCount   int `json:"duplicateCount"`
+	UnusedCount      int `json:"unusedCount"`
 }
 
 type AgedSecret struct {
@@ -54,10 +54,10 @@ type PlaintextRisk struct {
 }
 
 type SecretSprawl struct {
-	Key       string   `json:"key"`
-	Count     int      `json:"count"`
+	Key        string   `json:"key"`
+	Count      int      `json:"count"`
 	Namespaces []string `json:"namespaces"`
-	Risk      string   `json:"risk"`
+	Risk       string   `json:"risk"`
 }
 
 // handleSecretLifecycle analyzes secret management lifecycle and rotation.

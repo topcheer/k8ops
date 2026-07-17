@@ -41,9 +41,9 @@ func TestSecretLifecycleScoring(t *testing.T) {
 		expectedMin int
 		expectedMax int
 	}{
-		{0, 0, 0, 0, 0, 95, 100},        // Clean
-		{10, 5, 3, 2, 5, 0, 40},         // Many issues
-		{5, 0, 2, 0, 1, 75, 95},         // Some issues
+		{0, 0, 0, 0, 0, 95, 100}, // Clean
+		{10, 5, 3, 2, 5, 0, 40},  // Many issues
+		{5, 0, 2, 0, 1, 75, 95},  // Some issues
 	}
 	for _, tc := range tests {
 		score := 100
@@ -69,7 +69,7 @@ func TestSecretLifecycleAgeSeverity(t *testing.T) {
 		daysOld  int
 		expected string
 	}{
-		{30, ""},       // Not aged
+		{30, ""},        // Not aged
 		{100, "medium"}, // 90+ days
 		{400, "high"},   // 365+ days
 	}

@@ -14,34 +14,34 @@ import (
 // backup tool detection (Velero/K8up), backup frequency, restore test status,
 // cross-cluster replication, and RPO/RTO estimation.
 type DRBackupResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         DRBackupSummary     `json:"summary"`
-	BackupCoverage  []BackupCoverage    `json:"backupCoverage"`
-	UnprotectedNS   []DRUnprotectedNS   `json:"unprotectedNamespaces"`
-	DrReadiness     string              `json:"drReadiness"`
-	ReadinessScore  int                 `json:"readinessScore"`
-	Grade           string              `json:"grade"`
-	EstRPO          string              `json:"estRPO"`
-	EstRTO          string              `json:"estRTO"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time         `json:"scannedAt"`
+	Summary         DRBackupSummary   `json:"summary"`
+	BackupCoverage  []BackupCoverage  `json:"backupCoverage"`
+	UnprotectedNS   []DRUnprotectedNS `json:"unprotectedNamespaces"`
+	DrReadiness     string            `json:"drReadiness"`
+	ReadinessScore  int               `json:"readinessScore"`
+	Grade           string            `json:"grade"`
+	EstRPO          string            `json:"estRPO"`
+	EstRTO          string            `json:"estRTO"`
+	Recommendations []string          `json:"recommendations"`
 }
 
 type DRBackupSummary struct {
-	HasVelero       bool `json:"hasVelero"`
-	HasK8up         bool `json:"hasK8up"`
-	HasLonghorn     bool `json:"hasLonghorn"`
-	TotalNamespaces int  `json:"totalNamespaces"`
-	ProtectedNS     int  `json:"protectedNS"`
-	UnprotectedNS   int  `json:"unprotectedNS"`
-	BackupStorageOK bool `json:"backupStorageOK"`
+	HasVelero       bool   `json:"hasVelero"`
+	HasK8up         bool   `json:"hasK8up"`
+	HasLonghorn     bool   `json:"hasLonghorn"`
+	TotalNamespaces int    `json:"totalNamespaces"`
+	ProtectedNS     int    `json:"protectedNS"`
+	UnprotectedNS   int    `json:"unprotectedNS"`
+	BackupStorageOK bool   `json:"backupStorageOK"`
 	LastBackupAge   string `json:"lastBackupAge"`
 }
 
 type BackupCoverage struct {
-	Namespace  string `json:"namespace"`
-	HasBackup  bool   `json:"hasBackup"`
-	PVCCount   int    `json:"pvcCount"`
-	Status     string `json:"status"`
+	Namespace string `json:"namespace"`
+	HasBackup bool   `json:"hasBackup"`
+	PVCCount  int    `json:"pvcCount"`
+	Status    string `json:"status"`
 }
 
 type DRUnprotectedNS struct {

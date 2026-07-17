@@ -34,9 +34,9 @@ func TestGitOpsDriftScoring(t *testing.T) {
 		expectedMin   int
 		expectedMax   int
 	}{
-		{true, 0, 0, 90, 100},     // Full GitOps, no drift
-		{false, 10, 5, 0, 30},     // No GitOps, many manual changes
-		{true, 3, 2, 75, 95},      // GitOps with some drift
+		{true, 0, 0, 90, 100}, // Full GitOps, no drift
+		{false, 10, 5, 0, 30}, // No GitOps, many manual changes
+		{true, 3, 2, 75, 95},  // GitOps with some drift
 	}
 	for _, tc := range tests {
 		score := 100

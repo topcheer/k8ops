@@ -14,33 +14,33 @@ import (
 // service-to-service connectivity, external dependency mapping,
 // traffic flow topology, and unexposed service detection.
 type TrafficFlowResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         TrafficFlowSummary  `json:"summary"`
-	ServiceFlows    []ServiceFlow       `json:"serviceFlows"`
+	ScannedAt        time.Time          `json:"scannedAt"`
+	Summary          TrafficFlowSummary `json:"summary"`
+	ServiceFlows     []ServiceFlow      `json:"serviceFlows"`
 	IsolatedServices []IsolatedService  `json:"isolatedServices"`
-	FlowScore       int                 `json:"flowScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	FlowScore        int                `json:"flowScore"`
+	Grade            string             `json:"grade"`
+	Recommendations  []string           `json:"recommendations"`
 }
 
 type TrafficFlowSummary struct {
-	TotalServices    int `json:"totalServices"`
+	TotalServices         int `json:"totalServices"`
 	ClusterIPLoadBalancer int `json:"clusterIPLoadBalancer"`
-	HeadlessServices int `json:"headlessServices"`
-	ExternalNameSvc  int `json:"externalNameServices"`
-	NodePortServices int `json:"nodePortServices"`
-	NoSelectorSvc    int `json:"noSelectorServices"`
+	HeadlessServices      int `json:"headlessServices"`
+	ExternalNameSvc       int `json:"externalNameServices"`
+	NodePortServices      int `json:"nodePortServices"`
+	NoSelectorSvc         int `json:"noSelectorServices"`
 }
 
 type ServiceFlow struct {
-	Name        string   `json:"name"`
-	Namespace   string   `json:"namespace"`
-	Type        string   `json:"type"`
-	ClusterIP   string   `json:"clusterIP"`
-	Ports       []string `json:"ports"`
-	HasEndpoint bool     `json:"hasEndpoint"`
-	BackendCount int     `json:"backendCount"`
-	ExposureLevel string `json:"exposureLevel"`
+	Name          string   `json:"name"`
+	Namespace     string   `json:"namespace"`
+	Type          string   `json:"type"`
+	ClusterIP     string   `json:"clusterIP"`
+	Ports         []string `json:"ports"`
+	HasEndpoint   bool     `json:"hasEndpoint"`
+	BackendCount  int      `json:"backendCount"`
+	ExposureLevel string   `json:"exposureLevel"`
 }
 
 type IsolatedService struct {

@@ -16,49 +16,49 @@ import (
 // identifies soon-to-expire certs, tracks CA chains, and maps the complete
 // certificate landscape for compliance auditing.
 type CertInventoryResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         CertInvSummary      `json:"summary"`
-	Certificates    []CertInvEntry      `json:"certificates"`
-	ExpiringSoon    []CertInvEntry      `json:"expiringSoon"`
-	ByNamespace     []CertInvNS         `json:"byNamespace"`
-	CASummary       CertCASummary       `json:"caSummary"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-		Recommendations []string           `json:"recommendations"`
+	ScannedAt       time.Time      `json:"scannedAt"`
+	Summary         CertInvSummary `json:"summary"`
+	Certificates    []CertInvEntry `json:"certificates"`
+	ExpiringSoon    []CertInvEntry `json:"expiringSoon"`
+	ByNamespace     []CertInvNS    `json:"byNamespace"`
+	CASummary       CertCASummary  `json:"caSummary"`
+	HealthScore     int            `json:"healthScore"`
+	Grade           string         `json:"grade"`
+	Recommendations []string       `json:"recommendations"`
 }
 
 type CertInvSummary struct {
-	TotalCerts      int     `json:"totalCerts"`
-	ValidCerts      int     `json:"validCerts"`
-	Expiring7d      int     `json:"expiring7d"`
-	Expiring30d     int     `json:"expiring30d"`
-	ExpiredCount    int     `json:"expiredCount"`
-	SelfSigned      int     `json:"selfSigned"`
-	WildcardCerts   int     `json:"wildcardCerts"`
-	AvgValidityDays int     `json:"avgValidityDays"`
+	TotalCerts      int `json:"totalCerts"`
+	ValidCerts      int `json:"validCerts"`
+	Expiring7d      int `json:"expiring7d"`
+	Expiring30d     int `json:"expiring30d"`
+	ExpiredCount    int `json:"expiredCount"`
+	SelfSigned      int `json:"selfSigned"`
+	WildcardCerts   int `json:"wildcardCerts"`
+	AvgValidityDays int `json:"avgValidityDays"`
 }
 
 type CertInvEntry struct {
-	Name           string    `json:"name"`
-	Namespace      string    `json:"namespace"`
-	SecretName     string    `json:"secretName"`
-	CN             string    `json:"commonName"`
-	SANs           []string  `json:"sans,omitempty"`
-	Issuer         string    `json:"issuer"`
-	NotBefore      time.Time `json:"notBefore"`
-	NotAfter       time.Time `json:"notAfter"`
-	DaysToExpiry   int       `json:"daysToExpiry"`
-	Status         string    `json:"status"` // valid, expiring, expired
-	IsWildcard     bool      `json:"isWildcard"`
-	IsSelfSigned   bool      `json:"isSelfSigned"`
-	KeyAlgorithm   string    `json:"keyAlgorithm"`
+	Name         string    `json:"name"`
+	Namespace    string    `json:"namespace"`
+	SecretName   string    `json:"secretName"`
+	CN           string    `json:"commonName"`
+	SANs         []string  `json:"sans,omitempty"`
+	Issuer       string    `json:"issuer"`
+	NotBefore    time.Time `json:"notBefore"`
+	NotAfter     time.Time `json:"notAfter"`
+	DaysToExpiry int       `json:"daysToExpiry"`
+	Status       string    `json:"status"` // valid, expiring, expired
+	IsWildcard   bool      `json:"isWildcard"`
+	IsSelfSigned bool      `json:"isSelfSigned"`
+	KeyAlgorithm string    `json:"keyAlgorithm"`
 }
 
 type CertInvNS struct {
-	Namespace  string `json:"namespace"`
-	CertCount  int    `json:"certCount"`
-	Expiring   int    `json:"expiring"`
-	Expired    int    `json:"expired"`
+	Namespace string `json:"namespace"`
+	CertCount int    `json:"certCount"`
+	Expiring  int    `json:"expiring"`
+	Expired   int    `json:"expired"`
 }
 
 type CertCASummary struct {

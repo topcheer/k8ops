@@ -75,11 +75,11 @@ func TestComputeReqAccScore(t *testing.T) {
 	// Well-configured
 	r := &RequestAccuracyResult{
 		Summary: ReqAccSummary{
-			TotalContainers: 10,
-			WithRequests:    10,
-			WithLimits:      10,
-			Balanced:        9,
-			OvercommitRatio: 1.5,
+			TotalContainers:    10,
+			WithRequests:       10,
+			WithLimits:         10,
+			Balanced:           9,
+			OvercommitRatio:    1.5,
 			MemOvercommitRatio: 1.5,
 		},
 	}
@@ -91,13 +91,13 @@ func TestComputeReqAccScore(t *testing.T) {
 	// Poor configuration
 	r2 := &RequestAccuracyResult{
 		Summary: ReqAccSummary{
-			TotalContainers: 10,
-			NoRequests:      5,
-			NoLimits:        5,
-			Balanced:        2,
-			OvercommitRatio: 4.0,
+			TotalContainers:    10,
+			NoRequests:         5,
+			NoLimits:           5,
+			Balanced:           2,
+			OvercommitRatio:    4.0,
 			MemOvercommitRatio: 3.0,
-			UnderProvisioned: 2,
+			UnderProvisioned:   2,
 		},
 	}
 	score2 := computeReqAccScore(r2)
@@ -109,15 +109,15 @@ func TestComputeReqAccScore(t *testing.T) {
 func TestBuildReqAccRecs(t *testing.T) {
 	r := &RequestAccuracyResult{
 		Summary: ReqAccSummary{
-			NoRequests: 3,
-			NoLimits: 5,
-			OverProvisioned: 2,
-			OvercommitRatio: 2.5,
+			NoRequests:       3,
+			NoLimits:         5,
+			OverProvisioned:  2,
+			OvercommitRatio:  2.5,
 			UnderProvisioned: 1,
 		},
 		RightsizingSavings: ReqAccSavings{
-			WastedCPU: 2.5,
-			WastedMem: 5.0,
+			WastedCPU:            2.5,
+			WastedMem:            5.0,
 			EstimatedMonthlyCost: 70.0,
 		},
 	}

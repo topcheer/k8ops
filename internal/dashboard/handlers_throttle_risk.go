@@ -12,24 +12,24 @@ import (
 
 // ThrottleRiskResult analyzes pod resource throttling risk and CPU pressure.
 type ThrottleRiskResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         ThrottleSummary     `json:"summary"`
-	AtRiskPods      []ThrottleRiskPod   `json:"atRiskPods"`
-	PressureNodes   []PressureNode      `json:"pressureNodes"`
-	RiskScore       int                 `json:"riskScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time         `json:"scannedAt"`
+	Summary         ThrottleSummary   `json:"summary"`
+	AtRiskPods      []ThrottleRiskPod `json:"atRiskPods"`
+	PressureNodes   []PressureNode    `json:"pressureNodes"`
+	RiskScore       int               `json:"riskScore"`
+	Grade           string            `json:"grade"`
+	Recommendations []string          `json:"recommendations"`
 }
 
 type ThrottleSummary struct {
-	TotalPods       int     `json:"totalPods"`
-	PodsWithLimits  int     `json:"podsWithLimits"`
+	TotalPods        int    `json:"totalPods"`
+	PodsWithLimits   int    `json:"podsWithLimits"`
 	PodsWithRequests int    `json:"podsWithRequests"`
-	OverLimitPods   int     `json:"overLimitPods"`
-	CPUThrottled    int     `json:"cpuThrottled"`
-	MemPressure     int     `json:"memPressure"`
-	AvgCPURequest   string  `json:"avgCPURequest"`
-	AvgMemRequest   string  `json:"avgMemRequest"`
+	OverLimitPods    int    `json:"overLimitPods"`
+	CPUThrottled     int    `json:"cpuThrottled"`
+	MemPressure      int    `json:"memPressure"`
+	AvgCPURequest    string `json:"avgCPURequest"`
+	AvgMemRequest    string `json:"avgMemRequest"`
 }
 
 type ThrottleRiskPod struct {
@@ -40,10 +40,10 @@ type ThrottleRiskPod struct {
 }
 
 type PressureNode struct {
-	Name     string `json:"name"`
-	CPUPct   float64 `json:"cpuPct"`
-	MemPct   float64 `json:"memPct"`
-	Status   string `json:"status"`
+	Name   string  `json:"name"`
+	CPUPct float64 `json:"cpuPct"`
+	MemPct float64 `json:"memPct"`
+	Status string  `json:"status"`
 }
 
 // handleThrottleRisk analyzes pod resource throttling risk and CPU pressure.
@@ -72,7 +72,9 @@ func (s *Server) handleThrottleRisk(w http.ResponseWriter, r *http.Request) {
 		nodeAllocatedCPU := 0.0
 		nodeAllocatedMem := 0.0
 		for _, pod := range pods.Items {
-			if pod.Spec.NodeName != node.Name { continue }
+			if pod.Spec.NodeName != node.Name {
+				continue
+			}
 			for _, c := range pod.Spec.Containers {
 				if c.Resources.Requests != nil {
 					if q, ok := c.Resources.Requests[corev1.ResourceCPU]; ok {
@@ -86,9 +88,13 @@ func (s *Server) handleThrottleRisk(w http.ResponseWriter, r *http.Request) {
 		}
 
 		cpuPct := 0.0
-		if nodeCPU > 0 { cpuPct = nodeAllocatedCPU / nodeCPU * 100 }
+		if nodeCPU > 0 {
+			cpuPct = nodeAllocatedCPU / nodeCPU * 100
+		}
 		memPct := 0.0
-		if nodeMem > 0 { memPct = nodeAllocatedMem / nodeMem * 100 }
+		if nodeMem > 0 {
+			memPct = nodeAllocatedMem / nodeMem * 100
+		}
 
 		status := "healthy"
 		if cpuPct > 80 || memPct > 85 {
@@ -103,7 +109,9 @@ func (s *Server) handleThrottleRisk(w http.ResponseWriter, r *http.Request) {
 
 	// Pod-level analysis
 	for _, pod := range pods.Items {
-		if systemNS[pod.Namespace] || pod.Status.Phase != corev1.PodRunning { continue }
+		if systemNS[pod.Namespace] || pod.Status.Phase != corev1.PodRunning {
+			continue
+		}
 		result.Summary.TotalPods++
 
 		for _, c := range pod.Spec.Containers {
@@ -125,7 +133,7 @@ func (s *Server) handleThrottleRisk(w http.ResponseWriter, r *http.Request) {
 						result.Summary.CPUThrottled++
 						result.AtRiskPods = append(result.AtRiskPods, ThrottleRiskPod{
 							Name: pod.Name, Namespace: pod.Namespace,
-							Risk: fmt.Sprintf("CPU limit %dm (<100m) — likely throttling", millicores),
+							Risk:     fmt.Sprintf("CPU limit %dm (<100m) — likely throttling", millicores),
 							Severity: "medium",
 						})
 					}
@@ -137,7 +145,7 @@ func (s *Server) handleThrottleRisk(w http.ResponseWriter, r *http.Request) {
 				result.Summary.OverLimitPods++
 				result.AtRiskPods = append(result.AtRiskPods, ThrottleRiskPod{
 					Name: pod.Name, Namespace: pod.Namespace,
-					Risk: "No resource limits — can consume unlimited resources",
+					Risk:     "No resource limits — can consume unlimited resources",
 					Severity: "high",
 				})
 			}
@@ -157,7 +165,9 @@ func (s *Server) handleThrottleRisk(w http.ResponseWriter, r *http.Request) {
 			score -= 5
 		}
 	}
-	if score < 0 { score = 0 }
+	if score < 0 {
+		score = 0
+	}
 	result.RiskScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.RiskScore)
 

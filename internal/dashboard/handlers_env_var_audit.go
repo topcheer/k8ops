@@ -16,26 +16,26 @@ import (
 // security risks (secrets in env), consistency issues, missing best-practice
 // vars, and configuration sprawl.
 type EnvVarAuditResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         EnvAuditSummary     `json:"summary"`
-	Risks           []EnvVarRisk        `json:"risks"`
-	Sprawl          []EnvVarSprawl      `json:"sprawl"`
-	MissingBestPrac []EnvVarMissing     `json:"missingBestPractices"`
-	ByNamespace     []EnvAuditNS        `json:"byNamespace"`
-	TopEnvVars      []EnvVarFreq        `json:"topEnvVars"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time       `json:"scannedAt"`
+	Summary         EnvAuditSummary `json:"summary"`
+	Risks           []EnvVarRisk    `json:"risks"`
+	Sprawl          []EnvVarSprawl  `json:"sprawl"`
+	MissingBestPrac []EnvVarMissing `json:"missingBestPractices"`
+	ByNamespace     []EnvAuditNS    `json:"byNamespace"`
+	TopEnvVars      []EnvVarFreq    `json:"topEnvVars"`
+	HealthScore     int             `json:"healthScore"`
+	Grade           string          `json:"grade"`
+	Recommendations []string        `json:"recommendations"`
 }
 
 type EnvAuditSummary struct {
-	TotalWorkloads   int `json:"totalWorkloads"`
-	TotalEnvVars     int `json:"totalEnvVars"`
-	SecretInEnv      int `json:"secretInEnv"`
-	PlaintextSecrets int `json:"plaintextSecrets"`
-	ConfigMapRefs    int `json:"configMapRefs"`
-	SecretRefs       int `json:"secretRefs"`
-	DuplicateKeys    int `json:"duplicateKeys"`
+	TotalWorkloads   int     `json:"totalWorkloads"`
+	TotalEnvVars     int     `json:"totalEnvVars"`
+	SecretInEnv      int     `json:"secretInEnv"`
+	PlaintextSecrets int     `json:"plaintextSecrets"`
+	ConfigMapRefs    int     `json:"configMapRefs"`
+	SecretRefs       int     `json:"secretRefs"`
+	DuplicateKeys    int     `json:"duplicateKeys"`
 	AvgVarsPerPod    float64 `json:"avgVarsPerPod"`
 }
 
@@ -56,9 +56,9 @@ type EnvVarSprawl struct {
 }
 
 type EnvVarMissing struct {
-	VarName  string `json:"varName"`
-	Reason   string `json:"reason"`
-	Missing  int    `json:"missingCount"`
+	VarName string `json:"varName"`
+	Reason  string `json:"reason"`
+	Missing int    `json:"missingCount"`
 }
 
 type EnvAuditNS struct {

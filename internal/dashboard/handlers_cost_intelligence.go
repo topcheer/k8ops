@@ -16,14 +16,14 @@ import (
 // It goes beyond static cost snapshots to provide trend analysis, anomaly detection,
 // spend forecasting, and FinOps maturity scoring.
 type CostIntelligenceResult struct {
-	ScannedAt    time.Time             `json:"scannedAt"`
-	Summary      CostIntelSummary      `json:"summary"`
-	ByNamespace  []CostIntelNS         `json:"byNamespace"`
-	Forecast     SpendForecast         `json:"forecast"`
-	Anomalies    []CostAnomaly         `json:"anomalies"`
-	TopOpportunities []SavingsRanking  `json:"topOpportunities"`
-	FinOpsScore  FinOpsScore           `json:"finOpsScore"`
-	Recommendations []string           `json:"recommendations"`
+	ScannedAt        time.Time        `json:"scannedAt"`
+	Summary          CostIntelSummary `json:"summary"`
+	ByNamespace      []CostIntelNS    `json:"byNamespace"`
+	Forecast         SpendForecast    `json:"forecast"`
+	Anomalies        []CostAnomaly    `json:"anomalies"`
+	TopOpportunities []SavingsRanking `json:"topOpportunities"`
+	FinOpsScore      FinOpsScore      `json:"finOpsScore"`
+	Recommendations  []string         `json:"recommendations"`
 }
 
 // CostIntelSummary aggregates cost intelligence statistics.
@@ -36,8 +36,8 @@ type CostIntelSummary struct {
 	AnnualProjection float64 `json:"annualProjection"` // monthly * 12
 	AvgCostPerPod    float64 `json:"avgCostPerPod"`
 	AvgCostPerNS     float64 `json:"avgCostPerNS"`
-	MedianNSSpend    float64 `json:"medianNSSpend"`    // median namespace spend
-	TopNSPctOfSpend  float64 `json:"topNSPctOfSpend"`  // top 3 namespaces' share of spend
+	MedianNSSpend    float64 `json:"medianNSSpend"`   // median namespace spend
+	TopNSPctOfSpend  float64 `json:"topNSPctOfSpend"` // top 3 namespaces' share of spend
 	CPUHourlyRate    float64 `json:"cpuHourlyRate"`
 	MemHourlyRate    float64 `json:"memHourlyRate"`
 }
@@ -47,61 +47,61 @@ type CostIntelNS struct {
 	Namespace     string  `json:"namespace"`
 	PodCount      int     `json:"podCount"`
 	WorkloadCount int     `json:"workloadCount"`
-	CPUCores      float64 `json:"cpuCores"`      // total CPU requested in cores
-	MemGB         float64 `json:"memGB"`         // total memory requested in GB
+	CPUCores      float64 `json:"cpuCores"` // total CPU requested in cores
+	MemGB         float64 `json:"memGB"`    // total memory requested in GB
 	MonthlyCost   float64 `json:"monthlyCost"`
 	DailyCost     float64 `json:"dailyCost"`
 	PctOfSpend    float64 `json:"pctOfSpend"`
 	CostPerPod    float64 `json:"costPerPod"`
 	// Efficiency metrics
-	OverRequestRatio float64 `json:"overRequestRatio"` // limit/request ratio, >3 = wasteful
-	UnderutilizedPods int    `json:"underutilizedPods"`  // pods with very low requests
-	SpendVelocity    string  `json:"spendVelocity"`      // increasing, stable, decreasing
-	RiskLevel        string  `json:"riskLevel"`          // low, moderate, high, critical
+	OverRequestRatio  float64 `json:"overRequestRatio"`  // limit/request ratio, >3 = wasteful
+	UnderutilizedPods int     `json:"underutilizedPods"` // pods with very low requests
+	SpendVelocity     string  `json:"spendVelocity"`     // increasing, stable, decreasing
+	RiskLevel         string  `json:"riskLevel"`         // low, moderate, high, critical
 }
 
 // SpendForecast predicts future spend based on current allocation patterns.
 type SpendForecast struct {
-	CurrentMonthly   float64 `json:"currentMonthly"`   // current monthly spend
-	ProjectedMonthly float64 `json:"projectedMonthly"` // projected next month spend (with trend)
-	GrowthRate       float64 `json:"growthRate"`       // estimated monthly growth rate %
-	ProjectedAnnual  float64 `json:"projectedAnnual"`  // annual projection
+	CurrentMonthly       float64 `json:"currentMonthly"`       // current monthly spend
+	ProjectedMonthly     float64 `json:"projectedMonthly"`     // projected next month spend (with trend)
+	GrowthRate           float64 `json:"growthRate"`           // estimated monthly growth rate %
+	ProjectedAnnual      float64 `json:"projectedAnnual"`      // annual projection
 	BudgetRecommendation float64 `json:"budgetRecommendation"` // suggested monthly budget
-	DaysOfDataAvailable int  `json:"daysOfDataAvailable"` // days of trend data
-	Confidence       string  `json:"confidence"`       // high, medium, low
+	DaysOfDataAvailable  int     `json:"daysOfDataAvailable"`  // days of trend data
+	Confidence           string  `json:"confidence"`           // high, medium, low
 }
 
 // CostAnomaly identifies unusual spending patterns.
 type CostAnomaly struct {
-	Type       string  `json:"type"`       // concentration-spike, over-request, idle-waste, runaway-growth
-	Namespace  string  `json:"namespace"`
-	Detail     string  `json:"detail"`
-	Impact     float64 `json:"impactMonthlyCost"`
-	Severity   string  `json:"severity"`   // critical, warning, info
+	Type      string  `json:"type"` // concentration-spike, over-request, idle-waste, runaway-growth
+	Namespace string  `json:"namespace"`
+	Detail    string  `json:"detail"`
+	Impact    float64 `json:"impactMonthlyCost"`
+	Severity  string  `json:"severity"` // critical, warning, info
 }
 
 // SavingsRanking ranks optimization opportunities by estimated savings.
 type SavingsRanking struct {
-	Rank            int     `json:"rank"`
-	Type            string  `json:"type"` // right-size-cpu, right-size-mem, remove-idle, consolidate, spot-migrate
-	Namespace       string  `json:"namespace"`
-	Target          string  `json:"target"` // workload or resource name
-	CurrentCost     float64 `json:"currentCostMonthly"`
+	Rank             int     `json:"rank"`
+	Type             string  `json:"type"` // right-size-cpu, right-size-mem, remove-idle, consolidate, spot-migrate
+	Namespace        string  `json:"namespace"`
+	Target           string  `json:"target"` // workload or resource name
+	CurrentCost      float64 `json:"currentCostMonthly"`
 	EstimatedSavings float64 `json:"estimatedSavingsMonthly"`
-	AnnualSavings   float64 `json:"estimatedSavingsAnnual"`
-	Effort          string  `json:"effort"` // low, medium, high
-	Confidence      string  `json:"confidence"`
+	AnnualSavings    float64 `json:"estimatedSavingsAnnual"`
+	Effort           string  `json:"effort"` // low, medium, high
+	Confidence       string  `json:"confidence"`
 }
 
 // FinOpsScore evaluates FinOps maturity across key dimensions.
 type FinOpsScore struct {
-	Grade             string  `json:"grade"` // A-F
-	Score             int     `json:"score"` // 0-100
-	VisibilityScore   int     `json:"visibilityScore"`   // can you see costs?
-	OptimizationScore int     `json:"optimizationScore"` // are you acting on recommendations?
-	BudgetScore       int     `json:"budgetScore"`       // are budgets enforced?
-	EfficiencyScore   int     `json:"efficiencyScore"`   // is resource utilization good?
-	AllocationScore   int     `json:"allocationScore"`   // is cost allocated to teams?
+	Grade             string   `json:"grade"`             // A-F
+	Score             int      `json:"score"`             // 0-100
+	VisibilityScore   int      `json:"visibilityScore"`   // can you see costs?
+	OptimizationScore int      `json:"optimizationScore"` // are you acting on recommendations?
+	BudgetScore       int      `json:"budgetScore"`       // are budgets enforced?
+	EfficiencyScore   int      `json:"efficiencyScore"`   // is resource utilization good?
+	AllocationScore   int      `json:"allocationScore"`   // is cost allocated to teams?
 	Findings          []string `json:"findings"`
 }
 
@@ -144,14 +144,14 @@ func (s *Server) handleCostIntelligence(w http.ResponseWriter, r *http.Request) 
 
 	// Build per-namespace cost data
 	type nsData struct {
-		cpuMilli    int64
-		memBytes    int64
+		cpuMilli      int64
+		memBytes      int64
 		limitCPUMilli int64
 		limitMemBytes int64
-		podCount    int
-		workloads   map[string]bool
-		oldestPodAge time.Duration
-		newestPodAge time.Duration
+		podCount      int
+		workloads     map[string]bool
+		oldestPodAge  time.Duration
+		newestPodAge  time.Duration
 		underutilPods int
 	}
 
@@ -171,7 +171,7 @@ func (s *Server) handleCostIntelligence(w http.ResponseWriter, r *http.Request) 
 		if systemNS[nsName] {
 			continue
 		}
-	ndata, ok := nsMap[nsName]
+		ndata, ok := nsMap[nsName]
 		if !ok {
 			ndata = &nsData{workloads: make(map[string]bool)}
 			nsMap[nsName] = ndata
@@ -282,19 +282,19 @@ func (s *Server) handleCostIntelligence(w http.ResponseWriter, r *http.Request) 
 		}
 
 		result.ByNamespace = append(result.ByNamespace, CostIntelNS{
-			Namespace:        nsName,
-			PodCount:         nd.podCount,
-			WorkloadCount:    len(nd.workloads),
-			CPUCores:         cpuCores,
-			MemGB:            memGB,
-			MonthlyCost:      roundCost(monthlyCost),
-			DailyCost:        roundCost(monthlyCost / 30),
-			PctOfSpend:       0, // filled after totals
-			CostPerPod:       roundCost(safeDiv(monthlyCost, float64(nd.podCount))),
-			OverRequestRatio: round2(overReqRatio),
+			Namespace:         nsName,
+			PodCount:          nd.podCount,
+			WorkloadCount:     len(nd.workloads),
+			CPUCores:          cpuCores,
+			MemGB:             memGB,
+			MonthlyCost:       roundCost(monthlyCost),
+			DailyCost:         roundCost(monthlyCost / 30),
+			PctOfSpend:        0, // filled after totals
+			CostPerPod:        roundCost(safeDiv(monthlyCost, float64(nd.podCount))),
+			OverRequestRatio:  round2(overReqRatio),
 			UnderutilizedPods: nd.underutilPods,
-			SpendVelocity:    velocity,
-			RiskLevel:        riskLevel,
+			SpendVelocity:     velocity,
+			RiskLevel:         riskLevel,
 		})
 	}
 
@@ -426,7 +426,7 @@ func detectCostAnomalies(namespaces []CostIntelNS, summary CostIntelSummary) []C
 // buildSpendForecast creates a spend projection based on current patterns.
 func buildSpendForecast(summary CostIntelSummary, namespaces []CostIntelNS) SpendForecast {
 	forecast := SpendForecast{
-		CurrentMonthly: roundCost(summary.MonthlySpend),
+		CurrentMonthly:  roundCost(summary.MonthlySpend),
 		ProjectedAnnual: roundCost(summary.MonthlySpend * 12),
 	}
 
@@ -809,5 +809,3 @@ func safeDiv(a, b float64) float64 {
 	}
 	return a / b
 }
-
-

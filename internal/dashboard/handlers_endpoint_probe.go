@@ -12,21 +12,21 @@ import (
 
 // EndpointProbeResult analyzes endpoint readiness by probing service backends.
 type EndpointProbeResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
+	ScannedAt       time.Time            `json:"scannedAt"`
 	Summary         EndpointProbeSummary `json:"summary"`
-	Unhealthy       []UnhealthyEndpoint `json:"unhealthy"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	Unhealthy       []UnhealthyEndpoint  `json:"unhealthy"`
+	HealthScore     int                  `json:"healthScore"`
+	Grade           string               `json:"grade"`
+	Recommendations []string             `json:"recommendations"`
 }
 
 type EndpointProbeSummary struct {
-	TotalServices   int `json:"totalServices"`
-	HealthySvcs     int `json:"healthyServices"`
-	PartialSvcs     int `json:"partialServices"`
-	NoBackendSvcs   int `json:"noBackendServices"`
-	TotalEndpoints  int `json:"totalEndpoints"`
-	ReadyEndpoints  int `json:"readyEndpoints"`
+	TotalServices  int `json:"totalServices"`
+	HealthySvcs    int `json:"healthyServices"`
+	PartialSvcs    int `json:"partialServices"`
+	NoBackendSvcs  int `json:"noBackendServices"`
+	TotalEndpoints int `json:"totalEndpoints"`
+	ReadyEndpoints int `json:"readyEndpoints"`
 }
 
 type UnhealthyEndpoint struct {
@@ -65,8 +65,12 @@ func (s *Server) handleEndpointProbe(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, svc := range services.Items {
-		if systemNS[svc.Namespace] { continue }
-		if svc.Spec.Type == corev1.ServiceTypeExternalName { continue }
+		if systemNS[svc.Namespace] {
+			continue
+		}
+		if svc.Spec.Type == corev1.ServiceTypeExternalName {
+			continue
+		}
 		result.Summary.TotalServices++
 
 		key := svc.Namespace + "/" + svc.Name
@@ -113,7 +117,9 @@ func (s *Server) handleEndpointProbe(w http.ResponseWriter, r *http.Request) {
 	if result.Summary.PartialSvcs > 0 {
 		recs = append(recs, fmt.Sprintf("%d services with partial endpoints — some pods not ready", result.Summary.PartialSvcs))
 	}
-	if len(recs) == 1 { recs = append(recs, "All service endpoints are healthy") }
+	if len(recs) == 1 {
+		recs = append(recs, "All service endpoints are healthy")
+	}
 	result.Recommendations = recs
 
 	writeJSON(w, result)

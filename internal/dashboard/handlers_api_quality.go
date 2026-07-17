@@ -14,13 +14,13 @@ import (
 // coverage gaps by dimension, unused/rarely-accessed endpoints,
 // response time profiling, and documentation completeness.
 type APIQualityResult struct {
-	ScannedAt        time.Time           `json:"scannedAt"`
-	Summary          APIQualitySummary   `json:"summary"`
-	ByDimension      []DimCoverage       `json:"byDimension"`
-	CoverageGaps     []CoverageGap       `json:"coverageGaps"`
-	QualityScore     int                 `json:"qualityScore"`
-	Grade            string              `json:"grade"`
-	Recommendations  []string            `json:"recommendations"`
+	ScannedAt       time.Time         `json:"scannedAt"`
+	Summary         APIQualitySummary `json:"summary"`
+	ByDimension     []DimCoverage     `json:"byDimension"`
+	CoverageGaps    []CoverageGap     `json:"coverageGaps"`
+	QualityScore    int               `json:"qualityScore"`
+	Grade           string            `json:"grade"`
+	Recommendations []string          `json:"recommendations"`
 }
 
 type APIQualitySummary struct {
@@ -39,10 +39,10 @@ type DimCoverage struct {
 }
 
 type CoverageGap struct {
-	Dimension   string `json:"dimension"`
-	Gap         string `json:"gap"`
-	Severity    string `json:"severity"`
-	Suggestion  string `json:"suggestion"`
+	Dimension  string `json:"dimension"`
+	Gap        string `json:"gap"`
+	Severity   string `json:"severity"`
+	Suggestion string `json:"suggestion"`
 }
 
 // handleAPIQuality analyzes platform API endpoint quality and coverage gaps.
@@ -62,12 +62,12 @@ func (s *Server) handleAPIQuality(w http.ResponseWriter, r *http.Request) {
 		minEndpoints int
 		keywords     []string
 	}{
-		"Product":      {8, []string{"product", "ownership", "dependency", "mesh", "golden"}},
-		"Deployment":   {12, []string{"deployment", "rollout", "config", "resource", "probe", "image", "helm", "gitops"}},
-		"Operations":   {15, []string{"operations", "health", "crash", "oom", "event", "slo", "mttr", "change", "obs"}},
-		"Security":     {10, []string{"security", "rbac", "policy", "compliance", "admission", "remediation", "net-policy"}},
-		"Scalability":  {12, []string{"scalability", "cost", "hpa", "node", "capacity", "scheduling", "autoscal", "idle"}},
-		"Documentation":{2, []string{"docs", "maturity", "api-quality"}},
+		"Product":       {8, []string{"product", "ownership", "dependency", "mesh", "golden"}},
+		"Deployment":    {12, []string{"deployment", "rollout", "config", "resource", "probe", "image", "helm", "gitops"}},
+		"Operations":    {15, []string{"operations", "health", "crash", "oom", "event", "slo", "mttr", "change", "obs"}},
+		"Security":      {10, []string{"security", "rbac", "policy", "compliance", "admission", "remediation", "net-policy"}},
+		"Scalability":   {12, []string{"scalability", "cost", "hpa", "node", "capacity", "scheduling", "autoscal", "idle"}},
+		"Documentation": {2, []string{"docs", "maturity", "api-quality"}},
 	}
 
 	// Count endpoints from OpenAPI spec

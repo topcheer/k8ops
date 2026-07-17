@@ -12,28 +12,28 @@ import (
 
 // AuditTrailResult analyzes Kubernetes audit logging coverage and compliance trail.
 type AuditTrailResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         AuditTrailSummary   `json:"summary"`
-	Gaps            []AuditGapItem      `json:"gaps"`
-	ComplianceScore int                 `json:"complianceScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time         `json:"scannedAt"`
+	Summary         AuditTrailSummary `json:"summary"`
+	Gaps            []AuditGapItem    `json:"gaps"`
+	ComplianceScore int               `json:"complianceScore"`
+	Grade           string            `json:"grade"`
+	Recommendations []string          `json:"recommendations"`
 }
 
 type AuditTrailSummary struct {
-	AuditLogEnabled   bool   `json:"auditLogEnabled"`
-	LogBackend        string `json:"logBackend"`
-	MaxRetention      string `json:"maxRetention"`
-	NamespacesTracked int    `json:"namespacesTracked"`
-	EventsWithoutTrail int   `json:"eventsWithoutTrail"`
-	SensitiveAccess   int    `json:"sensitiveAccess"`
+	AuditLogEnabled    bool   `json:"auditLogEnabled"`
+	LogBackend         string `json:"logBackend"`
+	MaxRetention       string `json:"maxRetention"`
+	NamespacesTracked  int    `json:"namespacesTracked"`
+	EventsWithoutTrail int    `json:"eventsWithoutTrail"`
+	SensitiveAccess    int    `json:"sensitiveAccess"`
 }
 
 type AuditGapItem struct {
-	Category  string `json:"category"`
-	Gap       string `json:"gap"`
-	Severity  string `json:"severity"`
-	Impact    string `json:"impact"`
+	Category string `json:"category"`
+	Gap      string `json:"gap"`
+	Severity string `json:"severity"`
+	Impact   string `json:"impact"`
 }
 
 // handleAuditTrail analyzes Kubernetes audit logging coverage.
@@ -77,14 +77,18 @@ func (s *Server) handleAuditTrail(w http.ResponseWriter, r *http.Request) {
 
 	// Count tracked namespaces
 	for _, ns := range nsList.Items {
-		if systemNS[ns.Name] { continue }
+		if systemNS[ns.Name] {
+			continue
+		}
 		result.Summary.NamespacesTracked++
 	}
 
 	// Detect sensitive access patterns
 	sensitiveAccess := 0
 	for _, dep := range deployments.Items {
-		if systemNS[dep.Namespace] { continue }
+		if systemNS[dep.Namespace] {
+			continue
+		}
 		for _, c := range dep.Spec.Template.Spec.Containers {
 			if c.SecurityContext != nil && c.SecurityContext.Privileged != nil && *c.SecurityContext.Privileged {
 				sensitiveAccess++
@@ -92,7 +96,9 @@ func (s *Server) handleAuditTrail(w http.ResponseWriter, r *http.Request) {
 		}
 		// Check for secrets access
 		for _, vol := range dep.Spec.Template.Spec.Volumes {
-			if vol.Secret != nil { sensitiveAccess++ }
+			if vol.Secret != nil {
+				sensitiveAccess++
+			}
 		}
 	}
 	result.Summary.SensitiveAccess = sensitiveAccess
@@ -131,12 +137,22 @@ func (s *Server) handleAuditTrail(w http.ResponseWriter, r *http.Request) {
 
 	// Score
 	score := 0
-	if result.Summary.AuditLogEnabled { score += 40 }
-	if auditPolicyFound { score += 20 }
-	if score == 0 { score = 10 }
+	if result.Summary.AuditLogEnabled {
+		score += 40
+	}
+	if auditPolicyFound {
+		score += 20
+	}
+	if score == 0 {
+		score = 10
+	}
 	score += 20 // base for K8s default audit log
-	if sensitiveAccess > 10 { score -= 10 }
-	if score < 0 { score = 0 }
+	if sensitiveAccess > 10 {
+		score -= 10
+	}
+	if score < 0 {
+		score = 0
+	}
 	result.ComplianceScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.ComplianceScore)
 

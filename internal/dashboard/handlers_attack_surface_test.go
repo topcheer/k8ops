@@ -23,10 +23,10 @@ func TestComputeExposureScore(t *testing.T) {
 
 func TestGenerateExposureRecs(t *testing.T) {
 	r := EndpointExposureResult{
-		Summary: EPExposureSummary{TotalServices: 20, LoadBalancerSvc: 3, IngressServices: 5, ExposedPorts: 30},
+		Summary:       EPExposureSummary{TotalServices: 20, LoadBalancerSvc: 3, IngressServices: 5, ExposedPorts: 30},
 		AttackSurface: AttackSurfaceMap{PublicEndpoints: 8, HighRiskEndpoints: 3, UniqueHosts: 5},
-		TLSGaps: []EPTLSGap{{Resource: "Ingress/test", Severity: "high"}},
-		HealthScore: 70,
+		TLSGaps:       []EPTLSGap{{Resource: "Ingress/test", Severity: "high"}},
+		HealthScore:   70,
 	}
 	recs := generateExposureRecs(r)
 	if len(recs) < 3 {

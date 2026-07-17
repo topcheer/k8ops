@@ -46,9 +46,9 @@ func TestRolloutForensicsHealthyDeploy(t *testing.T) {
 		&appsv1.Deployment{
 			ObjectMeta: metav1.ObjectMeta{Name: "healthy-app", Namespace: "default"},
 			Spec: appsv1.DeploymentSpec{
-				Replicas:           &replicas,
+				Replicas:             &replicas,
 				RevisionHistoryLimit: &revLimit,
-				Strategy: appsv1.DeploymentStrategy{Type: appsv1.RollingUpdateDeploymentStrategyType},
+				Strategy:             appsv1.DeploymentStrategy{Type: appsv1.RollingUpdateDeploymentStrategyType},
 				Template: corev1.PodTemplateSpec{
 					Spec: corev1.PodSpec{Containers: []corev1.Container{
 						{
@@ -65,10 +65,10 @@ func TestRolloutForensicsHealthyDeploy(t *testing.T) {
 				},
 			},
 			Status: appsv1.DeploymentStatus{
-				Replicas:           3,
-				UpdatedReplicas:    3,
-				ReadyReplicas:      3,
-				AvailableReplicas:  3,
+				Replicas:          3,
+				UpdatedReplicas:   3,
+				ReadyReplicas:     3,
+				AvailableReplicas: 3,
 				Conditions: []appsv1.DeploymentCondition{
 					{Type: appsv1.DeploymentProgressing, Status: corev1.ConditionTrue, LastUpdateTime: metav1.Now()},
 				},
@@ -182,9 +182,9 @@ func TestRolloutForensicsFailedRollout(t *testing.T) {
 				},
 			},
 			Status: appsv1.DeploymentStatus{
-				Replicas:        3,
-				UpdatedReplicas: 1, // Only 1 of 3 updated
-				ReadyReplicas:   0, // None ready!
+				Replicas:          3,
+				UpdatedReplicas:   1, // Only 1 of 3 updated
+				ReadyReplicas:     0, // None ready!
 				AvailableReplicas: 0,
 				Conditions: []appsv1.DeploymentCondition{
 					{Type: appsv1.DeploymentProgressing, Status: corev1.ConditionFalse, LastUpdateTime: metav1.Time{Time: metav1.Now().Add(-15 * 1e9)}},

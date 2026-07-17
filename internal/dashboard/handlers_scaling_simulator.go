@@ -13,51 +13,51 @@ import (
 // It answers: "What would happen if traffic doubled? Do we have enough
 // capacity? Which workloads would break first? How much would it cost?"
 type ScalingSimResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         ScalingSimSummary   `json:"summary"`
-	Scenarios       []ScalingScenario   `json:"scenarios"`
-	Bottlenecks     []SimBottleneck     `json:"bottlenecks"`
-	CostProjection  []CostProjection    `json:"costProjection"`
-	HealthScore     int                 `json:"healthScaleScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time         `json:"scannedAt"`
+	Summary         ScalingSimSummary `json:"summary"`
+	Scenarios       []ScalingScenario `json:"scenarios"`
+	Bottlenecks     []SimBottleneck   `json:"bottlenecks"`
+	CostProjection  []CostProjection  `json:"costProjection"`
+	HealthScore     int               `json:"healthScaleScore"`
+	Grade           string            `json:"grade"`
+	Recommendations []string          `json:"recommendations"`
 }
 
 type ScalingSimSummary struct {
-	CurrentPods      int     `json:"currentPods"`
-	CurrentCPUReq    float64 `json:"currentCPUReqCores"`
-	CurrentMemReq    float64 `json:"currentMemReqGB"`
-	NodeCapacityCPU  float64 `json:"nodeCapacityCPU"`
-	NodeCapacityMem  float64 `json:"nodeCapacityMemGB"`
-	HeadroomCPU      float64 `json:"headroomCPUPct"`
-	HeadroomMem      float64 `json:"headroomMemPct"`
-	MaxScaleUpPods   int     `json:"maxScaleUpPods"`
+	CurrentPods     int     `json:"currentPods"`
+	CurrentCPUReq   float64 `json:"currentCPUReqCores"`
+	CurrentMemReq   float64 `json:"currentMemReqGB"`
+	NodeCapacityCPU float64 `json:"nodeCapacityCPU"`
+	NodeCapacityMem float64 `json:"nodeCapacityMemGB"`
+	HeadroomCPU     float64 `json:"headroomCPUPct"`
+	HeadroomMem     float64 `json:"headroomMemPct"`
+	MaxScaleUpPods  int     `json:"maxScaleUpPods"`
 }
 
 type ScalingScenario struct {
-	Name         string  `json:"name"`
-	Multiplier   float64 `json:"multiplier"`
-	NeededCPU    float64 `json:"neededCPU"`
-	NeededMem    float64 `json:"neededMemGB"`
-	NeededPods   int     `json:"neededPods"`
-	Feasible     bool    `json:"feasible"`
-	ExcessCPU    float64 `json:"excessCPU"`   // negative = shortage
-	ExcessMem    float64 `json:"excessMem"`
-	AdditionalNodes int  `json:"additionalNodesNeeded"`
-	AdditionalCost float64 `json:"additionalMonthlyCost"`
+	Name            string  `json:"name"`
+	Multiplier      float64 `json:"multiplier"`
+	NeededCPU       float64 `json:"neededCPU"`
+	NeededMem       float64 `json:"neededMemGB"`
+	NeededPods      int     `json:"neededPods"`
+	Feasible        bool    `json:"feasible"`
+	ExcessCPU       float64 `json:"excessCPU"` // negative = shortage
+	ExcessMem       float64 `json:"excessMem"`
+	AdditionalNodes int     `json:"additionalNodesNeeded"`
+	AdditionalCost  float64 `json:"additionalMonthlyCost"`
 }
 
 type SimBottleneck struct {
-	Resource  string `json:"resource"`
-	Detail    string `json:"detail"`
-	Severity  string `json:"severity"`
-	Scenario  string `json:"scenario"`
+	Resource string `json:"resource"`
+	Detail   string `json:"detail"`
+	Severity string `json:"severity"`
+	Scenario string `json:"scenario"`
 }
 
 type CostProjection struct {
-	Scenario     string  `json:"scenario"`
-	MonthlyCost  float64 `json:"monthlyCost"`
-	Delta        float64 `json:"deltaFromCurrent"`
+	Scenario    string  `json:"scenario"`
+	MonthlyCost float64 `json:"monthlyCost"`
+	Delta       float64 `json:"deltaFromCurrent"`
 }
 
 // handleScalingSimulator handles GET /api/scalability/scaling-simulator

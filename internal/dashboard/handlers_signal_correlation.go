@@ -16,15 +16,15 @@ import (
 // (which triages existing incidents), this engine looks for anomaly patterns across
 // restarts, resource pressure, event storms, node conditions, and pod health trends.
 type SignalCorrelationResult struct {
-	ScannedAt       time.Time              `json:"scannedAt"`
-	Summary         CorrelationSummary     `json:"summary"`
-	Correlations    []CorrelatedSignal     `json:"correlations"`
-	Hotspots        []SignalHotspot        `json:"hotspots"`
-	EmergingRisks   []EmergingRisk         `json:"emergingRisks"`
-	SignalMatrix    []SignalMatrixEntry    `json:"signalMatrix"`
-	HealthScore     int                    `json:"healthScore"`
-	Grade           string                 `json:"grade"`
-	Recommendations []string               `json:"recommendations"`
+	ScannedAt       time.Time           `json:"scannedAt"`
+	Summary         CorrelationSummary  `json:"summary"`
+	Correlations    []CorrelatedSignal  `json:"correlations"`
+	Hotspots        []SignalHotspot     `json:"hotspots"`
+	EmergingRisks   []EmergingRisk      `json:"emergingRisks"`
+	SignalMatrix    []SignalMatrixEntry `json:"signalMatrix"`
+	HealthScore     int                 `json:"healthScore"`
+	Grade           string              `json:"grade"`
+	Recommendations []string            `json:"recommendations"`
 }
 
 // CorrelationSummary aggregates correlation statistics.
@@ -40,11 +40,11 @@ type CorrelationSummary struct {
 // CorrelatedSignal describes a detected signal correlation.
 type CorrelatedSignal struct {
 	ID          string   `json:"id"`
-	Signals     []string `json:"signals"`     // e.g., ["restart-spike", "cpu-pressure"]
-	Scope       string   `json:"scope"`       // namespace/workload/node
+	Signals     []string `json:"signals"` // e.g., ["restart-spike", "cpu-pressure"]
+	Scope       string   `json:"scope"`   // namespace/workload/node
 	ScopeName   string   `json:"scopeName"`
-	RiskLevel   string   `json:"riskLevel"`   // critical, high, medium, low
-	Confidence  int      `json:"confidence"`  // 0-100
+	RiskLevel   string   `json:"riskLevel"`  // critical, high, medium, low
+	Confidence  int      `json:"confidence"` // 0-100
 	Description string   `json:"description"`
 	Evidence    []string `json:"evidence"`
 	ETA         string   `json:"eta"` // estimated time to impact
@@ -52,12 +52,12 @@ type CorrelatedSignal struct {
 
 // SignalHotspot describes a cluster area with anomalous signal density.
 type SignalHotspot struct {
-	Scope       string  `json:"scope"`
-	Name        string  `json:"name"`
-	SignalCount int     `json:"signalCount"`
+	Scope       string   `json:"scope"`
+	Name        string   `json:"name"`
+	SignalCount int      `json:"signalCount"`
 	SignalTypes []string `json:"signalTypes"`
-	HeatScore   int     `json:"heatScore"` // 0-100
-	Severity    string  `json:"severity"`
+	HeatScore   int      `json:"heatScore"` // 0-100
+	Severity    string   `json:"severity"`
 }
 
 // EmergingRisk describes a risk that hasn't materialized yet.
@@ -72,10 +72,10 @@ type EmergingRisk struct {
 
 // SignalMatrixEntry is one signal source's status.
 type SignalMatrixEntry struct {
-	Source     string `json:"source"`
-	Status     string `json:"status"`
-	AnomalyCount int `json:"anomalyCount"`
-	Detail     string `json:"detail"`
+	Source       string `json:"source"`
+	Status       string `json:"status"`
+	AnomalyCount int    `json:"anomalyCount"`
+	Detail       string `json:"detail"`
 }
 
 // handleSignalCorrelation handles GET /api/operations/signal-correlation
@@ -133,7 +133,7 @@ func (s *Server) handleSignalCorrelation(w http.ResponseWriter, r *http.Request)
 		// CrashLoop signal
 		for _, cs := range pod.Status.ContainerStatuses {
 			if cs.State.Waiting != nil && cs.State.Waiting.Reason == "CrashLoopBackOff" {
-			nsSignals[ns]["crashloop"]++
+				nsSignals[ns]["crashloop"]++
 			}
 		}
 
@@ -214,12 +214,12 @@ func (s *Server) handleSignalCorrelation(w http.ResponseWriter, r *http.Request)
 			conf := 90
 			risk := "critical"
 			result.Correlations = append(result.Correlations, CorrelatedSignal{
-				ID:         fmt.Sprintf("CORR-%d", corrID),
-				Signals:    []string{"restart-spike", "crashloop"},
-				Scope:      "namespace",
-				ScopeName:  ns,
-				RiskLevel:  risk,
-				Confidence: conf,
+				ID:          fmt.Sprintf("CORR-%d", corrID),
+				Signals:     []string{"restart-spike", "crashloop"},
+				Scope:       "namespace",
+				ScopeName:   ns,
+				RiskLevel:   risk,
+				Confidence:  conf,
 				Description: fmt.Sprintf("Namespace %s has %d crash-loop pods with %d restart-spike pods — active failure pattern", ns, signals["crashloop"], signals["restart-spike"]),
 				Evidence: []string{
 					fmt.Sprintf("crashloop pods: %d", signals["crashloop"]),
@@ -235,12 +235,12 @@ func (s *Server) handleSignalCorrelation(w http.ResponseWriter, r *http.Request)
 			conf := 75
 			risk := "high"
 			result.Correlations = append(result.Correlations, CorrelatedSignal{
-				ID:         fmt.Sprintf("CORR-%d", corrID),
-				Signals:    []string{"pending-pods", "missing-requests"},
-				Scope:      "namespace",
-				ScopeName:  ns,
-				RiskLevel:  risk,
-				Confidence: conf,
+				ID:          fmt.Sprintf("CORR-%d", corrID),
+				Signals:     []string{"pending-pods", "missing-requests"},
+				Scope:       "namespace",
+				ScopeName:   ns,
+				RiskLevel:   risk,
+				Confidence:  conf,
 				Description: fmt.Sprintf("Namespace %s has %d pending pods and %d containers without resource requests — likely scheduling failure", ns, signals["pending-pods"], signals["missing-requests"]),
 				Evidence: []string{
 					fmt.Sprintf("pending pods: %d", signals["pending-pods"]),
@@ -256,12 +256,12 @@ func (s *Server) handleSignalCorrelation(w http.ResponseWriter, r *http.Request)
 			conf := 80
 			risk := "high"
 			result.Correlations = append(result.Correlations, CorrelatedSignal{
-				ID:         fmt.Sprintf("CORR-%d", corrID),
-				Signals:    []string{"oom-kills", "missing-limits"},
-				Scope:      "namespace",
-				ScopeName:  ns,
-				RiskLevel:  risk,
-				Confidence: conf,
+				ID:          fmt.Sprintf("CORR-%d", corrID),
+				Signals:     []string{"oom-kills", "missing-limits"},
+				Scope:       "namespace",
+				ScopeName:   ns,
+				RiskLevel:   risk,
+				Confidence:  conf,
 				Description: fmt.Sprintf("Namespace %s has %d OOM kills and %d containers without memory limits — unbounded memory consumption", ns, signals["oom-kills"], signals["missing-limits"]),
 				Evidence: []string{
 					fmt.Sprintf("OOM kills: %d", signals["oom-kills"]),
@@ -277,12 +277,12 @@ func (s *Server) handleSignalCorrelation(w http.ResponseWriter, r *http.Request)
 			conf := 70
 			risk := "medium"
 			result.Correlations = append(result.Correlations, CorrelatedSignal{
-				ID:         fmt.Sprintf("CORR-%d", corrID),
-				Signals:    []string{"warning-events", "failed-events"},
-				Scope:      "namespace",
-				ScopeName:  ns,
-				RiskLevel:  risk,
-				Confidence: conf,
+				ID:          fmt.Sprintf("CORR-%d", corrID),
+				Signals:     []string{"warning-events", "failed-events"},
+				Scope:       "namespace",
+				ScopeName:   ns,
+				RiskLevel:   risk,
+				Confidence:  conf,
 				Description: fmt.Sprintf("Namespace %s has %d warnings and %d failed events in last 30min — potential cascade", ns, signals["warning-events"], signals["failed-events"]),
 				Evidence: []string{
 					fmt.Sprintf("warnings (30m): %d", signals["warning-events"]),

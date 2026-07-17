@@ -15,22 +15,22 @@ import (
 // CertExpiryResult monitors TLS certificate lifecycle:
 // expiry dates, CA chain health, renewal readiness, and expiring cert alerts.
 type CertExpiryResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         TLSCertSummary      `json:"summary"`
-	ExpiringCerts   []CertDetail        `json:"expiringCerts"`
-	AllCerts        []CertDetail        `json:"allCerts"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time      `json:"scannedAt"`
+	Summary         TLSCertSummary `json:"summary"`
+	ExpiringCerts   []CertDetail   `json:"expiringCerts"`
+	AllCerts        []CertDetail   `json:"allCerts"`
+	HealthScore     int            `json:"healthScore"`
+	Grade           string         `json:"grade"`
+	Recommendations []string       `json:"recommendations"`
 }
 
 type TLSCertSummary struct {
-	TotalCerts      int     `json:"totalCerts"`
-	Expiring30Days  int     `json:"expiring30Days"`
-	Expiring90Days  int     `json:"expiring90Days"`
-	Expired         int     `json:"expired"`
-	SelfSigned      int     `json:"selfSigned"`
-	ValidCerts      int     `json:"validCerts"`
+	TotalCerts     int `json:"totalCerts"`
+	Expiring30Days int `json:"expiring30Days"`
+	Expiring90Days int `json:"expiring90Days"`
+	Expired        int `json:"expired"`
+	SelfSigned     int `json:"selfSigned"`
+	ValidCerts     int `json:"validCerts"`
 }
 
 type CertDetail struct {

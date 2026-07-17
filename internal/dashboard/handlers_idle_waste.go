@@ -14,15 +14,15 @@ import (
 // IdleWasteResult quantifies idle resource waste: unused PVs, dangling LBs,
 // stopped/terminated workloads, oversized PVCs, and orphaned storage.
 type IdleWasteResult struct {
-	ScannedAt       time.Time         `json:"scannedAt"`
-	Summary         IdleWasteSummary  `json:"summary"`
-	IdleWorkloads   []IdleWorkload    `json:"idleWorkloads"`
-	UnusedVolumes   []UnusedVolume    `json:"unusedVolumes"`
-	UnusedServices  []UnusedService   `json:"unusedServices"`
-	WasteScore      int               `json:"wasteScore"`
-	Grade           string            `json:"grade"`
-	EstimatedWaste  CostEstimate      `json:"estimatedWaste"`
-	Recommendations []string          `json:"recommendations"`
+	ScannedAt       time.Time        `json:"scannedAt"`
+	Summary         IdleWasteSummary `json:"summary"`
+	IdleWorkloads   []IdleWorkload   `json:"idleWorkloads"`
+	UnusedVolumes   []UnusedVolume   `json:"unusedVolumes"`
+	UnusedServices  []UnusedService  `json:"unusedServices"`
+	WasteScore      int              `json:"wasteScore"`
+	Grade           string           `json:"grade"`
+	EstimatedWaste  CostEstimate     `json:"estimatedWaste"`
+	Recommendations []string         `json:"recommendations"`
 }
 
 type IdleWasteSummary struct {
@@ -69,10 +69,10 @@ type CostEstimate struct {
 
 // Cost constants (rough cloud averages)
 const (
-	cpuCostPerCore = 25.0  // $/month per vCPU
-	memCostPerGB   = 4.0   // $/month per GB
-	lbCost         = 18.0  // $/month per LoadBalancer
-	pvcCostPerGB   = 0.10  // $/month per GB storage
+	cpuCostPerCore = 25.0 // $/month per vCPU
+	memCostPerGB   = 4.0  // $/month per GB
+	lbCost         = 18.0 // $/month per LoadBalancer
+	pvcCostPerGB   = 0.10 // $/month per GB storage
 )
 
 // handleIdleWaste detects and quantifies idle resource waste.

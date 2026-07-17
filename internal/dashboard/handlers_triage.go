@@ -14,25 +14,25 @@ import (
 // TriageResult is the AIOps incident triage & remediation action plan engine.
 // It correlates signals across multiple dimensions and produces prioritized actions.
 type TriageResult struct {
-	ScannedAt    time.Time        `json:"scannedAt"`
-	Summary      TriageSummary    `json:"summary"`
-	Priority     string           `json:"priority"` // P0-critical, P1-urgent, P2-important, P3-routine
-	Incidents    []TriagedIncident `json:"incidents"`
-	ActionPlan   []ActionItem     `json:"actionPlan"`
-	QuickWins    []ActionItem     `json:"quickWins"`    // low-effort high-impact
-	LongTermFixes []ActionItem    `json:"longTermFixes"` // strategic improvements
-	HealthScore  int              `json:"healthScore"`
+	ScannedAt     time.Time         `json:"scannedAt"`
+	Summary       TriageSummary     `json:"summary"`
+	Priority      string            `json:"priority"` // P0-critical, P1-urgent, P2-important, P3-routine
+	Incidents     []TriagedIncident `json:"incidents"`
+	ActionPlan    []ActionItem      `json:"actionPlan"`
+	QuickWins     []ActionItem      `json:"quickWins"`     // low-effort high-impact
+	LongTermFixes []ActionItem      `json:"longTermFixes"` // strategic improvements
+	HealthScore   int               `json:"healthScore"`
 }
 
 // TriageSummary aggregates triage statistics.
 type TriageSummary struct {
-	TotalSignals    int `json:"totalSignals"`
-	P0Incidents     int `json:"p0Incidents"` // critical, fix immediately
-	P1Incidents     int `json:"p1Incidents"` // urgent, fix within 24h
-	P2Incidents     int `json:"p2Incidents"` // important, fix within 1 week
-	P3Incidents     int `json:"p3Incidents"` // routine, plan when convenient
+	TotalSignals      int `json:"totalSignals"`
+	P0Incidents       int `json:"p0Incidents"` // critical, fix immediately
+	P1Incidents       int `json:"p1Incidents"` // urgent, fix within 24h
+	P2Incidents       int `json:"p2Incidents"` // important, fix within 1 week
+	P3Incidents       int `json:"p3Incidents"` // routine, plan when convenient
 	WorkloadsAffected int `json:"workloadsAffected"`
-	QuickWinCount   int `json:"quickWinCount"`
+	QuickWinCount     int `json:"quickWinCount"`
 }
 
 // TriagedIncident describes a correlated incident with root cause analysis.
@@ -52,13 +52,13 @@ type TriagedIncident struct {
 
 // ActionItem describes a specific remediation action.
 type ActionItem struct {
-	Priority    string `json:"priority"`
-	Category    string `json:"category"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Command     string `json:"command,omitempty"`  // kubectl command to execute
-	Effort      string `json:"effort"`             // quick (<5min), moderate (<1h), significant (>1h)
-	Impact      string `json:"impact"`             // high, medium, low
+	Priority    string   `json:"priority"`
+	Category    string   `json:"category"`
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
+	Command     string   `json:"command,omitempty"` // kubectl command to execute
+	Effort      string   `json:"effort"`            // quick (<5min), moderate (<1h), significant (>1h)
+	Impact      string   `json:"impact"`            // high, medium, low
 	IncidentIDs []string `json:"incidentIDs,omitempty"`
 }
 
@@ -112,15 +112,15 @@ func (s *Server) handleTriage(w http.ResponseWriter, r *http.Request) {
 			severity = "critical"
 		}
 		incidents = append(incidents, TriagedIncident{
-			ID:        fmt.Sprintf("crash-cluster-%s", ns),
-			Priority:  priority,
-			Category:  "crash-loop",
-			Severity:  severity,
-			Title:     fmt.Sprintf("%d pods crash-looping in %s", len(podList), ns),
-			Workloads: podList[:min(10, len(podList))],
-			RootCause: "Multiple pods restarting simultaneously — likely shared dependency failure, config issue, or resource exhaustion",
+			ID:           fmt.Sprintf("crash-cluster-%s", ns),
+			Priority:     priority,
+			Category:     "crash-loop",
+			Severity:     severity,
+			Title:        fmt.Sprintf("%d pods crash-looping in %s", len(podList), ns),
+			Workloads:    podList[:min(10, len(podList))],
+			RootCause:    "Multiple pods restarting simultaneously — likely shared dependency failure, config issue, or resource exhaustion",
 			ImpactRadius: "namespace",
-			Status:    "active",
+			Status:       "active",
 		})
 		actions = append(actions, ActionItem{
 			Priority: priority, Category: "crash-loop",
@@ -199,15 +199,15 @@ func (s *Server) handleTriage(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 			incidents = append(incidents, TriagedIncident{
-				ID:        fmt.Sprintf("image-pull-%s", sanitizeID(img)),
-				Priority:  "P1",
-				Category:  "image-failure",
-				Severity:  "high",
-				Title:     fmt.Sprintf("Image pull failures for %s (%d pods)", truncateStr(img, 50), len(podList)),
-				Workloads: podList[:min(5, len(podList))],
-				RootCause: "Image not found, registry authentication failure, or network issue",
+				ID:           fmt.Sprintf("image-pull-%s", sanitizeID(img)),
+				Priority:     "P1",
+				Category:     "image-failure",
+				Severity:     "high",
+				Title:        fmt.Sprintf("Image pull failures for %s (%d pods)", truncateStr(img, 50), len(podList)),
+				Workloads:    podList[:min(5, len(podList))],
+				RootCause:    "Image not found, registry authentication failure, or network issue",
 				ImpactRadius: "namespace",
-				Status:    "active",
+				Status:       "active",
 			})
 			actions = append(actions, ActionItem{
 				Priority: "P1", Category: "image-failure",
@@ -231,11 +231,11 @@ func (s *Server) handleTriage(w http.ResponseWriter, r *http.Request) {
 				if d.Status.Replicas > d.Status.AvailableReplicas {
 					totalSignals++
 					incidents = append(incidents, TriagedIncident{
-						ID:        fmt.Sprintf("rollout-stuck-%s-%s", d.Namespace, d.Name),
-						Priority:  "P2",
-						Category:  "rollout",
-						Severity:  "medium",
-						Title:     fmt.Sprintf("Deployment %s/%s rollout stuck (%d/%d updated, %d available)",
+						ID:       fmt.Sprintf("rollout-stuck-%s-%s", d.Namespace, d.Name),
+						Priority: "P2",
+						Category: "rollout",
+						Severity: "medium",
+						Title: fmt.Sprintf("Deployment %s/%s rollout stuck (%d/%d updated, %d available)",
 							d.Namespace, d.Name, d.Status.UpdatedReplicas, *d.Spec.Replicas, d.Status.AvailableReplicas),
 						Workloads:    []string{fmt.Sprintf("%s/%s", d.Namespace, d.Name)},
 						RootCause:    "New pods failing health checks, insufficient resources, or crash in new version",

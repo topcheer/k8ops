@@ -17,44 +17,44 @@ import (
 // It detects configuration drift across similar workloads, identifies non-conformant
 // patterns, and scores standardization maturity per namespace and cluster-wide.
 type ConfigConsistencyResult struct {
-	ScannedAt        time.Time              `json:"scannedAt"`
-	Summary          ConfigConsSummary      `json:"summary"`
-	ImageRegistry    []ImageRegEntry        `json:"imageRegistryAnalysis"`
-	ResourceTiers    []ResourceTierEntry    `json:"resourceTiers"`
-	NonConformants   []NonConformant        `json:"nonConformants"`
-	ByNamespace      []ConfigConsNS         `json:"byNamespace"`
-	ConsistencyScore int                    `json:"consistencyScore"`
-	Grade            string                 `json:"grade"`
-	Recommendations  []string               `json:"recommendations"`
+	ScannedAt        time.Time           `json:"scannedAt"`
+	Summary          ConfigConsSummary   `json:"summary"`
+	ImageRegistry    []ImageRegEntry     `json:"imageRegistryAnalysis"`
+	ResourceTiers    []ResourceTierEntry `json:"resourceTiers"`
+	NonConformants   []NonConformant     `json:"nonConformants"`
+	ByNamespace      []ConfigConsNS      `json:"byNamespace"`
+	ConsistencyScore int                 `json:"consistencyScore"`
+	Grade            string              `json:"grade"`
+	Recommendations  []string            `json:"recommendations"`
 }
 
 // ConfigConsSummary aggregates consistency statistics.
 type ConfigConsSummary struct {
-	TotalWorkloads     int     `json:"totalWorkloads"`
-	ConsistentWorkloads int    `json:"consistentWorkloads"` // follow standard patterns
-	NonConformantCount int     `json:"nonConformantCount"`   // deviate from norms
-	DistinctRegistries int     `json:"distinctRegistries"`
-	DistinctResourceTiers int  `json:"distinctResourceTiers"`
-	DistinctProbeTypes int     `json:"distinctProbeTypes"`
-	InconsistentLabels int     `json:"inconsistentLabels"`
-	StandardizationPct float64 `json:"standardizationPct"`
+	TotalWorkloads        int     `json:"totalWorkloads"`
+	ConsistentWorkloads   int     `json:"consistentWorkloads"` // follow standard patterns
+	NonConformantCount    int     `json:"nonConformantCount"`  // deviate from norms
+	DistinctRegistries    int     `json:"distinctRegistries"`
+	DistinctResourceTiers int     `json:"distinctResourceTiers"`
+	DistinctProbeTypes    int     `json:"distinctProbeTypes"`
+	InconsistentLabels    int     `json:"inconsistentLabels"`
+	StandardizationPct    float64 `json:"standardizationPct"`
 }
 
 // ImageRegEntry shows image registry distribution.
 type ImageRegEntry struct {
-	Registry     string `json:"registry"`
-	Count        int    `json:"count"`
-	Percentage   int    `json:"percentage"`
-	IsInternal   bool   `json:"isInternal"`
+	Registry   string `json:"registry"`
+	Count      int    `json:"count"`
+	Percentage int    `json:"percentage"`
+	IsInternal bool   `json:"isInternal"`
 }
 
 // ResourceTierEntry shows resource request patterns.
 type ResourceTierEntry struct {
-	Tier        string `json:"tier"` // nano, micro, small, medium, large, xl
-	CPURequest  string `json:"cpuRequest"`
-	MemRequest  string `json:"memRequest"`
-	Count       int    `json:"count"`
-	Percentage  int    `json:"percentage"`
+	Tier       string `json:"tier"` // nano, micro, small, medium, large, xl
+	CPURequest string `json:"cpuRequest"`
+	MemRequest string `json:"memRequest"`
+	Count      int    `json:"count"`
+	Percentage int    `json:"percentage"`
 }
 
 // NonConformant identifies a workload that deviates from standard patterns.
@@ -68,10 +68,10 @@ type NonConformant struct {
 
 // ConfigConsNS shows per-namespace consistency stats.
 type ConfigConsNS struct {
-	Namespace       string  `json:"namespace"`
-	TotalWorkloads  int     `json:"totalWorkloads"`
-	NonConformant   int     `json:"nonConformant"`
-	ConsistencyPct  float64 `json:"consistencyPct"`
+	Namespace      string  `json:"namespace"`
+	TotalWorkloads int     `json:"totalWorkloads"`
+	NonConformant  int     `json:"nonConformant"`
+	ConsistencyPct float64 `json:"consistencyPct"`
 }
 
 // handleConfigConsistency provides configuration consistency & standardization auditing.
@@ -96,8 +96,8 @@ func (s *Server) handleConfigConsistency(w http.ResponseWriter, r *http.Request)
 	labelKeys := make(map[string]int)
 
 	type nsConsData struct {
-		total       int
-		nonConform  int
+		total      int
+		nonConform int
 	}
 	nsStats := make(map[string]*nsConsData)
 

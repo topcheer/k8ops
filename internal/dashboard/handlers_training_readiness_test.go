@@ -23,10 +23,10 @@ func TestTrainingReadinessTypes(t *testing.T) {
 
 func TestTrainingReadinessScoring(t *testing.T) {
 	tests := []struct {
-		ownerPct   float64
-		teamPct    float64
-		docsPct    float64
-		runbookPct float64
+		ownerPct    float64
+		teamPct     float64
+		docsPct     float64
+		runbookPct  float64
 		expectedMin int
 		expectedMax int
 	}{

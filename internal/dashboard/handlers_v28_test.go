@@ -94,11 +94,11 @@ func TestAssessChaosReadinessFull(t *testing.T) {
 func TestBuildSupplyChainRecs(t *testing.T) {
 	r := &SupplyChainResult{
 		Summary: SupplyChainSummary{
-			TotalImages:  10,
-			ByDigest:     2,
-			ByLatest:     3,
-			NonRoot:      5,
-			Privileged:   1,
+			TotalImages:    10,
+			ByDigest:       2,
+			ByLatest:       3,
+			NonRoot:        5,
+			Privileged:     1,
 			ReadOnlyRootFS: 3,
 		},
 	}
@@ -149,7 +149,7 @@ func TestBuildCapacityRecs(t *testing.T) {
 			MemUtilization: 0.6,
 		},
 		Forecast: CapForecastData{
-			GrowthRate30d: CapacityGrowth{NewPodsPerWeek: 10},
+			GrowthRate30d:    CapacityGrowth{NewPodsPerWeek: 10},
 			TimeToExhaustion: CapacityTTE{FirstBottleneck: "cpu", CPUExhaustionDays: 60},
 		},
 	}
@@ -166,7 +166,7 @@ func TestBuildCapacityRecs(t *testing.T) {
 			PodUtilization: 0.3,
 		},
 		Forecast: CapForecastData{
-			GrowthRate30d: CapacityGrowth{NewPodsPerWeek: 1},
+			GrowthRate30d:    CapacityGrowth{NewPodsPerWeek: 1},
 			TimeToExhaustion: CapacityTTE{FirstBottleneck: "none"},
 		},
 	}

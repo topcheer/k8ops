@@ -13,7 +13,7 @@ import (
 // privileged pods, host namespace access, hostPath mounts,
 // dangerous capabilities, and shared host network/PID/IPC.
 type RuntimeThreatResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
+	ScannedAt       time.Time            `json:"scannedAt"`
 	Summary         RuntimeThreatSummary `json:"summary"`
 	Threats         []RuntimeThreat      `json:"threats"`
 	PrivilegedPods  []PrivilegedPod      `json:"privilegedPods"`
@@ -23,14 +23,14 @@ type RuntimeThreatResult struct {
 }
 
 type RuntimeThreatSummary struct {
-	TotalPods        int  `json:"totalPods"`
-	PrivilegedPods   int  `json:"privilegedPods"`
-	HostNetworkPods  int  `json:"hostNetworkPods"`
-	HostPIDPods      int  `json:"hostPIDPods"`
-	HostIPCPods      int  `json:"hostIPCPods"`
-	HostPathMounts   int  `json:"hostPathMounts"`
-	DangerousCaps    int  `json:"dangerousCaps"`
-	RunAsRoot        int  `json:"runAsRoot"`
+	TotalPods       int `json:"totalPods"`
+	PrivilegedPods  int `json:"privilegedPods"`
+	HostNetworkPods int `json:"hostNetworkPods"`
+	HostPIDPods     int `json:"hostPIDPods"`
+	HostIPCPods     int `json:"hostIPCPods"`
+	HostPathMounts  int `json:"hostPathMounts"`
+	DangerousCaps   int `json:"dangerousCaps"`
+	RunAsRoot       int `json:"runAsRoot"`
 }
 
 type RuntimeThreat struct {

@@ -17,56 +17,56 @@ import (
 // cluster stability, active incidents, and workload criticality to determine
 // if changes should be blocked or require approval.
 type ChangeFreezeResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         FreezeSummary       `json:"summary"`
-	FreezeStatus    string              `json:"freezeStatus"` // active, upcoming, none
-	CurrentRisk     string              `json:"currentRisk"`
-	RecentChanges   []FreezeRecentChange `json:"recentChanges"`
-	StabilitySignals []StabilitySignal  `json:"stabilitySignals"`
-	FreezeWindows   []FreezeWindow      `json:"freezeWindows"`
-	Verdict         string              `json:"verdict"` // proceed, caution, freeze
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt        time.Time            `json:"scannedAt"`
+	Summary          FreezeSummary        `json:"summary"`
+	FreezeStatus     string               `json:"freezeStatus"` // active, upcoming, none
+	CurrentRisk      string               `json:"currentRisk"`
+	RecentChanges    []FreezeRecentChange `json:"recentChanges"`
+	StabilitySignals []StabilitySignal    `json:"stabilitySignals"`
+	FreezeWindows    []FreezeWindow       `json:"freezeWindows"`
+	Verdict          string               `json:"verdict"` // proceed, caution, freeze
+	Recommendations  []string             `json:"recommendations"`
 }
 
 // FreezeSummary aggregates change freeze statistics.
 type FreezeSummary struct {
-	ActiveIncidents    int     `json:"activeIncidents"`
-	CrashLoopPods      int     `json:"crashLoopPods"`
-	RecentDeployments  int     `json:"recentDeployments24h"`
-	FailedDeployments  int     `json:"failedDeployments24h"`
-	WarningEvents1h    int     `json:"warningEvents1h"`
-	WarningEvents24h   int     `json:"warningEvents24h"`
-	StabilityScore     int     `json:"stabilityScore"`
-	AvgPodAge          float64 `json:"avgPodAgeHours"`
+	ActiveIncidents   int     `json:"activeIncidents"`
+	CrashLoopPods     int     `json:"crashLoopPods"`
+	RecentDeployments int     `json:"recentDeployments24h"`
+	FailedDeployments int     `json:"failedDeployments24h"`
+	WarningEvents1h   int     `json:"warningEvents1h"`
+	WarningEvents24h  int     `json:"warningEvents24h"`
+	StabilityScore    int     `json:"stabilityScore"`
+	AvgPodAge         float64 `json:"avgPodAgeHours"`
 }
 
 // RecentChange describes a recent deployment/change.
 type FreezeRecentChange struct {
-	Name       string `json:"name"`
-	Namespace  string `json:"namespace"`
-	Kind       string `json:"kind"`
-	AgeHours   int    `json:"ageHours"`
-	Replicas   int    `json:"replicas"`
-	ReadyReplicas int `json:"readyReplicas"`
-	Healthy    bool   `json:"healthy"`
+	Name          string `json:"name"`
+	Namespace     string `json:"namespace"`
+	Kind          string `json:"kind"`
+	AgeHours      int    `json:"ageHours"`
+	Replicas      int    `json:"replicas"`
+	ReadyReplicas int    `json:"readyReplicas"`
+	Healthy       bool   `json:"healthy"`
 }
 
 // StabilitySignal describes one stability indicator.
 type StabilitySignal struct {
-	Name     string `json:"name"`
-	Status   string `json:"status"` // healthy, warning, critical
-	Value    string `json:"value"`
-	Impact   string `json:"impact"`
+	Name   string `json:"name"`
+	Status string `json:"status"` // healthy, warning, critical
+	Value  string `json:"value"`
+	Impact string `json:"impact"`
 }
 
 // FreezeWindow describes a configured freeze period.
 type FreezeWindow struct {
-	Name      string `json:"name"`
-	Starts    string `json:"starts"`
-	Ends      string `json:"ends"`
-	Reason    string `json:"reason"`
-	Type      string `json:"type"` // holiday, peak-traffic, maintenance
-	Scope     string `json:"scope"` // cluster, namespace
+	Name   string `json:"name"`
+	Starts string `json:"starts"`
+	Ends   string `json:"ends"`
+	Reason string `json:"reason"`
+	Type   string `json:"type"`  // holiday, peak-traffic, maintenance
+	Scope  string `json:"scope"` // cluster, namespace
 }
 
 // handleChangeFreeze handles GET /api/deployment/change-freeze
@@ -230,7 +230,7 @@ func buildFreezeStabilitySignals(s FreezeSummary) []StabilitySignal {
 	}
 	signals = append(signals, StabilitySignal{
 		Name: "crash-loops", Status: status,
-		Value: fmt.Sprintf("%d pods", s.CrashLoopPods),
+		Value:  fmt.Sprintf("%d pods", s.CrashLoopPods),
 		Impact: "Block all changes if >0",
 	})
 
@@ -243,7 +243,7 @@ func buildFreezeStabilitySignals(s FreezeSummary) []StabilitySignal {
 	}
 	signals = append(signals, StabilitySignal{
 		Name: "warning-events-1h", Status: status,
-		Value: fmt.Sprintf("%d events", s.WarningEvents1h),
+		Value:  fmt.Sprintf("%d events", s.WarningEvents1h),
 		Impact: "High volume indicates instability",
 	})
 
@@ -254,7 +254,7 @@ func buildFreezeStabilitySignals(s FreezeSummary) []StabilitySignal {
 	}
 	signals = append(signals, StabilitySignal{
 		Name: "failed-deployments", Status: status,
-		Value: fmt.Sprintf("%d in 24h", s.FailedDeployments),
+		Value:  fmt.Sprintf("%d in 24h", s.FailedDeployments),
 		Impact: "Failed deploys indicate environment issues",
 	})
 
@@ -265,7 +265,7 @@ func buildFreezeStabilitySignals(s FreezeSummary) []StabilitySignal {
 	}
 	signals = append(signals, StabilitySignal{
 		Name: "pod-stability", Status: status,
-		Value: fmt.Sprintf("%.1f hours avg age", s.AvgPodAge),
+		Value:  fmt.Sprintf("%.1f hours avg age", s.AvgPodAge),
 		Impact: "Fresh pods (<1h) indicate recent instability",
 	})
 

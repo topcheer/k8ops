@@ -15,15 +15,15 @@ import (
 // looks at restart history to find: cyclical restart patterns, periodic
 // OOM kills, configuration-triggered restarts, and time-correlated failures.
 type RestartPatternResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         RestartPatSummary   `json:"summary"`
-	Workloads       []RestartPatEntry   `json:"workloads"`
-	ByPattern       []PatternType       `json:"byPattern"`
-	TimeCorrelation []TimeCorrEntry     `json:"timeCorrelation"`
-	ChronicIssues   []ChronicIssue      `json:"chronicIssues"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time         `json:"scannedAt"`
+	Summary         RestartPatSummary `json:"summary"`
+	Workloads       []RestartPatEntry `json:"workloads"`
+	ByPattern       []PatternType     `json:"byPattern"`
+	TimeCorrelation []TimeCorrEntry   `json:"timeCorrelation"`
+	ChronicIssues   []ChronicIssue    `json:"chronicIssues"`
+	HealthScore     int               `json:"healthScore"`
+	Grade           string            `json:"grade"`
+	Recommendations []string          `json:"recommendations"`
 }
 
 type RestartPatSummary struct {
@@ -38,28 +38,28 @@ type RestartPatSummary struct {
 }
 
 type RestartPatEntry struct {
-	Name         string `json:"name"`
-	Namespace    string `json:"namespace"`
-	Kind         string `json:"kind"`
-	Restarts     int    `json:"restarts"`
-	Pattern      string `json:"pattern"` // periodic, burst, chronic, none
-	OOMKills     int    `json:"oomKills"`
-	LastRestart  string `json:"lastRestart"`
-	Severity     string `json:"severity"`
-	RootCause    string `json:"rootCauseGuess"`
+	Name        string `json:"name"`
+	Namespace   string `json:"namespace"`
+	Kind        string `json:"kind"`
+	Restarts    int    `json:"restarts"`
+	Pattern     string `json:"pattern"` // periodic, burst, chronic, none
+	OOMKills    int    `json:"oomKills"`
+	LastRestart string `json:"lastRestart"`
+	Severity    string `json:"severity"`
+	RootCause   string `json:"rootCauseGuess"`
 }
 
 type PatternType struct {
-	Pattern string `json:"pattern"`
-	Count   int    `json:"count"`
+	Pattern string  `json:"pattern"`
+	Count   int     `json:"count"`
 	Pct     float64 `json:"pct"`
 }
 
 type TimeCorrEntry struct {
-	Hour      int    `json:"hour"`
-	Restarts  int    `json:"restarts"`
-	OOMKills  int    `json:"oomKills"`
-	Correlated bool   `json:"correlated"`
+	Hour       int  `json:"hour"`
+	Restarts   int  `json:"restarts"`
+	OOMKills   int  `json:"oomKills"`
+	Correlated bool `json:"correlated"`
 }
 
 type ChronicIssue struct {

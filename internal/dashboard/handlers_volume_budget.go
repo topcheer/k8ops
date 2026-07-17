@@ -14,17 +14,17 @@ import (
 // lifecycle. It tracks PVC request vs actual capacity, identifies over-provisioned
 // volumes, detects orphaned PVCs, and forecasts storage budget exhaustion.
 type VolumeBudgetResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         VolBudgetSummary    `json:"summary"`
-	Volumes         []VolBudgetEntry    `json:"volumes"`
-	ByNamespace     []VolBudgetNS       `json:"byNamespace"`
-	ByStorageClass  []VolBudgetSC       `json:"byStorageClass"`
-	OrphanedPVCs    []VolOrphan         `json:"orphanedPVCs"`
-	OverProvisioned []VolOverProv       `json:"overProvisioned"`
-	Forecast        VolBudgetForecast   `json:"forecast"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time         `json:"scannedAt"`
+	Summary         VolBudgetSummary  `json:"summary"`
+	Volumes         []VolBudgetEntry  `json:"volumes"`
+	ByNamespace     []VolBudgetNS     `json:"byNamespace"`
+	ByStorageClass  []VolBudgetSC     `json:"byStorageClass"`
+	OrphanedPVCs    []VolOrphan       `json:"orphanedPVCs"`
+	OverProvisioned []VolOverProv     `json:"overProvisioned"`
+	Forecast        VolBudgetForecast `json:"forecast"`
+	HealthScore     int               `json:"healthScore"`
+	Grade           string            `json:"grade"`
+	Recommendations []string          `json:"recommendations"`
 }
 
 type VolBudgetSummary struct {
@@ -55,11 +55,11 @@ type VolBudgetEntry struct {
 }
 
 type VolBudgetNS struct {
-	Namespace    string  `json:"namespace"`
-	PVCCount     int     `json:"pvcCount"`
-	RequestedGB  float64 `json:"requestedGB"`
-	CapacityGB   float64 `json:"capacityGB"`
-	Orphaned     int     `json:"orphaned"`
+	Namespace   string  `json:"namespace"`
+	PVCCount    int     `json:"pvcCount"`
+	RequestedGB float64 `json:"requestedGB"`
+	CapacityGB  float64 `json:"capacityGB"`
+	Orphaned    int     `json:"orphaned"`
 }
 
 type VolBudgetSC struct {
@@ -70,26 +70,26 @@ type VolBudgetSC struct {
 }
 
 type VolOrphan struct {
-	Name      string `json:"name"`
-	Namespace string `json:"namespace"`
+	Name      string  `json:"name"`
+	Namespace string  `json:"namespace"`
 	SizeGB    float64 `json:"sizeGB"`
-	AgeDays   int    `json:"ageDays"`
-	Reason    string `json:"reason"`
+	AgeDays   int     `json:"ageDays"`
+	Reason    string  `json:"reason"`
 }
 
 type VolOverProv struct {
-	Name         string  `json:"name"`
-	Namespace    string  `json:"namespace"`
-	RequestedGB  float64 `json:"requestedGB"`
-	UsedGB       float64 `json:"usedGB"`
-	Utilization  float64 `json:"utilizationPct"`
-	WasteGB      float64 `json:"wasteGB"`
+	Name        string  `json:"name"`
+	Namespace   string  `json:"namespace"`
+	RequestedGB float64 `json:"requestedGB"`
+	UsedGB      float64 `json:"usedGB"`
+	Utilization float64 `json:"utilizationPct"`
+	WasteGB     float64 `json:"wasteGB"`
 }
 
 type VolBudgetForecast struct {
-	GrowthRate30d  float64 `json:"growthRate30dGB"`
-	MonthsToExhaust int    `json:"monthsToExhaust"`
-	ExhaustionDate string `json:"exhaustionDate"`
+	GrowthRate30d   float64 `json:"growthRate30dGB"`
+	MonthsToExhaust int     `json:"monthsToExhaust"`
+	ExhaustionDate  string  `json:"exhaustionDate"`
 }
 
 const storageCostPerGBMonth = 0.10

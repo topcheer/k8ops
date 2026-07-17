@@ -13,22 +13,22 @@ import (
 // BackupCoverageResult analyzes backup and disaster recovery posture:
 // Velero presence, backup frequency, PV coverage, restore readiness.
 type BackupCoverageResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
+	ScannedAt       time.Time             `json:"scannedAt"`
 	Summary         BackupCoverageSummary `json:"summary"`
-	Gaps            []BackupGap         `json:"gaps"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	Gaps            []BackupGap           `json:"gaps"`
+	HealthScore     int                   `json:"healthScore"`
+	Grade           string                `json:"grade"`
+	Recommendations []string              `json:"recommendations"`
 }
 
 type BackupCoverageSummary struct {
-	HasVelero       bool   `json:"hasVelero"`
-	BackupCount     int    `json:"backupCount"`
-	LastBackupAge   string `json:"lastBackupAge"`
-	PVsCovered      int    `json:"pvsCovered"`
-	PVsUncovered    int    `json:"pvsUncovered"`
-	HasSchedule     bool   `json:"hasSchedule"`
-	StorageBackend  string `json:"storageBackend"`
+	HasVelero      bool   `json:"hasVelero"`
+	BackupCount    int    `json:"backupCount"`
+	LastBackupAge  string `json:"lastBackupAge"`
+	PVsCovered     int    `json:"pvsCovered"`
+	PVsUncovered   int    `json:"pvsUncovered"`
+	HasSchedule    bool   `json:"hasSchedule"`
+	StorageBackend string `json:"storageBackend"`
 }
 
 type BackupGap struct {
@@ -81,7 +81,9 @@ func (s *Server) handleBackupCoverage(w http.ResponseWriter, r *http.Request) {
 
 	// Count PVCs and their backup annotations
 	for _, pvc := range pvcs.Items {
-		if pvc.Status.Phase != "Bound" { continue }
+		if pvc.Status.Phase != "Bound" {
+			continue
+		}
 		hasBackupAnnotation := false
 		for k := range pvc.Annotations {
 			if strings.Contains(strings.ToLower(k), "backup") || strings.Contains(strings.ToLower(k), "velero") {
@@ -116,11 +118,15 @@ func (s *Server) handleBackupCoverage(w http.ResponseWriter, r *http.Request) {
 
 	// Score
 	score := 20
-	if result.Summary.HasVelero { score += 50 }
+	if result.Summary.HasVelero {
+		score += 50
+	}
 	if result.Summary.PVsCovered > 0 && (result.Summary.PVsCovered+result.Summary.PVsUncovered) > 0 {
 		score += result.Summary.PVsCovered * 30 / (result.Summary.PVsCovered + result.Summary.PVsUncovered)
 	}
-	if result.Summary.HasSchedule { score += 10 }
+	if result.Summary.HasSchedule {
+		score += 10
+	}
 	result.HealthScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.HealthScore)
 
@@ -129,9 +135,15 @@ func (s *Server) handleBackupCoverage(w http.ResponseWriter, r *http.Request) {
 
 	var recs []string
 	recs = append(recs, fmt.Sprintf("Backup coverage: %d/100 (grade %s) — tool:%s PVCs covered:%d uncovered:%d", result.HealthScore, result.Grade, result.Summary.StorageBackend, result.Summary.PVsCovered, result.Summary.PVsUncovered))
-	if !result.Summary.HasVelero { recs = append(recs, "Install Velero for automated PV and cluster backups") }
-	if result.Summary.PVsUncovered > 0 { recs = append(recs, fmt.Sprintf("%d PVCs without backup — add backup annotations or Velero schedules", result.Summary.PVsUncovered)) }
-	if len(recs) == 1 { recs = append(recs, "Backup coverage is comprehensive") }
+	if !result.Summary.HasVelero {
+		recs = append(recs, "Install Velero for automated PV and cluster backups")
+	}
+	if result.Summary.PVsUncovered > 0 {
+		recs = append(recs, fmt.Sprintf("%d PVCs without backup — add backup annotations or Velero schedules", result.Summary.PVsUncovered))
+	}
+	if len(recs) == 1 {
+		recs = append(recs, "Backup coverage is comprehensive")
+	}
 	result.Recommendations = recs
 
 	writeJSON(w, result)

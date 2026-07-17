@@ -34,11 +34,11 @@ func TestFindOrphanedResources(t *testing.T) {
 	services := []corev1.Service{
 		{
 			ObjectMeta: metav1.ObjectMeta{Name: "orphan-svc", Namespace: "default"},
-			Spec: corev1.ServiceSpec{Selector: map[string]string{"app": "nonexistent"}},
+			Spec:       corev1.ServiceSpec{Selector: map[string]string{"app": "nonexistent"}},
 		},
 		{
 			ObjectMeta: metav1.ObjectMeta{Name: "matched-svc", Namespace: "default"},
-			Spec: corev1.ServiceSpec{Selector: map[string]string{"app": "exists"}},
+			Spec:       corev1.ServiceSpec{Selector: map[string]string{"app": "exists"}},
 		},
 	}
 	pods := []corev1.Pod{

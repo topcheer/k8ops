@@ -73,8 +73,8 @@ func TestGeneratePlatformScorecardRecs(t *testing.T) {
 			{Name: "Infra", Score: 85, Weight: 0.25, Status: "healthy", Detail: "all good"},
 			{Name: "Security", Score: 50, Weight: 0.20, Status: "critical", Detail: "issues found"},
 		},
-		Strengths:  []ScorecardStrength{{Dimension: "Infra", Detail: "all good"}},
-		Weaknesses: []ScorecardWeakness{{Dimension: "Security", Score: 50, Detail: "issues found"}},
+		Strengths:          []ScorecardStrength{{Dimension: "Infra", Detail: "all good"}},
+		Weaknesses:         []ScorecardWeakness{{Dimension: "Security", Score: 50, Detail: "issues found"}},
 		ImprovementRoadmap: []ScorecardRoadmapItem{{Priority: 1, Dimension: "Security", Action: "Fix security"}},
 	}
 	recs := generatePlatformScorecardRecs(r)

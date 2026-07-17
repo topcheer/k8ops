@@ -69,16 +69,16 @@ func TestGenerateCommitPlan(t *testing.T) {
 func TestGenerateCommitRecs(t *testing.T) {
 	r := CommitOptimizerResult{
 		Summary: CommitSummary{
-			CurrentMonthlyCost: 500,
+			CurrentMonthlyCost:   500,
 			OptimizedMonthlyCost: 300,
-			SavingsPct: 40,
-			StableCPUPercent: 70,
-			StableMemPercent: 65,
-			TotalCPURequested: 10,
-			TotalMemRequested: 20,
+			SavingsPct:           40,
+			StableCPUPercent:     70,
+			StableMemPercent:     65,
+			TotalCPURequested:    10,
+			TotalMemRequested:    20,
 		},
 		SavingsEstimate: SavingsBreakdown{
-			RightSizeSavings: 75,
+			RightSizeSavings:   75,
 			TotalAnnualSavings: 2400,
 		},
 		VolatileUsage: []VolatileResource{

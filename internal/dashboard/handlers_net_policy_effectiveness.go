@@ -15,58 +15,58 @@ import (
 // NetPolicyResult analyzes network policy effectiveness, namespace isolation,
 // and zero-trust posture across the cluster.
 type NetPolicyResult struct {
-	ScannedAt        time.Time          `json:"scannedAt"`
-	Summary          NetPolicySummary   `json:"summary"`
-	UnprotectedNS    []UnprotectedNS    `json:"unprotectedNamespaces"`
-	PolicyAnalysis   []PolicyAnalysis   `json:"policyAnalysis"`
-	ByNamespace      []NetPolicyNS      `json:"byNamespace"`
-	IsolationScore   int                `json:"isolationScore"`
-	ZeroTrustLevel   string             `json:"zeroTrustLevel"`
-	Grade            string             `json:"grade"`
-	Recommendations  []string           `json:"recommendations"`
+	ScannedAt       time.Time        `json:"scannedAt"`
+	Summary         NetPolicySummary `json:"summary"`
+	UnprotectedNS   []UnprotectedNS  `json:"unprotectedNamespaces"`
+	PolicyAnalysis  []PolicyAnalysis `json:"policyAnalysis"`
+	ByNamespace     []NetPolicyNS    `json:"byNamespace"`
+	IsolationScore  int              `json:"isolationScore"`
+	ZeroTrustLevel  string           `json:"zeroTrustLevel"`
+	Grade           string           `json:"grade"`
+	Recommendations []string         `json:"recommendations"`
 }
 
 // NetPolicySummary aggregates network policy statistics.
 type NetPolicySummary struct {
-	TotalNamespaces   int `json:"totalNamespaces"`
-	NamespacesWithNP  int `json:"namespacesWithNP"`
-	NamespacesWithoutNP int `json:"namespacesWithoutNP"`
-	TotalPolicies     int `json:"totalPolicies"`
-	DenyAllPolicies   int `json:"denyAllPolicies"`
-	AllowAllIngress   int `json:"allowAllIngress"`
-	AllowAllEgress    int `json:"allowAllEgress"`
-	DefaultDenyNS     int `json:"defaultDenyNS"`
-	EgressRestricted  int `json:"egressRestricted"`
-	IsolationPct      float64 `json:"isolationPct"`
+	TotalNamespaces     int     `json:"totalNamespaces"`
+	NamespacesWithNP    int     `json:"namespacesWithNP"`
+	NamespacesWithoutNP int     `json:"namespacesWithoutNP"`
+	TotalPolicies       int     `json:"totalPolicies"`
+	DenyAllPolicies     int     `json:"denyAllPolicies"`
+	AllowAllIngress     int     `json:"allowAllIngress"`
+	AllowAllEgress      int     `json:"allowAllEgress"`
+	DefaultDenyNS       int     `json:"defaultDenyNS"`
+	EgressRestricted    int     `json:"egressRestricted"`
+	IsolationPct        float64 `json:"isolationPct"`
 }
 
 // UnprotectedNS is a namespace without network policies.
 type UnprotectedNS struct {
-	Namespace   string `json:"namespace"`
-	PodCount    int    `json:"podCount"`
-	ServiceCount int   `json:"serviceCount"`
-	RiskLevel   string `json:"riskLevel"`
-	Impact      string `json:"impact"`
+	Namespace    string `json:"namespace"`
+	PodCount     int    `json:"podCount"`
+	ServiceCount int    `json:"serviceCount"`
+	RiskLevel    string `json:"riskLevel"`
+	Impact       string `json:"impact"`
 }
 
 // PolicyAnalysis examines each network policy.
 type PolicyAnalysis struct {
-	Name        string `json:"name"`
-	Namespace   string `json:"namespace"`
-	Type        string `json:"type"` // deny-all, allow-all, restrictive, permissive
-	IngressRules int   `json:"ingressRules"`
-	EgressRules  int   `json:"egressRules"`
-	Verdict     string `json:"verdict"`
+	Name         string `json:"name"`
+	Namespace    string `json:"namespace"`
+	Type         string `json:"type"` // deny-all, allow-all, restrictive, permissive
+	IngressRules int    `json:"ingressRules"`
+	EgressRules  int    `json:"egressRules"`
+	Verdict      string `json:"verdict"`
 }
 
 // NetPolicyNS shows per-namespace policy posture.
 type NetPolicyNS struct {
-	Namespace      string  `json:"namespace"`
-	HasPolicy      bool    `json:"hasPolicy"`
-	PolicyCount    int     `json:"policyCount"`
-	DefaultDeny    bool    `json:"defaultDeny"`
-	EgressControl  bool    `json:"egressControl"`
-	IsolationScore int     `json:"isolationScore"`
+	Namespace      string `json:"namespace"`
+	HasPolicy      bool   `json:"hasPolicy"`
+	PolicyCount    int    `json:"policyCount"`
+	DefaultDeny    bool   `json:"defaultDeny"`
+	EgressControl  bool   `json:"egressControl"`
+	IsolationScore int    `json:"isolationScore"`
 }
 
 // handleNetPolicyEffectiveness provides network policy effectiveness & isolation scoring.
@@ -258,10 +258,10 @@ func (s *Server) handleNetPolicyEffectiveness(w http.ResponseWriter, r *http.Req
 	// Isolation score
 	score := int(result.Summary.IsolationPct * 0.5)
 	if result.Summary.DefaultDenyNS > 0 {
-		score += int(float64(result.Summary.DefaultDenyNS)/float64(result.Summary.TotalNamespaces)*30)
+		score += int(float64(result.Summary.DefaultDenyNS) / float64(result.Summary.TotalNamespaces) * 30)
 	}
 	if result.Summary.EgressRestricted > 0 {
-		score += int(float64(result.Summary.EgressRestricted)/float64(result.Summary.TotalNamespaces)*20)
+		score += int(float64(result.Summary.EgressRestricted) / float64(result.Summary.TotalNamespaces) * 20)
 	}
 	score -= allowAllIngressCount * 5
 	if score > 100 {

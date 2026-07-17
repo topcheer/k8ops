@@ -13,12 +13,12 @@ import (
 // MetricsPipeResult analyzes metrics pipeline integrity: scraping coverage,
 // exporter health, ServiceMonitor presence, and pipeline gaps.
 type MetricsPipeResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         MetricsPipeSummary  `json:"summary"`
-	PipelineGaps    []MetricsGap        `json:"pipelineGaps"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time          `json:"scannedAt"`
+	Summary         MetricsPipeSummary `json:"summary"`
+	PipelineGaps    []MetricsGap       `json:"pipelineGaps"`
+	HealthScore     int                `json:"healthScore"`
+	Grade           string             `json:"grade"`
+	Recommendations []string           `json:"recommendations"`
 }
 
 type MetricsPipeSummary struct {
@@ -66,11 +66,16 @@ func (s *Server) handleMetricsPipe(w http.ResponseWriter, r *http.Request) {
 			for kw, tool := range metricsKeywords {
 				if strings.Contains(imgLower, kw) {
 					switch tool {
-					case "prometheus": result.Summary.HasPrometheus = true
-					case "vmagent": result.Summary.HasVMAgent = true
-					case "grafana-agent": result.Summary.HasGrafanaAgent = true
-					case "otel": result.Summary.HasOTelCollector = true
-					case "exporter": result.Summary.ExportersFound++
+					case "prometheus":
+						result.Summary.HasPrometheus = true
+					case "vmagent":
+						result.Summary.HasVMAgent = true
+					case "grafana-agent":
+						result.Summary.HasGrafanaAgent = true
+					case "otel":
+						result.Summary.HasOTelCollector = true
+					case "exporter":
+						result.Summary.ExportersFound++
 					}
 				}
 			}
@@ -80,7 +85,9 @@ func (s *Server) handleMetricsPipe(w http.ResponseWriter, r *http.Request) {
 	// Count scraping targets: services with prometheus annotations
 	scrapingTargets := 0
 	for _, svc := range services.Items {
-		if systemNS[svc.Namespace] { continue }
+		if systemNS[svc.Namespace] {
+			continue
+		}
 		for k := range svc.Annotations {
 			if strings.Contains(strings.ToLower(k), "prometheus.io/scrape") {
 				scrapingTargets++
@@ -100,7 +107,9 @@ func (s *Server) handleMetricsPipe(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	for _, dep := range deployments.Items {
-		if systemNS[dep.Namespace] { continue }
+		if systemNS[dep.Namespace] {
+			continue
+		}
 		if !nsHasScrape[dep.Namespace] {
 			result.Summary.BlindWorkloads++
 		}
@@ -119,11 +128,21 @@ func (s *Server) handleMetricsPipe(w http.ResponseWriter, r *http.Request) {
 
 	// Score
 	score := 0
-	if result.Summary.HasPrometheus { score += 35 }
-	if result.Summary.ExportersFound >= 2 { score += 25 }
-	if result.Summary.ExportersFound >= 1 { score += 10 }
-	if result.Summary.ScrapingTargets > 0 { score += 15 }
-	if len(deployments.Items) > 0 && result.Summary.BlindWorkloads < len(deployments.Items)/2 { score += 15 }
+	if result.Summary.HasPrometheus {
+		score += 35
+	}
+	if result.Summary.ExportersFound >= 2 {
+		score += 25
+	}
+	if result.Summary.ExportersFound >= 1 {
+		score += 10
+	}
+	if result.Summary.ScrapingTargets > 0 {
+		score += 15
+	}
+	if len(deployments.Items) > 0 && result.Summary.BlindWorkloads < len(deployments.Items)/2 {
+		score += 15
+	}
 	result.HealthScore = min(100, score)
 	result.Grade = goldenScoreToGrade(result.HealthScore)
 
@@ -133,10 +152,18 @@ func (s *Server) handleMetricsPipe(w http.ResponseWriter, r *http.Request) {
 
 	var recs []string
 	recs = append(recs, fmt.Sprintf("Metrics pipeline: %d/100 (grade %s) — exporters:%d targets:%d blind:%d", result.HealthScore, result.Grade, result.Summary.ExportersFound, result.Summary.ScrapingTargets, result.Summary.BlindWorkloads))
-	if !result.Summary.HasPrometheus { recs = append(recs, "Deploy Prometheus or VictoriaMetrics for metric storage") }
-	if result.Summary.ExportersFound == 0 { recs = append(recs, "Install node-exporter and kube-state-metrics") }
-	if result.Summary.BlindWorkloads > 0 { recs = append(recs, fmt.Sprintf("%d workloads without metrics — add prometheus.io/scrape annotations", result.Summary.BlindWorkloads)) }
-	if len(recs) == 1 { recs = append(recs, "Metrics pipeline is comprehensive") }
+	if !result.Summary.HasPrometheus {
+		recs = append(recs, "Deploy Prometheus or VictoriaMetrics for metric storage")
+	}
+	if result.Summary.ExportersFound == 0 {
+		recs = append(recs, "Install node-exporter and kube-state-metrics")
+	}
+	if result.Summary.BlindWorkloads > 0 {
+		recs = append(recs, fmt.Sprintf("%d workloads without metrics — add prometheus.io/scrape annotations", result.Summary.BlindWorkloads))
+	}
+	if len(recs) == 1 {
+		recs = append(recs, "Metrics pipeline is comprehensive")
+	}
 	result.Recommendations = recs
 
 	writeJSON(w, result)

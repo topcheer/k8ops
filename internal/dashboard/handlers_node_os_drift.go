@@ -14,34 +14,34 @@ import (
 // kernel version drift, OS image consistency, container runtime versions,
 // node age, GPU availability, and rotation readiness.
 type NodeOSDriftResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         NodeOSDriftSummary  `json:"summary"`
-	NodeDetails     []NodeOSDetail      `json:"nodeDetails"`
-	DriftFindings   []OSDriftFinding    `json:"driftFindings"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time          `json:"scannedAt"`
+	Summary         NodeOSDriftSummary `json:"summary"`
+	NodeDetails     []NodeOSDetail     `json:"nodeDetails"`
+	DriftFindings   []OSDriftFinding   `json:"driftFindings"`
+	HealthScore     int                `json:"healthScore"`
+	Grade           string             `json:"grade"`
+	Recommendations []string           `json:"recommendations"`
 }
 
 type NodeOSDriftSummary struct {
-	TotalNodes      int     `json:"totalNodes"`
-	UniqueKernels   int     `json:"uniqueKernels"`
-	UniqueOSImages  int     `json:"uniqueOSImages"`
-	UniqueRuntimes  int     `json:"uniqueRuntimes"`
-	OldestNodeDays  int     `json:"oldestNodeDays"`
-	HasGPU          bool    `json:"hasGPU"`
-	GPUNodes        int     `json:"gpuNodes"`
-	K8sVersion      string  `json:"k8sVersion"`
+	TotalNodes     int    `json:"totalNodes"`
+	UniqueKernels  int    `json:"uniqueKernels"`
+	UniqueOSImages int    `json:"uniqueOSImages"`
+	UniqueRuntimes int    `json:"uniqueRuntimes"`
+	OldestNodeDays int    `json:"oldestNodeDays"`
+	HasGPU         bool   `json:"hasGPU"`
+	GPUNodes       int    `json:"gpuNodes"`
+	K8sVersion     string `json:"k8sVersion"`
 }
 
 type NodeOSDetail struct {
-	Name            string `json:"name"`
-	Kernel          string `json:"kernel"`
-	OSImage         string `json:"osImage"`
+	Name             string `json:"name"`
+	Kernel           string `json:"kernel"`
+	OSImage          string `json:"osImage"`
 	ContainerRuntime string `json:"containerRuntime"`
-	Arch            string `json:"arch"`
-	AgeDays         int    `json:"ageDays"`
-	Status          string `json:"status"`
+	Arch             string `json:"arch"`
+	AgeDays          int    `json:"ageDays"`
+	Status           string `json:"status"`
 }
 
 type OSDriftFinding struct {

@@ -25,11 +25,11 @@ func TestAlertRuleQualityTypes(t *testing.T) {
 
 func TestAlertRuleScoring(t *testing.T) {
 	tests := []struct {
-		hasProm  bool
-		hasAM    bool
-		hasGraf  bool
-		withAlerts int
-		total     int
+		hasProm     bool
+		hasAM       bool
+		hasGraf     bool
+		withAlerts  int
+		total       int
 		expectedMin int
 		expectedMax int
 	}{
@@ -80,9 +80,9 @@ func TestChargebackTypes(t *testing.T) {
 
 func TestChargebackScoring(t *testing.T) {
 	tests := []struct {
-		waste     float64
-		totalCost float64
-		nsCount   int
+		waste       float64
+		totalCost   float64
+		nsCount     int
 		expectedMin int
 		expectedMax int
 	}{

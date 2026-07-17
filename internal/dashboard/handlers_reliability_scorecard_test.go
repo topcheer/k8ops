@@ -44,13 +44,13 @@ func TestReliabilityScorecardHighGrade(t *testing.T) {
 									},
 								},
 								ReadinessProbe: &corev1.Probe{
-ProbeHandler: corev1.ProbeHandler{HTTPGet: &corev1.HTTPGetAction{Path: "/healthz", Port: intstr.FromInt(8080)}},
-				},
-				LivenessProbe: &corev1.Probe{
-					ProbeHandler: corev1.ProbeHandler{HTTPGet: &corev1.HTTPGetAction{Path: "/healthz", Port: intstr.FromInt(8080)}},
+									ProbeHandler: corev1.ProbeHandler{HTTPGet: &corev1.HTTPGetAction{Path: "/healthz", Port: intstr.FromInt(8080)}},
+								},
+								LivenessProbe: &corev1.Probe{
+									ProbeHandler: corev1.ProbeHandler{HTTPGet: &corev1.HTTPGetAction{Path: "/healthz", Port: intstr.FromInt(8080)}},
 								},
 								SecurityContext: &corev1.SecurityContext{
-									RunAsNonRoot:         boolPtr(true),
+									RunAsNonRoot:           boolPtr(true),
 									ReadOnlyRootFilesystem: boolPtr(true),
 								},
 							},
@@ -188,7 +188,7 @@ func TestReliabilityScorecardSystemNS(t *testing.T) {
 				Selector: &metav1.LabelSelector{MatchLabels: map[string]string{"app": "dns"}},
 				Template: corev1.PodTemplateSpec{
 					ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "dns"}},
-					Spec: corev1.PodSpec{Containers: []corev1.Container{{Name: "c", Image: "dns"}}},
+					Spec:       corev1.PodSpec{Containers: []corev1.Container{{Name: "c", Image: "dns"}}},
 				},
 			},
 			Status: appsv1.DeploymentStatus{Replicas: 1, AvailableReplicas: 1},
@@ -200,7 +200,7 @@ func TestReliabilityScorecardSystemNS(t *testing.T) {
 				Selector: &metav1.LabelSelector{MatchLabels: map[string]string{"app": "my"}},
 				Template: corev1.PodTemplateSpec{
 					ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "my"}},
-					Spec: corev1.PodSpec{Containers: []corev1.Container{{Name: "c", Image: "app"}}},
+					Spec:       corev1.PodSpec{Containers: []corev1.Container{{Name: "c", Image: "app"}}},
 				},
 			},
 			Status: appsv1.DeploymentStatus{Replicas: 1, AvailableReplicas: 1},
@@ -245,7 +245,7 @@ func TestReliabilityScoreToGrade(t *testing.T) {
 		{0, "F"},
 	}
 	for _, tt := range tests {
-	got := scoreToGradeReliability(tt.score)
+		got := scoreToGradeReliability(tt.score)
 		if got != tt.want {
 			t.Errorf("scoreToGradeReliability(%d) = %s, want %s", tt.score, got, tt.want)
 		}
@@ -272,4 +272,3 @@ func TestDimStatus(t *testing.T) {
 		}
 	}
 }
-

@@ -18,47 +18,47 @@ import (
 // are classified into tiers (Tier-0 critical through Tier-3 best-effort) to help
 // prioritize operational attention and define SLA targets.
 type CriticalityResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         CritSummary         `json:"summary"`
-	Workloads       []CritEntry         `json:"workloads"`
-	ByTier          []TierStat          `json:"byTier"`
-	ByNamespace     []CritNSStat        `json:"byNamespace"`
-	SLAMatrix       []SLATier           `json:"slaMatrix"`
-	HealthScore     int                 `json:"healthScore"`
-	Grade           string              `json:"grade"`
-	Recommendations []string            `json:"recommendations"`
+	ScannedAt       time.Time    `json:"scannedAt"`
+	Summary         CritSummary  `json:"summary"`
+	Workloads       []CritEntry  `json:"workloads"`
+	ByTier          []TierStat   `json:"byTier"`
+	ByNamespace     []CritNSStat `json:"byNamespace"`
+	SLAMatrix       []SLATier    `json:"slaMatrix"`
+	HealthScore     int          `json:"healthScore"`
+	Grade           string       `json:"grade"`
+	Recommendations []string     `json:"recommendations"`
 }
 
 // CritSummary aggregates criticality statistics.
 type CritSummary struct {
-	TotalWorkloads int `json:"totalWorkloads"`
-	Tier0Critical  int `json:"tier0Critical"`
-	Tier1Important int `json:"tier1Important"`
-	Tier2Standard  int `json:"tier2Standard"`
+	TotalWorkloads  int `json:"totalWorkloads"`
+	Tier0Critical   int `json:"tier0Critical"`
+	Tier1Important  int `json:"tier1Important"`
+	Tier2Standard   int `json:"tier2Standard"`
 	Tier3BestEffort int `json:"tier3BestEffort"`
-	WithPDB        int `json:"withPDB"`
-	WithHPA        int `json:"withHPA"`
-	WithIngress    int `json:"withIngress"`
-	HAWorkloads    int `json:"haWorkloads"` // replicas >= 3
+	WithPDB         int `json:"withPDB"`
+	WithHPA         int `json:"withHPA"`
+	WithIngress     int `json:"withIngress"`
+	HAWorkloads     int `json:"haWorkloads"` // replicas >= 3
 }
 
 // CritEntry describes one workload's criticality assessment.
 type CritEntry struct {
-	Name          string   `json:"name"`
-	Namespace     string   `json:"namespace"`
-	Kind          string   `json:"kind"`
-	Tier          string   `json:"tier"`       // Tier-0, Tier-1, Tier-2, Tier-3
-	Score         int      `json:"score"`     // 0-100
-	Replicas      int      `json:"replicas"`
-	HasPDB        bool     `json:"hasPDB"`
-	HasHPA        bool     `json:"hasHPA"`
-	HasIngress    bool     `json:"hasIngress"`
-	HasService    bool     `json:"hasService"`
-	CPURequest    float64  `json:"cpuRequest"`
-	MemRequestGB  float64  `json:"memRequestGB"`
-	AgeDays       int      `json:"ageDays"`
-	Signals       []string `json:"signals"`
-	SLATarget     string   `json:"slaTarget"`
+	Name         string   `json:"name"`
+	Namespace    string   `json:"namespace"`
+	Kind         string   `json:"kind"`
+	Tier         string   `json:"tier"`  // Tier-0, Tier-1, Tier-2, Tier-3
+	Score        int      `json:"score"` // 0-100
+	Replicas     int      `json:"replicas"`
+	HasPDB       bool     `json:"hasPDB"`
+	HasHPA       bool     `json:"hasHPA"`
+	HasIngress   bool     `json:"hasIngress"`
+	HasService   bool     `json:"hasService"`
+	CPURequest   float64  `json:"cpuRequest"`
+	MemRequestGB float64  `json:"memRequestGB"`
+	AgeDays      int      `json:"ageDays"`
+	Signals      []string `json:"signals"`
+	SLATarget    string   `json:"slaTarget"`
 }
 
 // TierStat per-tier statistics.
@@ -72,22 +72,22 @@ type TierStat struct {
 
 // CritNSStat per-namespace criticality stats.
 type CritNSStat struct {
-	Namespace  string `json:"namespace"`
-	Total      int    `json:"totalWorkloads"`
-	Tier0      int    `json:"tier0"`
-	Tier1      int    `json:"tier1"`
-	Tier2      int    `json:"tier2"`
-	Tier3      int    `json:"tier3"`
+	Namespace string `json:"namespace"`
+	Total     int    `json:"totalWorkloads"`
+	Tier0     int    `json:"tier0"`
+	Tier1     int    `json:"tier1"`
+	Tier2     int    `json:"tier2"`
+	Tier3     int    `json:"tier3"`
 }
 
 // SLATier defines SLA targets per tier.
 type SLATier struct {
-	Tier             string  `json:"tier"`
-	Name             string  `json:"name"`
+	Tier               string  `json:"tier"`
+	Name               string  `json:"name"`
 	AvailabilityTarget float64 `json:"availabilityTarget"`
-	RTOTarget        string  `json:"rtoTarget"`
-	MTTRTarget       string  `json:"mttrTarget"`
-	Description      string  `json:"description"`
+	RTOTarget          string  `json:"rtoTarget"`
+	MTTRTarget         string  `json:"mttrTarget"`
+	Description        string  `json:"description"`
 }
 
 // handleCriticality handles GET /api/product/workload-criticality
@@ -111,7 +111,7 @@ func (s *Server) handleCriticality(w http.ResponseWriter, r *http.Request) {
 	pdbs, _ := rc.clientset.PolicyV1().PodDisruptionBudgets("").List(ctx, metav1.ListOptions{})
 
 	// Build lookup maps
-	svcSet := map[string]bool{}    // ns/name
+	svcSet := map[string]bool{} // ns/name
 	ingressSet := map[string]bool{}
 	hpaSet := map[string]bool{}
 	pdbNameSet := map[string]bool{}

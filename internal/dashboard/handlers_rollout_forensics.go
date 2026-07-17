@@ -16,64 +16,64 @@ import (
 // It correlates deployment state, pod conditions, and restart patterns to identify
 // systematic rollout risks, deployment anti-patterns, and per-workload rollout reliability.
 type RolloutForensicsResult struct {
-	ScannedAt        time.Time            `json:"scannedAt"`
-	Summary          RolloutForensicsSummary       `json:"summary"`
-	FailedRollouts   []FailedRollout      `json:"failedRollouts"`
-	AntiPatterns     []RolloutForensicsAntiPattern  `json:"antiPatterns"`
-	ReliabilityScore []RolloutForensicsReliability `json:"reliabilityScore"`
-	RolloutForensicsRiskFactors      []RolloutForensicsRiskFactor         `json:"riskFactors"`
-	Recommendations  []string             `json:"recommendations"`
+	ScannedAt                   time.Time                     `json:"scannedAt"`
+	Summary                     RolloutForensicsSummary       `json:"summary"`
+	FailedRollouts              []FailedRollout               `json:"failedRollouts"`
+	AntiPatterns                []RolloutForensicsAntiPattern `json:"antiPatterns"`
+	ReliabilityScore            []RolloutForensicsReliability `json:"reliabilityScore"`
+	RolloutForensicsRiskFactors []RolloutForensicsRiskFactor  `json:"riskFactors"`
+	Recommendations             []string                      `json:"recommendations"`
 }
 
 // RolloutForensicsSummary aggregates deployment rollout statistics.
 type RolloutForensicsSummary struct {
-	TotalDeployments   int     `json:"totalDeployments"`
-	InProgress         int     `json:"inProgress"`     // deployments with ongoing rollout
-	Completed          int     `json:"completed"`      // successfully rolled out
-	Failed             int     `json:"failed"`         // rollout not progressing
-	Stale              int     `json:"stale"`          // no rollout in a long time
-	AvgReliability     float64 `json:"avgReliability"` // average rollout reliability score
-	HighRiskCount      int     `json:"highRiskCount"`  // deployments with reliability < 50
+	TotalDeployments int     `json:"totalDeployments"`
+	InProgress       int     `json:"inProgress"`     // deployments with ongoing rollout
+	Completed        int     `json:"completed"`      // successfully rolled out
+	Failed           int     `json:"failed"`         // rollout not progressing
+	Stale            int     `json:"stale"`          // no rollout in a long time
+	AvgReliability   float64 `json:"avgReliability"` // average rollout reliability score
+	HighRiskCount    int     `json:"highRiskCount"`  // deployments with reliability < 50
 }
 
 // FailedRollout describes a deployment with rollout issues.
 type FailedRollout struct {
-	Name            string    `json:"name"`
-	Namespace       string    `json:"namespace"`
-	Issue           string    `json:"issue"`
-	Severity        string    `json:"severity"`
-	Progress        string    `json:"progress"`        // human-readable progress description
-	UpdatedReplicas int32     `json:"updatedReplicas"`
-	ReadyReplicas   int32     `json:"readyReplicas"`
-	DesiredReplicas int32     `json:"desiredReplicas"`
-	AvailableReplicas int32   `json:"availableReplicas"`
-	LastUpdate      time.Time `json:"lastUpdateTime"`
-	RestartCount    int       `json:"podRestarts"`
-	FailingPods     int       `json:"failingPods"`
+	Name              string    `json:"name"`
+	Namespace         string    `json:"namespace"`
+	Issue             string    `json:"issue"`
+	Severity          string    `json:"severity"`
+	Progress          string    `json:"progress"` // human-readable progress description
+	UpdatedReplicas   int32     `json:"updatedReplicas"`
+	ReadyReplicas     int32     `json:"readyReplicas"`
+	DesiredReplicas   int32     `json:"desiredReplicas"`
+	AvailableReplicas int32     `json:"availableReplicas"`
+	LastUpdate        time.Time `json:"lastUpdateTime"`
+	RestartCount      int       `json:"podRestarts"`
+	FailingPods       int       `json:"failingPods"`
 }
 
 // RolloutForensicsAntiPattern identifies a deployment anti-pattern across the cluster.
 type RolloutForensicsAntiPattern struct {
-	Type        string `json:"type"`        // no-readiness-probe, no-liveness-probe, recreate-strategy, etc.
-	Severity    string `json:"severity"`
-	Title       string `json:"title"`
-	Detail      string `json:"detail"`
-	Affected    int    `json:"affectedCount"`
-	Examples    []string `json:"examples"` // sample workload names
+	Type     string   `json:"type"` // no-readiness-probe, no-liveness-probe, recreate-strategy, etc.
+	Severity string   `json:"severity"`
+	Title    string   `json:"title"`
+	Detail   string   `json:"detail"`
+	Affected int      `json:"affectedCount"`
+	Examples []string `json:"examples"` // sample workload names
 }
 
 // RolloutForensicsReliability scores each deployment's rollout reliability.
 type RolloutForensicsReliability struct {
-	Name         string   `json:"name"`
-	Namespace    string   `json:"namespace"`
-	Score        int      `json:"score"`        // 0-100
-	Grade        string   `json:"grade"`        // A-F
-	RiskLevel    string   `json:"riskLevel"`    // low, moderate, high, critical
-	Signals      []string `json:"signals"`      // contributing factors
-	HasHPA       bool     `json:"hasHPA"`
-	HasPDB       bool     `json:"hasPDB"`
-	HasProbes    bool     `json:"hasProbes"`
-	Strategy     string   `json:"strategy"`
+	Name      string   `json:"name"`
+	Namespace string   `json:"namespace"`
+	Score     int      `json:"score"`     // 0-100
+	Grade     string   `json:"grade"`     // A-F
+	RiskLevel string   `json:"riskLevel"` // low, moderate, high, critical
+	Signals   []string `json:"signals"`   // contributing factors
+	HasHPA    bool     `json:"hasHPA"`
+	HasPDB    bool     `json:"hasPDB"`
+	HasProbes bool     `json:"hasProbes"`
+	Strategy  string   `json:"strategy"`
 }
 
 // RolloutForensicsRiskFactor describes a cluster-level rollout risk.
@@ -112,10 +112,10 @@ func (s *Server) handleRolloutForensics(w http.ResponseWriter, r *http.Request) 
 
 	// Build pod map by owner for restart counting
 	type podInfo struct {
-		restarts    int
-		ready       bool
-		phase       corev1.PodPhase
-		crashLoop   bool
+		restarts  int
+		ready     bool
+		phase     corev1.PodPhase
+		crashLoop bool
 	}
 	podMap := make(map[string][]podInfo) // key: namespace/name
 	for _, pod := range pods.Items {
@@ -216,18 +216,18 @@ func (s *Server) handleRolloutForensics(w http.ResponseWriter, r *http.Request) 
 		if isFailed {
 			result.Summary.Failed++
 			result.FailedRollouts = append(result.FailedRollouts, FailedRollout{
-				Name:            dep.Name,
-				Namespace:       dep.Namespace,
-				Issue:           issue,
-				Severity:        "critical",
-				Progress:        fmt.Sprintf("updated=%d ready=%d desired=%d available=%d", updated, ready, desired, available),
-				UpdatedReplicas: updated,
-				ReadyReplicas:   ready,
-				DesiredReplicas: desired,
+				Name:              dep.Name,
+				Namespace:         dep.Namespace,
+				Issue:             issue,
+				Severity:          "critical",
+				Progress:          fmt.Sprintf("updated=%d ready=%d desired=%d available=%d", updated, ready, desired, available),
+				UpdatedReplicas:   updated,
+				ReadyReplicas:     ready,
+				DesiredReplicas:   desired,
 				AvailableReplicas: available,
-				LastUpdate:      dep.Status.Conditions[len(dep.Status.Conditions)-1].LastUpdateTime.Time,
-				RestartCount:    totalRestarts,
-				FailingPods:     failingPods,
+				LastUpdate:        dep.Status.Conditions[len(dep.Status.Conditions)-1].LastUpdateTime.Time,
+				RestartCount:      totalRestarts,
+				FailingPods:       failingPods,
 			})
 		}
 

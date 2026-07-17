@@ -28,40 +28,40 @@ type HPABehaviorResult struct {
 
 // HPABehaviorSummary aggregates HPA behavior statistics.
 type HPABehaviorSummary struct {
-	TotalHPAs        int     `json:"totalHPAs"`
-	WithBehavior     int     `json:"withBehavior"`     // has scalingBehavior configured
-	WithPolicies     int     `json:"withPolicies"`     // has scaleUp/scaleDown policies
-	FlapRisk         int     `json:"flapRisk"`         // likely to flap (fast up + fast down)
-	AggressiveScaleUp int    `json:"aggressiveScaleUp"` // very fast scale-up
-	SlowScaleDown    int     `json:"slowScaleDown"`    // very slow scale-down
-	AvgMinReplicas  float64 `json:"avgMinReplicas"`
-	AvgMaxReplicas  float64 `json:"avgMaxReplicas"`
-	AvgTargetCPU    float64 `json:"avgTargetCPU"`
-	WithoutBehavior int     `json:"withoutBehavior"`
+	TotalHPAs         int     `json:"totalHPAs"`
+	WithBehavior      int     `json:"withBehavior"`      // has scalingBehavior configured
+	WithPolicies      int     `json:"withPolicies"`      // has scaleUp/scaleDown policies
+	FlapRisk          int     `json:"flapRisk"`          // likely to flap (fast up + fast down)
+	AggressiveScaleUp int     `json:"aggressiveScaleUp"` // very fast scale-up
+	SlowScaleDown     int     `json:"slowScaleDown"`     // very slow scale-down
+	AvgMinReplicas    float64 `json:"avgMinReplicas"`
+	AvgMaxReplicas    float64 `json:"avgMaxReplicas"`
+	AvgTargetCPU      float64 `json:"avgTargetCPU"`
+	WithoutBehavior   int     `json:"withoutBehavior"`
 }
 
 // HPABehaviorEntry describes one HPA's behavior analysis.
 type HPABehaviorEntry struct {
-	Name           string  `json:"name"`
-	Namespace      string  `json:"namespace"`
-	TargetRef      string  `json:"targetRef"`
-	MinReplicas    int     `json:"minReplicas"`
-	MaxReplicas    int     `json:"maxReplicas"`
-	TargetCPU      int     `json:"targetCPU"`
-	HasBehavior    bool    `json:"hasBehavior"`
-	ScaleUpPolicy  string  `json:"scaleUpPolicy"`  // aggressive, moderate, conservative
+	Name            string `json:"name"`
+	Namespace       string `json:"namespace"`
+	TargetRef       string `json:"targetRef"`
+	MinReplicas     int    `json:"minReplicas"`
+	MaxReplicas     int    `json:"maxReplicas"`
+	TargetCPU       int    `json:"targetCPU"`
+	HasBehavior     bool   `json:"hasBehavior"`
+	ScaleUpPolicy   string `json:"scaleUpPolicy"` // aggressive, moderate, conservative
 	ScaleDownPolicy string `json:"scaleDownPolicy"`
-	FlapRisk       string  `json:"flapRisk"`       // high, medium, low
-	Issues         int     `json:"issues"`
-	Score          int     `json:"score"`
+	FlapRisk        string `json:"flapRisk"` // high, medium, low
+	Issues          int    `json:"issues"`
+	Score           int    `json:"score"`
 }
 
 // HPABehaviorIssue describes a configuration issue.
 type HPABehaviorIssue struct {
-	HPA       string `json:"hpa"`
-	Namespace string `json:"namespace"`
-	Issue     string `json:"issue"`
-	Severity  string `json:"severity"`
+	HPA        string `json:"hpa"`
+	Namespace  string `json:"namespace"`
+	Issue      string `json:"issue"`
+	Severity   string `json:"severity"`
 	Suggestion string `json:"suggestion"`
 }
 
@@ -184,8 +184,8 @@ func (s *Server) handleHPABehavior(w http.ResponseWriter, r *http.Request) {
 			entry.FlapRisk = "high"
 			result.Issues = append(result.Issues, HPABehaviorIssue{
 				HPA: hpa.Name, Namespace: hpa.Namespace,
-				Issue: "Flapping risk: aggressive scale-up without slow scale-down",
-				Severity: "warning",
+				Issue:      "Flapping risk: aggressive scale-up without slow scale-down",
+				Severity:   "warning",
 				Suggestion: "Add stabilizationWindowSeconds to scaleDown (e.g., 300s)",
 			})
 			entry.Issues++
@@ -195,8 +195,8 @@ func (s *Server) handleHPABehavior(w http.ResponseWriter, r *http.Request) {
 		if minRep == maxRep {
 			result.Issues = append(result.Issues, HPABehaviorIssue{
 				HPA: hpa.Name, Namespace: hpa.Namespace,
-				Issue: fmt.Sprintf("minReplicas == maxReplicas (%d) — HPA cannot scale", minRep),
-				Severity: "warning",
+				Issue:      fmt.Sprintf("minReplicas == maxReplicas (%d) — HPA cannot scale", minRep),
+				Severity:   "warning",
 				Suggestion: "Increase maxReplicas to allow scaling",
 			})
 			entry.Issues++
@@ -206,8 +206,8 @@ func (s *Server) handleHPABehavior(w http.ResponseWriter, r *http.Request) {
 		if targetCPU > 90 {
 			result.Issues = append(result.Issues, HPABehaviorIssue{
 				HPA: hpa.Name, Namespace: hpa.Namespace,
-				Issue: fmt.Sprintf("Target CPU %d%% is very high — HPA only reacts to saturation", targetCPU),
-				Severity: "info",
+				Issue:      fmt.Sprintf("Target CPU %d%% is very high — HPA only reacts to saturation", targetCPU),
+				Severity:   "info",
 				Suggestion: "Lower target to 60-80% for proactive scaling",
 			})
 			entry.Issues++

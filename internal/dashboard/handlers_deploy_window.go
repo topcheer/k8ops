@@ -15,28 +15,28 @@ import (
 // time windows for deploying changes. It evaluates event density, pod restart
 // patterns, warning events, and workload criticality to identify low-risk windows.
 type DeployWindowResult struct {
-	ScannedAt       time.Time           `json:"scannedAt"`
-	Summary         DWSummary           `json:"summary"`
+	ScannedAt          time.Time        `json:"scannedAt"`
+	Summary            DWSummary        `json:"summary"`
 	RecommendedWindows []DWWindow       `json:"recommendedWindows"`
 	HighRiskWindows    []DWWindow       `json:"highRiskWindows"`
-	ActivityByHour    []DWHourActivity `json:"activityByHour"`
-	CurrentRisk       string             `json:"currentRisk"`
-	BestWindow        string             `json:"bestWindow"`
-	WorstWindow       string             `json:"worstWindow"`
-	Verdict           string             `json:"verdict"` // safe-to-deploy, caution, wait
-	Recommendations   []string           `json:"recommendations"`
+	ActivityByHour     []DWHourActivity `json:"activityByHour"`
+	CurrentRisk        string           `json:"currentRisk"`
+	BestWindow         string           `json:"bestWindow"`
+	WorstWindow        string           `json:"worstWindow"`
+	Verdict            string           `json:"verdict"` // safe-to-deploy, caution, wait
+	Recommendations    []string         `json:"recommendations"`
 }
 
 // DWSummary aggregates deployment window statistics.
 type DWSummary struct {
-	TotalEvents        int     `json:"totalEvents"`
-	WarningEvents      int     `json:"warningEvents"`
-	NormalEvents       int     `json:"normalEvents"`
-	ActiveRestarts     int     `json:"activeRestarts"`
-	CrashLoopPods      int     `json:"crashLoopPods"`
-	PendingPods        int     `json:"pendingPods"`
-	CriticalWorkloads  int     `json:"criticalWorkloads"`
-	AvgHourlyActivity  float64 `json:"avgHourlyActivity"`
+	TotalEvents       int     `json:"totalEvents"`
+	WarningEvents     int     `json:"warningEvents"`
+	NormalEvents      int     `json:"normalEvents"`
+	ActiveRestarts    int     `json:"activeRestarts"`
+	CrashLoopPods     int     `json:"crashLoopPods"`
+	PendingPods       int     `json:"pendingPods"`
+	CriticalWorkloads int     `json:"criticalWorkloads"`
+	AvgHourlyActivity float64 `json:"avgHourlyActivity"`
 }
 
 // DWWindow describes a time window for deployment.
@@ -44,7 +44,7 @@ type DWWindow struct {
 	StartHour    int     `json:"startHour"`
 	EndHour      int     `json:"endHour"`
 	DayOfWeek    string  `json:"dayOfWeek"` // weekday, weekend, any
-	RiskScore    int     `json:"riskScore"`  // 0-100 (lower = safer)
+	RiskScore    int     `json:"riskScore"` // 0-100 (lower = safer)
 	RiskLevel    string  `json:"riskLevel"`
 	EventDensity float64 `json:"eventDensity"`
 	Reason       string  `json:"reason"`
@@ -52,11 +52,11 @@ type DWWindow struct {
 
 // DWHourActivity shows activity level per hour.
 type DWHourActivity struct {
-	Hour         int     `json:"hour"`
-	EventCount   int     `json:"eventCount"`
-	WarningCount int     `json:"warningCount"`
-	RestartCount int     `json:"restartCount"`
-	ActivityScore int    `json:"activityScore"`
+	Hour          int `json:"hour"`
+	EventCount    int `json:"eventCount"`
+	WarningCount  int `json:"warningCount"`
+	RestartCount  int `json:"restartCount"`
+	ActivityScore int `json:"activityScore"`
 }
 
 // handleDeployWindow handles GET /api/deployment/deploy-window
@@ -199,7 +199,7 @@ func (s *Server) handleDeployWindow(w http.ResponseWriter, r *http.Request) {
 			StartHour: start, EndHour: end, DayOfWeek: dayType,
 			RiskScore: risk, RiskLevel: riskLevel,
 			EventDensity: float64(hourlyActivity[start].EventCount+hourlyActivity[(start+1)%24].EventCount) / float64(windowSize),
-			Reason: reason,
+			Reason:       reason,
 		})
 	}
 
@@ -212,7 +212,7 @@ func (s *Server) handleDeployWindow(w http.ResponseWriter, r *http.Request) {
 			StartHour: start, EndHour: end, DayOfWeek: "peak-hours",
 			RiskScore: risk, RiskLevel: "high",
 			EventDensity: float64(hourlyActivity[start].EventCount+hourlyActivity[(start+1)%24].EventCount) / float64(windowSize),
-			Reason: fmt.Sprintf("Peak activity window %02d:00-%02d:00 — %d events in typical 7-day window", start, end, hourlyActivity[start].EventCount+hourlyActivity[(start+1)%24].EventCount),
+			Reason:       fmt.Sprintf("Peak activity window %02d:00-%02d:00 — %d events in typical 7-day window", start, end, hourlyActivity[start].EventCount+hourlyActivity[(start+1)%24].EventCount),
 		})
 	}
 
