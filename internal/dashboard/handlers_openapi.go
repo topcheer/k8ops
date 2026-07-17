@@ -5479,6 +5479,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Secret exposure", map[string]interface{}{"healthScore": 50})},
 	})
 
+	add("/api/docs/cluster-maturity", "get", OpenAPIOperation{
+		Summary: "Cluster maturity model assessment", OperationID: "clusterMaturity",
+		Tags:        []string{"Documentation", "Maturity", "Assessment"},
+		Description: "Evaluates cluster against a 5-level Kubernetes maturity model. Identifies capabilities achieved and gaps to reach next level.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Maturity assessment", map[string]interface{}{"currentLevel": 2, "scorePct": 45})},
+	})
+
+	add("/api/scalability/right-size-engine", "get", OpenAPIOperation{
+		Summary: "Resource right-sizing engine", OperationID: "rightSizeEngine",
+		Tags:        []string{"Scalability", "FinOps", "Optimization"},
+		Description: "Analyzes resource requests and generates concrete right-sizing patches with kubectl commands. Identifies oversized and undersized containers.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Right-size recommendations", map[string]interface{}{"healthScore": 60})},
+	})
+
+	add("/api/deployment/deploy-risk", "get", OpenAPIOperation{
+		Summary: "Pre-deployment risk assessment", OperationID: "deployRisk",
+		Tags:        []string{"Deployment", "Risk", "Assessment"},
+		Description: "Weighted multi-factor risk assessment: node HA, crash rate, restart patterns, PDB, probes, limits, update strategy.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Deploy risk", map[string]interface{}{"overallRisk": 55, "verdict": "cautious"})},
+	})
+
 	return spec
 }
 

@@ -535,6 +535,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/pod-health-index", s.cacheMiddleware(60*time.Second, s.handlePodHealthIndex))                // per-pod health score & issue detector
 	mux.HandleFunc("/api/product/namespace-quota-map", s.cacheMiddleware(120*time.Second, s.handleNamespaceQuotaMap))            // namespace quota & limit range coverage map
 	mux.HandleFunc("/api/security/secret-exposure", s.cacheMiddleware(120*time.Second, s.handleSecretExposure))                  // secret exposure & plaintext scanner
+	mux.HandleFunc("/api/docs/cluster-maturity", s.cacheMiddleware(300*time.Second, s.handleClusterMaturity))                    // cluster maturity model assessment
+	mux.HandleFunc("/api/scalability/right-size-engine", s.cacheMiddleware(120*time.Second, s.handleRightSizeEngine))            // resource right-sizing engine with patches
+	mux.HandleFunc("/api/deployment/deploy-risk", s.cacheMiddleware(60*time.Second, s.handleDeployRisk))                         // pre-deployment risk assessment
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

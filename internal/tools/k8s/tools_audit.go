@@ -280,6 +280,9 @@ var auditRegistry = []auditEndpoint{
 	{"operations:pod-health-index", "/api/operations/pod-health-index", "Per-pod health score & issue detector"},
 	{"product:namespace-quota-map", "/api/product/namespace-quota-map", "Namespace quota & limit range coverage map"},
 	{"security:secret-exposure", "/api/security/secret-exposure", "Secret exposure & plaintext scanner"},
+	{"docs:cluster-maturity", "/api/docs/cluster-maturity", "Cluster maturity model assessment (Level 1-5)"},
+	{"scalability:right-size-engine", "/api/scalability/right-size-engine", "Resource right-sizing engine with patch generator"},
+	{"deployment:deploy-risk", "/api/deployment/deploy-risk", "Pre-deployment risk assessment"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},
