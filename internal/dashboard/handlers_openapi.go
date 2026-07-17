@@ -5647,6 +5647,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Workload efficiency", map[string]interface{}{"healthScore": 60})},
 	})
 
+	add("/api/operations/capacity-gap", "get", OpenAPIOperation{
+		Summary: "Capacity gap & node loss survival analyzer", OperationID: "capacityGap",
+		Tags:        []string{"Operations", "Capacity", "HA"},
+		Description: "Calculates node headroom, worst-case pod eviction capacity, and node loss survival scenarios.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Capacity gap", map[string]interface{}{"healthScore": 50})},
+	})
+
+	add("/api/deployment/revision-drift", "get", OpenAPIOperation{
+		Summary: "ReplicaSet revision drift detector", OperationID: "revisionDrift",
+		Tags:        []string{"Deployment", "Drift", "History"},
+		Description: "Detects configuration drift between ReplicaSets. Identifies failed rollbacks and stale revision history.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Revision drift", map[string]interface{}{"healthScore": 85})},
+	})
+
+	add("/api/docs/knowledge-base", "get", OpenAPIOperation{
+		Summary: "Auto-generated cluster knowledge base", OperationID: "knowledgeBase",
+		Tags:        []string{"Documentation", "Knowledge", "Runbook"},
+		Description: "Generates human-readable KB articles, runbooks, and FAQ from live cluster state findings.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Knowledge base", map[string]interface{}{"totalArticles": 8})},
+	})
+
 	return spec
 }
 

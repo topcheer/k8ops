@@ -559,6 +559,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/container-hardening", s.cacheMiddleware(120*time.Second, s.handleContainerHardening))          // container security hardening scanner
 	mux.HandleFunc("/api/scalability/autoscale-readiness", s.cacheMiddleware(120*time.Second, s.handleAutoscaleReadiness))       // HPA autoscale readiness & generator
 	mux.HandleFunc("/api/product/workload-efficiency", s.cacheMiddleware(120*time.Second, s.handleWorkloadEfficiency))           // workload resource efficiency scorer
+	mux.HandleFunc("/api/operations/capacity-gap", s.cacheMiddleware(120*time.Second, s.handleCapacityGap))                      // capacity gap & node loss survival analyzer
+	mux.HandleFunc("/api/deployment/revision-drift", s.cacheMiddleware(120*time.Second, s.handleRevisionDrift))                  // ReplicaSet revision drift detector
+	mux.HandleFunc("/api/docs/knowledge-base", s.cacheMiddleware(300*time.Second, s.handleKnowledgeBase))                        // auto-generated cluster knowledge base
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

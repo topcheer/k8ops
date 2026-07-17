@@ -58,6 +58,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/deployment/probe-generator', name: 'Probe Generator', icon: '\u1F527' },
     { path: '/api/deployment/update-strategy-auditor', name: 'Update Strategy Auditor', icon: '\u1F504' },
     { path: '/api/deployment/deploy-frequency', name: 'Deploy Frequency (DORA)', icon: '\u1F4C8' },
+    { path: '/api/deployment/revision-drift', name: 'Revision Drift', icon: '\u1F501' },
     { path: '/api/deployment/ephemeral-storage', name: 'Ephemeral Storage', icon: '\u1F4BE' },
     { path: '/api/deployment/probe-compliance', name: 'Probe Compliance', icon: '\u1FA78' },
     { path: '/api/deployment/graceful-shutdown', name: 'Graceful Shutdown', icon: '\u1F6D1' },
@@ -95,6 +96,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/operations/health-trend', name: 'Health Trend', icon: '\u1F4C8' },
     { path: '/api/operations/restart-analyzer', name: 'Restart Analyzer', icon: '\u1F501' },
     { path: '/api/operations/alert-fatigue', name: 'Alert Fatigue', icon: '\u1F514' },
+    { path: '/api/operations/capacity-gap', name: 'Capacity Gap', icon: '\u1F4CF' },
   ],
   'Security': [
     { path: '/api/security/sa-token-audit', name: 'SA Token Rotation', icon: '\u1F511' },
@@ -180,6 +182,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/docs/platform-insights', name: 'Platform Insights', icon: '\u1F4A1' },
     { path: '/api/docs/action-priority-matrix', name: 'Action Priority Matrix', icon: '\u1F4CB' },
     { path: '/api/docs/platform-comparison', name: 'Platform Comparison', icon: '\u1F4CA' },
+    { path: '/api/docs/knowledge-base', name: 'Knowledge Base', icon: '\u1F4DA' },
   ],
 };
 
