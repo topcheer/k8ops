@@ -76,6 +76,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/operations/cni-health', name: 'CNI Health', icon: '\u1F310' },
     { path: '/api/operations/kube-proxy-health', name: 'Kube-Proxy Health', icon: '\u1F50C' },
     { path: '/api/operations/drain-impact', name: 'Drain Impact', icon: '\u1F6A6' },
+    { path: '/api/operations/resource-topology', name: 'Resource Topology', icon: '\u1F5FA' },
     { path: '/api/operations/pod-health-index', name: 'Pod Health Index', icon: '\u1F493' },
     { path: '/api/operations/obs-coverage', name: 'Observability Coverage', icon: '\u1F441' },
     { path: '/api/operations/obs-cardinality', name: 'Obs Cardinality', icon: '\u1F4CF' },
