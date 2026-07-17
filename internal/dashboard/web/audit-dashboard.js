@@ -52,7 +52,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/deployment/gitops-sync-deep', name: 'GitOps Sync Deep', icon: '\u1F504' },
     { path: '/api/deployment/rollback-risk', name: 'Rollback Risk', icon: '\u21A9' },
     { path: '/api/deployment/image-freshness', name: 'Image Freshness', icon: '\u1F34E' },
-    { path: '/api/deployment/readiness-gate', name: 'Readiness Gate', icon: '\u2705' },
+    { path: '/api/deployment/deploy-readiness-gate', name: 'Readiness Gate', icon: '\u2705' },
     { path: '/api/deployment/dora-metrics', name: 'DORA Metrics', icon: '\u1F4C8' },
     { path: '/api/deployment/release-gate', name: 'Release Gate', icon: '\u1F6E1' },
     { path: '/api/deployment/deploy-risk', name: 'Deploy Risk', icon: '\u26A0' },
@@ -63,6 +63,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/deployment/revision-drift', name: 'Revision Drift', icon: '\u1F501' },
     { path: '/api/deployment/deploy-heatmap', name: 'Deploy Heatmap', icon: '\u1F525' },
     { path: '/api/deployment/rollback-simulator', name: 'Rollback Simulator', icon: '\u21A9' },
+    { path: '/api/deployment/deploy-readiness-gate', name: 'Readiness Gate', icon: '\u2705' },
     { path: '/api/deployment/ephemeral-storage', name: 'Ephemeral Storage', icon: '\u1F4BE' },
     { path: '/api/deployment/probe-compliance', name: 'Probe Compliance', icon: '\u1FA78' },
     { path: '/api/deployment/graceful-shutdown', name: 'Graceful Shutdown', icon: '\u1F6D1' },
@@ -103,6 +104,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/operations/capacity-gap', name: 'Capacity Gap', icon: '\u1F4CF' },
     { path: '/api/operations/log-volume', name: 'Log Volume', icon: '\u1F4DD' },
     { path: '/api/operations/event-correlation-deep', name: 'Event Correlation', icon: '\u1F50D' },
+    { path: '/api/operations/pod-slo', name: 'Pod SLO', icon: '\u1F3AF' },
   ],
   'Security': [
     { path: '/api/security/sa-token-audit', name: 'SA Token Rotation', icon: '\u1F511' },
@@ -198,6 +200,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/docs/knowledge-base', name: 'Knowledge Base', icon: '\u1F4DA' },
     { path: '/api/docs/cluster-narrative', name: 'Cluster Narrative', icon: '\u1F4D8' },
     { path: '/api/docs/upgrade-planner', name: 'Upgrade Planner', icon: '\u2B06' },
+    { path: '/api/docs/api-governance-score', name: 'API Governance', icon: '\u1F4DC' },
   ],
 };
 

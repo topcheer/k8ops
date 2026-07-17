@@ -92,6 +92,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/security/rbac-drift",
 		"/api/scalability/resource-forecast",
 		"/api/product/config-warmstart",
+		"/api/operations/pod-slo",
+		"/api/deployment/deploy-readiness-gate",
+		"/api/docs/api-governance-score",
 	}
 
 	missing := []string{}

@@ -577,6 +577,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/rbac-drift", s.cacheMiddleware(120*time.Second, s.handleRBACDrift))                            // RBAC drift & over-permissive role detector
 	mux.HandleFunc("/api/scalability/resource-forecast", s.cacheMiddleware(300*time.Second, s.handleResourceForecast))           // resource capacity forecast
 	mux.HandleFunc("/api/product/config-warmstart", s.cacheMiddleware(120*time.Second, s.handleConfigWarmstart))                 // startup optimization analyzer
+	mux.HandleFunc("/api/operations/pod-slo", s.cacheMiddleware(60*time.Second, s.handlePodSLO))                                 // pod SLO compliance tracker
+	mux.HandleFunc("/api/deployment/deploy-readiness-gate", s.cacheMiddleware(120*time.Second, s.handleDeployReadinessGate))     // deployment readiness gate composite evaluator
+	mux.HandleFunc("/api/docs/api-governance-score", s.cacheMiddleware(300*time.Second, s.handleAPIGovernanceScore))             // API version governance score
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

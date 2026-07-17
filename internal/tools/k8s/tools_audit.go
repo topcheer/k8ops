@@ -322,6 +322,9 @@ var auditRegistry = []auditEndpoint{
 	{"security:rbac-drift", "/api/security/rbac-drift", "RBAC drift & over-permissive role detector"},
 	{"scalability:resource-forecast", "/api/scalability/resource-forecast", "Resource capacity forecast"},
 	{"product:config-warmstart", "/api/product/config-warmstart", "Startup optimization & warm-start analyzer"},
+	{"operations:pod-slo", "/api/operations/pod-slo", "Pod SLO compliance tracker"},
+	{"deployment:deploy-readiness-gate", "/api/deployment/deploy-readiness-gate", "Deployment readiness gate composite evaluator"},
+	{"docs:api-governance-score", "/api/docs/api-governance-score", "API version governance score"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

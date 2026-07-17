@@ -4501,7 +4501,7 @@ func buildOpenAPISpec() OpenAPISpec {
 	})
 
 	// --- Pod Readiness Gate Compliance & Custom Condition Auditor (v17.14) ---
-	add("/api/deployment/readiness-gate", "get", OpenAPIOperation{
+	add("/api/deployment/deploy-readiness-gate", "get", OpenAPIOperation{
 		Summary:     "Pod readiness gate compliance & custom condition auditor",
 		OperationID: "readinessGate",
 		Tags:        []string{"Deployment", "Reliability", "Readiness"},
@@ -5771,6 +5771,27 @@ func buildOpenAPISpec() OpenAPISpec {
 		Tags:        []string{"Product", "Startup", "Optimization"},
 		Description: "Identifies slow starters, recommends startupProbe, init containers, and probe improvements.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Warm-start analysis", map[string]interface{}{"healthScore": 60})},
+	})
+
+	add("/api/operations/pod-slo", "get", OpenAPIOperation{
+		Summary: "Pod SLO compliance tracker", OperationID: "podSLO",
+		Tags:        []string{"Operations", "SLO", "Availability"},
+		Description: "Evaluates per-workload SLO compliance based on pod readiness and restart frequency.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod SLO", map[string]interface{}{"healthScore": 95})},
+	})
+
+	add("/api/deployment/deploy-readiness-gate", "get", OpenAPIOperation{
+		Summary: "Deployment readiness gate evaluator", OperationID: "deployReadinessGate",
+		Tags:        []string{"Deployment", "Readiness", "Gate"},
+		Description: "Composite readiness check: probes, resources, PDB, HPA, rollback capability.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Readiness gate", map[string]interface{}{"healthScore": 60})},
+	})
+
+	add("/api/docs/api-governance-score", "get", OpenAPIOperation{
+		Summary: "API version governance score", OperationID: "apiGovernanceScore",
+		Tags:        []string{"Documentation", "API", "Governance"},
+		Description: "Evaluates API version usage, deprecations, and migration readiness.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API governance", map[string]interface{}{"healthScore": 85})},
 	})
 
 	return spec
