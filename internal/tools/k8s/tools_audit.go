@@ -334,6 +334,9 @@ var auditRegistry = []auditEndpoint{
 	{"security:privilege-map", "/api/security/privilege-map", "Cluster-wide privilege exposure map"},
 	{"product:api-slo-correlation", "/api/product/api-slo-correlation", "API endpoint SLO correlation analyzer"},
 	{"scalability:eviction-risk", "/api/scalability/eviction-risk", "Pod eviction risk predictor"},
+	{"operations:golden-signal-budget", "/api/operations/golden-signal-budget", "Golden signal composite health budget tracker"},
+	{"deployment:preflight-check", "/api/deployment/preflight-check", "Deployment preflight validation suite"},
+	{"docs:capacity-runbook", "/api/docs/capacity-runbook", "Capacity planning runbook generator"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

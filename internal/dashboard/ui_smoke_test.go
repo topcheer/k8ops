@@ -104,6 +104,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/security/privilege-map",
 		"/api/product/api-slo-correlation",
 		"/api/scalability/eviction-risk",
+		"/api/operations/golden-signal-budget",
+		"/api/deployment/preflight-check",
+		"/api/docs/capacity-runbook",
 	}
 
 	missing := []string{}

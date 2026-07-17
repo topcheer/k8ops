@@ -589,6 +589,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/privilege-map", s.cacheMiddleware(120*time.Second, s.handlePrivilegeMap))                      // cluster-wide privilege exposure map
 	mux.HandleFunc("/api/product/api-slo-correlation", s.cacheMiddleware(120*time.Second, s.handleAPISLOCorrelation))            // API endpoint SLO correlation analyzer
 	mux.HandleFunc("/api/scalability/eviction-risk", s.cacheMiddleware(60*time.Second, s.handleEvictionRisk))                    // pod eviction risk predictor
+	mux.HandleFunc("/api/operations/golden-signal-budget", s.cacheMiddleware(60*time.Second, s.handleGoldenSignalBudget))        // golden signal composite health budget
+	mux.HandleFunc("/api/deployment/preflight-check", s.cacheMiddleware(120*time.Second, s.handlePreflightCheck))                // deployment preflight check suite
+	mux.HandleFunc("/api/docs/capacity-runbook", s.cacheMiddleware(300*time.Second, s.handleCapacityRunbook))                    // capacity planning runbook generator
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 

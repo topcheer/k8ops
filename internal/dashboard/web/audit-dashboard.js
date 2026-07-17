@@ -72,6 +72,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/deployment/update-strategy', name: 'Update Strategy', icon: '\u1F504' },
     { path: '/api/deployment/revision-history', name: 'Revision History', icon: '\u1F4DC' },
     { path: '/api/deployment/surge-capacity', name: 'Surge Capacity', icon: '\u26A1' },
+    { path: '/api/deployment/preflight-check', name: 'Preflight Check', icon: '\u2705' },
   ],
   'Operations': [
     { path: '/api/operations/metrics-pipeline', name: 'Metrics Pipeline', icon: '\u1F4CA' },
@@ -109,6 +110,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/operations/event-correlation-deep', name: 'Event Correlation', icon: '\u1F50D' },
     { path: '/api/operations/pod-slo', name: 'Pod SLO', icon: '\u1F3AF' },
     { path: '/api/operations/slo-burn-rate', name: 'SLO Burn Rate', icon: '\u1F525' },
+    { path: '/api/operations/golden-signal-budget', name: 'Golden Signal Budget', icon: '\u1F4A1' },
   ],
   'Security': [
     { path: '/api/security/sa-token-audit', name: 'SA Token Rotation', icon: '\u1F511' },
@@ -210,6 +212,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/docs/upgrade-planner', name: 'Upgrade Planner', icon: '\u2B06' },
     { path: '/api/docs/api-governance-score', name: 'API Governance', icon: '\u1F4DC' },
     { path: '/api/docs/runbook-coverage', name: 'Runbook Coverage', icon: '\u1F4D6' },
+    { path: '/api/docs/capacity-runbook', name: 'Capacity Runbook', icon: '\u1F4CB' },
   ],
 };
 

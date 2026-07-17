@@ -5847,6 +5847,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Predicts which pods are at imminent eviction risk based on: node conditions (memory/disk/PID pressure), QoS class, OOM history, restart frequency, priority class, and resource limits. Risk score 0-100 per pod with categorized risk factors.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Eviction risk", map[string]interface{}{"riskScore": 70, "grade": "B"})},
 	})
+	add("/api/operations/golden-signal-budget", "get", OpenAPIOperation{
+		Summary: "Golden signal budget", OperationID: "goldenSignalBudget",
+		Tags:        []string{"Operations", "SRE", "GoldenSignals"},
+		Description: "Unifies the four SRE golden signals (latency, traffic, errors, saturation) into a composite health budget per workload. Weighted scoring: latency 30%, traffic 20%, errors 30%, saturation 20%. Identifies weakest signal per workload.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Golden signal budget", map[string]interface{}{"compositeScore": 70, "grade": "B"})},
+	})
+	add("/api/deployment/preflight-check", "get", OpenAPIOperation{
+		Summary: "Deployment preflight check", OperationID: "preflightCheck",
+		Tags:        []string{"Deployment", "Validation", "Safety"},
+		Description: "Validates prerequisites before a rolling update: resource requests, readiness probes, PDB coverage, rolling update strategy, node health, HPA, revision history, graceful shutdown. 8 checks total with blocking and warning severity levels.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Preflight check", map[string]interface{}{"passRate": 75, "grade": "B"})},
+	})
+	add("/api/docs/capacity-runbook", "get", OpenAPIOperation{
+		Summary: "Capacity runbook generator", OperationID: "capacityRunbook",
+		Tags:        []string{"Documentation", "Capacity", "Runbook"},
+		Description: "Auto-generates capacity planning documentation: cluster overview, headroom analysis (CPU/memory/pod slots), growth projection (5% monthly, days to exhaustion), emergency runbook steps. Bottleneck resource identification.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Capacity runbook", map[string]interface{}{"capacityScore": 40, "grade": "C"})},
+	})
 
 	return spec
 }
