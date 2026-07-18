@@ -5974,6 +5974,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cost anomaly", map[string]interface{}{"anomalyScore": 70})},
 	})
 
+	add("/api/security/runtime-drift-detect", "get", OpenAPIOperation{
+		Summary: "Runtime drift detector", OperationID: "runtimeDriftDetect",
+		Tags:        []string{"Security", "Drift", "Compliance"},
+		Description: "Detects configuration drift between deployed pods and controller templates. Checks image, env var, and resource request mismatches.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Runtime drift", map[string]interface{}{"driftScore": 90})},
+	})
+	add("/api/product/svc-mesh-readiness", "get", OpenAPIOperation{
+		Summary: "Service mesh readiness gate", OperationID: "svcMeshReadiness",
+		Tags:        []string{"Product", "ServiceMesh", "Readiness"},
+		Description: "Evaluates service mesh adoption readiness: protocol compatibility, probes, replica count, selector presence.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Mesh readiness", map[string]interface{}{"readinessScore": 50})},
+	})
+	add("/api/scalability/node-pool-rightsize", "get", OpenAPIOperation{
+		Summary: "Node pool right-sizer", OperationID: "nodePoolRightsize",
+		Tags:        []string{"Scalability", "Node", "Cost"},
+		Description: "Recommends optimal node sizing based on actual utilization. Identifies over-provisioned, under-provisioned, and right-sized nodes with potential savings.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node rightsize", map[string]interface{}{"rightsizeScore": 60})},
+	})
+
 	return spec
 }
 
