@@ -39,6 +39,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/product/feature-flag-audit', name: 'Feature Flag Audit', icon: '\u1F6A7' },
     { path: '/api/product/latency-budget', name: 'Latency Budget', icon: '\u23F1' },
     { path: '/api/product/svc-mesh-readiness', name: 'Mesh Readiness', icon: '\u1F310' },
+    { path: '/api/product/golden-path-validator', name: 'Golden Path', icon: '\u2B50' },
   ],
   'Deployment': [
     { path: '/api/deployment/startup-latency', name: 'Startup Latency', icon: '\u23F1' },
@@ -164,6 +165,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/security/cert-chain-validator', name: 'Cert Chain Validator', icon: '\u1F510' },
     { path: '/api/security/mtls-trust-domain', name: 'mTLS Trust Domain', icon: '\u1F511' },
     { path: '/api/security/runtime-drift-detect', name: 'Runtime Drift', icon: '\u1F50D' },
+    { path: '/api/security/admission-bypass-audit', name: 'Admission Bypass', icon: '\u26D4' },
   ],
   'Scalability': [
     { path: '/api/scalability/pv-reclaim', name: 'PV Reclaim & Waste', icon: '\u1F4BE' },
@@ -212,6 +214,7 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/scalability/autoscaler-gap', name: 'Autoscaler Gap', icon: '\u2195' },
     { path: '/api/scalability/pod-disruption-tolerance', name: 'Disruption Tolerance', icon: '\u1F6E1' },
     { path: '/api/scalability/node-pool-rightsize', name: 'Node Rightsize', icon: '\u2194' },
+    { path: '/api/scalability/cluster-fault-tolerance', name: 'Fault Tolerance', icon: '\u1F6E1' },
   ],
   'Documentation': [
     { path: '/api/docs/platform-scorecard', name: 'Platform Scorecard', icon: '\u1F4CB' },

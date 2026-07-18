@@ -6010,6 +6010,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Deep CNCF maturity model assessment across 6 dimensions (Automation, Reliability, Security, Observability, Scalability, Governance). Gap analysis and 12-month roadmap.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Platform maturity", map[string]interface{}{"overallScore": 50, "currentLevel": 2})},
 	})
+	add("/api/security/admission-bypass-audit", "get", OpenAPIOperation{
+		Summary: "Admission bypass audit", OperationID: "admissionBypassAudit",
+		Tags:        []string{"Security", "Admission", "Bypass"},
+		Description: "Audits workloads that may bypass admission control: privileged containers, hostPID/IPC/network, hostPath volumes, default service accounts, SA token secrets.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Bypass audit", map[string]interface{}{"bypassScore": 70})},
+	})
+	add("/api/product/golden-path-validator", "get", OpenAPIOperation{
+		Summary: "Golden path validator", OperationID: "goldenPathValidator",
+		Tags:        []string{"Product", "Compliance", "BestPractice"},
+		Description: "Validates workloads against golden path standards: readiness/liveness probes, resource limits, multi-replica, PDB, affinity, rolling strategy. 7 checks per workload.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Golden path", map[string]interface{}{"complianceScore": 40})},
+	})
+	add("/api/scalability/cluster-fault-tolerance", "get", OpenAPIOperation{
+		Summary: "Cluster fault tolerance", OperationID: "clusterFaultTolerance",
+		Tags:        []string{"Scalability", "FaultTolerance", "HA"},
+		Description: "Evaluates cluster survival across failure scenarios: node loss, zone outage, control plane failure. Identifies weak points and estimates recovery time.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Fault tolerance", map[string]interface{}{"toleranceScore": 40})},
+	})
 
 	return spec
 }

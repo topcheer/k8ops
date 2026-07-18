@@ -131,6 +131,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/operations/pod-restart-forensics",
 		"/api/deployment/deploy-window-optimizer",
 		"/api/docs/platform-maturity-deep",
+		"/api/security/admission-bypass-audit",
+		"/api/product/golden-path-validator",
+		"/api/scalability/cluster-fault-tolerance",
 	}
 
 	missing := []string{}
