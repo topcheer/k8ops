@@ -5992,6 +5992,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Recommends optimal node sizing based on actual utilization. Identifies over-provisioned, under-provisioned, and right-sized nodes with potential savings.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node rightsize", map[string]interface{}{"rightsizeScore": 60})},
 	})
+	add("/api/operations/pod-restart-forensics", "get", OpenAPIOperation{
+		Summary: "Pod restart forensics", OperationID: "podRestartForensics",
+		Tags:        []string{"Operations", "Forensics", "Restart"},
+		Description: "Forensic analysis of pod restarts: root cause classification (OOM, app-error, signal), pattern detection (crashloop, frequent), exit code analysis.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Restart forensics", map[string]interface{}{"forensicsScore": 85})},
+	})
+	add("/api/deployment/deploy-window-optimizer", "get", OpenAPIOperation{
+		Summary: "Deploy window optimizer", OperationID: "deployWindowOptimizer",
+		Tags:        []string{"Deployment", "Window", "Risk"},
+		Description: "Analyzes deployment patterns to recommend optimal windows. Hourly heatmap, weekly patterns, change-freeze compliance, recommended deploy times.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Deploy window", map[string]interface{}{"optimizerScore": 70})},
+	})
+	add("/api/docs/platform-maturity-deep", "get", OpenAPIOperation{
+		Summary: "Deep platform maturity", OperationID: "platformMaturityDeep",
+		Tags:        []string{"Documentation", "Maturity", "Assessment"},
+		Description: "Deep CNCF maturity model assessment across 6 dimensions (Automation, Reliability, Security, Observability, Scalability, Governance). Gap analysis and 12-month roadmap.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Platform maturity", map[string]interface{}{"overallScore": 50, "currentLevel": 2})},
+	})
 
 	return spec
 }

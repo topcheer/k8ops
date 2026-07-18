@@ -128,6 +128,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/security/runtime-drift-detect",
 		"/api/product/svc-mesh-readiness",
 		"/api/scalability/node-pool-rightsize",
+		"/api/operations/pod-restart-forensics",
+		"/api/deployment/deploy-window-optimizer",
+		"/api/docs/platform-maturity-deep",
 	}
 
 	missing := []string{}

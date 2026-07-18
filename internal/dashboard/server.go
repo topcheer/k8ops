@@ -610,6 +610,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/runtime-drift-detect", s.cacheMiddleware(60*time.Second, s.handleRuntimeDriftDetect))             // runtime config drift detector
 	mux.HandleFunc("/api/product/svc-mesh-readiness", s.cacheMiddleware(120*time.Second, s.handleSvcMeshReadiness))                 // service mesh readiness gate
 	mux.HandleFunc("/api/scalability/node-pool-rightsize", s.cacheMiddleware(300*time.Second, s.handleNodePoolRightsize))           // node pool right-size recommender
+	mux.HandleFunc("/api/operations/pod-restart-forensics", s.cacheMiddleware(60*time.Second, s.handlePodRestartForensics))         // pod restart forensic analyzer
+	mux.HandleFunc("/api/deployment/deploy-window-optimizer", s.cacheMiddleware(300*time.Second, s.handleDeployWindowOptimizer))    // deploy window optimizer
+	mux.HandleFunc("/api/docs/platform-maturity-deep", s.cacheMiddleware(300*time.Second, s.handlePlatformMaturityDeep))            // deep platform maturity assessment
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))               // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))           // progressive delivery readiness
 	mux.HandleFunc("/api/docs/cost-anomaly-deep", s.cacheMiddleware(300*time.Second, s.handleCostAnomalyDeep))                      // deep cost anomaly detector
