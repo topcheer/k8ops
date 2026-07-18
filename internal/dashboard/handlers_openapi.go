@@ -6028,6 +6028,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Evaluates cluster survival across failure scenarios: node loss, zone outage, control plane failure. Identifies weak points and estimates recovery time.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Fault tolerance", map[string]interface{}{"toleranceScore": 40})},
 	})
+	add("/api/operations/pod-restart-storm", "get", OpenAPIOperation{
+		Summary: "Pod restart storm detector", OperationID: "podRestartStorm",
+		Tags:        []string{"Operations", "Restart", "Storm"},
+		Description: "Detects pod restart storms - cascading restarts across multiple workloads within a short window. Correlation analysis for likely root causes.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Restart storm", map[string]interface{}{"stormScore": 80})},
+	})
+	add("/api/deployment/deploy-pipeline-audit", "get", OpenAPIOperation{
+		Summary: "Deploy pipeline audit", OperationID: "deployPipelineAudit",
+		Tags:        []string{"Deployment", "Pipeline", "Audit"},
+		Description: "Audits deployment pipeline health: image freshness, probe/resource coverage, rolling strategy, multi-replica readiness. Gap analysis with fix recommendations.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pipeline audit", map[string]interface{}{"pipelineScore": 50})},
+	})
+	add("/api/docs/platform-scorecard-deep", "get", OpenAPIOperation{
+		Summary: "Deep platform scorecard", OperationID: "platformScorecardDeep",
+		Tags:        []string{"Documentation", "Scorecard", "Assessment"},
+		Description: "Comprehensive platform scorecard with weighted scoring across 6 categories: Reliability, Automation, Security, Observability, Cost, Governance. Industry benchmark comparison.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Scorecard", map[string]interface{}{"overallScore": 55})},
+	})
 
 	return spec
 }
