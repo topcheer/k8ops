@@ -383,6 +383,9 @@ const AUDIT_STRUCTURE = {
         { path: '/api/deployment/probe-generator', name: 'Probe Generator', icon: '\u1F527' },
         { path: '/api/deployment/probe-timeout-audit', name: 'Probe Timeout', icon: '\u23F1' },
         { path: '/api/deployment/init-container-health', name: 'Init Container', icon: '\u1F9E9' },
+        { path: '/api/deployment/rollout-blocker-detect', name: 'Rollout Blocker', icon: '\u26D4' },
+        { path: '/api/deployment/termination-grace-audit', name: 'Termination Grace', icon: '\u23F3' },
+        { path: '/api/deployment/max-surge-audit', name: 'Max Surge', icon: '\u2191' },
         { path: '/api/deployment/graceful-shutdown', name: 'Graceful Shutdown', icon: '\u1F6D1' },
       ],
       'Config & Drift': [

@@ -6436,6 +6436,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Detects kubelet configuration inconsistencies across nodes.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Kubelet drift", map[string]interface{}{"healthScore": 100})},
 	})
+	add("/api/deployment/rollout-blocker-detect", "get", OpenAPIOperation{
+		Summary: "Rollout blocker detect", OperationID: "rolloutBlockerDetect",
+		Tags:        []string{"Deployment", "Rollout", "Blocker"},
+		Description: "Detects deployments with conditions blocking successful rollouts.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Rollout blocker", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/deployment/termination-grace-audit", "get", OpenAPIOperation{
+		Summary: "Termination grace audit", OperationID: "terminationGraceAudit",
+		Tags:        []string{"Deployment", "Shutdown", "Grace"},
+		Description: "Audits terminationGracePeriodSeconds and preStop hooks for graceful shutdown.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Termination grace", map[string]interface{}{"healthScore": 30})},
+	})
+	add("/api/deployment/max-surge-audit", "get", OpenAPIOperation{
+		Summary: "Max surge audit", OperationID: "maxSurgeAudit",
+		Tags:        []string{"Deployment", "Strategy", "Surge"},
+		Description: "Analyzes rolling update maxSurge/maxUnavailable configuration.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Max surge", map[string]interface{}{"healthScore": 80})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},

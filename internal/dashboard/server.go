@@ -285,7 +285,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/image-pull-audit", s.cacheMiddleware(120*time.Second, s.handleImagePullAudit))              // image pull policy & secret management auditor
 	mux.HandleFunc("/api/scalability/vpa-audit", s.cacheMiddleware(120*time.Second, s.handleVPAAudit))                          // VPA configuration & resource recommendation quality auditor
 	mux.HandleFunc("/api/product/mesh-traffic", s.cacheMiddleware(120*time.Second, s.handleMeshTraffic))                        // service mesh traffic management & circuit breaker health auditor
-	mux.HandleFunc("/api/deployment/rollout-blocker", s.cacheMiddleware(120*time.Second, s.handleRolloutBlocker))               // deployment rollout blocker & pod condition auditor
+	mux.HandleFunc("/api/deployment/rollout-blocker", s.cacheMiddleware(120*time.Second, s.handleRolloutBlockerDetect))         // deployment rollout blocker & pod condition auditor
 	mux.HandleFunc("/api/security/pss-hardening", s.cacheMiddleware(120*time.Second, s.handlePSSHardening))                     // PSS enforcement gap & workload hardening auditor
 	mux.HandleFunc("/api/operations/node-trend", s.cacheMiddleware(120*time.Second, s.handleNodeTrend))                         // node condition trend & hardware failure prediction auditor
 	mux.HandleFunc("/api/product/endpoint-slice", s.cacheMiddleware(120*time.Second, s.handleEndpointSlice))                    // endpoint slice health & topology-aware routing auditor
@@ -684,6 +684,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/node-condition-trend", s.cacheMiddleware(60*time.Second, s.handleNodeConditionTrend))                // node condition trend
 	mux.HandleFunc("/api/operations/container-log-size", s.cacheMiddleware(60*time.Second, s.handleContainerLogSize))                    // container log size
 	mux.HandleFunc("/api/operations/kubelet-config-drift", s.cacheMiddleware(60*time.Second, s.handleKubeletConfigDrift))                // kubelet config drift
+	mux.HandleFunc("/api/deployment/rollout-blocker-detect", s.cacheMiddleware(60*time.Second, s.handleRolloutBlockerDetect))            // rollout blocker detect
+	mux.HandleFunc("/api/deployment/termination-grace-audit", s.cacheMiddleware(60*time.Second, s.handleTerminationGraceAudit))          // termination grace audit
+	mux.HandleFunc("/api/deployment/max-surge-audit", s.cacheMiddleware(60*time.Second, s.handleMaxSurgeAudit))                          // max surge audit
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness
