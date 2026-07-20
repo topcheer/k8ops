@@ -6400,6 +6400,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits RuntimeClass adoption for container isolation.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Runtime class", map[string]interface{}{"healthScore": 0})},
 	})
+	add("/api/scalability/pdb-gap-analysis", "get", OpenAPIOperation{
+		Summary: "PDB gap analysis", OperationID: "pdbGapAnalysis",
+		Tags:        []string{"Scalability", "PDB", "HA"},
+		Description: "Analyzes PodDisruptionBudget coverage gaps for multi-replica deployments.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PDB gap", map[string]interface{}{"healthScore": 0})},
+	})
+	add("/api/scalability/topology-spread-violation", "get", OpenAPIOperation{
+		Summary: "Topology spread violation", OperationID: "topologySpreadViolation",
+		Tags:        []string{"Scalability", "Topology", "Spread"},
+		Description: "Detects topology spread constraint violations and uneven pod distribution.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Topology spread", map[string]interface{}{"healthScore": 50})},
+	})
+	add("/api/scalability/overcommit-deep", "get", OpenAPIOperation{
+		Summary: "Overcommit deep", OperationID: "overcommitDeep",
+		Tags:        []string{"Scalability", "Resource", "Overcommit"},
+		Description: "Deep overcommit analysis with bin-packing efficiency scoring.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Overcommit deep", map[string]interface{}{"healthScore": 60})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},
