@@ -663,6 +663,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/hpa-cooldown-audit", s.cacheMiddleware(60*time.Second, s.handleHPACooldownAudit))                   // hpa cooldown audit
 	mux.HandleFunc("/api/scalability/resource-request-saturation", s.cacheMiddleware(60*time.Second, s.handleResourceRequestSaturation)) // request saturation
 	mux.HandleFunc("/api/scalability/cluster-pod-limit", s.cacheMiddleware(60*time.Second, s.handleClusterPodLimit))                     // cluster pod limit
+	mux.HandleFunc("/api/operations/pod-restart-forensics-deep", s.cacheMiddleware(60*time.Second, s.handlePodRestartForensicsDeep))     // pod restart forensics
+	mux.HandleFunc("/api/operations/deployment-health-trend", s.cacheMiddleware(60*time.Second, s.handleDeploymentHealthTrend))          // deployment health trend
+	mux.HandleFunc("/api/operations/event-correlation-matrix", s.cacheMiddleware(60*time.Second, s.handleEventCorrelationMatrix))        // event correlation matrix
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness

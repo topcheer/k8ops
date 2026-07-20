@@ -6310,6 +6310,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Forecasts when cluster runs out of pod IP / allocation capacity.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod limit", map[string]interface{}{"healthScore": 75})},
 	})
+	add("/api/operations/pod-restart-forensics-deep", "get", OpenAPIOperation{
+		Summary: "Pod restart forensics deep", OperationID: "podRestartForensicsDeep",
+		Tags:        []string{"Operations", "Pod", "Forensics"},
+		Description: "Deep forensic analysis of pod restart patterns with root cause guessing and timeline.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Restart forensics", map[string]interface{}{"healthScore": 60})},
+	})
+	add("/api/operations/deployment-health-trend", "get", OpenAPIOperation{
+		Summary: "Deployment health trend", OperationID: "deploymentHealthTrend",
+		Tags:        []string{"Operations", "Deployment", "Health"},
+		Description: "Analyzes deployment health trends over recent replicas and restart data.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Deploy health", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/operations/event-correlation-matrix", "get", OpenAPIOperation{
+		Summary: "Event correlation matrix", OperationID: "eventCorrelationMatrix",
+		Tags:        []string{"Operations", "Events", "Correlation"},
+		Description: "Correlates events across namespaces to find systemic patterns.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event correlation", map[string]interface{}{"healthScore": 70})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},
