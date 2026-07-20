@@ -346,6 +346,7 @@ const AUDIT_STRUCTURE = {
       'Image Management': [
         { path: '/api/deployment/image-hygiene', name: 'Image Hygiene', icon: '\u1F4F7' },
         { path: '/api/deployment/image-freshness', name: 'Image Freshness', icon: '\u1F34E' },
+        { path: '/api/deployment/image-pull-latency', name: 'Image Pull Latency', icon: '\u1F4F7' },
         { path: '/api/deployment/image-pull-audit', name: 'Image Pull Audit', icon: '\u1F4F7' },
       ],
       'Readiness & Gates': [
@@ -368,6 +369,8 @@ const AUDIT_STRUCTURE = {
       'Probe Health': [
         { path: '/api/deployment/probe-compliance', name: 'Probe Compliance', icon: '\u1FA78' },
         { path: '/api/deployment/probe-generator', name: 'Probe Generator', icon: '\u1F527' },
+        { path: '/api/deployment/probe-timeout-audit', name: 'Probe Timeout', icon: '\u23F1' },
+        { path: '/api/deployment/init-container-health', name: 'Init Container', icon: '\u1F9E9' },
         { path: '/api/deployment/graceful-shutdown', name: 'Graceful Shutdown', icon: '\u1F6D1' },
       ],
       'Config & Drift': [

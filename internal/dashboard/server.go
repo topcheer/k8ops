@@ -666,6 +666,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/pod-restart-forensics-deep", s.cacheMiddleware(60*time.Second, s.handlePodRestartForensicsDeep))     // pod restart forensics
 	mux.HandleFunc("/api/operations/deployment-health-trend", s.cacheMiddleware(60*time.Second, s.handleDeploymentHealthTrend))          // deployment health trend
 	mux.HandleFunc("/api/operations/event-correlation-matrix", s.cacheMiddleware(60*time.Second, s.handleEventCorrelationMatrix))        // event correlation matrix
+	mux.HandleFunc("/api/deployment/image-pull-latency", s.cacheMiddleware(60*time.Second, s.handleImagePullLatency))                    // image pull latency
+	mux.HandleFunc("/api/deployment/probe-timeout-audit", s.cacheMiddleware(60*time.Second, s.handleProbeTimeoutAudit))                  // probe timeout audit
+	mux.HandleFunc("/api/deployment/init-container-health", s.cacheMiddleware(60*time.Second, s.handleInitContainerHealth))              // init container health
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness

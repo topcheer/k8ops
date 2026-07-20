@@ -6328,6 +6328,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Correlates events across namespaces to find systemic patterns.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event correlation", map[string]interface{}{"healthScore": 70})},
 	})
+	add("/api/deployment/image-pull-latency", "get", OpenAPIOperation{
+		Summary: "Image pull latency", OperationID: "imagePullLatency",
+		Tags:        []string{"Deployment", "Image", "Registry"},
+		Description: "Analyzes image pull performance and registry health.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image pull", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/probe-timeout-audit", "get", OpenAPIOperation{
+		Summary: "Probe timeout audit", OperationID: "probeTimeoutAudit",
+		Tags:        []string{"Deployment", "Probe", "Health"},
+		Description: "Audits liveness/readiness probe timeout and interval configurations.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Probe timeout", map[string]interface{}{"healthScore": 60})},
+	})
+	add("/api/deployment/init-container-health", "get", OpenAPIOperation{
+		Summary: "Init container health", OperationID: "initContainerHealth",
+		Tags:        []string{"Deployment", "Init", "Container"},
+		Description: "Audits init container configurations and failure patterns.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Init health", map[string]interface{}{"healthScore": 70})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},
