@@ -400,6 +400,9 @@ const AUDIT_STRUCTURE = {
         { path: '/api/docs/tech-debt-radar', name: 'Tech Debt Radar', icon: '\u1F4A1' },
         { path: '/api/docs/sre-scorecard', name: 'SRE Scorecard', icon: '\u1F3AF' },
         { path: '/api/docs/compliance-crosswalk', name: 'Compliance Crosswalk', icon: '\u1F4DC' },
+        { path: '/api/docs/cost-optimization-roadmap', name: 'Cost Roadmap', icon: '\u1F4B0' },
+        { path: '/api/docs/security-posture-trend', name: 'Security Posture', icon: '\u1F6E1' },
+        { path: '/api/docs/capacity-planning-report', name: 'Capacity Report', icon: '\u1F4CF' },
       ],
       'API Docs': [
         { path: '/api/docs/api-coverage-map', name: 'API Coverage Map', icon: '\u1F5FA' },

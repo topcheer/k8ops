@@ -6346,6 +6346,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits init container configurations and failure patterns.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Init health", map[string]interface{}{"healthScore": 70})},
 	})
+	add("/api/docs/cost-optimization-roadmap", "get", OpenAPIOperation{
+		Summary: "Cost optimization roadmap", OperationID: "costOptimizationRoadmap",
+		Tags:        []string{"Documentation", "Cost", "Roadmap"},
+		Description: "Generates a prioritized cost optimization plan with quick wins, medium-term and long-term actions.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cost roadmap", map[string]interface{}{"healthScore": 50})},
+	})
+	add("/api/docs/security-posture-trend", "get", OpenAPIOperation{
+		Summary: "Security posture trend", OperationID: "securityPostureTrend",
+		Tags:        []string{"Documentation", "Security", "Trend"},
+		Description: "Tracks security posture changes and trends using container security context analysis.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Security trend", map[string]interface{}{"healthScore": 20})},
+	})
+	add("/api/docs/capacity-planning-report", "get", OpenAPIOperation{
+		Summary: "Capacity planning report", OperationID: "capacityPlanningReport",
+		Tags:        []string{"Documentation", "Capacity", "Planning"},
+		Description: "Generates a comprehensive capacity planning report with 3-month and 6-month forecasts.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Capacity report", map[string]interface{}{"healthScore": 80})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},
