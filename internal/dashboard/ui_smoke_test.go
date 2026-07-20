@@ -30,122 +30,153 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		t.Skip("audit-dashboard.js not found from test working directory")
 	}
 
-	// All v18.28-v18.36 APIs that must have frontend visibility
+	// Validate key endpoints from the restructured dashboard are present.
+	// Tests a representative sample across all dimensions and subcategories.
 	requiredEndpoints := []string{
-		"/api/operations/chaos-readiness",
+		// Security - RBAC
+		"/api/security/rbac-audit",
+		"/api/security/sa-token-lifecycle",
+		"/api/security/rbac-effective",
+		// Security - Secrets
+		"/api/security/secret-scan",
+		"/api/security/secret-rotation-v2",
+		"/api/security/secret-exposure",
+		// Security - Pod Security
+		"/api/security/pss-scorecard",
+		"/api/security/seccomp-audit",
+		"/api/security/container-hardening",
+		// Security - Network
+		"/api/security/network-policies",
+		"/api/security/netpol-generator",
+		// Security - Compliance
+		"/api/security/compliance-map",
+		"/api/security/kyverno-compliance",
+		"/api/security/opa-compliance",
+		// Security - Supply Chain
+		"/api/security/image-vuln",
 		"/api/security/supply-chain",
-		"/api/scalability/capacity-forecast-deep",
-		"/api/operations/drain-impact",
-		"/api/scalability/request-accuracy",
+		// Security - Runtime
+		"/api/security/runtime-scan",
+		// Security - Certs
+		"/api/security/cert-expiry",
+		// Security - Posture
+		"/api/security/attack-surface",
 		"/api/security/hardening-score",
 		"/api/security/fix-plan",
-		"/api/docs/api-coverage-map",
-		"/api/deployment/release-gate",
-		"/api/product/service-catalog",
-		"/api/operations/resource-topology",
-		"/api/docs/api-explorer",
-		"/api/scalability/orphan-cleanup",
-		"/api/scalability/cost-anomaly",
-		"/api/deployment/config-snapshot",
+		// Operations - Control Plane
+		"/api/operations/etcd-health",
+		"/api/operations/kubelet-health",
+		"/api/operations/cni-health",
+		// Operations - Observability
+		"/api/operations/metrics-pipeline",
+		"/api/operations/prom-health",
+		"/api/operations/grafana-health",
+		// Operations - Pod Health
 		"/api/operations/pod-health-index",
-		"/api/product/namespace-quota-map",
-		"/api/security/secret-exposure",
-		"/api/docs/cluster-maturity",
-		"/api/scalability/right-size-engine",
-		"/api/deployment/deploy-risk",
-		"/api/operations/pdb-generator",
-		"/api/security/netpol-generator",
-		"/api/product/service-dependency-map",
-		"/api/scalability/quota-generator",
-		"/api/deployment/probe-generator",
-		"/api/docs/platform-insights",
-		"/api/docs/action-priority-matrix",
-		"/api/operations/health-trend",
-		"/api/scalability/image-cleanup",
-		"/api/operations/restart-analyzer",
-		"/api/security/env-leak-scanner",
-		"/api/deployment/update-strategy-auditor",
-		"/api/product/label-score",
-		"/api/scalability/storage-tier",
-		"/api/security/trust-chain",
-		"/api/operations/alert-fatigue",
-		"/api/deployment/deploy-frequency",
-		"/api/docs/platform-comparison",
-		"/api/security/container-hardening",
-		"/api/scalability/autoscale-readiness",
-		"/api/product/workload-efficiency",
-		"/api/operations/capacity-gap",
-		"/api/deployment/revision-drift",
-		"/api/docs/knowledge-base",
-		"/api/security/compliance-gap",
-		"/api/scalability/scheduler-fairness",
-		"/api/product/workload-fingerprint",
-		"/api/deployment/deploy-heatmap",
-		"/api/operations/log-volume",
-		"/api/docs/cluster-narrative",
-		"/api/security/config-audit-trail",
-		"/api/scalability/node-utilization-deep",
-		"/api/security/secret-rotation-plan",
-		"/api/operations/event-correlation-deep",
-		"/api/deployment/rollback-simulator",
-		"/api/docs/upgrade-planner",
-		"/api/security/rbac-drift",
-		"/api/scalability/resource-forecast",
-		"/api/product/config-warmstart",
-		"/api/operations/pod-slo",
-		"/api/deployment/deploy-readiness-gate",
-		"/api/docs/api-governance-score",
-		"/api/security/disruption-budget-gap",
-		"/api/product/cost-topology",
-		"/api/scalability/binpack-efficiency",
-		"/api/operations/slo-burn-rate",
-		"/api/deployment/surge-capacity",
-		"/api/docs/runbook-coverage",
-		"/api/security/privilege-map",
-		"/api/product/api-slo-correlation",
-		"/api/scalability/eviction-risk",
-		"/api/operations/golden-signal-budget",
-		"/api/deployment/preflight-check",
-		"/api/docs/capacity-runbook",
-		"/api/security/secret-spray",
-		"/api/product/traffic-cost-split",
-		"/api/scalability/node-failure-blast",
-		"/api/operations/incident-timeline",
-		"/api/deployment/rollback-safety",
-		"/api/docs/api-semantic-version",
-		"/api/security/cert-chain-validator",
-		"/api/product/feature-flag-audit",
-		"/api/scalability/autoscaler-gap",
-		"/api/operations/resource-saturation-watch",
-		"/api/deployment/deploy-frequency-trend",
-		"/api/docs/oncall-readiness",
-		"/api/security/mtls-trust-domain",
-		"/api/product/latency-budget",
-		"/api/scalability/pod-disruption-tolerance",
-		"/api/operations/event-noise-filter",
-		"/api/deployment/progressive-rollout",
-		"/api/docs/cost-anomaly-deep",
-		"/api/security/runtime-drift-detect",
-		"/api/product/svc-mesh-readiness",
-		"/api/scalability/node-pool-rightsize",
-		"/api/operations/pod-restart-forensics",
-		"/api/deployment/deploy-window-optimizer",
-		"/api/docs/platform-maturity-deep",
-		"/api/security/admission-bypass-audit",
-		"/api/product/golden-path-validator",
-		"/api/scalability/cluster-fault-tolerance",
-		"/api/operations/pod-restart-storm",
-		"/api/deployment/deploy-pipeline-audit",
-		"/api/docs/platform-scorecard-deep",
-		"/api/security/seccomp-profile-gap",
-		"/api/product/traffic-spike-guard",
-		"/api/scalability/node-life-forecast",
+		"/api/operations/crashloop",
 		"/api/operations/crash-budget-tracker",
-		"/api/deployment/helm-drift-monitor",
-		"/api/security/sa-token-lifecycle",
-		"/api/product/endpoint-health-deep",
+		"/api/operations/restart-analyzer",
+		// Operations - Events
+		"/api/operations/event-storm",
+		"/api/operations/incident-correlation",
+		// Operations - SLO
+		"/api/operations/pod-slo",
+		"/api/operations/slo-burn-rate",
+		"/api/operations/health-score",
+		// Operations - Node
+		"/api/operations/node-pressure",
+		"/api/operations/pdb-audit",
+		// Operations - API
+		"/api/operations/api-load",
+		// Operations - Reliability
+		"/api/operations/chaos-readiness",
+		"/api/operations/throttle-risk",
+		// Scalability - Cost
+		"/api/scalability/cost-waste",
+		"/api/scalability/cost-allocation",
+		"/api/scalability/idle-waste",
+		// Scalability - Autoscaling
+		"/api/scalability/hpa-performance",
+		"/api/scalability/autoscale-readiness",
+		"/api/scalability/vpa-audit",
+		// Scalability - Resource
+		"/api/scalability/alloc-efficiency",
 		"/api/scalability/overcommit-risk",
-		"/api/docs/api-coverage-gap",
+		"/api/scalability/right-size-engine",
+		// Scalability - Node
+		"/api/scalability/node-lifecycle",
+		"/api/scalability/node-utilization-deep",
+		"/api/scalability/node-life-forecast",
+		// Scalability - Storage
+		"/api/scalability/pv-reclaim",
+		"/api/scalability/storage-performance",
+		// Scalability - Scheduling
+		"/api/scalability/scheduling-intel",
+		"/api/scalability/scheduler-fairness",
+		"/api/scalability/binpack-efficiency",
+		// Scalability - HA
+		"/api/scalability/dr-readiness",
+		"/api/scalability/cluster-fault-tolerance",
+		// Scalability - Capacity
+		"/api/scalability/capacity-headroom",
+		"/api/scalability/capacity-forecast-deep",
+		// Scalability - Cleanup
+		"/api/scalability/orphan-cleanup",
+		"/api/scalability/green-computing",
+		// Product - Service
+		"/api/product/service-connectivity",
+		"/api/product/service-catalog",
+		"/api/product/service-dependency-map",
+		// Product - Mesh
+		"/api/product/mesh-health",
+		"/api/product/ingress-health",
+		// Product - Endpoints
+		"/api/product/endpoint-dns-health",
+		"/api/product/endpoint-health-deep",
+		// Product - Workload
+		"/api/product/workload-criticality",
+		"/api/product/reliability-scorecard",
+		// Product - Config
+		"/api/product/configmap-size",
+		"/api/product/label-hygiene",
+		"/api/product/ownership-map",
+		// Product - Placement
+		"/api/product/placement-score",
+		"/api/product/topology-spread",
+		// Product - API
+		"/api/product/api-version-governance",
+		"/api/product/slo-compliance",
+		// Deployment - GitOps
+		"/api/deployment/helm-health",
+		"/api/deployment/helm-drift-monitor",
+		"/api/deployment/gitops-audit",
+		// Deployment - Rollout
+		"/api/deployment/progressive-delivery",
+		"/api/deployment/rollout-health",
+		// Deployment - Rollback
+		"/api/deployment/rollback-risk",
+		"/api/deployment/rollback-safety",
+		// Deployment - Image
+		"/api/deployment/image-hygiene",
+		"/api/deployment/image-freshness",
+		// Deployment - Readiness
+		"/api/deployment/preflight-check",
+		"/api/deployment/readiness-gate",
+		// Deployment - DORA
+		"/api/deployment/dora-metrics",
+		"/api/deployment/deploy-frequency",
+		// Deployment - Probes
+		"/api/deployment/probe-compliance",
+		// Deployment - Drift
+		"/api/deployment/revision-drift",
+		"/api/deployment/config-sync",
+		// Docs
+		"/api/docs/platform-scorecard",
+		"/api/docs/api-coverage-map",
+		"/api/docs/api-explorer",
+		"/api/docs/action-priority-matrix",
+		"/api/docs/oncall-readiness",
+		"/api/docs/upgrade-planner",
 	}
 
 	missing := []string{}

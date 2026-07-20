@@ -13,7 +13,7 @@ vet: ## Run go vet
 	go vet ./...
 
 test: ## Run all tests
-	go test ./... -count=1
+	go test ./... -count=1 -timeout 300s -p 2 -gcflags="-l" -ldflags="-w -s"
 
 test-race: ## Run tests with race detector
 	go test -race -timeout 5m ./...
