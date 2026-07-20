@@ -258,6 +258,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/product/mesh-injection', name: 'Mesh Injection', icon: '\u1F500' },
         { path: '/api/product/ingress-health', name: 'Ingress Health', icon: '\u1F310' },
         { path: '/api/product/api-gateway-health', name: 'API Gateway', icon: '\u1F6A7' },
+        { path: '/api/product/ingress-conflict', name: 'Ingress Conflict', icon: '\u26A0' },
       ],
       'Endpoints': [
         { path: '/api/product/endpoint-dns-health', name: 'Endpoint & DNS', icon: '\u1F310' },
@@ -269,6 +270,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/product/workload-criticality', name: 'Workload Criticality', icon: '\u26A0' },
         { path: '/api/product/workload-efficiency', name: 'Workload Efficiency', icon: '\u2696' },
         { path: '/api/product/workload-fingerprint', name: 'Workload Fingerprint', icon: '\u1F194' },
+        { path: '/api/product/canary-health', name: 'Canary Health', icon: '\u1F4AB' },
         { path: '/api/product/reliability-scorecard', name: 'Reliability Scorecard', icon: '\u1F4CB' },
         { path: '/api/product/golden-signals', name: 'Golden Signals', icon: '\u1F4A1' },
       ],
@@ -290,6 +292,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/product/pvc-health', name: 'PVC Health', icon: '\u1F4BE' },
         { path: '/api/product/pv-access', name: 'PV Access', icon: '\u1F4BE' },
         { path: '/api/product/config-mount-risk', name: 'Config Mount Risk', icon: '\u26A0' },
+        { path: '/api/product/pvc-io-health', name: 'PVC I/O Health', icon: '\u1F4BE' },
       ],
       'API Governance': [
         { path: '/api/product/api-version-governance', name: 'API Version', icon: '\u1F4C4' },

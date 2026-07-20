@@ -6148,6 +6148,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Generates incident response playbooks for 6 common scenarios.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Incident playbook", map[string]interface{}{"readinessScore": 40})},
 	})
+	add("/api/product/canary-health", "get", OpenAPIOperation{
+		Summary: "Canary health", OperationID: "canaryHealth",
+		Tags:        []string{"Product", "Deployment", "Canary"},
+		Description: "Analyzes canary and progressive deployment health. Detects stalled rollouts, restart storms, and replica gaps.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Canary health", map[string]interface{}{"healthScore": 70})},
+	})
+	add("/api/product/pvc-io-health", "get", OpenAPIOperation{
+		Summary: "PVC IO health", OperationID: "pvcIOHealth",
+		Tags:        []string{"Product", "Storage", "PVC"},
+		Description: "Monitors PVC health: orphaned volumes, missing backups, large volumes, storage class distribution.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PVC health", map[string]interface{}{"healthScore": 60})},
+	})
+	add("/api/product/ingress-conflict", "get", OpenAPIOperation{
+		Summary: "Ingress conflict", OperationID: "ingressConflict",
+		Tags:        []string{"Product", "Networking", "Ingress"},
+		Description: "Detects ingress path conflicts, missing backend services, stale rules, and TLS gaps.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Ingress conflict", map[string]interface{}{"healthScore": 75})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},

@@ -636,6 +636,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/platform-risk-heatmap", s.cacheMiddleware(60*time.Second, s.handlePlatformRiskHeatmap))               // platform risk heatmap
 	mux.HandleFunc("/api/docs/workload-maturity-matrix", s.cacheMiddleware(60*time.Second, s.handleWorkloadMaturityMatrix))         // workload maturity matrix
 	mux.HandleFunc("/api/docs/incident-playbook", s.cacheMiddleware(60*time.Second, s.handleIncidentPlaybook))                      // incident playbook
+	mux.HandleFunc("/api/product/canary-health", s.cacheMiddleware(60*time.Second, s.handleCanaryHealth))                           // canary health
+	mux.HandleFunc("/api/product/pvc-io-health", s.cacheMiddleware(60*time.Second, s.handlePVCIOHealth))                            // pvc io health
+	mux.HandleFunc("/api/product/ingress-conflict", s.cacheMiddleware(60*time.Second, s.handleIngressConflict))                     // ingress conflict
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                        // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))               // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))           // progressive delivery readiness
