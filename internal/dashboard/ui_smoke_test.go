@@ -140,6 +140,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/security/seccomp-profile-gap",
 		"/api/product/traffic-spike-guard",
 		"/api/scalability/node-life-forecast",
+		"/api/operations/crash-budget-tracker",
+		"/api/deployment/helm-drift-monitor",
+		"/api/docs/api-coverage-gap",
 	}
 
 	missing := []string{}

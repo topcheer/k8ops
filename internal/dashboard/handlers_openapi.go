@@ -6064,6 +6064,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Predicts node lifecycle events based on age, health, pressure conditions, kubelet version. Identifies nodes needing replacement, upgrade, or investigation.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node forecast", map[string]interface{}{"forecastScore": 60})},
 	})
+	add("/api/operations/crash-budget-tracker", "get", OpenAPIOperation{
+		Summary: "Crash budget tracker", OperationID: "crashBudgetTracker",
+		Tags:        []string{"Operations", "Crash", "Budget"},
+		Description: "Tracks crash budget consumption per workload. Monthly budget allocation, daily crash rate, budget utilization percentage, and action-needed classification.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Crash budget", map[string]interface{}{"budgetScore": 70})},
+	})
+	add("/api/deployment/helm-drift-monitor", "get", OpenAPIOperation{
+		Summary: "Helm drift monitor", OperationID: "helmDriftMonitor",
+		Tags:        []string{"Deployment", "Helm", "Drift"},
+		Description: "Monitors Helm release drift by checking release secrets, status, orphaned resources, and chart version consistency.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Helm drift", map[string]interface{}{"monitorScore": 60})},
+	})
+	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
+		Summary: "API coverage gap", OperationID: "apiCoverageGap",
+		Tags:        []string{"Documentation", "Coverage", "Gap"},
+		Description: "Analyzes which Kubernetes resource types are underrepresented in API coverage. Identifies blind spots in observability for critical resources.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API coverage", map[string]interface{}{"coverageScore": 55})},
+	})
 
 	return spec
 }

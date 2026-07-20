@@ -622,6 +622,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/seccomp-profile-gap", s.cacheMiddleware(120*time.Second, s.handleSeccompProfileGap))              // seccomp profile gap analyzer
 	mux.HandleFunc("/api/product/traffic-spike-guard", s.cacheMiddleware(60*time.Second, s.handleTrafficSpikeGuard))                // traffic spike guard
 	mux.HandleFunc("/api/scalability/node-life-forecast", s.cacheMiddleware(300*time.Second, s.handleNodeLifeForecast))             // node lifecycle forecaster
+	mux.HandleFunc("/api/operations/crash-budget-tracker", s.cacheMiddleware(60*time.Second, s.handleCrashBudgetTracker))           // crash budget tracker
+	mux.HandleFunc("/api/deployment/helm-drift-monitor", s.cacheMiddleware(120*time.Second, s.handleHelmDriftMonitor))              // helm drift monitor
+	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                        // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))               // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))           // progressive delivery readiness
 	mux.HandleFunc("/api/docs/cost-anomaly-deep", s.cacheMiddleware(300*time.Second, s.handleCostAnomalyDeep))                      // deep cost anomaly detector
