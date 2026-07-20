@@ -6514,6 +6514,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits TLS configuration: Ingress TLS coverage, certificate expiry, weak key sizes, self-signed certs, deprecated X.509 versions.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("TLS audit", map[string]interface{}{"healthScore": 55})},
 	})
+	add("/api/scalability/mem-pressure-forecast", "get", OpenAPIOperation{
+		Summary: "Memory pressure forecast", OperationID: "memPressureForecast",
+		Tags:        []string{"Scalability", "Memory", "Forecast"},
+		Description: "Predicts node memory exhaustion based on pod requests, overcommit ratio, and usage trends. Identifies critical nodes at risk of OOM kills.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Memory pressure", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/scalability/scale-concurrency", "get", OpenAPIOperation{
+		Summary: "Scaling concurrency limit", OperationID: "scaleConcurrency",
+		Tags:        []string{"Scalability", "Scaling", "Capacity"},
+		Description: "Calculates how many workloads can scale simultaneously without resource exhaustion. Identifies CPU/memory/pod bottleneck and per-workload scale-up potential.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Scale concurrency", map[string]interface{}{"healthScore": 65})},
+	})
+	add("/api/scalability/disruption-window", "get", OpenAPIOperation{
+		Summary: "Disruption window", OperationID: "disruptionWindow",
+		Tags:        []string{"Scalability", "HA", "Maintenance"},
+		Description: "Analyzes safe pod disruption windows based on PDBs, replica counts, and single-replica risk. Calculates total disruption budget and recommends maintenance windows.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Disruption window", map[string]interface{}{"healthScore": 25})},
+	})
 
 	return spec
 }

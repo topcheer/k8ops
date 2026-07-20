@@ -696,6 +696,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/image-registry-allowlist", s.cacheMiddleware(60*time.Second, s.handleImageRegistryAllowlist))          // image registry allowlist
 	mux.HandleFunc("/api/security/sa-mount-exposure", s.cacheMiddleware(60*time.Second, s.handleSAMountExposure))                        // SA mount exposure
 	mux.HandleFunc("/api/security/tls-version-audit", s.cacheMiddleware(120*time.Second, s.handleTLSVersionAudit))                       // TLS version audit
+	mux.HandleFunc("/api/scalability/mem-pressure-forecast", s.cacheMiddleware(60*time.Second, s.handleMemPressureForecast))             // memory pressure forecast
+	mux.HandleFunc("/api/scalability/scale-concurrency", s.cacheMiddleware(60*time.Second, s.handleScaleConcurrency))                    // scaling concurrency limit
+	mux.HandleFunc("/api/scalability/disruption-window", s.cacheMiddleware(60*time.Second, s.handleDisruptionWindow))                    // disruption window analyzer
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness

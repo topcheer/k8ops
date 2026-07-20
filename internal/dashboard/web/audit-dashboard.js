@@ -269,6 +269,11 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/carbon-footprint', name: 'Carbon Footprint', icon: '\u1F7E2' },
         { path: '/api/scalability/resource-waste-deep', name: 'Waste Deep', icon: '\u1F4B8' },
       ],
+      'Pressure & Capacity Forecast': [
+        { path: '/api/scalability/mem-pressure-forecast', name: 'Mem Pressure Forecast', icon: '\u1F4CA' },
+        { path: '/api/scalability/scale-concurrency', name: 'Scale Concurrency', icon: '\u2195' },
+        { path: '/api/scalability/disruption-window', name: 'Disruption Window', icon: '\u1F6E1' },
+      ],
     },
   },
   'Product': {
