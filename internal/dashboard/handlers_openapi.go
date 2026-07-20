@@ -6238,6 +6238,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits ephemeral storage usage and limits. Identifies pods without storage limits.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Ephemeral storage", map[string]interface{}{"healthScore": 10})},
 	})
+	add("/api/docs/tech-debt-radar", "get", OpenAPIOperation{
+		Summary: "Tech debt radar", OperationID: "techDebtRadar",
+		Tags:        []string{"Documentation", "Debt", "Radar"},
+		Description: "Tracks technical debt across the cluster with severity scoring by category.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Tech debt", map[string]interface{}{"healthScore": 30})},
+	})
+	add("/api/docs/sre-scorecard", "get", OpenAPIOperation{
+		Summary: "SRE scorecard", OperationID: "sreScorecard",
+		Tags:        []string{"Documentation", "SRE", "Reliability"},
+		Description: "Generates SRE scorecard using error budget, availability, and change failure rate.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SRE scorecard", map[string]interface{}{"healthScore": 75})},
+	})
+	add("/api/docs/compliance-crosswalk", "get", OpenAPIOperation{
+		Summary: "Compliance crosswalk", OperationID: "complianceCrosswalk",
+		Tags:        []string{"Documentation", "Compliance", "Crosswalk"},
+		Description: "Maps cluster findings to multiple compliance frameworks: CIS, NIST, PCI-DSS, SOC2.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Compliance crosswalk", map[string]interface{}{"healthScore": 40})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},

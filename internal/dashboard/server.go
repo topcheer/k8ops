@@ -651,6 +651,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/revision-history-hygiene", s.cacheMiddleware(60*time.Second, s.handleRevisionHistoryHygiene))    // revision history hygiene
 	mux.HandleFunc("/api/deployment/resource-limit-coverage", s.cacheMiddleware(60*time.Second, s.handleResourceLimitCoverage))      // resource limit coverage
 	mux.HandleFunc("/api/deployment/ephemeral-storage-quota", s.cacheMiddleware(60*time.Second, s.handleEphemeralStorageQuota))      // ephemeral storage quota
+	mux.HandleFunc("/api/docs/tech-debt-radar", s.cacheMiddleware(60*time.Second, s.handleTechDebtRadar))                            // tech debt radar
+	mux.HandleFunc("/api/docs/sre-scorecard", s.cacheMiddleware(60*time.Second, s.handleSREScorecard))                               // sre scorecard
+	mux.HandleFunc("/api/docs/compliance-crosswalk", s.cacheMiddleware(60*time.Second, s.handleComplianceCrosswalk))                 // compliance crosswalk
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                         // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))            // progressive delivery readiness

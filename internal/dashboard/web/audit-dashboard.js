@@ -382,6 +382,9 @@ const AUDIT_STRUCTURE = {
       'Maturity & Playbooks': [
         { path: '/api/docs/workload-maturity-matrix', name: 'Maturity Matrix', icon: '\u1F3AF' },
         { path: '/api/docs/incident-playbook', name: 'Incident Playbook', icon: '\u1F691' },
+        { path: '/api/docs/tech-debt-radar', name: 'Tech Debt Radar', icon: '\u1F4A1' },
+        { path: '/api/docs/sre-scorecard', name: 'SRE Scorecard', icon: '\u1F3AF' },
+        { path: '/api/docs/compliance-crosswalk', name: 'Compliance Crosswalk', icon: '\u1F4DC' },
       ],
       'API Docs': [
         { path: '/api/docs/api-coverage-map', name: 'API Coverage Map', icon: '\u1F5FA' },
