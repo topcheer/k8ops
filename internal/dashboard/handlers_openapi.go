@@ -6382,6 +6382,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Profiles workload startup time and initialization patterns.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Startup profile", map[string]interface{}{"healthScore": 80})},
 	})
+	add("/api/security/seccomp-profile-audit", "get", OpenAPIOperation{
+		Summary: "Seccomp profile audit", OperationID: "seccompProfileAudit",
+		Tags:        []string{"Security", "Seccomp", "Runtime"},
+		Description: "Audits seccomp profile settings across all pods.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Seccomp audit", map[string]interface{}{"healthScore": 5})},
+	})
+	add("/api/security/sa-token-age", "get", OpenAPIOperation{
+		Summary: "SA token age", OperationID: "saTokenAge",
+		Tags:        []string{"Security", "ServiceAccount", "Token"},
+		Description: "Audits service account token ages and rotation status.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SA token age", map[string]interface{}{"healthScore": 60})},
+	})
+	add("/api/security/runtime-class-audit", "get", OpenAPIOperation{
+		Summary: "Runtime class audit", OperationID: "runtimeClassAudit",
+		Tags:        []string{"Security", "Runtime", "Isolation"},
+		Description: "Audits RuntimeClass adoption for container isolation.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Runtime class", map[string]interface{}{"healthScore": 0})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},

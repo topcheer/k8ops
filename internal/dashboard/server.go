@@ -281,7 +281,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/quota-security", s.cacheMiddleware(120*time.Second, s.handleQuotaSecurity))                   // resource quota & limit range security auditor
 	mux.HandleFunc("/api/security/policy-drift", s.cacheMiddleware(120*time.Second, s.handlePolicyDrift))                       // security policy drift & baseline configuration auditor
 	mux.HandleFunc("/api/operations/log-pipeline", s.cacheMiddleware(120*time.Second, s.handleLogPipeline))                     // log aggregation & forwarding pipeline health auditor
-	mux.HandleFunc("/api/product/runtime-class", s.cacheMiddleware(120*time.Second, s.handleRuntimeClass))                      // container runtime class & OCI image compliance auditor
+	mux.HandleFunc("/api/product/runtime-class", s.cacheMiddleware(120*time.Second, s.handleRuntimeClassIsolation))             // container runtime class & OCI image compliance auditor
 	mux.HandleFunc("/api/deployment/image-pull-audit", s.cacheMiddleware(120*time.Second, s.handleImagePullAudit))              // image pull policy & secret management auditor
 	mux.HandleFunc("/api/scalability/vpa-audit", s.cacheMiddleware(120*time.Second, s.handleVPAAudit))                          // VPA configuration & resource recommendation quality auditor
 	mux.HandleFunc("/api/product/mesh-traffic", s.cacheMiddleware(120*time.Second, s.handleMeshTraffic))                        // service mesh traffic management & circuit breaker health auditor
@@ -675,6 +675,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/env-var-drift-detect", s.cacheMiddleware(60*time.Second, s.handleEnvVarDriftDetect))                    // env var drift detect
 	mux.HandleFunc("/api/product/dns-record-audit", s.cacheMiddleware(60*time.Second, s.handleDNSRecordAudit))                           // dns record audit
 	mux.HandleFunc("/api/product/workload-startup-profile", s.cacheMiddleware(60*time.Second, s.handleWorkloadStartupProfile))           // workload startup profile
+	mux.HandleFunc("/api/security/seccomp-profile-audit", s.cacheMiddleware(60*time.Second, s.handleSeccompProfileAudit))                // seccomp profile audit
+	mux.HandleFunc("/api/security/sa-token-age", s.cacheMiddleware(60*time.Second, s.handleSATokenAge))                                  // sa token age
+	mux.HandleFunc("/api/security/runtime-class-audit", s.cacheMiddleware(60*time.Second, s.handleRuntimeClassIsolation))                // runtime class audit
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness

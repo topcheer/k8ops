@@ -42,6 +42,9 @@ const AUDIT_STRUCTURE = {
         { path: '/api/security/hostpath-audit', name: 'HostPath Audit', icon: '\u1F4C1' },
         { path: '/api/security/container-capabilities', name: 'Cap Audit', icon: '\u1F511' },
         { path: '/api/security/readonly-rootfs-audit', name: 'Readonly RootFS', icon: '\u1F512' },
+        { path: '/api/security/seccomp-profile-audit', name: 'Seccomp Profile', icon: '\u1F6E1' },
+        { path: '/api/security/sa-token-age', name: 'SA Token Age', icon: '\u1F511' },
+        { path: '/api/security/runtime-class-audit', name: 'Runtime Class', icon: '\u1F9E9' },
       ],
       'Network Security': [
         { path: '/api/security/network-policies', name: 'Network Policies', icon: '\u1F6E1' },
