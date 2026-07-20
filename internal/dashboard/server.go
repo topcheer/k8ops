@@ -624,6 +624,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/node-life-forecast", s.cacheMiddleware(300*time.Second, s.handleNodeLifeForecast))             // node lifecycle forecaster
 	mux.HandleFunc("/api/operations/crash-budget-tracker", s.cacheMiddleware(60*time.Second, s.handleCrashBudgetTracker))           // crash budget tracker
 	mux.HandleFunc("/api/deployment/helm-drift-monitor", s.cacheMiddleware(120*time.Second, s.handleHelmDriftMonitor))              // helm drift monitor
+	mux.HandleFunc("/api/security/sa-token-lifecycle", s.cacheMiddleware(60*time.Second, s.handleSATokenLifecycle))                 // SA token lifecycle
+	mux.HandleFunc("/api/product/endpoint-health-deep", s.cacheMiddleware(60*time.Second, s.handleEndpointHealthDeep))              // endpoint health deep
+	mux.HandleFunc("/api/scalability/overcommit-risk", s.cacheMiddleware(60*time.Second, s.handleOvercommitRisk))                   // overcommit risk
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                        // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))               // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))           // progressive delivery readiness

@@ -6076,6 +6076,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Monitors Helm release drift by checking release secrets, status, orphaned resources, and chart version consistency.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Helm drift", map[string]interface{}{"monitorScore": 60})},
 	})
+	add("/api/security/sa-token-lifecycle", "get", OpenAPIOperation{
+		Summary: "SA token lifecycle", OperationID: "saTokenLifecycle",
+		Tags:        []string{"Security", "ServiceAccount", "Token"},
+		Description: "Analyzes ServiceAccount token lifecycle risks including long-lived tokens, auto-mount settings, and unused SAs.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SA token lifecycle", map[string]interface{}{"riskScore": 70})},
+	})
+	add("/api/product/endpoint-health-deep", "get", OpenAPIOperation{
+		Summary: "Endpoint health deep", OperationID: "endpointHealthDeep",
+		Tags:        []string{"Product", "Endpoint", "Health"},
+		Description: "Deep health analysis of service endpoints including backing pod readiness ratios and degraded service detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Endpoint health", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/scalability/overcommit-risk", "get", OpenAPIOperation{
+		Summary: "Overcommit risk", OperationID: "overcommitRisk",
+		Tags:        []string{"Scalability", "Resource", "Overcommit"},
+		Description: "Evaluates cluster overcommit risk by comparing resource requests vs limits vs actual allocatable capacity.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Overcommit risk", map[string]interface{}{"riskScore": 65})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},

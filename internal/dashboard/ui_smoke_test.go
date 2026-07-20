@@ -142,6 +142,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/scalability/node-life-forecast",
 		"/api/operations/crash-budget-tracker",
 		"/api/deployment/helm-drift-monitor",
+		"/api/security/sa-token-lifecycle",
+		"/api/product/endpoint-health-deep",
+		"/api/scalability/overcommit-risk",
 		"/api/docs/api-coverage-gap",
 	}
 

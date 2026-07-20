@@ -85,6 +85,9 @@ const AUDIT_ENDPOINTS = {
     { path: '/api/deployment/deploy-window-optimizer', name: 'Deploy Window', icon: '\u1F4C5' },
     { path: '/api/deployment/deploy-pipeline-audit', name: 'Pipeline Audit', icon: '\u1F527' },
     { path: '/api/deployment/helm-drift-monitor', name: 'Helm Drift', icon: '\u1F4E6' },
+    { path: '/api/security/sa-token-lifecycle', name: 'SA Token Lifecycle', icon: '\u1F511' },
+    { path: '/api/product/endpoint-health-deep', name: 'Endpoint Health Deep', icon: '\u2713' },
+    { path: '/api/scalability/overcommit-risk', name: 'Overcommit Risk', icon: '\u26A0' },
   ],
   'Operations': [
     { path: '/api/operations/metrics-pipeline', name: 'Metrics Pipeline', icon: '\u1F4CA' },
