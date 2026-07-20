@@ -436,6 +436,9 @@ var auditRegistry = []auditEndpoint{
 	{"operations:event-noise-filter", "/api/operations/event-noise-filter", "Event noise filter & signal analyzer"},
 	{"deployment:progressive-rollout", "/api/deployment/progressive-rollout", "Progressive delivery readiness"},
 	{"docs:cost-anomaly-deep", "/api/docs/cost-anomaly-deep", "Deep cost anomaly detector"},
+	{"docs:backup-compliance-deep", "/api/docs/backup-compliance-deep", "Backup compliance & DR readiness deep auditor"},
+	{"docs:label-taxonomy-standard", "/api/docs/label-taxonomy-standard", "Label taxonomy standardization & consistency analyzer"},
+	{"docs:change-impact-brief", "/api/docs/change-impact-brief", "Change impact assessment & blast radius analyzer"},
 
 	{"operations:obs-cardinality", "/api/operations/obs-cardinality", "Observability data cardinality & volume cost analyzer"},
 	{"deployment:gitops-drift", "/api/deployment/gitops-drift", "GitOps sync health & configuration drift analyzer"},

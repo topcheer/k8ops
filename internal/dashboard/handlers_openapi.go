@@ -6460,6 +6460,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes which Kubernetes resource types are underrepresented in API coverage. Identifies blind spots in observability for critical resources.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("API coverage", map[string]interface{}{"coverageScore": 55})},
 	})
+	add("/api/docs/backup-compliance-deep", "get", OpenAPIOperation{
+		Summary: "Backup compliance deep", OperationID: "backupComplianceDeep",
+		Tags:        []string{"Documentation", "Backup", "DR"},
+		Description: "Deep backup compliance audit: namespace backup policy coverage, PVC snapshot status, secret backup risk, DR checklist with etcd/encryption/replication/restore-test verification.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Backup compliance", map[string]interface{}{"healthScore": 40})},
+	})
+	add("/api/docs/label-taxonomy-standard", "get", OpenAPIOperation{
+		Summary: "Label taxonomy standard", OperationID: "labelTaxonomyStandard",
+		Tags:        []string{"Documentation", "Labels", "Governance"},
+		Description: "Analyzes label usage across all resources, detects inconsistencies (case, naming variants), and recommends standardized K8s app.kubernetes.io/* label taxonomy.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Label taxonomy", map[string]interface{}{"healthScore": 50})},
+	})
+	add("/api/docs/change-impact-brief", "get", OpenAPIOperation{
+		Summary: "Change impact brief", OperationID: "changeImpactBrief",
+		Tags:        []string{"Documentation", "Change", "Impact"},
+		Description: "Structured change impact assessment: analyzes recent cluster changes (72h), blast radius per deployment, rollback readiness (revision history + PDB), and risk areas.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Change impact", map[string]interface{}{"healthScore": 70})},
+	})
 
 	return spec
 }
