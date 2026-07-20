@@ -411,6 +411,11 @@ const AUDIT_STRUCTURE = {
         { path: '/api/deployment/env-config-drift', name: 'Env Config Drift', icon: '\u1F501' },
         { path: '/api/deployment/immutable-config-audit', name: 'Immutable Config', icon: '\u1F512' },
       ],
+      'Reproducibility & Compliance': [
+        { path: '/api/deployment/deploy-reproducibility', name: 'Reproducibility', icon: '\u1F50D' },
+        { path: '/api/deployment/update-compliance-deep', name: 'Update Compliance', icon: '\u2705' },
+        { path: '/api/deployment/restart-policy-deep', name: 'Restart Policy', icon: '\u1F501' },
+      ],
     },
   },
   'Documentation': {

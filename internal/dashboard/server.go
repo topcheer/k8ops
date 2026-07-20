@@ -699,6 +699,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/mem-pressure-forecast", s.cacheMiddleware(60*time.Second, s.handleMemPressureForecast))             // memory pressure forecast
 	mux.HandleFunc("/api/scalability/scale-concurrency", s.cacheMiddleware(60*time.Second, s.handleScaleConcurrency))                    // scaling concurrency limit
 	mux.HandleFunc("/api/scalability/disruption-window", s.cacheMiddleware(60*time.Second, s.handleDisruptionWindow))                    // disruption window analyzer
+	mux.HandleFunc("/api/deployment/deploy-reproducibility", s.cacheMiddleware(60*time.Second, s.handleDeployReproducibility))           // deploy reproducibility audit
+	mux.HandleFunc("/api/deployment/update-compliance-deep", s.cacheMiddleware(60*time.Second, s.handleUpdateComplianceDeep))            // update compliance deep
+	mux.HandleFunc("/api/deployment/restart-policy-deep", s.cacheMiddleware(60*time.Second, s.handleRestartPolicyDeep))                  // restart policy deep
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness

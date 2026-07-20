@@ -6532,6 +6532,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes safe pod disruption windows based on PDBs, replica counts, and single-replica risk. Calculates total disruption budget and recommends maintenance windows.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Disruption window", map[string]interface{}{"healthScore": 25})},
 	})
+	add("/api/deployment/deploy-reproducibility", "get", OpenAPIOperation{
+		Summary: "Deploy reproducibility", OperationID: "deployReproducibility",
+		Tags:        []string{"Deployment", "Reproducibility", "SupplyChain"},
+		Description: "Audits deployment reproducibility: image tag pinning, digest usage, hardcoded env vars, ConfigMap references. Identifies non-reproducible workloads.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Reproducibility", map[string]interface{}{"healthScore": 30})},
+	})
+	add("/api/deployment/update-compliance-deep", "get", OpenAPIOperation{
+		Summary: "Update compliance deep", OperationID: "updateComplianceDeep",
+		Tags:        []string{"Deployment", "Strategy", "Compliance"},
+		Description: "Deep audit of deployment update strategy compliance: RollingUpdate vs Recreate, maxSurge/maxUnavailable, progressDeadlineSeconds, revision history limits.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Update compliance", map[string]interface{}{"healthScore": 65})},
+	})
+	add("/api/deployment/restart-policy-deep", "get", OpenAPIOperation{
+		Summary: "Restart policy deep", OperationID: "restartPolicyDeep",
+		Tags:        []string{"Deployment", "Restart", "Health"},
+		Description: "Deep analysis of container restart policies: liveness probe coverage, restart history patterns, CrashLoopBackOff detection, preStop hook configuration.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Restart policy", map[string]interface{}{"healthScore": 50})},
+	})
 
 	return spec
 }
