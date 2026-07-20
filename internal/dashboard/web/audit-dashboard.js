@@ -210,6 +210,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/density-balance', name: 'Density Balance', icon: '\u2696' },
         { path: '/api/scalability/pod-density', name: 'Pod Density', icon: '\u1F4CF' },
         { path: '/api/scalability/fragmentation', name: 'Fragmentation', icon: '\u1F9F9' },
+        { path: '/api/scalability/pod-affinity-spread', name: 'Affinity Spread', icon: '\u1F4CD' },
       ],
       'HA & DR': [
         { path: '/api/scalability/dr-readiness', name: 'DR Readiness', icon: '\u1F6E1' },
@@ -233,12 +234,14 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/tenant-pressure', name: 'Tenant Pressure', icon: '\u1F3E2' },
         { path: '/api/scalability/namespace-isolation', name: 'NS Isolation', icon: '\u1F6E1' },
         { path: '/api/scalability/ns-consumption', name: 'NS Consumption', icon: '\u1F4CA' },
+        { path: '/api/scalability/namespace-budget-enforce', name: 'Budget Enforce', icon: '\u1F4B0' },
       ],
       'Cleanup & Sustainability': [
         { path: '/api/scalability/orphan-cleanup', name: 'Orphan Cleanup', icon: '\u1F9F9' },
         { path: '/api/scalability/image-cleanup', name: 'Image Cleanup', icon: '\u1F9F9' },
         { path: '/api/scalability/green-computing', name: 'Green Computing', icon: '\u1F7E2' },
         { path: '/api/scalability/carbon-footprint', name: 'Carbon Footprint', icon: '\u1F7E2' },
+        { path: '/api/scalability/resource-waste-deep', name: 'Waste Deep', icon: '\u1F4B8' },
       ],
     },
   },

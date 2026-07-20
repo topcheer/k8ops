@@ -642,6 +642,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/privilege-escalation-path", s.cacheMiddleware(60*time.Second, s.handlePrivilegeEscalationPath))   // privilege escalation
 	mux.HandleFunc("/api/security/network-segment-gap", s.cacheMiddleware(60*time.Second, s.handleNetworkSegmentGap))               // network segment gap
 	mux.HandleFunc("/api/security/image-baseline-drift", s.cacheMiddleware(60*time.Second, s.handleImageBaseline))                  // image baseline drift
+	mux.HandleFunc("/api/scalability/pod-affinity-spread", s.cacheMiddleware(60*time.Second, s.handlePodAffinitySpread))            // pod affinity spread
+	mux.HandleFunc("/api/scalability/namespace-budget-enforce", s.cacheMiddleware(60*time.Second, s.handleNamespaceBudgetEnforce))  // namespace budget enforce
+	mux.HandleFunc("/api/scalability/resource-waste-deep", s.cacheMiddleware(60*time.Second, s.handleResourceWasteDeep))            // resource waste deep
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                        // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))               // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))           // progressive delivery readiness

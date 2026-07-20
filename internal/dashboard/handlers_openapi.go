@@ -6184,6 +6184,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Detects image drift by checking digest pinning, latest tag usage, and version tag consistency.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image baseline", map[string]interface{}{"healthScore": 0})},
 	})
+	add("/api/scalability/pod-affinity-spread", "get", OpenAPIOperation{
+		Summary: "Pod affinity spread", OperationID: "podAffinitySpread",
+		Tags:        []string{"Scalability", "Scheduling", "HA"},
+		Description: "Analyzes pod anti-affinity effectiveness and topology spread. Detects co-located replicas and single points of failure.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Affinity spread", map[string]interface{}{"healthScore": 45})},
+	})
+	add("/api/scalability/namespace-budget-enforce", "get", OpenAPIOperation{
+		Summary: "Namespace budget enforce", OperationID: "namespaceBudgetEnforce",
+		Tags:        []string{"Scalability", "Cost", "Governance"},
+		Description: "Audits namespace resource budgets. Identifies namespaces without quotas, high spenders, and missing limit ranges.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Budget enforcement", map[string]interface{}{"healthScore": 0})},
+	})
+	add("/api/scalability/resource-waste-deep", "get", OpenAPIOperation{
+		Summary: "Resource waste deep", OperationID: "resourceWasteDeep",
+		Tags:        []string{"Scalability", "Cost", "Waste"},
+		Description: "Deep resource waste analysis: idle workloads, over-provisioned containers, zombie PVCs and ConfigMaps, with cost estimates.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Resource waste", map[string]interface{}{"healthScore": 60})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},
