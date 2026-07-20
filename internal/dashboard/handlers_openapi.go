@@ -6364,6 +6364,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Generates a comprehensive capacity planning report with 3-month and 6-month forecasts.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Capacity report", map[string]interface{}{"healthScore": 80})},
 	})
+	add("/api/product/env-var-drift-detect", "get", OpenAPIOperation{
+		Summary: "Env var drift detect", OperationID: "envVarDriftDetect",
+		Tags:        []string{"Product", "Config", "Drift"},
+		Description: "Detects environment variable inconsistencies across same-name workloads in different namespaces.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Env drift", map[string]interface{}{"healthScore": 70})},
+	})
+	add("/api/product/dns-record-audit", "get", OpenAPIOperation{
+		Summary: "DNS record audit", OperationID: "dnsRecordAudit",
+		Tags:        []string{"Product", "DNS", "Service"},
+		Description: "Checks DNS records for services and ingresses. Identifies orphaned services and stale ingresses.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("DNS audit", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/workload-startup-profile", "get", OpenAPIOperation{
+		Summary: "Workload startup profile", OperationID: "workloadStartupProfile",
+		Tags:        []string{"Product", "Startup", "Profile"},
+		Description: "Profiles workload startup time and initialization patterns.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Startup profile", map[string]interface{}{"healthScore": 80})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},
