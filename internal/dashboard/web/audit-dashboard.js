@@ -286,6 +286,9 @@ const AUDIT_STRUCTURE = {
       'Config & Labels': [
         { path: '/api/product/configmap-size', name: 'ConfigMap Size', icon: '\u1F4C1' },
         { path: '/api/product/config-audit', name: 'Config Audit', icon: '\u1F4DC' },
+        { path: '/api/product/secret-mount-audit', name: 'Secret Mount', icon: '\u1F511' },
+        { path: '/api/product/label-propagation', name: 'Label Propagation', icon: '\u1F3F7' },
+        { path: '/api/product/cronjob-orphan-audit', name: 'CronJob Orphan', icon: '\u23F0' },
         { path: '/api/product/config-warmstart', name: 'Config Warmstart', icon: '\u23F1' },
         { path: '/api/product/label-hygiene', name: 'Label Hygiene', icon: '\u1F3F7' },
         { path: '/api/product/ownership-map', name: 'Ownership Map', icon: '\u1F464' },

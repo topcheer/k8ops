@@ -654,6 +654,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/tech-debt-radar", s.cacheMiddleware(60*time.Second, s.handleTechDebtRadar))                            // tech debt radar
 	mux.HandleFunc("/api/docs/sre-scorecard", s.cacheMiddleware(60*time.Second, s.handleSREScorecard))                               // sre scorecard
 	mux.HandleFunc("/api/docs/compliance-crosswalk", s.cacheMiddleware(60*time.Second, s.handleComplianceCrosswalk))                 // compliance crosswalk
+	mux.HandleFunc("/api/product/secret-mount-audit", s.cacheMiddleware(60*time.Second, s.handleSecretMountAudit))                   // secret mount audit
+	mux.HandleFunc("/api/product/label-propagation", s.cacheMiddleware(60*time.Second, s.handleLabelPropagation))                    // label propagation
+	mux.HandleFunc("/api/product/cronjob-orphan-audit", s.cacheMiddleware(60*time.Second, s.handleCronJobOrphanAudit))               // cronjob orphan audit
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                         // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))            // progressive delivery readiness

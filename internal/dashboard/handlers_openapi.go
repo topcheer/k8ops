@@ -6256,6 +6256,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Maps cluster findings to multiple compliance frameworks: CIS, NIST, PCI-DSS, SOC2.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Compliance crosswalk", map[string]interface{}{"healthScore": 40})},
 	})
+	add("/api/product/secret-mount-audit", "get", OpenAPIOperation{
+		Summary: "Secret mount audit", OperationID: "secretMountAudit",
+		Tags:        []string{"Product", "Secret", "Security"},
+		Description: "Audits how secrets are mounted and detects risky patterns like env var exposure.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Secret mount audit", map[string]interface{}{"healthScore": 60})},
+	})
+	add("/api/product/label-propagation", "get", OpenAPIOperation{
+		Summary: "Label propagation", OperationID: "labelPropagation",
+		Tags:        []string{"Product", "Label", "Governance"},
+		Description: "Audits label consistency and propagation across workloads and services.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Label propagation", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/product/cronjob-orphan-audit", "get", OpenAPIOperation{
+		Summary: "CronJob orphan audit", OperationID: "cronJobOrphanAudit",
+		Tags:        []string{"Product", "CronJob", "Batch"},
+		Description: "Detects orphaned or misconfigured CronJobs.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CronJob orphan", map[string]interface{}{"healthScore": 70})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},
