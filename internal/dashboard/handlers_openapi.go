@@ -6112,6 +6112,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Measures API server SLO compliance using event success rate and error rate analysis by verb and resource.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("API SLO", map[string]interface{}{"healthScore": 90})},
 	})
+	add("/api/deployment/immutable-config-audit", "get", OpenAPIOperation{
+		Summary: "Immutable config audit", OperationID: "immutableConfigAudit",
+		Tags:        []string{"Deployment", "Config", "Security"},
+		Description: "Audits whether ConfigMaps and Secrets are set to immutable to reduce API server load and prevent accidental changes.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Immutable config", map[string]interface{}{"healthScore": 40})},
+	})
+	add("/api/deployment/sidecar-injection-audit", "get", OpenAPIOperation{
+		Summary: "Sidecar injection audit", OperationID: "sidecarInjectionAudit",
+		Tags:        []string{"Deployment", "Sidecar", "Mesh"},
+		Description: "Audits sidecar container injection compliance and health. Detects missing mesh, logging, and monitoring sidecars.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Sidecar audit", map[string]interface{}{"healthScore": 30})},
+	})
+	add("/api/deployment/resource-quota-drift", "get", OpenAPIOperation{
+		Summary: "Resource quota drift", OperationID: "resourceQuotaDrift",
+		Tags:        []string{"Deployment", "Quota", "Governance"},
+		Description: "Detects namespace resource quota drift and saturation. Identifies exhausted and saturated quotas.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Quota drift", map[string]interface{}{"healthScore": 50})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},

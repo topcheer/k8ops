@@ -330,6 +330,9 @@ const AUDIT_STRUCTURE = {
         { path: '/api/deployment/deploy-window', name: 'Deploy Window', icon: '\u1F4C5' },
         { path: '/api/deployment/change-freeze', name: 'Change Freeze', icon: '\u2744' },
       ],
+      'Sidecar & Quota': [
+        { path: '/api/deployment/sidecar-injection-audit', name: 'Sidecar Injection', icon: '\u1F916' },
+        { path: '/api/deployment/resource-quota-drift', name: 'Quota Drift', icon: '\u2696' },
       'DORA Metrics': [
         { path: '/api/deployment/dora-metrics', name: 'DORA Metrics', icon: '\u1F4C8' },
         { path: '/api/deployment/deploy-frequency', name: 'Deploy Frequency', icon: '\u1F4C8' },
@@ -345,6 +348,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/deployment/config-snapshot', name: 'Config Snapshot', icon: '\u1F4F8' },
         { path: '/api/deployment/revision-drift', name: 'Revision Drift', icon: '\u1F501' },
         { path: '/api/deployment/env-config-drift', name: 'Env Config Drift', icon: '\u1F501' },
+        { path: '/api/deployment/immutable-config-audit', name: 'Immutable Config', icon: '\u1F512' },
       ],
     },
   },
