@@ -6496,6 +6496,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes pod anti-affinity rules and topology spread constraints for HA readiness. Identifies single-replica workloads and multi-replica workloads without proper distribution.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Anti-affinity HA", map[string]interface{}{"healthScore": 25})},
 	})
+	add("/api/security/image-registry-allowlist", "get", OpenAPIOperation{
+		Summary: "Image registry allowlist", OperationID: "imageRegistryAllowlist",
+		Tags:        []string{"Security", "SupplyChain", "Images"},
+		Description: "Audits container image registry trust posture: identifies untrusted registries, :latest tags, images without digest pinning.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image registry", map[string]interface{}{"healthScore": 40})},
+	})
+	add("/api/security/sa-mount-exposure", "get", OpenAPIOperation{
+		Summary: "SA mount exposure", OperationID: "saMountExposure",
+		Tags:        []string{"Security", "RBAC", "ServiceAccount"},
+		Description: "Audits ServiceAccount token auto-mount exposure: identifies over-mounted tokens, high-privilege SAs, unused SAs.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SA mount exposure", map[string]interface{}{"healthScore": 20})},
+	})
+	add("/api/security/tls-version-audit", "get", OpenAPIOperation{
+		Summary: "TLS version audit", OperationID: "tlsVersionAudit",
+		Tags:        []string{"Security", "TLS", "Certificates"},
+		Description: "Audits TLS configuration: Ingress TLS coverage, certificate expiry, weak key sizes, self-signed certs, deprecated X.509 versions.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("TLS audit", map[string]interface{}{"healthScore": 55})},
+	})
 
 	return spec
 }

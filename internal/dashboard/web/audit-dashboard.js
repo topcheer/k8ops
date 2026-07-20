@@ -91,6 +91,11 @@ const AUDIT_STRUCTURE = {
         { path: '/api/security/audit-policy', name: 'Audit Policy', icon: '\u1F4DD' },
         { path: '/api/security/audit-trail', name: 'Audit Trail', icon: '\u1F4DD' },
       ],
+      'Supply Chain & TLS': [
+        { path: '/api/security/image-registry-allowlist', name: 'Registry Allowlist', icon: '\u1F4E6' },
+        { path: '/api/security/sa-mount-exposure', name: 'SA Mount Exposure', icon: '\u1F511' },
+        { path: '/api/security/tls-version-audit', name: 'TLS Version Audit', icon: '\u1F510' },
+      ],
     },
   },
   'Operations': {
