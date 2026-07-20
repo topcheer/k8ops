@@ -94,9 +94,12 @@ const AUDIT_STRUCTURE = {
       'Control Plane': [
         { path: '/api/operations/etcd-health', name: 'Etcd Health', icon: '\u1F50C' },
         { path: '/api/operations/kubelet-health', name: 'Kubelet Health', icon: '\u1F3E2' },
-        { path: '/api/operations/kube-proxy-health', name: 'Kube-Proxy', icon: '\u1F50C' },
+        
         { path: '/api/operations/cni-health', name: 'CNI Health', icon: '\u1F310' },
+        { path: '/api/operations/coredns-config-audit', name: 'CoreDNS Config', icon: '\u1F310' },
+        { path: '/api/operations/webhook-timeout-audit', name: 'Webhook Timeout', icon: '\u23F1' },
         { path: '/api/operations/control-plane', name: 'Control Plane', icon: '\u1F3E2' },
+        { path: '/api/operations/cert-transparency-monitor', name: 'Cert Transparency', icon: '\u1F510' },
         { path: '/api/operations/apf-audit', name: 'API Priority/Fairness', icon: '\u2696' },
       ],
       'Observability Stack': [

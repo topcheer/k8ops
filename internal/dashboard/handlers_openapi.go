@@ -6202,6 +6202,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Deep resource waste analysis: idle workloads, over-provisioned containers, zombie PVCs and ConfigMaps, with cost estimates.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Resource waste", map[string]interface{}{"healthScore": 60})},
 	})
+	add("/api/operations/cert-transparency-monitor", "get", OpenAPIOperation{
+		Summary: "Cert transparency", OperationID: "certTransparency",
+		Tags:        []string{"Operations", "Certificate", "TLS"},
+		Description: "Monitors TLS certificates across ingress and services for expiry and transparency.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cert transparency", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/operations/coredns-config-audit", "get", OpenAPIOperation{
+		Summary: "CoreDNS config audit", OperationID: "corednsConfigAudit",
+		Tags:        []string{"Operations", "DNS", "Config"},
+		Description: "Audits CoreDNS configuration health including memory limits, caching, and NodeLocalDNS.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CoreDNS config", map[string]interface{}{"healthScore": 70})},
+	})
+	add("/api/operations/webhook-timeout-audit", "get", OpenAPIOperation{
+		Summary: "Webhook timeout audit", OperationID: "webhookTimeoutAudit",
+		Tags:        []string{"Operations", "Admission", "Webhook"},
+		Description: "Analyzes admission webhook configurations for timeout and failure risks.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Webhook audit", map[string]interface{}{"healthScore": 75})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},
