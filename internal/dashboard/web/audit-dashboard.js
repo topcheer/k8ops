@@ -136,11 +136,14 @@ const AUDIT_STRUCTURE = {
         { path: '/api/operations/pdb-audit', name: 'PDB Audit', icon: '\u1F6E1' },
         { path: '/api/operations/pdb-generator', name: 'PDB Generator', icon: '\u1F527' },
         { path: '/api/operations/scheduling-latency', name: 'Scheduling Latency', icon: '\u23F1' },
+        { path: '/api/operations/cluster-version-skew', name: 'Version Skew', icon: '\u2195' },
+        { path: '/api/operations/node-taint-impact', name: 'Taint Impact', icon: '\u26D4' },
       ],
       'API Server': [
         { path: '/api/operations/api-load', name: 'API Server Load', icon: '\u1F4E6' },
         { path: '/api/operations/api-latency', name: 'API Latency', icon: '\u23F1' },
         { path: '/api/operations/api-access-pattern', name: 'API Access Pattern', icon: '\u1F511' },
+        { path: '/api/operations/api-server-slo', name: 'API Server SLO', icon: '\u1F3AF' },
       ],
       'Reliability': [
         { path: '/api/operations/chaos-readiness', name: 'Chaos Readiness', icon: '\u1F4A5' },

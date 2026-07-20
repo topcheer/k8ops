@@ -6094,6 +6094,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Evaluates cluster overcommit risk by comparing resource requests vs limits vs actual allocatable capacity.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Overcommit risk", map[string]interface{}{"riskScore": 65})},
 	})
+	add("/api/operations/cluster-version-skew", "get", OpenAPIOperation{
+		Summary: "Cluster version skew", OperationID: "clusterVersionSkew",
+		Tags:        []string{"Operations", "Version", "Upgrade"},
+		Description: "Detects Kubernetes version skew between control plane and kubelet. Flags nodes outside the N-2 supported skew policy.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Version skew", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/node-taint-impact", "get", OpenAPIOperation{
+		Summary: "Node taint impact", OperationID: "nodeTaintImpact",
+		Tags:        []string{"Operations", "Node", "Taint", "Scheduling"},
+		Description: "Analyzes how node taints affect workload scheduling. Identifies blocking taints and untolerated pending pods.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Taint impact", map[string]interface{}{"healthScore": 75})},
+	})
+	add("/api/operations/api-server-slo", "get", OpenAPIOperation{
+		Summary: "API server SLO", OperationID: "apiServerSLO",
+		Tags:        []string{"Operations", "API", "SLO"},
+		Description: "Measures API server SLO compliance using event success rate and error rate analysis by verb and resource.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API SLO", map[string]interface{}{"healthScore": 90})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},
