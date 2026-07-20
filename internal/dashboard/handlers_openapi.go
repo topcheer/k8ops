@@ -6418,6 +6418,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Deep overcommit analysis with bin-packing efficiency scoring.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Overcommit deep", map[string]interface{}{"healthScore": 60})},
 	})
+	add("/api/operations/node-condition-trend", "get", OpenAPIOperation{
+		Summary: "Node condition trend", OperationID: "nodeConditionTrend",
+		Tags:        []string{"Operations", "Node", "Condition"},
+		Description: "Tracks node condition flapping and stability across the cluster.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node condition", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/operations/container-log-size", "get", OpenAPIOperation{
+		Summary: "Container log size", OperationID: "containerLogSize",
+		Tags:        []string{"Operations", "Log", "Storage"},
+		Description: "Estimates container log disk usage and identifies pods without log policies.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Log size", map[string]interface{}{"healthScore": 20})},
+	})
+	add("/api/operations/kubelet-config-drift", "get", OpenAPIOperation{
+		Summary: "Kubelet config drift", OperationID: "kubeletConfigDrift",
+		Tags:        []string{"Operations", "Kubelet", "Config"},
+		Description: "Detects kubelet configuration inconsistencies across nodes.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Kubelet drift", map[string]interface{}{"healthScore": 100})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},

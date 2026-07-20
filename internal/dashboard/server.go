@@ -681,6 +681,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/pdb-gap-analysis", s.cacheMiddleware(60*time.Second, s.handlePDBGapAnalysis))                       // pdb gap analysis
 	mux.HandleFunc("/api/scalability/topology-spread-violation", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadViolation))     // topology spread violation
 	mux.HandleFunc("/api/scalability/overcommit-deep", s.cacheMiddleware(60*time.Second, s.handleOvercommitDeep))                        // overcommit deep
+	mux.HandleFunc("/api/operations/node-condition-trend", s.cacheMiddleware(60*time.Second, s.handleNodeConditionTrend))                // node condition trend
+	mux.HandleFunc("/api/operations/container-log-size", s.cacheMiddleware(60*time.Second, s.handleContainerLogSize))                    // container log size
+	mux.HandleFunc("/api/operations/kubelet-config-drift", s.cacheMiddleware(60*time.Second, s.handleKubeletConfigDrift))                // kubelet config drift
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness
