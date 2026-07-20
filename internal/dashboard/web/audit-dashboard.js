@@ -333,6 +333,7 @@ const AUDIT_STRUCTURE = {
       'Sidecar & Quota': [
         { path: '/api/deployment/sidecar-injection-audit', name: 'Sidecar Injection', icon: '\u1F916' },
         { path: '/api/deployment/resource-quota-drift', name: 'Quota Drift', icon: '\u2696' },
+      ],
       'DORA Metrics': [
         { path: '/api/deployment/dora-metrics', name: 'DORA Metrics', icon: '\u1F4C8' },
         { path: '/api/deployment/deploy-frequency', name: 'Deploy Frequency', icon: '\u1F4C8' },
