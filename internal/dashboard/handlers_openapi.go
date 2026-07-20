@@ -6166,6 +6166,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Detects ingress path conflicts, missing backend services, stale rules, and TLS gaps.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Ingress conflict", map[string]interface{}{"healthScore": 75})},
 	})
+	add("/api/security/privilege-escalation-path", "get", OpenAPIOperation{
+		Summary: "Privilege escalation path", OperationID: "privilegeEscalationPath",
+		Tags:        []string{"Security", "RBAC", "Privilege"},
+		Description: "Detects potential privilege escalation paths via RBAC: cluster-admin, escalate, bind, impersonate permissions.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Privilege escalation", map[string]interface{}{"healthScore": 40})},
+	})
+	add("/api/security/network-segment-gap", "get", OpenAPIOperation{
+		Summary: "Network segment gap", OperationID: "networkSegmentGap",
+		Tags:        []string{"Security", "Network", "Segmentation"},
+		Description: "Analyzes network segmentation gaps between namespaces. Identifies unisolated namespace pairs.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Network segmentation", map[string]interface{}{"healthScore": 0})},
+	})
+	add("/api/security/image-baseline-drift", "get", OpenAPIOperation{
+		Summary: "Image baseline drift", OperationID: "imageBaselineDrift",
+		Tags:        []string{"Security", "Supply Chain", "Image"},
+		Description: "Detects image drift by checking digest pinning, latest tag usage, and version tag consistency.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image baseline", map[string]interface{}{"healthScore": 0})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},

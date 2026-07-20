@@ -17,6 +17,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/security/rbac-graph', name: 'RBAC Graph', icon: '\u1F5FA' },
         { path: '/api/security/rbac-risk', name: 'RBAC Risk', icon: '\u26A0' },
         { path: '/api/security/rbac-blast', name: 'RBAC Blast Radius', icon: '\u1F4A5' },
+        { path: '/api/security/privilege-escalation-path', name: 'Privilege Escalation', icon: '\u1F6A8' },
         { path: '/api/security/rbac-drift', name: 'RBAC Drift', icon: '\u1F501' },
       ],
       'Secrets Management': [
@@ -45,6 +46,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/security/net-policy-effectiveness', name: 'NetPol Effectiveness', icon: '\u1F50D' },
         { path: '/api/security/mtls-trust-domain', name: 'mTLS Trust', icon: '\u1F511' },
         { path: '/api/security/endpoint-exposure', name: 'Endpoint Exposure', icon: '\u1F441' },
+        { path: '/api/security/network-segment-gap', name: 'Segment Gap', icon: '\u1F310' },
       ],
       'Compliance & Policy': [
         { path: '/api/security/compliance-map', name: 'Compliance Map', icon: '\u1F4CB' },
@@ -61,6 +63,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/security/supply-chain', name: 'Supply Chain', icon: '\u1F4E6' },
         { path: '/api/security/trust-chain', name: 'Trust Chain', icon: '\u1F512' },
         { path: '/api/security/image-provenance', name: 'Image Provenance', icon: '\u1F50D' },
+        { path: '/api/security/image-baseline-drift', name: 'Image Baseline Drift', icon: '\u1F4F7' },
       ],
       'Runtime & Drift': [
         { path: '/api/security/runtime-scan', name: 'Runtime Scan', icon: '\u1F50D' },
