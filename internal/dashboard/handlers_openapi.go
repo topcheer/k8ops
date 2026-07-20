@@ -6220,6 +6220,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes admission webhook configurations for timeout and failure risks.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Webhook audit", map[string]interface{}{"healthScore": 75})},
 	})
+	add("/api/deployment/revision-history-hygiene", "get", OpenAPIOperation{
+		Summary: "Revision history hygiene", OperationID: "revisionHistoryHygiene",
+		Tags:        []string{"Deployment", "Cleanup", "Revision"},
+		Description: "Audits deployment revision history limits and identifies wasteful old ReplicaSets.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Revision history", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/resource-limit-coverage", "get", OpenAPIOperation{
+		Summary: "Resource limit coverage", OperationID: "resourceLimitCoverage",
+		Tags:        []string{"Deployment", "Resources", "Coverage"},
+		Description: "Audits what fraction of containers have CPU/memory requests and limits set.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Resource coverage", map[string]interface{}{"healthScore": 50})},
+	})
+	add("/api/deployment/ephemeral-storage-quota", "get", OpenAPIOperation{
+		Summary: "Ephemeral storage quota", OperationID: "ephemeralStorageQuota",
+		Tags:        []string{"Deployment", "Storage", "Quota"},
+		Description: "Audits ephemeral storage usage and limits. Identifies pods without storage limits.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Ephemeral storage", map[string]interface{}{"healthScore": 10})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},

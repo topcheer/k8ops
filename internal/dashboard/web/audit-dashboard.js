@@ -345,6 +345,8 @@ const AUDIT_STRUCTURE = {
       'Sidecar & Quota': [
         { path: '/api/deployment/sidecar-injection-audit', name: 'Sidecar Injection', icon: '\u1F916' },
         { path: '/api/deployment/resource-quota-drift', name: 'Quota Drift', icon: '\u2696' },
+        { path: '/api/deployment/resource-limit-coverage', name: 'Limit Coverage', icon: '\u2696' },
+        { path: '/api/deployment/ephemeral-storage-quota', name: 'Ephemeral Storage', icon: '\u1F4BE' },
       ],
       'DORA Metrics': [
         { path: '/api/deployment/dora-metrics', name: 'DORA Metrics', icon: '\u1F4C8' },
@@ -360,6 +362,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/deployment/config-sync', name: 'Config Sync', icon: '\u1F504' },
         { path: '/api/deployment/config-snapshot', name: 'Config Snapshot', icon: '\u1F4F8' },
         { path: '/api/deployment/revision-drift', name: 'Revision Drift', icon: '\u1F501' },
+        { path: '/api/deployment/revision-history-hygiene', name: 'Revision History', icon: '\u1F4DC' },
         { path: '/api/deployment/env-config-drift', name: 'Env Config Drift', icon: '\u1F501' },
         { path: '/api/deployment/immutable-config-audit', name: 'Immutable Config', icon: '\u1F512' },
       ],

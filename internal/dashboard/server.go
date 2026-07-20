@@ -648,6 +648,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/cert-transparency-monitor", s.cacheMiddleware(120*time.Second, s.handleCertTransparencyMonitor)) // cert transparency
 	mux.HandleFunc("/api/operations/coredns-config-audit", s.cacheMiddleware(60*time.Second, s.handleCoreDNSConfigAudit))            // coredns config audit
 	mux.HandleFunc("/api/operations/webhook-timeout-audit", s.cacheMiddleware(60*time.Second, s.handleWebhookTimeoutAudit))          // webhook timeout audit
+	mux.HandleFunc("/api/deployment/revision-history-hygiene", s.cacheMiddleware(60*time.Second, s.handleRevisionHistoryHygiene))    // revision history hygiene
+	mux.HandleFunc("/api/deployment/resource-limit-coverage", s.cacheMiddleware(60*time.Second, s.handleResourceLimitCoverage))      // resource limit coverage
+	mux.HandleFunc("/api/deployment/ephemeral-storage-quota", s.cacheMiddleware(60*time.Second, s.handleEphemeralStorageQuota))      // ephemeral storage quota
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                         // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))            // progressive delivery readiness
