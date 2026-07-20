@@ -6046,6 +6046,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Comprehensive platform scorecard with weighted scoring across 6 categories: Reliability, Automation, Security, Observability, Cost, Governance. Industry benchmark comparison.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Scorecard", map[string]interface{}{"overallScore": 55})},
 	})
+	add("/api/security/seccomp-profile-gap", "get", OpenAPIOperation{
+		Summary: "Seccomp profile gap", OperationID: "seccompProfileGap",
+		Tags:        []string{"Security", "Seccomp", "Hardening"},
+		Description: "Analyzes which workloads lack seccomp profiles, leaving them vulnerable to unnecessary kernel syscall access. Checks pod and container-level seccomp.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Seccomp gap", map[string]interface{}{"gapScore": 50})},
+	})
+	add("/api/product/traffic-spike-guard", "get", OpenAPIOperation{
+		Summary: "Traffic spike guard", OperationID: "trafficSpikeGuard",
+		Tags:        []string{"Product", "Traffic", "Guard"},
+		Description: "Monitors anomalous traffic patterns by analyzing service endpoint counts, single-point services, high-fanout, and external exposure via NodePort/LB.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Traffic spike", map[string]interface{}{"guardScore": 70})},
+	})
+	add("/api/scalability/node-life-forecast", "get", OpenAPIOperation{
+		Summary: "Node lifecycle forecaster", OperationID: "nodeLifeForecast",
+		Tags:        []string{"Scalability", "Node", "Lifecycle"},
+		Description: "Predicts node lifecycle events based on age, health, pressure conditions, kubelet version. Identifies nodes needing replacement, upgrade, or investigation.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node forecast", map[string]interface{}{"forecastScore": 60})},
+	})
 
 	return spec
 }

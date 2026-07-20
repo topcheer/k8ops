@@ -137,6 +137,9 @@ func TestAuditDashboardFrontendCoverage(t *testing.T) {
 		"/api/operations/pod-restart-storm",
 		"/api/deployment/deploy-pipeline-audit",
 		"/api/docs/platform-scorecard-deep",
+		"/api/security/seccomp-profile-gap",
+		"/api/product/traffic-spike-guard",
+		"/api/scalability/node-life-forecast",
 	}
 
 	missing := []string{}
