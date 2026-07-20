@@ -6292,6 +6292,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits whether containers use read-only root filesystem.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Readonly rootfs", map[string]interface{}{"healthScore": 0})},
 	})
+	add("/api/scalability/hpa-cooldown-audit", "get", OpenAPIOperation{
+		Summary: "HPA cooldown audit", OperationID: "hpaCooldownAudit",
+		Tags:        []string{"Scalability", "HPA", "Autoscaling"},
+		Description: "Analyzes HPA scaling behavior and cooldown configuration for flapping risks.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("HPA cooldown", map[string]interface{}{"healthScore": 50})},
+	})
+	add("/api/scalability/resource-request-saturation", "get", OpenAPIOperation{
+		Summary: "Resource request saturation", OperationID: "resourceRequestSaturation",
+		Tags:        []string{"Scalability", "Resource", "Saturation"},
+		Description: "Analyzes resource request vs node capacity saturation per node and namespace.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Request saturation", map[string]interface{}{"healthScore": 40})},
+	})
+	add("/api/scalability/cluster-pod-limit", "get", OpenAPIOperation{
+		Summary: "Cluster pod limit", OperationID: "clusterPodLimit",
+		Tags:        []string{"Scalability", "Capacity", "Pod"},
+		Description: "Forecasts when cluster runs out of pod IP / allocation capacity.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod limit", map[string]interface{}{"healthScore": 75})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},

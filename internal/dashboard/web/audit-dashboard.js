@@ -184,6 +184,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/autoscaler-gap', name: 'Autoscaler Gap', icon: '\u2195' },
         { path: '/api/scalability/autoscaling-intel', name: 'Autoscaling Intel', icon: '\u1F9EE' },
         { path: '/api/scalability/vpa-audit', name: 'VPA Audit', icon: '\u2195' },
+        { path: '/api/scalability/hpa-cooldown-audit', name: 'HPA Cooldown', icon: '\u2195' },
       ],
       'Resource Efficiency': [
         { path: '/api/scalability/alloc-efficiency', name: 'Alloc Efficiency', icon: '\u2696' },
@@ -192,6 +193,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/right-size-engine', name: 'Right-Size Engine', icon: '\u1F4CF' },
         { path: '/api/scalability/request-accuracy', name: 'Request Accuracy', icon: '\u1F3AF' },
         { path: '/api/scalability/request-intelligence', name: 'Request Intel', icon: '\u1F9ED' },
+        { path: '/api/scalability/resource-request-saturation', name: 'Request Saturation', icon: '\u1F4CA' },
       ],
       'Node Management': [
         { path: '/api/scalability/node-lifecycle', name: 'Node Lifecycle', icon: '\u1F578' },
@@ -230,6 +232,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/capacity-headroom', name: 'Capacity Headroom', icon: '\u1F4CF' },
         { path: '/api/scalability/capacity-plan', name: 'Capacity Plan', icon: '\u1F4CB' },
         { path: '/api/scalability/capacity-forecast-deep', name: 'Capacity Forecast', icon: '\u1F4C8' },
+        { path: '/api/scalability/cluster-pod-limit', name: 'Pod Limit', icon: '\u1F4CF' },
         { path: '/api/scalability/resource-forecast', name: 'Resource Forecast', icon: '\u1F52E' },
         { path: '/api/scalability/bottleneck-predictor', name: 'Bottleneck Predictor', icon: '\u1F9ED' },
       ],
