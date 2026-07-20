@@ -362,6 +362,11 @@ const AUDIT_STRUCTURE = {
         { path: '/api/docs/exec-dashboard', name: 'Executive Dashboard', icon: '\u1F4BC' },
         { path: '/api/docs/platform-maturity', name: 'Platform Maturity', icon: '\u1F3AF' },
         { path: '/api/docs/resource-inventory', name: 'Resource Inventory', icon: '\u1F4C2' },
+        { path: '/api/docs/platform-risk-heatmap', name: 'Risk Heatmap', icon: '\u1F525' },
+      ],
+      'Maturity & Playbooks': [
+        { path: '/api/docs/workload-maturity-matrix', name: 'Maturity Matrix', icon: '\u1F3AF' },
+        { path: '/api/docs/incident-playbook', name: 'Incident Playbook', icon: '\u1F691' },
       ],
       'API Docs': [
         { path: '/api/docs/api-coverage-map', name: 'API Coverage Map', icon: '\u1F5FA' },

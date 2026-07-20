@@ -6130,6 +6130,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Detects namespace resource quota drift and saturation. Identifies exhausted and saturated quotas.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Quota drift", map[string]interface{}{"healthScore": 50})},
 	})
+	add("/api/docs/platform-risk-heatmap", "get", OpenAPIOperation{
+		Summary: "Platform risk heatmap", OperationID: "platformRiskHeatmap",
+		Tags:        []string{"Documentation", "Risk", "Heatmap"},
+		Description: "Generates a multi-dimensional risk heatmap across all namespaces.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Risk heatmap", map[string]interface{}{"overallScore": 45})},
+	})
+	add("/api/docs/workload-maturity-matrix", "get", OpenAPIOperation{
+		Summary: "Workload maturity matrix", OperationID: "workloadMaturityMatrix",
+		Tags:        []string{"Documentation", "Maturity", "Matrix"},
+		Description: "Evaluates workload maturity across 6 dimensions.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Maturity matrix", map[string]interface{}{"overallScore": 30})},
+	})
+	add("/api/docs/incident-playbook", "get", OpenAPIOperation{
+		Summary: "Incident playbook", OperationID: "incidentPlaybook",
+		Tags:        []string{"Documentation", "Incident", "Playbook"},
+		Description: "Generates incident response playbooks for 6 common scenarios.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Incident playbook", map[string]interface{}{"readinessScore": 40})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},
