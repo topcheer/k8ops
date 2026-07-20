@@ -702,6 +702,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/deploy-reproducibility", s.cacheMiddleware(60*time.Second, s.handleDeployReproducibility))           // deploy reproducibility audit
 	mux.HandleFunc("/api/deployment/update-compliance-deep", s.cacheMiddleware(60*time.Second, s.handleUpdateComplianceDeep))            // update compliance deep
 	mux.HandleFunc("/api/deployment/restart-policy-deep", s.cacheMiddleware(60*time.Second, s.handleRestartPolicyDeep))                  // restart policy deep
+	mux.HandleFunc("/api/operations/pod-phase-timeline", s.cacheMiddleware(60*time.Second, s.handlePodPhaseTimeline))                    // pod phase timeline
+	mux.HandleFunc("/api/operations/image-gc-pressure", s.cacheMiddleware(60*time.Second, s.handleImageGCPressure))                      // image GC pressure
+	mux.HandleFunc("/api/operations/controller-reconcile", s.cacheMiddleware(60*time.Second, s.handleControllerReconcile))               // controller reconcile health
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness

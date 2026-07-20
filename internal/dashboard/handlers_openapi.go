@@ -6550,6 +6550,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Deep analysis of container restart policies: liveness probe coverage, restart history patterns, CrashLoopBackOff detection, preStop hook configuration.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Restart policy", map[string]interface{}{"healthScore": 50})},
 	})
+	add("/api/operations/pod-phase-timeline", "get", OpenAPIOperation{
+		Summary: "Pod phase timeline", OperationID: "podPhaseTimeline",
+		Tags:        []string{"Operations", "PodHealth", "Lifecycle"},
+		Description: "Analyzes pod lifecycle phase distribution: Pending, Running, Failed, Succeeded. Identifies stale pods, long-pending pods, very old running pods, and namespace phase breakdown.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod phase timeline", map[string]interface{}{"healthScore": 96})},
+	})
+	add("/api/operations/image-gc-pressure", "get", OpenAPIOperation{
+		Summary: "Image GC pressure", OperationID: "imageGCPressure",
+		Tags:        []string{"Operations", "Images", "Disk"},
+		Description: "Monitors image garbage collection pressure: duplicate image variants, unused images, node disk pressure conditions, and estimated cleanup savings.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image GC", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/controller-reconcile", "get", OpenAPIOperation{
+		Summary: "Controller reconcile", OperationID: "controllerReconcile",
+		Tags:        []string{"Operations", "Controller", "Reconcile"},
+		Description: "Analyzes controller reconcile health: replica mismatches, unhealthy deployment conditions, orphaned pods without owners, and owner chain tracking.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Controller reconcile", map[string]interface{}{"healthScore": 80})},
+	})
 
 	return spec
 }

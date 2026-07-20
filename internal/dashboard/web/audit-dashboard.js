@@ -175,6 +175,11 @@ const AUDIT_STRUCTURE = {
         { path: '/api/operations/mttr', name: 'MTTR', icon: '\u23F1' },
         { path: '/api/operations/probes', name: 'Health Probes', icon: '\u1FA78' },
       ],
+      'Phase & Lifecycle': [
+        { path: '/api/operations/pod-phase-timeline', name: 'Phase Timeline', icon: '\u23F1' },
+        { path: '/api/operations/image-gc-pressure', name: 'Image GC Pressure', icon: '\u1F4BE' },
+        { path: '/api/operations/controller-reconcile', name: 'Controller Reconcile', icon: '\u1F501' },
+      ],
     },
   },
   'Scalability': {
