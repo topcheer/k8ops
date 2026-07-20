@@ -320,6 +320,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/product/replica-distribution', name: 'Replica Distribution', icon: '\u1F4CA' },
         { path: '/api/product/affinity-conflict', name: 'Affinity Conflict', icon: '\u26A0' },
         { path: '/api/product/taint-toleration', name: 'Taint/Toleration', icon: '\u26D4' },
+        { path: '/api/product/antiaffinity-ha', name: 'HA Readiness', icon: '\u1F6E1' },
       ],
       'Storage & PVC': [
         { path: '/api/product/pvc-health', name: 'PVC Health', icon: '\u1F4BE' },
@@ -331,6 +332,10 @@ const AUDIT_STRUCTURE = {
         { path: '/api/product/api-version-governance', name: 'API Version', icon: '\u1F4C4' },
         { path: '/api/product/api-deprecation', name: 'API Deprecation', icon: '\u26A0' },
         { path: '/api/product/slo-compliance', name: 'SLO Compliance', icon: '\u1F3AF' },
+        { path: '/api/product/priority-class-audit', name: 'Priority Class', icon: '\u26A1' },
+      ],
+      'Network & Exposure': [
+        { path: '/api/product/service-exposure-map', name: 'Service Exposure', icon: '\u1F310' },
       ],
     },
   },

@@ -6478,6 +6478,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Structured change impact assessment: analyzes recent cluster changes (72h), blast radius per deployment, rollback readiness (revision history + PDB), and risk areas.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Change impact", map[string]interface{}{"healthScore": 70})},
 	})
+	add("/api/product/priority-class-audit", "get", OpenAPIOperation{
+		Summary: "Priority class audit", OperationID: "priorityClassAudit",
+		Tags:        []string{"Product", "Scheduling", "Priority"},
+		Description: "Audits priority class usage across workloads, detects preemption risk pairs, and identifies workloads without priority class assignments.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Priority class audit", map[string]interface{}{"healthScore": 30})},
+	})
+	add("/api/product/service-exposure-map", "get", OpenAPIOperation{
+		Summary: "Service exposure map", OperationID: "serviceExposureMap",
+		Tags:        []string{"Product", "Network", "Security"},
+		Description: "Maps all service exposure paths (ClusterIP, NodePort, LoadBalancer, Ingress) and identifies over-exposed services that should be internal-only.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Service exposure", map[string]interface{}{"healthScore": 65})},
+	})
+	add("/api/product/antiaffinity-ha", "get", OpenAPIOperation{
+		Summary: "Anti-affinity HA readiness", OperationID: "antiaffinityHA",
+		Tags:        []string{"Product", "HA", "Scheduling"},
+		Description: "Analyzes pod anti-affinity rules and topology spread constraints for HA readiness. Identifies single-replica workloads and multi-replica workloads without proper distribution.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Anti-affinity HA", map[string]interface{}{"healthScore": 25})},
+	})
 
 	return spec
 }

@@ -690,6 +690,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/backup-compliance-deep", s.cacheMiddleware(300*time.Second, s.handleBackupComplianceDeep))                 // backup compliance deep
 	mux.HandleFunc("/api/docs/label-taxonomy-standard", s.cacheMiddleware(300*time.Second, s.handleLabelTaxonomyStandard))               // label taxonomy standard
 	mux.HandleFunc("/api/docs/change-impact-brief", s.cacheMiddleware(300*time.Second, s.handleChangeImpactBrief))                       // change impact brief
+	mux.HandleFunc("/api/product/priority-class-audit", s.cacheMiddleware(60*time.Second, s.handlePriorityClassAudit))                   // priority class audit
+	mux.HandleFunc("/api/product/service-exposure-map", s.cacheMiddleware(60*time.Second, s.handleServiceExposureMap))                   // service exposure map
+	mux.HandleFunc("/api/product/antiaffinity-ha", s.cacheMiddleware(60*time.Second, s.handleAntiaffinityHA))                            // antiaffinity HA readiness
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness
