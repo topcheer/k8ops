@@ -39,6 +39,9 @@ const AUDIT_STRUCTURE = {
         { path: '/api/security/container-hardening', name: 'Container Hardening', icon: '\u1F6E1' },
         { path: '/api/security/privilege-map', name: 'Privilege Map', icon: '\u1F512' },
         { path: '/api/security/mac-audit', name: 'MAC Audit', icon: '\u1F512' },
+        { path: '/api/security/hostpath-audit', name: 'HostPath Audit', icon: '\u1F4C1' },
+        { path: '/api/security/container-capabilities', name: 'Cap Audit', icon: '\u1F511' },
+        { path: '/api/security/readonly-rootfs-audit', name: 'Readonly RootFS', icon: '\u1F512' },
       ],
       'Network Security': [
         { path: '/api/security/network-policies', name: 'Network Policies', icon: '\u1F6E1' },

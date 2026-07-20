@@ -6274,6 +6274,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Detects orphaned or misconfigured CronJobs.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("CronJob orphan", map[string]interface{}{"healthScore": 70})},
 	})
+	add("/api/security/hostpath-audit", "get", OpenAPIOperation{
+		Summary: "HostPath audit", OperationID: "hostpathAudit",
+		Tags:        []string{"Security", "Volume", "Isolation"},
+		Description: "Detects hostPath volume mounts that bypass container isolation.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("HostPath audit", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/security/container-capabilities", "get", OpenAPIOperation{
+		Summary: "Container capabilities", OperationID: "containerCapabilities",
+		Tags:        []string{"Security", "Capability", "Container"},
+		Description: "Audits Linux capabilities granted to containers. Detects privileged and dangerous caps.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Container caps", map[string]interface{}{"healthScore": 20})},
+	})
+	add("/api/security/readonly-rootfs-audit", "get", OpenAPIOperation{
+		Summary: "Readonly rootfs audit", OperationID: "readonlyRootfsAudit",
+		Tags:        []string{"Security", "Filesystem", "Container"},
+		Description: "Audits whether containers use read-only root filesystem.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Readonly rootfs", map[string]interface{}{"healthScore": 0})},
+	})
 	add("/api/docs/api-coverage-gap", "get", OpenAPIOperation{
 		Summary: "API coverage gap", OperationID: "apiCoverageGap",
 		Tags:        []string{"Documentation", "Coverage", "Gap"},

@@ -657,6 +657,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/secret-mount-audit", s.cacheMiddleware(60*time.Second, s.handleSecretMountAudit))                   // secret mount audit
 	mux.HandleFunc("/api/product/label-propagation", s.cacheMiddleware(60*time.Second, s.handleLabelPropagation))                    // label propagation
 	mux.HandleFunc("/api/product/cronjob-orphan-audit", s.cacheMiddleware(60*time.Second, s.handleCronJobOrphanAudit))               // cronjob orphan audit
+	mux.HandleFunc("/api/security/hostpath-audit", s.cacheMiddleware(60*time.Second, s.handleHostPathAudit))                         // hostpath audit
+	mux.HandleFunc("/api/security/container-capabilities", s.cacheMiddleware(60*time.Second, s.handleContainerCapabilities))         // container capabilities
+	mux.HandleFunc("/api/security/readonly-rootfs-audit", s.cacheMiddleware(60*time.Second, s.handleReadOnlyRootFS))                 // readonly rootfs audit
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                         // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))            // progressive delivery readiness
