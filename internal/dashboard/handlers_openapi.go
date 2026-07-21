@@ -6856,6 +6856,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Checks for active deploy freeze windows: namespace freeze annotations, weekend freeze periods, recent change volume, safe-to-deploy assessment.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Deploy freeze", map[string]interface{}{"healthScore": 90})},
 	})
+	add("/api/operations/control-plane-health", "get", OpenAPIOperation{
+		Summary: "Control plane health", OperationID: "controlPlaneHealth",
+		Tags:        []string{"Operations", "ControlPlane", "Health"},
+		Description: "Checks health of control plane components: kube-apiserver, kube-controller-manager, kube-scheduler, etcd, coredns. Tracks replica readiness and restart counts.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Control plane health", map[string]interface{}{"healthScore": 100})},
+	})
+	add("/api/operations/csi-driver-health", "get", OpenAPIOperation{
+		Summary: "CSI driver health", OperationID: "csiDriverHealth",
+		Tags:        []string{"Operations", "Storage", "CSI"},
+		Description: "Audits CSI storage driver health: checks plugin pod readiness, provisioner status, daemonset distribution, identifies degraded or missing drivers.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CSI driver health", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/operations/cert-renewal-timeline", "get", OpenAPIOperation{
+		Summary: "Cert renewal timeline", OperationID: "certRenewalTimeline",
+		Tags:        []string{"Operations", "Certificates", "TLS"},
+		Description: "Tracks certificate renewal timeline: identifies TLS secrets expiring in 7d/30d/90d, expired certificates, generates renewal action timeline.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cert renewal", map[string]interface{}{"healthScore": 85})},
+	})
 
 	return spec
 }

@@ -230,7 +230,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/scheduling-latency", s.cacheMiddleware(30*time.Second, s.handleSchedulingLatency))          // pod scheduling latency analyzer
 	mux.HandleFunc("/api/operations/resource-contention", s.cacheMiddleware(30*time.Second, s.handleResourceContention))        // resource contention & throttling detector
 	mux.HandleFunc("/api/operations/node-lease", s.cacheMiddleware(30*time.Second, s.handleNodeLease))                          // node lease & heartbeat health monitor
-	mux.HandleFunc("/api/operations/control-plane", s.cacheMiddleware(30*time.Second, s.handleControlPlaneHealth))              // control plane health checker
+	mux.HandleFunc("/api/operations/control-plane", s.cacheMiddleware(30*time.Second, s.handleControlPlaneHealth1912))          // control plane health checker
 	mux.HandleFunc("/api/operations/pod-evictions", s.cacheMiddleware(30*time.Second, s.handlePodEviction))                     // pod eviction & node pressure history tracker
 	mux.HandleFunc("/api/operations/api-latency", s.cacheMiddleware(30*time.Second, s.handleResponsiveness))                    // API server responsiveness & pod start latency monitor
 	mux.HandleFunc("/api/operations/volume-mount-errors", s.cacheMiddleware(30*time.Second, s.handleVolumeMountErrors))         // volume mount & attach error tracker
@@ -753,6 +753,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/image-consistency", s.cacheMiddleware(60*time.Second, s.handleImageConsistency))                     // image consistency checker
 	mux.HandleFunc("/api/deployment/config-reload-readiness", s.cacheMiddleware(60*time.Second, s.handleConfigReloadReadiness))          // config reload readiness
 	mux.HandleFunc("/api/deployment/deploy-freeze-status", s.cacheMiddleware(60*time.Second, s.handleDeployFreezeStatus))                // deploy freeze status
+	mux.HandleFunc("/api/operations/control-plane-health", s.cacheMiddleware(60*time.Second, s.handleControlPlaneHealth1912))            // control plane health
+	mux.HandleFunc("/api/operations/csi-driver-health", s.cacheMiddleware(120*time.Second, s.handleCSIDriverHealth))                     // CSI driver health
+	mux.HandleFunc("/api/operations/cert-renewal-timeline", s.cacheMiddleware(120*time.Second, s.handleCertRenewalTimeline))             // cert renewal timeline
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness
