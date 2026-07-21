@@ -68,7 +68,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/security/image-vuln', name: 'Image Vulnerabilities', icon: '\u26A0' },
         { path: '/api/security/supply-chain', name: 'Supply Chain', icon: '\u1F4E6' },
         { path: '/api/security/trust-chain', name: 'Trust Chain', icon: '\u1F512' },
-        { path: '/api/security/image-provenance-v2', name: 'Image Provenance', icon: '\u1F50D' },
+        { path: '/api/security/image-provenance-v3', name: 'Image Provenance', icon: '\u1F50D' },
         { path: '/api/security/image-baseline-drift', name: 'Image Baseline Drift', icon: '\u1F4F7' },
       ],
       'Runtime & Drift': [
@@ -106,7 +106,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/security/pss-compliance', name: 'PSS Compliance', icon: '\u1F6E1' },
         { path: '/api/security/dns-exfil-risk-v2', name: 'DNS Exfil Risk', icon: '\u1F50C' },
         { path: '/api/security/port-forward-audit-v2', name: 'Port Forward', icon: '\u2192' },
-        { path: '/api/security/image-provenance-v2', name: 'Image Provenance', icon: '\u1F4E6' },
+        { path: '/api/security/image-provenance-v3', name: 'Image Provenance', icon: '\u1F4E6' },
       ],
     },
   },

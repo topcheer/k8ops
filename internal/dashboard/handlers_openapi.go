@@ -3937,7 +3937,7 @@ func buildOpenAPISpec() OpenAPISpec {
 	})
 
 	// --- Container Image Provenance & Registry Trust Auditor (v17.11) ---
-	add("/api/security/image-provenance-v2", "get", OpenAPIOperation{
+	add("/api/security/image-provenance-v3", "get", OpenAPIOperation{
 		Summary:     "Container image provenance & registry trust auditor",
 		OperationID: "imageProvenance",
 		Tags:        []string{"Security", "Images", "SupplyChain"},
@@ -6886,7 +6886,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits port exposure: hostPort container bindings, NodePort/LoadBalancer services, high-risk ports (SSH, Redis, DB), per-namespace breakdown.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Port forward", map[string]interface{}{"healthScore": 90})},
 	})
-	add("/api/security/image-provenance-v2", "get", OpenAPIOperation{
+	add("/api/security/image-provenance-v3", "get", OpenAPIOperation{
 		Summary: "Image supply chain provenance", OperationID: "imageProvenance",
 		Tags:        []string{"Security", "SupplyChain", "Image"},
 		Description: "Audits image supply chain: registry trust status, digest pinning, tag usage, image policy webhook presence (Cosign/Kyverno).",
