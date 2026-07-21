@@ -6622,6 +6622,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes CoreDNS deployment health, config issues, service DNS naming, headless services, and external name mappings.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("DNS health", map[string]interface{}{"healthScore": 80})},
 	})
+	add("/api/scalability/request-efficiency", "get", OpenAPIOperation{
+		Summary: "Request efficiency", OperationID: "requestEfficiency",
+		Tags:        []string{"Scalability", "Resources", "Efficiency"},
+		Description: "Analyzes resource request vs actual usage: over-provisioned containers, missing requests/limits, per-namespace resource spend.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Request efficiency", map[string]interface{}{"healthScore": 62})},
+	})
+	add("/api/scalability/bin-packing-score", "get", OpenAPIOperation{
+		Summary: "Bin-packing score", OperationID: "binPackingScore",
+		Tags:        []string{"Scalability", "Scheduling", "Efficiency"},
+		Description: "Calculates node bin-packing efficiency: CPU/memory usage per node, fragmentation report, overall packing score.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Bin-packing", map[string]interface{}{"healthScore": 18})},
+	})
+	add("/api/scalability/multi-zone-ha", "get", OpenAPIOperation{
+		Summary: "Multi-zone HA", OperationID: "multiZoneHA",
+		Tags:        []string{"Scalability", "HA", "FaultDomain"},
+		Description: "Analyzes multi-zone fault domain distribution: zone spread, single-zone workloads at risk, topology spread constraint coverage.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Multi-zone HA", map[string]interface{}{"healthScore": 0})},
+	})
 
 	return spec
 }
