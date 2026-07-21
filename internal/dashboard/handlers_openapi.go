@@ -6586,6 +6586,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Basic CIS Kubernetes Benchmark checks: RBAC, pod security, network policies, wildcard permissions. 11 automated checks with remediation guidance.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("CIS benchmark", map[string]interface{}{"cisScore": 45})},
 	})
+	add("/api/docs/ownership-registry", "get", OpenAPIOperation{
+		Summary: "Ownership registry", OperationID: "ownershipRegistry",
+		Tags:        []string{"Documentation", "Ownership", "Governance"},
+		Description: "Maps resource ownership and team accountability: identifies workloads without team labels, critical unowned resources, team distribution.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Ownership registry", map[string]interface{}{"healthScore": 41})},
+	})
+	add("/api/docs/release-note-gen", "get", OpenAPIOperation{
+		Summary: "Release note generator", OperationID: "releaseNoteGen",
+		Tags:        []string{"Documentation", "Release", "Changelog"},
+		Description: "Auto-generates release notes from recent cluster changes (24h window): image updates, config changes, scaling events with markdown output.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Release notes", map[string]interface{}{"healthScore": 70})},
+	})
+	add("/api/docs/incident-postmortem", "get", OpenAPIOperation{
+		Summary: "Incident postmortem", OperationID: "incidentPostmortem",
+		Tags:        []string{"Documentation", "Incident", "Postmortem"},
+		Description: "Generates structured incident postmortem template from detected incidents (72h): OOM kills, CrashLoopBackOff, node failures, with action items and timeline.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Postmortem", map[string]interface{}{"healthScore": 50})},
+	})
 
 	return spec
 }
