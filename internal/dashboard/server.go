@@ -723,6 +723,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/node-maint-window", s.cacheMiddleware(60*time.Second, s.handleNodeMaintWindow))                      // node maintenance window
 	mux.HandleFunc("/api/operations/resource-leak-detector", s.cacheMiddleware(120*time.Second, s.handleResourceLeakDetector))           // resource leak detector
 	mux.HandleFunc("/api/operations/log-agg-health", s.cacheMiddleware(60*time.Second, s.handleLogAggHealth))                            // log aggregation health
+	mux.HandleFunc("/api/security/vol-encryption-audit", s.cacheMiddleware(60*time.Second, s.handleVolEncryptionAudit))                  // volume encryption audit
+	mux.HandleFunc("/api/security/webhook-posture", s.cacheMiddleware(60*time.Second, s.handleWebhookPosture))                           // admission webhook posture
+	mux.HandleFunc("/api/security/key-rotation-compliance", s.cacheMiddleware(120*time.Second, s.handleKeyRotationCompliance))           // key rotation compliance
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness

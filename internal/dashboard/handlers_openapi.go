@@ -6676,6 +6676,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes container log health: noisy loggers with high restart counts, silent containers, per-namespace log patterns.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Log agg health", map[string]interface{}{"healthScore": 97})},
 	})
+	add("/api/security/vol-encryption-audit", "get", OpenAPIOperation{
+		Summary: "Volume encryption audit", OperationID: "volEncryptionAudit",
+		Tags:        []string{"Security", "Storage", "Encryption"},
+		Description: "Audits volume encryption posture: PVC encryption status via StorageClass parameters, identifies unencrypted volumes in namespaces with sensitive data.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Volume encryption", map[string]interface{}{"healthScore": 33})},
+	})
+	add("/api/security/webhook-posture", "get", OpenAPIOperation{
+		Summary: "Webhook posture", OperationID: "webhookPosture",
+		Tags:        []string{"Security", "Admission", "Webhook"},
+		Description: "Audits admission webhook posture: TLS/CA bundle coverage, timeout configuration, failure policy, latency risk.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Webhook posture", map[string]interface{}{"healthScore": 83})},
+	})
+	add("/api/security/key-rotation-compliance", "get", OpenAPIOperation{
+		Summary: "Key rotation compliance", OperationID: "keyRotationCompliance",
+		Tags:        []string{"Security", "Secrets", "Rotation"},
+		Description: "Tracks secret key rotation compliance: identifies overdue secrets (>90d, >180d, >365d), categorizes by freshness.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Key rotation", map[string]interface{}{"healthScore": 10})},
+	})
 
 	return spec
 }
