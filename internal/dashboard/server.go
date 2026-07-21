@@ -732,9 +732,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/cost-attribution", s.cacheMiddleware(60*time.Second, s.handleCostAttribution))                          // cost attribution matrix
 	mux.HandleFunc("/api/product/quota-forecast", s.cacheMiddleware(60*time.Second, s.handleQuotaForecast))                              // quota utilization forecast
 	mux.HandleFunc("/api/product/mesh-readiness-deep", s.cacheMiddleware(60*time.Second, s.handleMeshReadinessDeep))                     // mesh readiness deep
-	mux.HandleFunc("/api/scalability/hpa-effectiveness", s.cacheMiddleware(60*time.Second, s.handleHPAEffectiveness1905))                // HPA effectiveness
-	mux.HandleFunc("/api/scalability/scheduling-latency", s.cacheMiddleware(60*time.Second, s.handleSchedulingLatency1905))              // scheduling latency
-	mux.HandleFunc("/api/scalability/capacity-headroom", s.cacheMiddleware(60*time.Second, s.handleCapacityHeadroom1905))                // capacity headroom
+	mux.HandleFunc("/api/scalability/hpa-effectiveness-v2", s.cacheMiddleware(60*time.Second, s.handleHPAEffectiveness1905))             // HPA effectiveness v2
+	mux.HandleFunc("/api/scalability/scheduling-latency-v2", s.cacheMiddleware(60*time.Second, s.handleSchedulingLatency1905))           // scheduling latency v2
+	mux.HandleFunc("/api/scalability/capacity-headroom-v2", s.cacheMiddleware(60*time.Second, s.handleCapacityHeadroom1905))             // capacity headroom v2
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness

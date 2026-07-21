@@ -6742,8 +6742,8 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Measures pod scheduling latency: average/P95 scheduling time, pending/unschedulable pods, per-namespace breakdown.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Scheduling latency", map[string]interface{}{"healthScore": 62})},
 	})
-	add("/api/scalability/capacity-headroom", "get", OpenAPIOperation{
-		Summary: "Capacity headroom", OperationID: "capacityHeadroom",
+	add("/api/scalability/capacity-headroom-v2", "get", OpenAPIOperation{
+		Summary: "Capacity headroom v2", OperationID: "capacityHeadroomV2",
 		Tags:        []string{"Scalability", "Capacity", "Planning"},
 		Description: "Calculates cluster capacity headroom: available CPU/memory/pod slots per node, additional pods that can be scheduled, scaling capacity by resource dimension.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Capacity headroom", map[string]interface{}{"healthScore": 70})},
