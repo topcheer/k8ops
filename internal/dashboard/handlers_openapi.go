@@ -6784,6 +6784,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes Kubernetes event volume: total events, warning ratio, noisy components, per-namespace distribution, unique reasons breakdown.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event retention", map[string]interface{}{"healthScore": 70})},
 	})
+	add("/api/security/capability-audit", "get", OpenAPIOperation{
+		Summary: "Linux capability audit", OperationID: "capabilityAudit",
+		Tags:        []string{"Security", "Capabilities", "Hardening"},
+		Description: "Audits Linux capabilities: privileged containers, high-risk cap-add (CAP_SYS_ADMIN, CAP_NET_ADMIN), best-practice cap-drop ALL, per-namespace risk.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Capability audit", map[string]interface{}{"healthScore": 86})},
+	})
+	add("/api/security/host-namespace-audit", "get", OpenAPIOperation{
+		Summary: "Host namespace audit", OperationID: "hostNamespaceAudit",
+		Tags:        []string{"Security", "Namespace", "Isolation"},
+		Description: "Audits host namespace access: hostPID, hostNetwork, hostIPC, hostPath volume mounts (restricted vs unrestricted).",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Host namespace audit", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/security/pss-compliance", "get", OpenAPIOperation{
+		Summary: "Pod Security Standard compliance", OperationID: "pssCompliance",
+		Tags:        []string{"Security", "PSS", "Compliance"},
+		Description: "Checks Pod Security Standards compliance: baseline level (no privileged, no host namespaces) and restricted level (runAsNonRoot, allowPrivilegeEscalation, readOnlyRootFS).",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PSS compliance", map[string]interface{}{"healthScore": 37})},
+	})
 
 	return spec
 }

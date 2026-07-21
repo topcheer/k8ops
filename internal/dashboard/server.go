@@ -741,6 +741,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/backup-snapshot-audit", s.cacheMiddleware(120*time.Second, s.handleBackupSnapshotAudit))             // backup snapshot auditor
 	mux.HandleFunc("/api/operations/job-success-rate", s.cacheMiddleware(60*time.Second, s.handleJobSuccessRate))                        // job/cronjob success rate
 	mux.HandleFunc("/api/operations/event-retention", s.cacheMiddleware(60*time.Second, s.handleEventRetention))                         // event retention & volume
+	mux.HandleFunc("/api/security/capability-audit", s.cacheMiddleware(60*time.Second, s.handleCapAudit))                                // linux capability audit
+	mux.HandleFunc("/api/security/host-namespace-audit", s.cacheMiddleware(60*time.Second, s.handleHostNSAudit))                         // host namespace access audit
+	mux.HandleFunc("/api/security/pss-compliance", s.cacheMiddleware(60*time.Second, s.handlePSSCompliance))                             // pod security standard compliance
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness
