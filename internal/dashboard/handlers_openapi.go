@@ -6748,6 +6748,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Calculates cluster capacity headroom: available CPU/memory/pod slots per node, additional pods that can be scheduled, scaling capacity by resource dimension.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Capacity headroom", map[string]interface{}{"healthScore": 70})},
 	})
+	add("/api/product/env-secret-leak", "get", OpenAPIOperation{
+		Summary: "Env secret leak detector", OperationID: "envSecretLeak",
+		Tags:        []string{"Product", "Security", "Configuration"},
+		Description: "Scans container environment variables for hardcoded secrets: passwords, API keys, tokens, private keys, connection strings. Identifies values that should use SecretKeyRef instead.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Env secret leak", map[string]interface{}{"healthScore": 86})},
+	})
+	add("/api/product/probe-coverage-gap", "get", OpenAPIOperation{
+		Summary: "Probe coverage gap", OperationID: "probeCoverageGap",
+		Tags:        []string{"Product", "Health", "Reliability"},
+		Description: "Identifies containers missing liveness/readiness/startup probes. Critical for traffic routing and zero-downtime deployments.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Probe coverage", map[string]interface{}{"healthScore": 36})},
+	})
+	add("/api/product/gpu-audit", "get", OpenAPIOperation{
+		Summary: "GPU/accelerator audit", OperationID: "gpuAudit",
+		Tags:        []string{"Product", "GPU", "Resources"},
+		Description: "Audits GPU resource requests vs node availability: identifies workloads requesting GPU, node GPU capacity, over-subscription risks.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("GPU audit", map[string]interface{}{"healthScore": 100})},
+	})
 
 	return spec
 }
