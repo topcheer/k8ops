@@ -6604,6 +6604,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Generates structured incident postmortem template from detected incidents (72h): OOM kills, CrashLoopBackOff, node failures, with action items and timeline.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Postmortem", map[string]interface{}{"healthScore": 50})},
 	})
+	add("/api/product/storage-class-audit", "get", OpenAPIOperation{
+		Summary: "Storage class audit", OperationID: "storageClassAudit",
+		Tags:        []string{"Product", "Storage", "Performance"},
+		Description: "Audits storage class usage, PVC binding status, provisioner types, reclaim policies, and expansion support.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Storage class", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/product/workload-interdependency", "get", OpenAPIOperation{
+		Summary: "Workload interdependency", OperationID: "workloadInterdependency",
+		Tags:        []string{"Product", "Network", "Dependency"},
+		Description: "Maps service-to-service dependencies via env var references, identifies hub services with high fan-in, orphaned services with no dependents.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Interdependency", map[string]interface{}{"healthScore": 60})},
+	})
+	add("/api/product/dns-resolution-health", "get", OpenAPIOperation{
+		Summary: "DNS resolution health", OperationID: "dnsResolutionHealth",
+		Tags:        []string{"Product", "DNS", "Network"},
+		Description: "Analyzes CoreDNS deployment health, config issues, service DNS naming, headless services, and external name mappings.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("DNS health", map[string]interface{}{"healthScore": 80})},
+	})
 
 	return spec
 }

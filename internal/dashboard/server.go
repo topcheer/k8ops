@@ -711,6 +711,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/ownership-registry", s.cacheMiddleware(60*time.Second, s.handleOwnershipRegistry))                         // ownership registry
 	mux.HandleFunc("/api/docs/release-note-gen", s.cacheMiddleware(60*time.Second, s.handleReleaseNoteGen))                              // release note generator
 	mux.HandleFunc("/api/docs/incident-postmortem", s.cacheMiddleware(120*time.Second, s.handleIncidentPostmortem))                      // incident postmortem
+	mux.HandleFunc("/api/product/storage-class-audit", s.cacheMiddleware(60*time.Second, s.handleStorageClassAudit))                     // storage class audit
+	mux.HandleFunc("/api/product/workload-interdependency", s.cacheMiddleware(60*time.Second, s.handleWorkloadInterdependency))          // workload interdependency
+	mux.HandleFunc("/api/product/dns-resolution-health", s.cacheMiddleware(60*time.Second, s.handleDNSResolutionHealth))                 // DNS resolution health
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness

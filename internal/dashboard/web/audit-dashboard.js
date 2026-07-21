@@ -354,6 +354,9 @@ const AUDIT_STRUCTURE = {
       ],
       'Network & Exposure': [
         { path: '/api/product/service-exposure-map', name: 'Service Exposure', icon: '\u1F310' },
+        { path: '/api/product/workload-interdependency', name: 'Interdependency', icon: '\u1F517' },
+        { path: '/api/product/dns-resolution-health', name: 'DNS Health', icon: '\u1F310' },
+        { path: '/api/product/storage-class-audit', name: 'Storage Class', icon: '\u1F4BE' },
       ],
     },
   },
