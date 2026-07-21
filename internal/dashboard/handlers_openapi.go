@@ -6730,6 +6730,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Deep service mesh adoption readiness scan: checks sidecar injection status, named ports, liveness/readiness probes, identifies blockers preventing mesh adoption.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Mesh readiness", map[string]interface{}{"healthScore": 50})},
 	})
+	add("/api/scalability/hpa-effectiveness", "get", OpenAPIOperation{
+		Summary: "HPA effectiveness", OperationID: "hpaEffectiveness",
+		Tags:        []string{"Scalability", "HPA", "Autoscaling"},
+		Description: "Analyzes HPA effectiveness: scaling activity status, at-max/at-min replicas, misconfigured HPAs, deployments missing HPA.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("HPA effectiveness", map[string]interface{}{"healthScore": 7})},
+	})
+	add("/api/scalability/scheduling-latency", "get", OpenAPIOperation{
+		Summary: "Scheduling latency", OperationID: "schedulingLatency",
+		Tags:        []string{"Scalability", "Scheduling", "Performance"},
+		Description: "Measures pod scheduling latency: average/P95 scheduling time, pending/unschedulable pods, per-namespace breakdown.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Scheduling latency", map[string]interface{}{"healthScore": 62})},
+	})
+	add("/api/scalability/capacity-headroom", "get", OpenAPIOperation{
+		Summary: "Capacity headroom", OperationID: "capacityHeadroom",
+		Tags:        []string{"Scalability", "Capacity", "Planning"},
+		Description: "Calculates cluster capacity headroom: available CPU/memory/pod slots per node, additional pods that can be scheduled, scaling capacity by resource dimension.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Capacity headroom", map[string]interface{}{"healthScore": 70})},
+	})
 
 	return spec
 }
