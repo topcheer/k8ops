@@ -296,7 +296,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/runtime-threat", s.cacheMiddleware(120*time.Second, s.handleRuntimeThreat))                   // runtime threat detection & container anomaly auditor
 	mux.HandleFunc("/api/security/secret-posture", s.cacheMiddleware(120*time.Second, s.handleSecretPosture))                   // secret management posture & external secret integration auditor
 	mux.HandleFunc("/api/security/namespace-posture", s.cacheMiddleware(120*time.Second, s.handleNamespaceSecurity))            // namespace security posture & trust boundary auditor
-	mux.HandleFunc("/api/security/image-provenance", s.cacheMiddleware(120*time.Second, s.handleImageProvenance1913))           // container image provenance & registry trust auditor
+	mux.HandleFunc("/api/security/image-provenance-v2", s.cacheMiddleware(120*time.Second, s.handleImageProvenance1913))        // container image provenance & registry trust auditor
 	mux.HandleFunc("/api/security/threat-timeline", s.cacheMiddleware(60*time.Second, s.handleThreatTimeline))                  // security event timeline & threat detection pattern auditor
 	mux.HandleFunc("/api/security/secret-age", s.cacheMiddleware(120*time.Second, s.handleSecretAge))                           // secret age & stale credential tracker
 	mux.HandleFunc("/api/security/blast-radius", s.cacheMiddleware(120*time.Second, s.handleBlastRadius))                       // workload attack surface & blast radius analyzer
@@ -756,9 +756,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/control-plane-health", s.cacheMiddleware(60*time.Second, s.handleControlPlaneHealth1912))            // control plane health
 	mux.HandleFunc("/api/operations/csi-driver-health", s.cacheMiddleware(120*time.Second, s.handleCSIDriverHealth))                     // CSI driver health
 	mux.HandleFunc("/api/operations/cert-renewal-timeline", s.cacheMiddleware(120*time.Second, s.handleCertRenewalTimeline))             // cert renewal timeline
-	mux.HandleFunc("/api/security/dns-exfil-risk", s.cacheMiddleware(60*time.Second, s.handleDNSExfilRisk))                              // DNS exfiltration risk
-	mux.HandleFunc("/api/security/port-forward-audit", s.cacheMiddleware(60*time.Second, s.handlePortForwardAudit))                      // port forward audit
-	mux.HandleFunc("/api/security/image-provenance", s.cacheMiddleware(60*time.Second, s.handleImageProvenance1913))                     // image supply chain provenance
+	mux.HandleFunc("/api/security/dns-exfil-risk-v2", s.cacheMiddleware(60*time.Second, s.handleDNSExfilRisk))                           // DNS exfiltration risk
+	mux.HandleFunc("/api/security/port-forward-audit-v2", s.cacheMiddleware(60*time.Second, s.handlePortForwardAudit))                   // port forward audit
+	mux.HandleFunc("/api/security/image-provenance-v2", s.cacheMiddleware(60*time.Second, s.handleImageProvenance1913))                  // image supply chain provenance
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness

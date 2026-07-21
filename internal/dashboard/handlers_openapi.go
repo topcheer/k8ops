@@ -3937,7 +3937,7 @@ func buildOpenAPISpec() OpenAPISpec {
 	})
 
 	// --- Container Image Provenance & Registry Trust Auditor (v17.11) ---
-	add("/api/security/image-provenance", "get", OpenAPIOperation{
+	add("/api/security/image-provenance-v2", "get", OpenAPIOperation{
 		Summary:     "Container image provenance & registry trust auditor",
 		OperationID: "imageProvenance",
 		Tags:        []string{"Security", "Images", "SupplyChain"},
@@ -6874,19 +6874,19 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Tracks certificate renewal timeline: identifies TLS secrets expiring in 7d/30d/90d, expired certificates, generates renewal action timeline.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cert renewal", map[string]interface{}{"healthScore": 85})},
 	})
-	add("/api/security/dns-exfil-risk", "get", OpenAPIOperation{
+	add("/api/security/dns-exfil-risk-v2", "get", OpenAPIOperation{
 		Summary: "DNS exfiltration risk", OperationID: "dnsExfilRisk",
 		Tags:        []string{"Security", "DNS", "Exfiltration"},
 		Description: "Assesses DNS exfiltration risk: checks for DNS egress NetworkPolicy coverage, suspicious env vars with external URLs, unrestricted namespaces.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("DNS exfil risk", map[string]interface{}{"healthScore": 14})},
 	})
-	add("/api/security/port-forward-audit", "get", OpenAPIOperation{
+	add("/api/security/port-forward-audit-v2", "get", OpenAPIOperation{
 		Summary: "Port forward audit", OperationID: "portForwardAudit",
 		Tags:        []string{"Security", "Exposure", "Ports"},
 		Description: "Audits port exposure: hostPort container bindings, NodePort/LoadBalancer services, high-risk ports (SSH, Redis, DB), per-namespace breakdown.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Port forward", map[string]interface{}{"healthScore": 90})},
 	})
-	add("/api/security/image-provenance", "get", OpenAPIOperation{
+	add("/api/security/image-provenance-v2", "get", OpenAPIOperation{
 		Summary: "Image supply chain provenance", OperationID: "imageProvenance",
 		Tags:        []string{"Security", "SupplyChain", "Image"},
 		Description: "Audits image supply chain: registry trust status, digest pinning, tag usage, image policy webhook presence (Cosign/Kyverno).",
