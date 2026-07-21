@@ -6838,6 +6838,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Identifies scaling constraints: CPU request limits, hard affinity, large images, pod density, single-node risk, readiness probe delays.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Scale bottleneck", map[string]interface{}{"healthScore": 35})},
 	})
+	add("/api/deployment/image-consistency", "get", OpenAPIOperation{
+		Summary: "Image consistency checker", OperationID: "imageConsistency",
+		Tags:        []string{"Deployment", "Image", "Versioning"},
+		Description: "Checks image version consistency across deployments: :latest tag usage, pinned images, multi-registry sprawl, inconsistent images within same deployment.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image consistency", map[string]interface{}{"healthScore": 79})},
+	})
+	add("/api/deployment/config-reload-readiness", "get", OpenAPIOperation{
+		Summary: "Config reload readiness", OperationID: "configReloadReadiness",
+		Tags:        []string{"Deployment", "ConfigMap", "HotReload"},
+		Description: "Checks ConfigMap mount types: volume mounts (hot reload ready) vs env-var mounts (need restart). Identifies workloads that need restart for config updates.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Config reload", map[string]interface{}{"healthScore": 60})},
+	})
+	add("/api/deployment/deploy-freeze-status", "get", OpenAPIOperation{
+		Summary: "Deploy freeze status", OperationID: "deployFreezeStatus",
+		Tags:        []string{"Deployment", "Freeze", "Maintenance"},
+		Description: "Checks for active deploy freeze windows: namespace freeze annotations, weekend freeze periods, recent change volume, safe-to-deploy assessment.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Deploy freeze", map[string]interface{}{"healthScore": 90})},
+	})
 
 	return spec
 }

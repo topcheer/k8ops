@@ -750,6 +750,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/burst-capacity", s.cacheMiddleware(60*time.Second, s.handleBurstCapacity))                          // burst capacity calculator
 	mux.HandleFunc("/api/scalability/elasticity-index", s.cacheMiddleware(60*time.Second, s.handleElasticityIndex))                      // resource elasticity index
 	mux.HandleFunc("/api/scalability/scale-bottleneck", s.cacheMiddleware(60*time.Second, s.handleScaleBottleneck))                      // scale bottleneck detector
+	mux.HandleFunc("/api/deployment/image-consistency", s.cacheMiddleware(60*time.Second, s.handleImageConsistency))                     // image consistency checker
+	mux.HandleFunc("/api/deployment/config-reload-readiness", s.cacheMiddleware(60*time.Second, s.handleConfigReloadReadiness))          // config reload readiness
+	mux.HandleFunc("/api/deployment/deploy-freeze-status", s.cacheMiddleware(60*time.Second, s.handleDeployFreezeStatus))                // deploy freeze status
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness
