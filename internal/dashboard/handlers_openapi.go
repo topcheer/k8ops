@@ -6640,6 +6640,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes multi-zone fault domain distribution: zone spread, single-zone workloads at risk, topology spread constraint coverage.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Multi-zone HA", map[string]interface{}{"healthScore": 0})},
 	})
+	add("/api/deployment/graceful-shutdown-audit", "get", OpenAPIOperation{
+		Summary: "Graceful shutdown audit", OperationID: "gracefulShutdownAudit",
+		Tags:        []string{"Deployment", "Lifecycle", "Shutdown"},
+		Description: "Audits graceful shutdown readiness: preStop hooks, terminationGracePeriodSeconds, readiness probes for connection draining.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Graceful shutdown", map[string]interface{}{"healthScore": 10})},
+	})
+	add("/api/deployment/rollout-speed", "get", OpenAPIOperation{
+		Summary: "Rollout speed analyzer", OperationID: "rolloutSpeed",
+		Tags:        []string{"Deployment", "Rollout", "Performance"},
+		Description: "Analyzes rollout speed and progress: RollingUpdate vs Recreate, maxSurge/maxUnavailable, updated/ready replicas, revision history.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Rollout speed", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/deployment/deploy-conflict", "get", OpenAPIOperation{
+		Summary: "Deploy conflict detector", OperationID: "deployConflict",
+		Tags:        []string{"Deployment", "Conflict", "Scheduling"},
+		Description: "Detects deployment conflicts: name collisions across namespaces, resource pressure zones, concurrent deployment windows.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Deploy conflicts", map[string]interface{}{"healthScore": 95})},
+	})
 
 	return spec
 }
