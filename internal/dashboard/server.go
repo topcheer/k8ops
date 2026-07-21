@@ -738,6 +738,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/env-secret-leak", s.cacheMiddleware(60*time.Second, s.handleEnvSecretLeakDetector))                     // env var secret leak detector
 	mux.HandleFunc("/api/product/probe-coverage-gap", s.cacheMiddleware(60*time.Second, s.handleProbeCoverageGap))                       // probe coverage gap
 	mux.HandleFunc("/api/product/gpu-audit", s.cacheMiddleware(60*time.Second, s.handleGPUAudit))                                        // GPU/accelerator audit
+	mux.HandleFunc("/api/operations/backup-snapshot-audit", s.cacheMiddleware(120*time.Second, s.handleBackupSnapshotAudit))             // backup snapshot auditor
+	mux.HandleFunc("/api/operations/job-success-rate", s.cacheMiddleware(60*time.Second, s.handleJobSuccessRate))                        // job/cronjob success rate
+	mux.HandleFunc("/api/operations/event-retention", s.cacheMiddleware(60*time.Second, s.handleEventRetention))                         // event retention & volume
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness

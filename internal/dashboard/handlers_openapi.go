@@ -6766,6 +6766,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits GPU resource requests vs node availability: identifies workloads requesting GPU, node GPU capacity, over-subscription risks.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("GPU audit", map[string]interface{}{"healthScore": 100})},
 	})
+	add("/api/operations/backup-snapshot-audit", "get", OpenAPIOperation{
+		Summary: "Backup snapshot audit", OperationID: "backupSnapshotAudit",
+		Tags:        []string{"Operations", "Backup", "DR"},
+		Description: "Audits backup snapshot coverage: identifies PVCs without VolumeSnapshot protection, tracks snapshot readiness and age, lists unprotected namespaces.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Backup audit", map[string]interface{}{"healthScore": 33})},
+	})
+	add("/api/operations/job-success-rate", "get", OpenAPIOperation{
+		Summary: "Job success rate", OperationID: "jobSuccessRate",
+		Tags:        []string{"Operations", "Jobs", "Batch"},
+		Description: "Analyzes Job and CronJob success rates: tracks failed jobs, long-running jobs, per-namespace breakdown, average duration.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Job success", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/operations/event-retention", "get", OpenAPIOperation{
+		Summary: "Event retention & volume", OperationID: "eventRetention",
+		Tags:        []string{"Operations", "Events", "Observability"},
+		Description: "Analyzes Kubernetes event volume: total events, warning ratio, noisy components, per-namespace distribution, unique reasons breakdown.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event retention", map[string]interface{}{"healthScore": 70})},
+	})
 
 	return spec
 }
