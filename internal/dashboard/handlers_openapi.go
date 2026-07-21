@@ -6694,6 +6694,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Tracks secret key rotation compliance: identifies overdue secrets (>90d, >180d, >365d), categorizes by freshness.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Key rotation", map[string]interface{}{"healthScore": 10})},
 	})
+	add("/api/docs/cluster-runbook-gen", "get", OpenAPIOperation{
+		Summary: "Cluster runbook generator", OperationID: "clusterRunbookGen",
+		Tags:        []string{"Documentation", "Runbook", "Operations"},
+		Description: "Auto-generates a cluster operations runbook with SOPs for NodeNotReady, CrashLoopBackOff, PVC stuck pending, and DNS failure scenarios.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cluster runbook", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/docs/api-drift-detector", "get", OpenAPIOperation{
+		Summary: "API drift detector", OperationID: "apiDriftDetector",
+		Tags:        []string{"Documentation", "API", "Upgrade"},
+		Description: "Detects API version drift: identifies deprecated, removed, and preview APIs from server preferred resources. Maps known deprecated versions to replacements.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API drift", map[string]interface{}{"healthScore": 93})},
+	})
+	add("/api/docs/resource-topology-doc", "get", OpenAPIOperation{
+		Summary: "Resource topology doc", OperationID: "resourceTopologyDoc",
+		Tags:        []string{"Documentation", "Topology", "Architecture"},
+		Description: "Generates resource topology documentation: namespace-level workload/service/PVC/ingress mapping, critical traffic paths, markdown export.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Topology doc", map[string]interface{}{"healthScore": 100})},
+	})
 
 	return spec
 }
