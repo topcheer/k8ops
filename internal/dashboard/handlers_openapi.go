@@ -6802,6 +6802,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Checks Pod Security Standards compliance: baseline level (no privileged, no host namespaces) and restricted level (runAsNonRoot, allowPrivilegeEscalation, readOnlyRootFS).",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("PSS compliance", map[string]interface{}{"healthScore": 37})},
 	})
+	add("/api/docs/compliance-report", "get", OpenAPIOperation{
+		Summary: "Compliance report generator", OperationID: "complianceReport",
+		Tags:        []string{"Documentation", "Compliance", "Audit"},
+		Description: "Generates compliance report across CIS Benchmark, PCI-DSS, and SOC2 frameworks with pass/fail checks, severity levels, and remediation guidance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Compliance report", map[string]interface{}{"healthScore": 55})},
+	})
+	add("/api/docs/slo-handbook", "get", OpenAPIOperation{
+		Summary: "SLO handbook generator", OperationID: "sloHandbook",
+		Tags:        []string{"Documentation", "SLO", "Reliability"},
+		Description: "Auto-generates SLO handbook with per-service availability, error budgets, burn rates, and SLI definitions based on pod readiness.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SLO handbook", map[string]interface{}{"healthScore": 99})},
+	})
+	add("/api/docs/cluster-faq", "get", OpenAPIOperation{
+		Summary: "Cluster FAQ generator", OperationID: "clusterFAQ",
+		Tags:        []string{"Documentation", "FAQ", "Onboarding"},
+		Description: "Generates cluster-specific FAQ with troubleshooting guides, operational commands, and common issue resolutions organized by category.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cluster FAQ", map[string]interface{}{"healthScore": 100})},
+	})
 
 	return spec
 }
