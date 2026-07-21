@@ -747,6 +747,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/compliance-report", s.cacheMiddleware(120*time.Second, s.handleComplianceReport1909))                      // compliance report generator
 	mux.HandleFunc("/api/docs/slo-handbook", s.cacheMiddleware(60*time.Second, s.handleSLOHandbook))                                     // SLO handbook generator
 	mux.HandleFunc("/api/docs/cluster-faq", s.cacheMiddleware(60*time.Second, s.handleClusterFAQ))                                       // cluster FAQ generator
+	mux.HandleFunc("/api/scalability/burst-capacity", s.cacheMiddleware(60*time.Second, s.handleBurstCapacity))                          // burst capacity calculator
+	mux.HandleFunc("/api/scalability/elasticity-index", s.cacheMiddleware(60*time.Second, s.handleElasticityIndex))                      // resource elasticity index
+	mux.HandleFunc("/api/scalability/scale-bottleneck", s.cacheMiddleware(60*time.Second, s.handleScaleBottleneck))                      // scale bottleneck detector
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness

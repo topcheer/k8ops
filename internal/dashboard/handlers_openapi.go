@@ -6820,6 +6820,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Generates cluster-specific FAQ with troubleshooting guides, operational commands, and common issue resolutions organized by category.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cluster FAQ", map[string]interface{}{"healthScore": 100})},
 	})
+	add("/api/scalability/burst-capacity", "get", OpenAPIOperation{
+		Summary: "Burst capacity calculator", OperationID: "burstCapacity",
+		Tags:        []string{"Scalability", "Burst", "Capacity"},
+		Description: "Calculates how many pods can be created instantly in a burst scenario: identifies CPU/memory/pod-limit bottlenecks, per-node breakdown.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Burst capacity", map[string]interface{}{"healthScore": 42})},
+	})
+	add("/api/scalability/elasticity-index", "get", OpenAPIOperation{
+		Summary: "Resource elasticity index", OperationID: "elasticityIndex",
+		Tags:        []string{"Scalability", "Elasticity", "Autoscaling"},
+		Description: "Combined HPA+VPA+Cluster Autoscaler readiness score: identifies workloads with zero elasticity, partial coverage, and full elastic posture.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Elasticity index", map[string]interface{}{"healthScore": 0})},
+	})
+	add("/api/scalability/scale-bottleneck", "get", OpenAPIOperation{
+		Summary: "Scale bottleneck detector", OperationID: "scaleBottleneck",
+		Tags:        []string{"Scalability", "Bottleneck", "Constraints"},
+		Description: "Identifies scaling constraints: CPU request limits, hard affinity, large images, pod density, single-node risk, readiness probe delays.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Scale bottleneck", map[string]interface{}{"healthScore": 35})},
+	})
 
 	return spec
 }
