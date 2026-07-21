@@ -720,6 +720,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/graceful-shutdown-audit", s.cacheMiddleware(60*time.Second, s.handleGracefulShutdownAudit))          // graceful shutdown audit
 	mux.HandleFunc("/api/deployment/rollout-speed", s.cacheMiddleware(60*time.Second, s.handleRolloutSpeed))                             // rollout speed
 	mux.HandleFunc("/api/deployment/deploy-conflict", s.cacheMiddleware(60*time.Second, s.handleDeployConflict))                         // deploy conflict detector
+	mux.HandleFunc("/api/operations/node-maint-window", s.cacheMiddleware(60*time.Second, s.handleNodeMaintWindow))                      // node maintenance window
+	mux.HandleFunc("/api/operations/resource-leak-detector", s.cacheMiddleware(120*time.Second, s.handleResourceLeakDetector))           // resource leak detector
+	mux.HandleFunc("/api/operations/log-agg-health", s.cacheMiddleware(60*time.Second, s.handleLogAggHealth))                            // log aggregation health
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness

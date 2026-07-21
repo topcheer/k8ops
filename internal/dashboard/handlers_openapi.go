@@ -6658,6 +6658,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Detects deployment conflicts: name collisions across namespaces, resource pressure zones, concurrent deployment windows.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Deploy conflicts", map[string]interface{}{"healthScore": 95})},
 	})
+	add("/api/operations/node-maint-window", "get", OpenAPIOperation{
+		Summary: "Node maintenance window", OperationID: "nodeMaintWindow",
+		Tags:        []string{"Operations", "Maintenance", "NodeHealth"},
+		Description: "Analyzes cordon/drain impact: pods affected per node, PDB coverage, safe maintenance windows.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Maintenance window", map[string]interface{}{"healthScore": 100})},
+	})
+	add("/api/operations/resource-leak-detector", "get", OpenAPIOperation{
+		Summary: "Resource leak detector", OperationID: "resourceLeakDetector",
+		Tags:        []string{"Operations", "Cleanup", "Waste"},
+		Description: "Detects orphaned ConfigMaps, Secrets, and PVCs not referenced by any pod. Identifies resource leaks and estimated waste.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Resource leaks", map[string]interface{}{"healthScore": 52})},
+	})
+	add("/api/operations/log-agg-health", "get", OpenAPIOperation{
+		Summary: "Log aggregation health", OperationID: "logAggHealth",
+		Tags:        []string{"Operations", "Logging", "Observability"},
+		Description: "Analyzes container log health: noisy loggers with high restart counts, silent containers, per-namespace log patterns.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Log agg health", map[string]interface{}{"healthScore": 97})},
+	})
 
 	return spec
 }
