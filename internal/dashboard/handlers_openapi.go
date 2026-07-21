@@ -6712,6 +6712,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Generates resource topology documentation: namespace-level workload/service/PVC/ingress mapping, critical traffic paths, markdown export.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Topology doc", map[string]interface{}{"healthScore": 100})},
 	})
+	add("/api/product/cost-attribution", "get", OpenAPIOperation{
+		Summary: "Cost attribution matrix", OperationID: "costAttribution",
+		Tags:        []string{"Product", "Cost", "FinOps"},
+		Description: "Analyzes resource cost attribution by namespace and team: CPU/memory/PVC costs, waste detection for over-provisioned workloads, estimated monthly spend.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cost attribution", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/product/quota-forecast", "get", OpenAPIOperation{
+		Summary: "Quota utilization forecast", OperationID: "quotaForecast",
+		Tags:        []string{"Product", "Quota", "Capacity"},
+		Description: "Forecasts resource quota utilization: tracks ResourceQuota usage per namespace, identifies critical (>90%) and high (>75%) usage, lists namespaces without quotas.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Quota forecast", map[string]interface{}{"healthScore": 55})},
+	})
+	add("/api/product/mesh-readiness-deep", "get", OpenAPIOperation{
+		Summary: "Mesh readiness deep", OperationID: "meshReadinessDeep",
+		Tags:        []string{"Product", "ServiceMesh", "Readiness"},
+		Description: "Deep service mesh adoption readiness scan: checks sidecar injection status, named ports, liveness/readiness probes, identifies blockers preventing mesh adoption.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Mesh readiness", map[string]interface{}{"healthScore": 50})},
+	})
 
 	return spec
 }

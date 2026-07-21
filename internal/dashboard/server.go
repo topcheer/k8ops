@@ -729,6 +729,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/cluster-runbook-gen", s.cacheMiddleware(120*time.Second, s.handleClusterRunbookGen))                       // cluster runbook generator
 	mux.HandleFunc("/api/docs/api-drift-detector", s.cacheMiddleware(60*time.Second, s.handleAPIDriftDetector))                          // API drift detector
 	mux.HandleFunc("/api/docs/resource-topology-doc", s.cacheMiddleware(60*time.Second, s.handleResourceTopologyDoc))                    // resource topology doc
+	mux.HandleFunc("/api/product/cost-attribution", s.cacheMiddleware(60*time.Second, s.handleCostAttribution))                          // cost attribution matrix
+	mux.HandleFunc("/api/product/quota-forecast", s.cacheMiddleware(60*time.Second, s.handleQuotaForecast))                              // quota utilization forecast
+	mux.HandleFunc("/api/product/mesh-readiness-deep", s.cacheMiddleware(60*time.Second, s.handleMeshReadinessDeep))                     // mesh readiness deep
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness
