@@ -6568,6 +6568,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes controller reconcile health: replica mismatches, unhealthy deployment conditions, orphaned pods without owners, and owner chain tracking.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Controller reconcile", map[string]interface{}{"healthScore": 80})},
 	})
+	add("/api/security/pod-escape-risk", "get", OpenAPIOperation{
+		Summary: "Pod escape risk", OperationID: "podEscapeRisk",
+		Tags:        []string{"Security", "PodSecurity", "Isolation"},
+		Description: "Identifies containers that could escape isolation: privileged mode, hostPID/hostIPC/hostNetwork, dangerous capabilities, hostPath mounts, runAsRoot.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod escape risk", map[string]interface{}{"healthScore": 50})},
+	})
+	add("/api/security/egress-policy-gap", "get", OpenAPIOperation{
+		Summary: "Egress policy gap", OperationID: "egressPolicyGap",
+		Tags:        []string{"Security", "Network", "Egress"},
+		Description: "Analyzes missing egress network policies: namespaces without egress control, default-deny coverage, zero-trust posture assessment.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Egress policy", map[string]interface{}{"healthScore": 10})},
+	})
+	add("/api/security/cis-benchmark-lite", "get", OpenAPIOperation{
+		Summary: "CIS benchmark lite", OperationID: "cisBenchmarkLite",
+		Tags:        []string{"Security", "Compliance", "CIS"},
+		Description: "Basic CIS Kubernetes Benchmark checks: RBAC, pod security, network policies, wildcard permissions. 11 automated checks with remediation guidance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CIS benchmark", map[string]interface{}{"cisScore": 45})},
+	})
 
 	return spec
 }
