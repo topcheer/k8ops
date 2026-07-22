@@ -765,6 +765,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/limit-range-audit", s.cacheMiddleware(60*time.Second, s.handleLimitRangeAudit))                         // limit range audit
 	mux.HandleFunc("/api/product/tenant-isolation", s.cacheMiddleware(60*time.Second, s.handleTenantIsolation))                          // tenant isolation score
 	mux.HandleFunc("/api/product/resource-share", s.cacheMiddleware(60*time.Second, s.handleResourceShare))                              // resource share ratio
+	mux.HandleFunc("/api/scalability/api-throttle-risk", s.cacheMiddleware(60*time.Second, s.handleAPIThrottleRisk))                     // API server QPS throttle risk
+	mux.HandleFunc("/api/scalability/pod-density-opt", s.cacheMiddleware(60*time.Second, s.handlePodDensityOpt))                         // pod density optimizer
+	mux.HandleFunc("/api/scalability/overcommit-forecast", s.cacheMiddleware(60*time.Second, s.handleOvercommitForecast))                // resource overcommit forecast
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness

@@ -6928,6 +6928,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Namespace resource fairness analysis: CPU/memory share percentage, identifies imbalanced consumers, fairness score.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Resource share", map[string]interface{}{"healthScore": 60})},
 	})
+	add("/api/scalability/api-throttle-risk", "get", OpenAPIOperation{
+		Summary: "API throttle risk", OperationID: "apiThrottleRisk",
+		Tags:        []string{"Scalability", "API", "Throttle"},
+		Description: "Estimates API server QPS load from controller count, pod/resource counts, watch event rate, identifies high-consumer namespaces.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API throttle", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/scalability/pod-density-opt", "get", OpenAPIOperation{
+		Summary: "Pod density optimizer", OperationID: "podDensityOpt",
+		Tags:        []string{"Scalability", "Density", "BinPacking"},
+		Description: "Analyzes pod density per node: identifies underutilized nodes (consolidation opportunity) and overutilized nodes (capacity risk).",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod density", map[string]interface{}{"healthScore": 100})},
+	})
+	add("/api/scalability/overcommit-forecast", "get", OpenAPIOperation{
+		Summary: "Overcommit forecast", OperationID: "overcommitForecast",
+		Tags:        []string{"Scalability", "Overcommit", "Capacity"},
+		Description: "Forecasts resource overcommit: CPU request vs limit ratios, unbounded workloads, per-namespace overcommit risk, cluster capacity saturation.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Overcommit", map[string]interface{}{"healthScore": 60})},
+	})
 
 	return spec
 }
