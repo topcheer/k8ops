@@ -6892,6 +6892,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits image supply chain: registry trust status, digest pinning, tag usage, image policy webhook presence (Cosign/Kyverno).",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image provenance", map[string]interface{}{"healthScore": 80})},
 	})
+	add("/api/docs/dr-plan-gen", "get", OpenAPIOperation{
+		Summary: "Disaster recovery plan", OperationID: "drPlanGen",
+		Tags:        []string{"Documentation", "DR", "Recovery"},
+		Description: "Auto-generates DR plan: RTO/RPO assessment, backup status, 8-step recovery procedure, markdown export.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("DR plan", map[string]interface{}{"healthScore": 0})},
+	})
+	add("/api/docs/adr-generator", "get", OpenAPIOperation{
+		Summary: "Architecture decision records", OperationID: "adrGenerator",
+		Tags:        []string{"Documentation", "ADR", "Architecture"},
+		Description: "Auto-generates ADRs from cluster state: topology, storage, networking, monitoring, security decisions with context and consequences.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("ADR", map[string]interface{}{"healthScore": 100})},
+	})
+	add("/api/docs/migration-checklist", "get", OpenAPIOperation{
+		Summary: "Migration checklist", OperationID: "migrationChecklist",
+		Tags:        []string{"Documentation", "Migration", "Checklist"},
+		Description: "Generates 12-item cluster migration checklist: pre-migration, data backup, networking, migration execution, post-migration verification.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Migration checklist", map[string]interface{}{"healthScore": 8})},
+	})
 
 	return spec
 }
