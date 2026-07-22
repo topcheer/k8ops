@@ -7055,6 +7055,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Detects endpoints with high connection fan-out, single-pod SPOFs, and connection pool exhaustion risks.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Connection pool risk", map[string]interface{}{"healthScore": 80})},
 	})
+	add("/api/deployment/annotation-compliance", "get", OpenAPIOperation{
+		Summary:     "Annotation Compliance",
+		OperationID: "annotation-compliance", Tags: []string{"Deployment"},
+		Description: "Audits workloads for required metadata annotations: owner, contact, managed-by, deployment revision.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Annotation compliance", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/multi-arch-audit", "get", OpenAPIOperation{
+		Summary:     "Multi-Arch Image Audit",
+		OperationID: "multi-arch-audit", Tags: []string{"Deployment"},
+		Description: "Audits container images for multi-architecture support and portability risks across cluster node architectures.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Multi-arch audit", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/deployment/container-deps", "get", OpenAPIOperation{
+		Summary:     "Container Dependency Mapper",
+		OperationID: "container-deps", Tags: []string{"Deployment"},
+		Description: "Maps inter-container dependencies within pods: init containers, shared volumes, sidecar patterns, and startup order risks.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Container dependencies", map[string]interface{}{"healthScore": 85})},
+	})
 
 	return spec
 }

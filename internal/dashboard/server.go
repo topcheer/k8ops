@@ -790,6 +790,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/rollback-window", s.cacheMiddleware(120*time.Second, s.handleRollbackWindow))                       // rollback window analyzer
 	mux.HandleFunc("/api/scalability/dns-scalability", s.cacheMiddleware(120*time.Second, s.handleDNSScalability))                       // DNS resolution scalability
 	mux.HandleFunc("/api/scalability/conn-pool-exhaustion", s.cacheMiddleware(120*time.Second, s.handleConnPoolExhaustion))              // connection pool exhaustion risk
+	mux.HandleFunc("/api/deployment/annotation-compliance", s.cacheMiddleware(120*time.Second, s.handleAnnotationCompliance))            // annotation compliance
+	mux.HandleFunc("/api/deployment/multi-arch-audit", s.cacheMiddleware(120*time.Second, s.handleMultiArchAudit))                       // multi-arch image audit
+	mux.HandleFunc("/api/deployment/container-deps", s.cacheMiddleware(120*time.Second, s.handleContainerDeps))                          // container dependency mapper
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
