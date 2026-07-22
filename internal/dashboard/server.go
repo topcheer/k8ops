@@ -802,6 +802,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/naming-audit", s.cacheMiddleware(120*time.Second, s.handleNamingAudit))                                    // naming convention audit
 	mux.HandleFunc("/api/docs/env-var-catalog", s.cacheMiddleware(120*time.Second, s.handleEnvVarCatalog))                               // env var catalog
 	mux.HandleFunc("/api/docs/annotation-inventory", s.cacheMiddleware(120*time.Second, s.handleAnnotationInventory))                    // annotation inventory
+	mux.HandleFunc("/api/product/secret-version-history", s.cacheMiddleware(120*time.Second, s.handleSecretVersionHistory))              // secret version history
+	mux.HandleFunc("/api/product/crd-health", s.cacheMiddleware(120*time.Second, s.handleCRDHealth))                                     // CRD health monitor
+	mux.HandleFunc("/api/product/autosize-recommender", s.cacheMiddleware(120*time.Second, s.handleAutosizeRecommender))                 // workload autosize recommender
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)

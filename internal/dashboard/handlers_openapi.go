@@ -7073,6 +7073,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Detects idle pods (zero service references, long-running) and unused services. Estimates wasted CPU, memory, and monthly cost.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Idle resources", map[string]interface{}{"healthScore": 75})},
 	})
+	add("/api/product/secret-version-history", "get", OpenAPIOperation{
+		Summary:     "Secret Version History",
+		OperationID: "secret-version-history", Tags: []string{"Product"},
+		Description: "Tracks secret age, rotation history, key count, mount usage, and identifies stale or unused secrets.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Secret versions", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/product/crd-health", "get", OpenAPIOperation{
+		Summary:     "CRD Health Monitor",
+		OperationID: "crd-health", Tags: []string{"Product"},
+		Description: "Monitors CustomResourceDefinitions for deprecated versions, operator health, and version consolidation opportunities.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CRD health", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/autosize-recommender", "get", OpenAPIOperation{
+		Summary:     "Workload Autosize Recommender",
+		OperationID: "autosize-recommender", Tags: []string{"Product"},
+		Description: "Analyzes workload resource requests and recommends right-sizing. Estimates cost savings from over-provisioned workloads.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Autosize recommendations", map[string]interface{}{"healthScore": 80})},
+	})
 	add("/api/scalability/rollback-window", "get", OpenAPIOperation{
 		Summary:     "Rollback Window Analyzer",
 		OperationID: "rollback-window", Tags: []string{"Scalability"},
