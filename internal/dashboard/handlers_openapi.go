@@ -7073,6 +7073,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Maps inter-container dependencies within pods: init containers, shared volumes, sidecar patterns, and startup order risks.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Container dependencies", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/operations/ingress-health-monitor", "get", OpenAPIOperation{
+		Summary:     "Ingress Health Monitor",
+		OperationID: "ingress-health", Tags: []string{"Operations"},
+		Description: "Monitors Ingress rule conflicts, TLS coverage, backend service health, and orphan detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Ingress health", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/job-lifecycle", "get", OpenAPIOperation{
+		Summary:     "Job Lifecycle Tracker",
+		OperationID: "job-lifecycle", Tags: []string{"Operations"},
+		Description: "Tracks Job and CronJob completion, failure rates, staleness, and cleanup recommendations.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Job lifecycle", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/operations/leader-election", "get", OpenAPIOperation{
+		Summary:     "Leader Election Health",
+		OperationID: "leader-election", Tags: []string{"Operations"},
+		Description: "Monitors leader election leases, detects stale leases, and evaluates failover readiness for controllers.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Leader election", map[string]interface{}{"healthScore": 90})},
+	})
 
 	return spec
 }
