@@ -769,7 +769,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/pod-density-opt", s.cacheMiddleware(60*time.Second, s.handlePodDensityOpt))                         // pod density optimizer
 	mux.HandleFunc("/api/scalability/overcommit-forecast", s.cacheMiddleware(60*time.Second, s.handleOvercommitForecast))                // resource overcommit forecast
 	mux.HandleFunc("/api/deployment/manifest-drift", s.cacheMiddleware(60*time.Second, s.handleManifestDrift))                           // manifest drift detector
-	mux.HandleFunc("/api/deployment/preflight-check", s.cacheMiddleware(30*time.Second, s.handlePreFlightCheck))                         // pre-flight deploy check
+	mux.HandleFunc("/api/deployment/preflight-check-v2", s.cacheMiddleware(30*time.Second, s.handlePreFlightCheck))                      // pre-flight deploy check
 	mux.HandleFunc("/api/deployment/helm-health", s.cacheMiddleware(60*time.Second, s.handleHelmHealth1917))                             // helm release health
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer

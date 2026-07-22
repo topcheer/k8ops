@@ -5853,7 +5853,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Unifies the four SRE golden signals (latency, traffic, errors, saturation) into a composite health budget per workload. Weighted scoring: latency 30%, traffic 20%, errors 30%, saturation 20%. Identifies weakest signal per workload.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Golden signal budget", map[string]interface{}{"compositeScore": 70, "grade": "B"})},
 	})
-	add("/api/deployment/preflight-check", "get", OpenAPIOperation{
+	add("/api/deployment/preflight-check-v2", "get", OpenAPIOperation{
 		Summary: "Deployment preflight check", OperationID: "preflightCheck",
 		Tags:        []string{"Deployment", "Validation", "Safety"},
 		Description: "Validates prerequisites before a rolling update: resource requests, readiness probes, PDB coverage, rolling update strategy, node health, HPA, revision history, graceful shutdown. 8 checks total with blocking and warning severity levels.",
@@ -6952,7 +6952,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Detects manifest drift: replica count mismatch, image update lag, GitOps OutOfSync status, per-namespace breakdown.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Manifest drift", map[string]interface{}{"healthScore": 92})},
 	})
-	add("/api/deployment/preflight-check", "get", OpenAPIOperation{
+	add("/api/deployment/preflight-check-v2", "get", OpenAPIOperation{
 		Summary: "Pre-flight deploy check", OperationID: "preflightCheck",
 		Tags:        []string{"Deployment", "PreFlight", "Gate"},
 		Description: "Pre-deployment readiness gate: 7 checks covering node availability, cluster capacity, PVC health, DNS, service endpoints, resource limits.",
