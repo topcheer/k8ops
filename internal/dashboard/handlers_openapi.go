@@ -7109,6 +7109,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Forecasts resource quota exhaustion. Identifies namespaces approaching quota limits and recommends capacity planning.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Quota pressure", map[string]interface{}{"healthScore": 80})},
 	})
+	add("/api/deployment/sts-health", "get", OpenAPIOperation{
+		Summary:     "StatefulSet Health Audit",
+		OperationID: "sts-health", Tags: []string{"Deployment"},
+		Description: "Audits StatefulSet ordinal readiness, update strategy, partition settings, and PVC binding health.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("StatefulSet health", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/image-pull-secret-gap", "get", OpenAPIOperation{
+		Summary:     "Image Pull Secret Gap",
+		OperationID: "image-pull-secret-gap", Tags: []string{"Deployment"},
+		Description: "Detects pods using private registries without imagePullSecrets. Identifies ImagePullBackOff risk.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pull secret gap", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/deployment/topology-distribution", "get", OpenAPIOperation{
+		Summary:     "Pod Topology Distribution",
+		OperationID: "topology-distribution", Tags: []string{"Deployment"},
+		Description: "Analyzes how pod replicas are distributed across nodes. Detects concentration risks and spread quality.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Topology distribution", map[string]interface{}{"healthScore": 80})},
+	})
 	add("/api/scalability/rollback-window", "get", OpenAPIOperation{
 		Summary:     "Rollback Window Analyzer",
 		OperationID: "rollback-window", Tags: []string{"Scalability"},

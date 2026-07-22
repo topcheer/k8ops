@@ -808,6 +808,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/restart-rate", s.cacheMiddleware(120*time.Second, s.handleRestartRate))                             // pod restart rate limiter
 	mux.HandleFunc("/api/scalability/node-affinity-compliance", s.cacheMiddleware(120*time.Second, s.handleNodeAffinityCompliance))      // node affinity compliance
 	mux.HandleFunc("/api/scalability/quota-pressure-index", s.cacheMiddleware(120*time.Second, s.handleQuotaPressure))                   // quota pressure index
+	mux.HandleFunc("/api/deployment/sts-health", s.cacheMiddleware(120*time.Second, s.handleStatefulSetHealth))                          // statefulset health audit
+	mux.HandleFunc("/api/deployment/image-pull-secret-gap", s.cacheMiddleware(120*time.Second, s.handleImagePullSecretGap))              // image pull secret gap
+	mux.HandleFunc("/api/deployment/topology-distribution", s.cacheMiddleware(120*time.Second, s.handleTopologyDistribution))            // pod topology distribution
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
