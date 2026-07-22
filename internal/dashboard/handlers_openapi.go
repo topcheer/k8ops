@@ -7019,6 +7019,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Captures resource usage baselines per workload. Documents CPU/memory requests, identifies anomalies, and recommends thresholds for monitoring.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Performance baseline", map[string]interface{}{"healthScore": 80})},
 	})
+	add("/api/product/image-lifecycle", "get", OpenAPIOperation{
+		Summary:     "Image Lifecycle Tracker",
+		OperationID: "image-lifecycle", Tags: []string{"Product"},
+		Description: "Tracks image freshness, tag types (pinned/floating), reuse counts, and staleness. Identifies images with floating tags and high blast radius.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image lifecycle", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/product/volume-snapshot-readiness", "get", OpenAPIOperation{
+		Summary:     "Volume Snapshot Readiness",
+		OperationID: "volume-snapshot-readiness", Tags: []string{"Product"},
+		Description: "Evaluates PVC CSI snapshot eligibility by checking storage class provisioner support and PVC bound status.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Snapshot readiness", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/idle-resource", "get", OpenAPIOperation{
+		Summary:     "Idle Resource Detector",
+		OperationID: "idle-resource", Tags: []string{"Product"},
+		Description: "Detects idle pods (zero service references, long-running) and unused services. Estimates wasted CPU, memory, and monthly cost.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Idle resources", map[string]interface{}{"healthScore": 75})},
+	})
 
 	return spec
 }

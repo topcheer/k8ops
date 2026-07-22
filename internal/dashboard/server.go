@@ -784,6 +784,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/service-dependency-graph", s.cacheMiddleware(120*time.Second, s.handleServiceDepGraph))                    // service dependency graph
 	mux.HandleFunc("/api/docs/performance-baseline", s.cacheMiddleware(120*time.Second, s.handlePerfBaseline))                           // performance baseline report
 	mux.HandleFunc("/api/docs/cost-anomaly-deep", s.cacheMiddleware(300*time.Second, s.handleCostAnomalyDeep))                           // deep cost anomaly detector
+	mux.HandleFunc("/api/product/image-lifecycle", s.cacheMiddleware(120*time.Second, s.handleImageLifecycle))                           // image lifecycle tracker
+	mux.HandleFunc("/api/product/volume-snapshot-readiness", s.cacheMiddleware(120*time.Second, s.handleVolumeSnapshotReadiness))        // volume snapshot readiness
+	mux.HandleFunc("/api/product/idle-resource", s.cacheMiddleware(120*time.Second, s.handleIdleResource))                               // idle resource detector
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
