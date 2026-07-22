@@ -7091,6 +7091,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes workload resource requests and recommends right-sizing. Estimates cost savings from over-provisioned workloads.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Autosize recommendations", map[string]interface{}{"healthScore": 80})},
 	})
+	add("/api/scalability/restart-rate", "get", OpenAPIOperation{
+		Summary:     "Pod Restart Rate Limiter",
+		OperationID: "restart-rate", Tags: []string{"Scalability"},
+		Description: "Analyzes pod restart rates to detect crash loops and flapping. Identifies pods with excessive restart frequency.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Restart rate", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/scalability/node-affinity-compliance", "get", OpenAPIOperation{
+		Summary:     "Node Affinity Compliance",
+		OperationID: "node-affinity-compliance", Tags: []string{"Scalability"},
+		Description: "Audits node selectors, affinity rules, and anti-affinity for scheduling health. Detects unschedulable risks and SPOF.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node affinity", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/scalability/quota-pressure-index", "get", OpenAPIOperation{
+		Summary:     "Resource Quota Pressure Index",
+		OperationID: "quota-pressure-index", Tags: []string{"Scalability"},
+		Description: "Forecasts resource quota exhaustion. Identifies namespaces approaching quota limits and recommends capacity planning.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Quota pressure", map[string]interface{}{"healthScore": 80})},
+	})
 	add("/api/scalability/rollback-window", "get", OpenAPIOperation{
 		Summary:     "Rollback Window Analyzer",
 		OperationID: "rollback-window", Tags: []string{"Scalability"},
