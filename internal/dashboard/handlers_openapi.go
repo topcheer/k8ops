@@ -7001,6 +7001,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Proc mount risk", map[string]interface{}{"healthScore": 84})},
 	})
 
+	add("/api/docs/policy-catalog", "get", OpenAPIOperation{
+		Summary:     "Policy Catalog",
+		OperationID: "policy-catalog", Tags: []string{"Documentation"},
+		Description: "Comprehensive policy inventory documenting all NetworkPolicies, PodSecurityAdmission labels, RBAC bindings, LimitRanges, and ResourceQuotas across the cluster.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Policy catalog", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/docs/service-dependency-graph", "get", OpenAPIOperation{
+		Summary:     "Service Dependency Graph",
+		OperationID: "service-dependency-graph", Tags: []string{"Documentation"},
+		Description: "Maps inter-service dependencies by scanning env vars, config references, and network policies. Identifies hub services, orphans, and cross-namespace dependencies.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Dependency graph", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/docs/performance-baseline", "get", OpenAPIOperation{
+		Summary:     "Performance Baseline Report",
+		OperationID: "performance-baseline", Tags: []string{"Documentation"},
+		Description: "Captures resource usage baselines per workload. Documents CPU/memory requests, identifies anomalies, and recommends thresholds for monitoring.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Performance baseline", map[string]interface{}{"healthScore": 80})},
+	})
+
 	return spec
 }
 

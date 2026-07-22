@@ -780,6 +780,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness
+	mux.HandleFunc("/api/docs/policy-catalog", s.cacheMiddleware(120*time.Second, s.handlePolicyCatalog))                                // policy catalog
+	mux.HandleFunc("/api/docs/service-dependency-graph", s.cacheMiddleware(120*time.Second, s.handleServiceDepGraph))                    // service dependency graph
+	mux.HandleFunc("/api/docs/performance-baseline", s.cacheMiddleware(120*time.Second, s.handlePerfBaseline))                           // performance baseline report
 	mux.HandleFunc("/api/docs/cost-anomaly-deep", s.cacheMiddleware(300*time.Second, s.handleCostAnomalyDeep))                           // deep cost anomaly detector
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
