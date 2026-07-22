@@ -7018,6 +7018,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Maps HostPort usage that bypasses NetworkPolicy isolation. Detects privileged ports, conflicts, and exposure risks.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("HostPort exposure", map[string]interface{}{"healthScore": 80})},
 	})
+	add("/api/docs/naming-audit", "get", OpenAPIOperation{
+		Summary:     "Naming Convention Audit",
+		OperationID: "naming-audit", Tags: []string{"Documentation"},
+		Description: "Audits resource names for DNS-1123 compliance, uppercase, underscores, length violations, and reserved prefixes.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Naming audit", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/docs/env-var-catalog", "get", OpenAPIOperation{
+		Summary:     "Environment Variable Catalog",
+		OperationID: "env-var-catalog", Tags: []string{"Documentation"},
+		Description: "Inventories all environment variables across workloads. Detects sensitive values, conflicts, and hardcoded configurations.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Env var catalog", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/docs/annotation-inventory", "get", OpenAPIOperation{
+		Summary:     "Annotation Inventory",
+		OperationID: "annotation-inventory", Tags: []string{"Documentation"},
+		Description: "Catalogs all annotations across resources. Classifies as standard, custom, or deprecated for governance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Annotation inventory", map[string]interface{}{"healthScore": 85})},
+	})
 
 	add("/api/docs/policy-catalog", "get", OpenAPIOperation{
 		Summary:     "Policy Catalog",
