@@ -6982,6 +6982,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Monitors cgroup CPU/memory pressure: CFS throttle risk, OOM kill risk, per-namespace resource concentration.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cgroup pressure", map[string]interface{}{"healthScore": 90})},
 	})
+	add("/api/security/secret-exposure-graph", "get", OpenAPIOperation{
+		Summary: "Secret exposure graph", OperationID: "secretExposureGraph",
+		Tags:        []string{"Security", "Secrets", "Exposure"},
+		Description: "Maps secret mount topology: identifies over-exposed secrets (>3 mounts), unused secrets, duplicate secrets, per-namespace breakdown.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Secret exposure", map[string]interface{}{"healthScore": 97})},
+	})
+	add("/api/security/admission-exception", "get", OpenAPIOperation{
+		Summary: "Admission exception audit", OperationID: "admissionException",
+		Tags:        []string{"Security", "Admission", "PSA"},
+		Description: "Audits admission control: PSA enforcement labels, exception configurations, Gatekeeper/Kyverno/Cosign webhook presence.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Admission exception", map[string]interface{}{"healthScore": 0})},
+	})
+	add("/api/security/proc-mount-risk", "get", OpenAPIOperation{
+		Summary: "Proc mount & tmpfs write risk", OperationID: "procMountRisk",
+		Tags:        []string{"Security", "ProcMount", "Hardening"},
+		Description: "Detects Unmasked proc mount, writable tmpfs (emptyDir with Memory medium), writable hostPath volumes across all containers.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Proc mount risk", map[string]interface{}{"healthScore": 84})},
+	})
 
 	return spec
 }

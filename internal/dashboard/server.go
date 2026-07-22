@@ -774,6 +774,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/storage-io-latency", s.cacheMiddleware(60*time.Second, s.handleStorageLatency))                      // storage I/O latency risk
 	mux.HandleFunc("/api/operations/network-packet-loss", s.cacheMiddleware(60*time.Second, s.handlePacketLossRisk))                     // network packet loss risk
 	mux.HandleFunc("/api/operations/cgroup-pressure", s.cacheMiddleware(60*time.Second, s.handleCgroupPressure))                         // cgroup pressure monitor
+	mux.HandleFunc("/api/security/secret-exposure-graph", s.cacheMiddleware(60*time.Second, s.handleSecretExposureGraph))                // secret exposure graph
+	mux.HandleFunc("/api/security/admission-exception", s.cacheMiddleware(60*time.Second, s.handleAdmissionException))                   // admission exception audit
+	mux.HandleFunc("/api/security/proc-mount-risk", s.cacheMiddleware(60*time.Second, s.handleProcMountRisk))                            // proc mount & tmpfs write risk
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness
