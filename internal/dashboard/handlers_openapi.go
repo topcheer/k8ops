@@ -7000,6 +7000,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Detects Unmasked proc mount, writable tmpfs (emptyDir with Memory medium), writable hostPath volumes across all containers.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Proc mount risk", map[string]interface{}{"healthScore": 84})},
 	})
+	add("/api/security/token-projection", "get", OpenAPIOperation{
+		Summary:     "Token Projection Audit",
+		OperationID: "token-projection", Tags: []string{"Security"},
+		Description: "Audits projected vs legacy auto-mounted service account tokens. Identifies default SA usage and rotation gaps.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Token projection", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/security/sysctl-risk", "get", OpenAPIOperation{
+		Summary:     "Sysctl Risk Audit",
+		OperationID: "sysctl-risk", Tags: []string{"Security"},
+		Description: "Detects dangerous kernel sysctls in pod security contexts. Identifies unsafe sysctl names and their security impacts.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Sysctl risk", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/security/hostport-exposure", "get", OpenAPIOperation{
+		Summary:     "HostPort Exposure Map",
+		OperationID: "hostport-exposure", Tags: []string{"Security"},
+		Description: "Maps HostPort usage that bypasses NetworkPolicy isolation. Detects privileged ports, conflicts, and exposure risks.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("HostPort exposure", map[string]interface{}{"healthScore": 80})},
+	})
 
 	add("/api/docs/policy-catalog", "get", OpenAPIOperation{
 		Summary:     "Policy Catalog",

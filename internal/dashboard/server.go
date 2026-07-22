@@ -796,6 +796,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/ingress-health-monitor", s.cacheMiddleware(120*time.Second, s.handleIngressHealthMonitor))           // ingress health monitor
 	mux.HandleFunc("/api/operations/job-lifecycle", s.cacheMiddleware(120*time.Second, s.handleJobLifecycle))                            // job lifecycle tracker
 	mux.HandleFunc("/api/operations/leader-election", s.cacheMiddleware(120*time.Second, s.handleLeaderElection))                        // leader election health
+	mux.HandleFunc("/api/security/token-projection", s.cacheMiddleware(120*time.Second, s.handleTokenProjection))                        // token projection audit
+	mux.HandleFunc("/api/security/sysctl-risk", s.cacheMiddleware(120*time.Second, s.handleSysctlRisk))                                  // sysctl risk audit
+	mux.HandleFunc("/api/security/hostport-exposure", s.cacheMiddleware(120*time.Second, s.handleHostPortExposure))                      // hostport exposure map
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
