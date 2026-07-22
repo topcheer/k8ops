@@ -65,7 +65,7 @@ var auditRegistry = []auditEndpoint{
 	{"deployment:ref-integrity", "/api/deployment/ref-integrity", "Secret/ConfigMap reference integrity checker"},
 	{"deployment:image-drift", "/api/deployment/image-drift", "Deployment image drift & version consistency detector"},
 	{"deployment:replica-availability", "/api/deployment/replica-availability", "Deployment replica availability & ready pod ratio monitor"},
-	{"deployment:helm-health", "/api/deployment/helm-health", "Helm release health & GitOps drift detector"},
+	{"deployment:helm-health", "/api/deployment/helm-health-v2", "Helm release health & GitOps drift detector"},
 	{"deployment:surge-risk", "/api/deployment/surge-risk", "Rolling update risk & surge configuration analyzer"},
 
 	// --- Operations ---
@@ -441,7 +441,7 @@ var auditRegistry = []auditEndpoint{
 	{"docs:cost-anomaly-deep", "/api/docs/cost-anomaly-deep", "Deep cost anomaly detector"},
 	{"deployment:manifest-drift", "/api/deployment/manifest-drift", "Manifest drift & actual-vs-declared state auditor"},
 	{"deployment:preflight-check", "/api/deployment/preflight-check-v2", "Pre-deployment readiness check & safety gate"},
-	{"deployment:helm-health", "/api/deployment/helm-health", "Helm release health & staleness auditor"},
+	{"deployment:helm-health", "/api/deployment/helm-health-v2", "Helm release health & staleness auditor"},
 	{"scalability:api-throttle-risk", "/api/scalability/api-throttle-risk", "API server QPS throttle & load risk analyzer"},
 	{"scalability:pod-density-opt", "/api/scalability/pod-density-opt", "Pod density & bin-packing optimization recommender"},
 	{"scalability:overcommit-forecast", "/api/scalability/overcommit-forecast", "Resource overcommit ratio & forecast analyzer"},
