@@ -7037,6 +7037,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Detects idle pods (zero service references, long-running) and unused services. Estimates wasted CPU, memory, and monthly cost.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Idle resources", map[string]interface{}{"healthScore": 75})},
 	})
+	add("/api/scalability/rollback-window", "get", OpenAPIOperation{
+		Summary:     "Rollback Window Analyzer",
+		OperationID: "rollback-window", Tags: []string{"Scalability"},
+		Description: "Analyzes deployment rollback readiness by checking revisionHistoryLimit, replica count, and rollout status.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Rollback window", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/scalability/dns-scalability", "get", OpenAPIOperation{
+		Summary:     "DNS Resolution Scalability",
+		OperationID: "dns-scalability", Tags: []string{"Scalability"},
+		Description: "Analyzes CoreDNS capacity, replica-to-pod ratio, autoscaler presence, and DNS resolution bottlenecks.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("DNS scalability", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/scalability/conn-pool-exhaustion", "get", OpenAPIOperation{
+		Summary:     "Connection Pool Exhaustion Risk",
+		OperationID: "conn-pool-exhaustion", Tags: []string{"Scalability"},
+		Description: "Detects endpoints with high connection fan-out, single-pod SPOFs, and connection pool exhaustion risks.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Connection pool risk", map[string]interface{}{"healthScore": 80})},
+	})
 
 	return spec
 }
