@@ -6964,6 +6964,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits Helm release health: deployed/failed/pending status, stale release detection (>90d), version tracking, Helm v2/v3 compatibility.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Helm health", map[string]interface{}{"healthScore": 74})},
 	})
+	add("/api/operations/storage-io-latency", "get", OpenAPIOperation{
+		Summary: "Storage I/O latency risk", OperationID: "storageIoLatency",
+		Tags:        []string{"Operations", "Storage", "Performance"},
+		Description: "Estimates storage latency risk: local vs network storage PVC analysis, IOPS estimation, high-risk large PVCs on network storage.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Storage latency", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/operations/network-packet-loss", "get", OpenAPIOperation{
+		Summary: "Network packet loss risk", OperationID: "networkPacketLoss",
+		Tags:        []string{"Operations", "Network", "Connectivity"},
+		Description: "Assesses network packet loss risk: node readiness, pod readiness, CNI health, services without endpoints.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Network loss", map[string]interface{}{"healthScore": 100})},
+	})
+	add("/api/operations/cgroup-pressure", "get", OpenAPIOperation{
+		Summary: "Cgroup pressure monitor", OperationID: "cgroupPressure",
+		Tags:        []string{"Operations", "Cgroup", "Pressure"},
+		Description: "Monitors cgroup CPU/memory pressure: CFS throttle risk, OOM kill risk, per-namespace resource concentration.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cgroup pressure", map[string]interface{}{"healthScore": 90})},
+	})
 
 	return spec
 }
