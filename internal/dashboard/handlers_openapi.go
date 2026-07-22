@@ -6946,6 +6946,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Forecasts resource overcommit: CPU request vs limit ratios, unbounded workloads, per-namespace overcommit risk, cluster capacity saturation.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Overcommit", map[string]interface{}{"healthScore": 60})},
 	})
+	add("/api/deployment/manifest-drift", "get", OpenAPIOperation{
+		Summary: "Manifest drift detector", OperationID: "manifestDrift",
+		Tags:        []string{"Deployment", "Drift", "GitOps"},
+		Description: "Detects manifest drift: replica count mismatch, image update lag, GitOps OutOfSync status, per-namespace breakdown.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Manifest drift", map[string]interface{}{"healthScore": 92})},
+	})
+	add("/api/deployment/preflight-check", "get", OpenAPIOperation{
+		Summary: "Pre-flight deploy check", OperationID: "preflightCheck",
+		Tags:        []string{"Deployment", "PreFlight", "Gate"},
+		Description: "Pre-deployment readiness gate: 7 checks covering node availability, cluster capacity, PVC health, DNS, service endpoints, resource limits.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pre-flight", map[string]interface{}{"healthScore": 51})},
+	})
+	add("/api/deployment/helm-health", "get", OpenAPIOperation{
+		Summary: "Helm release health", OperationID: "helmHealth",
+		Tags:        []string{"Deployment", "Helm", "Release"},
+		Description: "Audits Helm release health: deployed/failed/pending status, stale release detection (>90d), version tracking, Helm v2/v3 compatibility.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Helm health", map[string]interface{}{"healthScore": 74})},
+	})
 
 	return spec
 }

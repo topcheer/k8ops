@@ -420,7 +420,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/ref-integrity", s.cacheMiddleware(60*time.Second, s.handleRefIntegrity))                   // Secret/ConfigMap reference integrity checker
 	mux.HandleFunc("/api/deployment/image-drift", s.cacheMiddleware(60*time.Second, s.handleImageDrift))                       // deployment image drift & version consistency detector
 	mux.HandleFunc("/api/deployment/replica-availability", s.cacheMiddleware(30*time.Second, s.handleReplicaAvailability))     // deployment replica availability & ready pod ratio monitor
-	mux.HandleFunc("/api/deployment/helm-health", s.cacheMiddleware(120*time.Second, s.handleHelmHealth))                      // Helm release health & GitOps drift detector
+	mux.HandleFunc("/api/deployment/helm-health", s.cacheMiddleware(120*time.Second, s.handleHelmHealth1917))                  // Helm release health & GitOps drift detector
 	mux.HandleFunc("/api/deployment/surge-risk", s.cacheMiddleware(60*time.Second, s.handleSurgeRisk))                         // rolling update risk & surge configuration analyzer
 	mux.HandleFunc("/api/deployment/startup-latency", s.cacheMiddleware(60*time.Second, s.handleStartupLatency))               // pod startup latency & readiness performance auditor
 	mux.HandleFunc("/api/deployment/progressive-delivery", s.cacheMiddleware(60*time.Second, s.handleProgressiveDelivery))     // progressive delivery & canary rollout health auditor
@@ -768,6 +768,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/api-throttle-risk", s.cacheMiddleware(60*time.Second, s.handleAPIThrottleRisk))                     // API server QPS throttle risk
 	mux.HandleFunc("/api/scalability/pod-density-opt", s.cacheMiddleware(60*time.Second, s.handlePodDensityOpt))                         // pod density optimizer
 	mux.HandleFunc("/api/scalability/overcommit-forecast", s.cacheMiddleware(60*time.Second, s.handleOvercommitForecast))                // resource overcommit forecast
+	mux.HandleFunc("/api/deployment/manifest-drift", s.cacheMiddleware(60*time.Second, s.handleManifestDrift))                           // manifest drift detector
+	mux.HandleFunc("/api/deployment/preflight-check", s.cacheMiddleware(30*time.Second, s.handlePreFlightCheck))                         // pre-flight deploy check
+	mux.HandleFunc("/api/deployment/helm-health", s.cacheMiddleware(60*time.Second, s.handleHelmHealth1917))                             // helm release health
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness
