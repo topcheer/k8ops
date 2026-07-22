@@ -6910,6 +6910,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Generates 12-item cluster migration checklist: pre-migration, data backup, networking, migration execution, post-migration verification.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Migration checklist", map[string]interface{}{"healthScore": 8})},
 	})
+	add("/api/product/limit-range-audit", "get", OpenAPIOperation{
+		Summary: "LimitRange audit", OperationID: "limitRangeAudit",
+		Tags:        []string{"Product", "Resources", "LimitRange"},
+		Description: "Audits LimitRange coverage: namespaces with/without default CPU/memory limits, max constraints, unprotected container count.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("LimitRange", map[string]interface{}{"healthScore": 10})},
+	})
+	add("/api/product/tenant-isolation", "get", OpenAPIOperation{
+		Summary: "Tenant isolation score", OperationID: "tenantIsolation",
+		Tags:        []string{"Product", "MultiTenancy", "Isolation"},
+		Description: "Multi-tenant isolation assessment: NetworkPolicy, ResourceQuota, LimitRange, and RBAC coverage per namespace.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Tenant isolation", map[string]interface{}{"healthScore": 17})},
+	})
+	add("/api/product/resource-share", "get", OpenAPIOperation{
+		Summary: "Resource share ratio", OperationID: "resourceShare",
+		Tags:        []string{"Product", "Resources", "Fairness"},
+		Description: "Namespace resource fairness analysis: CPU/memory share percentage, identifies imbalanced consumers, fairness score.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Resource share", map[string]interface{}{"healthScore": 60})},
+	})
 
 	return spec
 }

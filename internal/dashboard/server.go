@@ -762,6 +762,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/dr-plan-gen", s.cacheMiddleware(120*time.Second, s.handleDRPlanGen))                                       // disaster recovery plan generator
 	mux.HandleFunc("/api/docs/adr-generator", s.cacheMiddleware(120*time.Second, s.handleADRGenerator))                                  // ADR generator
 	mux.HandleFunc("/api/docs/migration-checklist", s.cacheMiddleware(120*time.Second, s.handleMigrationChecklist))                      // migration checklist generator
+	mux.HandleFunc("/api/product/limit-range-audit", s.cacheMiddleware(60*time.Second, s.handleLimitRangeAudit))                         // limit range audit
+	mux.HandleFunc("/api/product/tenant-isolation", s.cacheMiddleware(60*time.Second, s.handleTenantIsolation))                          // tenant isolation score
+	mux.HandleFunc("/api/product/resource-share", s.cacheMiddleware(60*time.Second, s.handleResourceShare))                              // resource share ratio
 	mux.HandleFunc("/api/docs/api-coverage-gap", s.cacheMiddleware(300*time.Second, s.handleAPICoverageGap))                             // API coverage gap analyzer
 	mux.HandleFunc("/api/operations/event-noise-filter", s.cacheMiddleware(60*time.Second, s.handleEventNoiseFilter))                    // event noise filter & signal analyzer
 	mux.HandleFunc("/api/deployment/progressive-rollout", s.cacheMiddleware(120*time.Second, s.handleProgressiveRollout))                // progressive delivery readiness
