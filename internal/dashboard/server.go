@@ -811,6 +811,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/sts-health", s.cacheMiddleware(120*time.Second, s.handleStatefulSetHealth))                          // statefulset health audit
 	mux.HandleFunc("/api/deployment/image-pull-secret-gap", s.cacheMiddleware(120*time.Second, s.handleImagePullSecretGap))              // image pull secret gap
 	mux.HandleFunc("/api/deployment/topology-distribution", s.cacheMiddleware(120*time.Second, s.handleTopologyDistribution))            // pod topology distribution
+	mux.HandleFunc("/api/operations/pvc-lifecycle", s.cacheMiddleware(120*time.Second, s.handlePVCLifecycle))                            // pvc lifecycle monitor
+	mux.HandleFunc("/api/operations/endpoint-latency", s.cacheMiddleware(120*time.Second, s.handleEndpointLatency))                      // service endpoint latency
+	mux.HandleFunc("/api/operations/container-forensics", s.cacheMiddleware(120*time.Second, s.handleContainerForensics))                // container state forensics
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)

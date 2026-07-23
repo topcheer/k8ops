@@ -7182,6 +7182,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Leader election", map[string]interface{}{"healthScore": 90})},
 	})
 
+	add("/api/operations/pvc-lifecycle", "get", OpenAPIOperation{
+		Summary:     "PVC Lifecycle Monitor",
+		OperationID: "pvc-lifecycle", Tags: []string{"Operations"},
+		Description: "Monitors PVC binding health, pending claims, released PVs, and reclaimable storage.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PVC lifecycle", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/endpoint-latency", "get", OpenAPIOperation{
+		Summary:     "Service Endpoint Latency",
+		OperationID: "endpoint-latency", Tags: []string{"Operations"},
+		Description: "Analyzes endpoint readiness ratio, not-ready addresses, and service traffic health.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Endpoint latency", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/operations/container-forensics", "get", OpenAPIOperation{
+		Summary:     "Container State Forensics",
+		OperationID: "container-forensics", Tags: []string{"Operations"},
+		Description: "Analyzes container states, exit codes, OOM kills, and CrashLoopBackOff patterns.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Container forensics", map[string]interface{}{"healthScore": 80})},
+	})
+
 	return spec
 }
 
