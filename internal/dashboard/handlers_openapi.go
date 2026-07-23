@@ -7318,6 +7318,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Webhook risk", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/docs/ownership-registry-v2", "get", OpenAPIOperation{
+		Summary: "Workload Ownership Registry", OperationID: "ownership-registry-v2", Tags: []string{"Documentation"},
+		Description: "Documents workload ownership metadata including owner, team, escalation path, and contact info.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Ownership registry", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/docs/api-resource-inventory", "get", OpenAPIOperation{
+		Summary: "API Resource Inventory", OperationID: "api-resource-inventory", Tags: []string{"Documentation"},
+		Description: "Inventories all API resources (native + CRD), groups, versions, and deprecated API detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API inventory", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/docs/capacity-report", "get", OpenAPIOperation{
+		Summary: "Cluster Capacity Report", OperationID: "capacity-report", Tags: []string{"Documentation"},
+		Description: "Documents cluster resource capacity, allocation by namespace, and utilization percentages.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Capacity report", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 

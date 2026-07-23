@@ -708,7 +708,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/pod-escape-risk", s.cacheMiddleware(60*time.Second, s.handlePodEscapeRisk))                            // pod escape risk
 	mux.HandleFunc("/api/security/egress-policy-gap", s.cacheMiddleware(60*time.Second, s.handleEgressPolicyGap))                        // egress policy gap
 	mux.HandleFunc("/api/security/cis-benchmark-lite", s.cacheMiddleware(120*time.Second, s.handleCISBenchmarkLite))                     // CIS benchmark lite
-	mux.HandleFunc("/api/docs/ownership-registry", s.cacheMiddleware(60*time.Second, s.handleOwnershipRegistry))                         // ownership registry
+	mux.HandleFunc("/api/docs/ownership-registry", s.cacheMiddleware(60*time.Second, s.handleOwnershipRegistryV2))                       // ownership registry
 	mux.HandleFunc("/api/docs/release-note-gen", s.cacheMiddleware(60*time.Second, s.handleReleaseNoteGen))                              // release note generator
 	mux.HandleFunc("/api/docs/incident-postmortem", s.cacheMiddleware(120*time.Second, s.handleIncidentPostmortem))                      // incident postmortem
 	mux.HandleFunc("/api/product/storage-class-audit", s.cacheMiddleware(60*time.Second, s.handleStorageClassAudit))                     // storage class audit
@@ -835,6 +835,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/rbac-overexpose", s.cacheMiddleware(120*time.Second, s.handleRBACOverexpose))
 	mux.HandleFunc("/api/security/secret-enc-rest", s.cacheMiddleware(120*time.Second, s.handleSecretEncRest))
 	mux.HandleFunc("/api/security/webhook-risk", s.cacheMiddleware(120*time.Second, s.handleWebhookRisk))
+	mux.HandleFunc("/api/docs/ownership-registry-v2", s.cacheMiddleware(120*time.Second, s.handleOwnershipRegistryV2))
+	mux.HandleFunc("/api/docs/api-resource-inventory", s.cacheMiddleware(120*time.Second, s.handleAPIInventory))
+	mux.HandleFunc("/api/docs/capacity-report", s.cacheMiddleware(120*time.Second, s.handleCapacityReport))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
