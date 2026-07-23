@@ -7350,6 +7350,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("EP slice health", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/scalability/res-pressure-score", "get", OpenAPIOperation{
+		Summary: "Resource Pressure Score", OperationID: "res-pressure-score", Tags: []string{"Scalability"},
+		Description: "Analyzes node resource contention by calculating weighted pressure scores from CPU, memory, and pod density.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Resource pressure", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/scalability/anti-affinity-coverage", "get", OpenAPIOperation{
+		Summary: "Anti-Affinity Coverage", OperationID: "anti-affinity-coverage", Tags: []string{"Scalability"},
+		Description: "Audits multi-replica workloads for anti-affinity and topology spread constraint coverage. Identifies HA gaps.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Anti-affinity coverage", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/scalability/startup-latency", "get", OpenAPIOperation{
+		Summary: "Pod Startup Latency", OperationID: "startup-latency", Tags: []string{"Scalability"},
+		Description: "Measures pod startup latency from scheduling to ready. Identifies slow starters and image pull bottlenecks.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Startup latency", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 

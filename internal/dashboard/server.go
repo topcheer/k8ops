@@ -422,7 +422,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/replica-availability", s.cacheMiddleware(30*time.Second, s.handleReplicaAvailability))     // deployment replica availability & ready pod ratio monitor
 	mux.HandleFunc("/api/deployment/helm-health", s.cacheMiddleware(120*time.Second, s.handleHelmHealth1917))                  // Helm release health & GitOps drift detector
 	mux.HandleFunc("/api/deployment/surge-risk", s.cacheMiddleware(60*time.Second, s.handleSurgeRisk))                         // rolling update risk & surge configuration analyzer
-	mux.HandleFunc("/api/deployment/startup-latency", s.cacheMiddleware(60*time.Second, s.handleStartupLatency))               // pod startup latency & readiness performance auditor
+	mux.HandleFunc("/api/deployment/startup-latency", s.cacheMiddleware(60*time.Second, s.handleStartupLatencyV2))             // pod startup latency & readiness performance auditor
 	mux.HandleFunc("/api/deployment/progressive-delivery", s.cacheMiddleware(60*time.Second, s.handleProgressiveDelivery))     // progressive delivery & canary rollout health auditor
 	mux.HandleFunc("/api/deployment/rs-staleness", s.cacheMiddleware(60*time.Second, s.handleRSStaleness))                     // ReplicaSet staleness & rollout history auditor
 	mux.HandleFunc("/api/deployment/gitops-sync-deep", s.cacheMiddleware(60*time.Second, s.handleGitOpsSync))                  // ArgoCD & Flux GitOps sync status & drift auditor
@@ -841,6 +841,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/res-wastage", s.cacheMiddleware(120*time.Second, s.handleResWastage))
 	mux.HandleFunc("/api/product/sa-usage-tracker", s.cacheMiddleware(120*time.Second, s.handleSAUsageTracker))
 	mux.HandleFunc("/api/product/ep-slice-health", s.cacheMiddleware(120*time.Second, s.handleEPSliceHealth))
+	mux.HandleFunc("/api/scalability/res-pressure-score", s.cacheMiddleware(120*time.Second, s.handleResPressureScore))
+	mux.HandleFunc("/api/scalability/anti-affinity-coverage", s.cacheMiddleware(120*time.Second, s.handleAntiAffinityCoverage))
+	mux.HandleFunc("/api/scalability/startup-latency", s.cacheMiddleware(120*time.Second, s.handleStartupLatencyV2))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
