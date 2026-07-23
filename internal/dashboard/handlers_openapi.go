@@ -7270,6 +7270,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("HA topology", map[string]interface{}{"healthScore": 80})},
 	})
 
+	add("/api/deployment/revision-timeline", "get", OpenAPIOperation{
+		Summary: "Deployment Revision Timeline", OperationID: "revision-timeline", Tags: []string{"Deployment"},
+		Description: "Tracks deployment revision history from ReplicaSets. Identifies stale revisions and cleanup opportunities.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Revision timeline", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/qos-distribution", "get", OpenAPIOperation{
+		Summary: "Pod QoS Class Distribution", OperationID: "qos-distribution", Tags: []string{"Deployment"},
+		Description: "Analyzes QoS class distribution (Guaranteed/Burstable/BestEffort) across pods and namespaces.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("QoS distribution", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/deployment/ds-health", "get", OpenAPIOperation{
+		Summary: "DaemonSet Health Monitor", OperationID: "ds-health", Tags: []string{"Deployment"},
+		Description: "Monitors DaemonSet rollout status, node coverage, misscheduled pods, and update progress.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("DS health", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
