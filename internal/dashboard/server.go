@@ -814,6 +814,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/pvc-lifecycle", s.cacheMiddleware(120*time.Second, s.handlePVCLifecycle))                            // pvc lifecycle monitor
 	mux.HandleFunc("/api/operations/endpoint-latency", s.cacheMiddleware(120*time.Second, s.handleEndpointLatency))                      // service endpoint latency
 	mux.HandleFunc("/api/operations/container-forensics", s.cacheMiddleware(120*time.Second, s.handleContainerForensics))                // container state forensics
+	mux.HandleFunc("/api/security/volume-mount-audit", s.cacheMiddleware(120*time.Second, s.handleVolumeMountAudit))                     // volume mount audit
+	mux.HandleFunc("/api/security/priv-esc-risk", s.cacheMiddleware(120*time.Second, s.handlePrivEscRisk))                               // privilege escalation risk
+	mux.HandleFunc("/api/security/image-base-scan", s.cacheMiddleware(120*time.Second, s.handleImageBaseScan))                           // image base layer scan
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)

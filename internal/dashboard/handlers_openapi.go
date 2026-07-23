@@ -7201,6 +7201,25 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Container forensics", map[string]interface{}{"healthScore": 80})},
 	})
 
+	add("/api/security/volume-mount-audit", "get", OpenAPIOperation{
+		Summary:     "Volume Mount Audit",
+		OperationID: "volume-mount-audit", Tags: []string{"Security"},
+		Description: "Audits volume mounts for sensitive host path exposure, hostNetwork, hostPID, and hostIPC risks.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Volume mount audit", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/security/priv-esc-risk", "get", OpenAPIOperation{
+		Summary:     "Privilege Escalation Risk",
+		OperationID: "priv-esc-risk", Tags: []string{"Security"},
+		Description: "Analyzes security contexts for privileged mode, AllowPrivilegeEscalation, runAsUser=0, and missing constraints.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Privilege escalation", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/security/image-base-scan", "get", OpenAPIOperation{
+		Summary:     "Image Base Layer Scan",
+		OperationID: "image-base-scan", Tags: []string{"Security"},
+		Description: "Identifies base image types (distroless, alpine, debian), latest tags, and attack surface indicators.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image base scan", map[string]interface{}{"healthScore": 80})},
+	})
+
 	return spec
 }
 
