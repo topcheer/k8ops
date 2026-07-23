@@ -817,6 +817,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/volume-mount-audit", s.cacheMiddleware(120*time.Second, s.handleVolumeMountAudit))                     // volume mount audit
 	mux.HandleFunc("/api/security/priv-esc-risk", s.cacheMiddleware(120*time.Second, s.handlePrivEscRisk))                               // privilege escalation risk
 	mux.HandleFunc("/api/security/image-base-scan", s.cacheMiddleware(120*time.Second, s.handleImageBaseScan))                           // image base layer scan
+	mux.HandleFunc("/api/docs/label-standardization", s.cacheMiddleware(120*time.Second, s.handleLabelStandardization))                  // label standardization
+	mux.HandleFunc("/api/docs/resource-age-distribution", s.cacheMiddleware(120*time.Second, s.handleResourceAgeDistribution))           // resource age distribution
+	mux.HandleFunc("/api/docs/ns-isolation-matrix", s.cacheMiddleware(120*time.Second, s.handleNSIsolationMatrix))                       // namespace isolation matrix
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)

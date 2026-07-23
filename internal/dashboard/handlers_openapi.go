@@ -7219,6 +7219,24 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Identifies base image types (distroless, alpine, debian), latest tags, and attack surface indicators.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image base scan", map[string]interface{}{"healthScore": 80})},
 	})
+	add("/api/docs/label-standardization", "get", OpenAPIOperation{
+		Summary:     "Label Standardization Report",
+		OperationID: "label-standardization", Tags: []string{"Documentation"},
+		Description: "Audits label governance across resources. Identifies missing labels, custom vs standard keys, and compliance rate.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Label standardization", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/docs/resource-age-distribution", "get", OpenAPIOperation{
+		Summary:     "Resource Age Distribution",
+		OperationID: "resource-age-distribution", Tags: []string{"Documentation"},
+		Description: "Analyzes resource lifecycle age. Buckets by age range, identifies oldest resources for modernization review.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Age distribution", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/docs/ns-isolation-matrix", "get", OpenAPIOperation{
+		Summary:     "Namespace Isolation Matrix",
+		OperationID: "ns-isolation-matrix", Tags: []string{"Documentation"},
+		Description: "Documents namespace boundary controls: NetworkPolicy, ResourceQuota, LimitRange, and PSA coverage.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("NS isolation matrix", map[string]interface{}{"healthScore": 80})},
+	})
 
 	return spec
 }
