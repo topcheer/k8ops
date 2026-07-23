@@ -7382,6 +7382,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Rollout strategy", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/operations/restart-storm", "get", OpenAPIOperation{
+		Summary: "Pod Restart Storm Detector", OperationID: "restart-storm", Tags: []string{"Operations"},
+		Description: "Detects pods in restart storms based on restart count and restart rate per hour. Identifies CrashLoopBackOff patterns.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Restart storm", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/operations/event-storm", "get", OpenAPIOperation{
+		Summary: "Event Storm Analyzer", OperationID: "event-storm", Tags: []string{"Operations"},
+		Description: "Analyzes Kubernetes event volume and rate for abnormal patterns. Detects event storms and high-frequency warnings.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event storm", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/taint-impact", "get", OpenAPIOperation{
+		Summary: "Node Taint Impact", OperationID: "taint-impact", Tags: []string{"Operations"},
+		Description: "Analyzes node taints and their impact on pod scheduling. Identifies NoSchedule/NoExecute taints and blocked pods.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Taint impact", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 

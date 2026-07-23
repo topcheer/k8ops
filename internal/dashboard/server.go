@@ -217,7 +217,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/service-accounts", s.cacheMiddleware(120*time.Second, s.handleSAAudit))                       // ServiceAccount security audit
 	mux.HandleFunc("/api/operations/cronjobs/health", s.cacheMiddleware(60*time.Second, s.handleCronJobHealth))                 // cronjob execution health
 	mux.HandleFunc("/api/operations/slo", s.cacheMiddleware(15*time.Second, s.handleSLOReport))                                 // SLO/SLA error budget
-	mux.HandleFunc("/api/operations/event-storm", s.cacheMiddleware(30*time.Second, s.handleEventStorm))                        // event storm & cascade detection
+	mux.HandleFunc("/api/operations/event-storm", s.cacheMiddleware(30*time.Second, s.handleEventStormV2))                      // event storm & cascade detection
 	mux.HandleFunc("/api/operations/probes", s.cacheMiddleware(60*time.Second, s.handleProbeAudit))                             // health probe effectiveness audit
 	mux.HandleFunc("/api/operations/health-score", s.cacheMiddleware(30*time.Second, s.handleHealthScore))                      // cluster health score aggregator
 	mux.HandleFunc("/api/operations/node-pressure", s.cacheMiddleware(30*time.Second, s.handleNodePressure))                    // node condition & resource pressure
@@ -321,7 +321,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/probe-effectiveness", s.cacheMiddleware(120*time.Second, s.handleProbeEffect))                 // health probe effectiveness analyzer
 	mux.HandleFunc("/api/scalability/node-upgrade-audit", s.cacheMiddleware(120*time.Second, s.handleNodeUpgrade))              // node upgrade readiness & K8s version compatibility auditor
 	mux.HandleFunc("/api/operations/operator-health", s.cacheMiddleware(120*time.Second, s.handleOperatorHealth))               // cluster operator & OLM health auditor
-	mux.HandleFunc("/api/operations/restart-storm", s.cacheMiddleware(60*time.Second, s.handleRestartStorm))                    // pod restart pattern & crashloop clustering auditor
+	mux.HandleFunc("/api/operations/restart-storm", s.cacheMiddleware(60*time.Second, s.handleRestartStormV2))                  // pod restart pattern & crashloop clustering auditor
 	mux.HandleFunc("/api/operations/webhook-health", s.cacheMiddleware(120*time.Second, s.handleWebhookHealth))                 // admission webhook configuration health & performance risk auditor
 	mux.HandleFunc("/api/operations/kube-proxy-health", s.cacheMiddleware(120*time.Second, s.handleKubeProxyHealth))            // kube-proxy & network routing stability auditor
 	mux.HandleFunc("/api/operations/coredns-health", s.cacheMiddleware(120*time.Second, s.handleCoreDNSHealth))                 // CoreDNS configuration & resolution health auditor
@@ -847,6 +847,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/pause-detect", s.cacheMiddleware(120*time.Second, s.handleDeployPauseDetect))
 	mux.HandleFunc("/api/deployment/tag-compliance", s.cacheMiddleware(120*time.Second, s.handleTagCompliance))
 	mux.HandleFunc("/api/deployment/rollout-strategy", s.cacheMiddleware(120*time.Second, s.handleRolloutStrategy))
+	mux.HandleFunc("/api/operations/taint-impact", s.cacheMiddleware(120*time.Second, s.handleTaintImpact))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
