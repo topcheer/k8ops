@@ -7334,6 +7334,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Capacity report", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/product/res-wastage", "get", OpenAPIOperation{
+		Summary: "Container Resource Wastage", OperationID: "res-wastage", Tags: []string{"Product"},
+		Description: "Analyzes overcommitted resource limits vs requests. Identifies high ratio containers and estimates waste.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Resource wastage", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/product/sa-usage-tracker", "get", OpenAPIOperation{
+		Summary: "Service Account Usage Tracker", OperationID: "sa-usage-tracker", Tags: []string{"Product"},
+		Description: "Tracks which ServiceAccounts are actually used by pods vs orphaned. Identifies default SA overuse.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SA usage", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/ep-slice-health", "get", OpenAPIOperation{
+		Summary: "Endpoint Slice Health", OperationID: "ep-slice-health", Tags: []string{"Product"},
+		Description: "Analyzes endpoint slice distribution, readiness, and identifies services with no ready endpoints.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("EP slice health", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
