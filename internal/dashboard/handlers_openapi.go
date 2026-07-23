@@ -7254,6 +7254,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("PDB gap", map[string]interface{}{"healthScore": 80})},
 	})
 
+	add("/api/scalability/sched-queue-depth", "get", OpenAPIOperation{
+		Summary: "Scheduler Queue Depth", OperationID: "sched-queue-depth", Tags: []string{"Scalability"},
+		Description: "Analyzes scheduling pressure by tracking pending, unschedulable, and stuck pods.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Sched queue", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/scalability/pod-spread-violation", "get", OpenAPIOperation{
+		Summary: "Pod Spread Violation", OperationID: "pod-spread-violation", Tags: []string{"Scalability"},
+		Description: "Detects topology spread constraint violations and uneven pod distribution across nodes.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod spread", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/scalability/ha-topo-score", "get", OpenAPIOperation{
+		Summary: "HA Topology Score", OperationID: "ha-topo-score", Tags: []string{"Scalability"},
+		Description: "Scores HA readiness by analyzing multi-zone distribution, replica diversity, and failure domain coverage.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("HA topology", map[string]interface{}{"healthScore": 80})},
+	})
+
 	return spec
 }
 

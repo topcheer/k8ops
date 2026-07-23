@@ -823,6 +823,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/mesh-ready-check", s.cacheMiddleware(120*time.Second, s.handleMeshReadyCheck))
 	mux.HandleFunc("/api/product/vol-access-audit", s.cacheMiddleware(120*time.Second, s.handleVolAccessAudit))
 	mux.HandleFunc("/api/product/pdb-gap-analysis-v2", s.cacheMiddleware(120*time.Second, s.handlePDBGapAnalysisV2))
+	mux.HandleFunc("/api/scalability/sched-queue-depth", s.cacheMiddleware(120*time.Second, s.handleSchedQueueDepth))
+	mux.HandleFunc("/api/scalability/pod-spread-violation", s.cacheMiddleware(120*time.Second, s.handlePodSpreadViolation))
+	mux.HandleFunc("/api/scalability/ha-topo-score", s.cacheMiddleware(120*time.Second, s.handleHATopoScore))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
