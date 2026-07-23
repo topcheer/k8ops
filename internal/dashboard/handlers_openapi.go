@@ -7430,6 +7430,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("DNS map", map[string]interface{}{"healthScore": 90})},
 	})
 
+	add("/api/product/vol-snapshot-audit", "get", OpenAPIOperation{
+		Summary: "Volume Snapshot Audit", OperationID: "vol-snapshot-audit", Tags: []string{"Product"},
+		Description: "Audits PVC snapshot coverage and recovery readiness. Identifies unprotected volumes and failed snapshots.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Volume snapshots", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/priority-class-inv", "get", OpenAPIOperation{
+		Summary: "Priority Class Inventory", OperationID: "priority-class-inv", Tags: []string{"Product"},
+		Description: "Inventories Pod PriorityClasses, analyzes preemption policies, and identifies pods without priority.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Priority classes", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/product/pull-policy-audit", "get", OpenAPIOperation{
+		Summary: "Image Pull Policy Audit", OperationID: "pull-policy-audit", Tags: []string{"Product"},
+		Description: "Audits container ImagePullPolicy for compliance. Detects :latest+IfNotPresent, Never pull, and unnecessary Always.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pull policy", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
