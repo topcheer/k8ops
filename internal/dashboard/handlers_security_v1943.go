@@ -225,10 +225,18 @@ func (s *Server) handleSeccompExposure(w http.ResponseWriter, r *http.Request) {
 			result.Summary.TotalContainers++
 
 			seccompProfile := podSeccomp
-			hasCapAdd := len(c.SecurityContext.Capabilities.Add) > 0
+			hasCapAdd := false
 			capDropAll := false
 
 			if c.SecurityContext != nil {
+				if c.SecurityContext.Capabilities != nil {
+					hasCapAdd = len(c.SecurityContext.Capabilities.Add) > 0
+					for _, drop := range c.SecurityContext.Capabilities.Drop {
+						if string(drop) == "ALL" {
+							capDropAll = true
+						}
+					}
+				}
 				if c.SecurityContext.SeccompProfile != nil {
 					if c.SecurityContext.SeccompProfile.Type == "RuntimeDefault" {
 						seccompProfile = "RuntimeDefault"
@@ -236,11 +244,6 @@ func (s *Server) handleSeccompExposure(w http.ResponseWriter, r *http.Request) {
 						seccompProfile = "Unconfined"
 					} else if c.SecurityContext.SeccompProfile.Type == "Localhost" {
 						seccompProfile = "Localhost"
-					}
-				}
-				for _, drop := range c.SecurityContext.Capabilities.Drop {
-					if string(drop) == "ALL" {
-						capDropAll = true
 					}
 				}
 			}
