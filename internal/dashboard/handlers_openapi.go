@@ -7398,6 +7398,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Taint impact", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/security/netpol-coverage-v2", "get", OpenAPIOperation{
+		Summary: "Network Policy Coverage Auditor", OperationID: "netpol-coverage-v2", Tags: []string{"Security"},
+		Description: "Audits NetworkPolicy coverage by namespace. Identifies uncovered namespaces, default-deny adoption, and isolated pod counts.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("NetPol coverage", map[string]interface{}{"healthScore": 70})},
+	})
+	add("/api/security/seccomp-exposure", "get", OpenAPIOperation{
+		Summary: "Container Syscall Exposure", OperationID: "seccomp-exposure", Tags: []string{"Security"},
+		Description: "Analyzes seccomp profiles and Linux capabilities. Identifies unconfined containers, missing profiles, and dangerous capAdd.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Seccomp exposure", map[string]interface{}{"healthScore": 75})},
+	})
+	add("/api/security/api-discovery-exposure", "get", OpenAPIOperation{
+		Summary: "API Discovery Exposure", OperationID: "api-discovery-exposure", Tags: []string{"Security"},
+		Description: "Inventories API resource exposure surface and checks for anonymous/unauthenticated RBAC bindings.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API discovery", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
