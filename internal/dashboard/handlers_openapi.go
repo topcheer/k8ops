@@ -7366,6 +7366,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Startup latency", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/deployment/pause-detect", "get", OpenAPIOperation{
+		Summary: "Deployment Pause Detector", OperationID: "pause-detect", Tags: []string{"Deployment"},
+		Description: "Detects paused deployments, incomplete rollouts, and stale deployments not updated in 90+ days.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pause detection", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/tag-compliance", "get", OpenAPIOperation{
+		Summary: "Image Tag Compliance", OperationID: "tag-compliance", Tags: []string{"Deployment"},
+		Description: "Audits image tags for reproducibility: pinned digests, versioned tags vs :latest and floating tags.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Tag compliance", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/deployment/rollout-strategy", "get", OpenAPIOperation{
+		Summary: "Rollout Strategy Analyzer", OperationID: "rollout-strategy", Tags: []string{"Deployment"},
+		Description: "Analyzes deployment rollout strategies (RollingUpdate vs Recreate), maxSurge/maxUnavailable, and zero-downtime capability.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Rollout strategy", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
