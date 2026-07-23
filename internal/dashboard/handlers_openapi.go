@@ -7302,6 +7302,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Config changes", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/security/rbac-overexpose", "get", OpenAPIOperation{
+		Summary: "RBAC Overexposure Auditor", OperationID: "rbac-overexpose", Tags: []string{"Security"},
+		Description: "Audits RBAC bindings for wildcard verbs, wildcard resources, cluster-admin overuse, and escalation risks.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("RBAC overexposure", map[string]interface{}{"healthScore": 70})},
+	})
+	add("/api/security/secret-enc-rest", "get", OpenAPIOperation{
+		Summary: "Secret Encryption at Rest", OperationID: "secret-enc-rest", Tags: []string{"Security"},
+		Description: "Checks etcd encryption status, audits secret types, and identifies stale SA tokens and large secrets.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Secret encryption", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/security/webhook-risk", "get", OpenAPIOperation{
+		Summary: "Admission Webhook Risk", OperationID: "webhook-risk", Tags: []string{"Security"},
+		Description: "Analyzes admission webhook failure policies, timeouts, catch-all rules, and namespace selector coverage.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Webhook risk", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 

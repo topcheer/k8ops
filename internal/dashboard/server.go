@@ -832,6 +832,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/hpa-scaling-events", s.cacheMiddleware(120*time.Second, s.handleHPAScalingEvents))
 	mux.HandleFunc("/api/operations/node-cond-history", s.cacheMiddleware(120*time.Second, s.handleNodeCondHistory))
 	mux.HandleFunc("/api/operations/config-change-tracker", s.cacheMiddleware(120*time.Second, s.handleConfigChangeTracker))
+	mux.HandleFunc("/api/security/rbac-overexpose", s.cacheMiddleware(120*time.Second, s.handleRBACOverexpose))
+	mux.HandleFunc("/api/security/secret-enc-rest", s.cacheMiddleware(120*time.Second, s.handleSecretEncRest))
+	mux.HandleFunc("/api/security/webhook-risk", s.cacheMiddleware(120*time.Second, s.handleWebhookRisk))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
