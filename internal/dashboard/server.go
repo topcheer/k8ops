@@ -340,7 +340,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/traceability", s.cacheMiddleware(120*time.Second, s.handleDeployTraceability))        // deployment reproducibility & CI/CD traceability auditor
 	mux.HandleFunc("/api/deployment/termination-audit", s.cacheMiddleware(120*time.Second, s.handleTerminationAudit))     // pod termination message & exit code pattern auditor
 	mux.HandleFunc("/api/deployment/readiness-gate", s.cacheMiddleware(60*time.Second, s.handleReadinessGate))            // pod readiness gate compliance & custom condition auditor
-	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraph))                       // resource dependency graph & blast radius
+	mux.HandleFunc("/api/dependencies", s.cacheMiddleware(60*time.Second, s.handleDependencyGraphV2))                     // resource dependency graph & blast radius
 	mux.HandleFunc("/api/topology/spread", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadAudit))                // topology spread compliance
 	mux.HandleFunc("/api/product/staleness", s.cacheMiddleware(60*time.Second, s.handleStalenessCheck))                   // workload staleness & release cadence
 	mux.HandleFunc("/api/product/ingress-health", s.cacheMiddleware(60*time.Second, s.handleIngressHealth))               // ingress traffic routing health
@@ -851,6 +851,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/netpol-coverage-v2", s.cacheMiddleware(120*time.Second, s.handleNetPolCoverage))
 	mux.HandleFunc("/api/security/seccomp-exposure", s.cacheMiddleware(120*time.Second, s.handleSeccompExposure))
 	mux.HandleFunc("/api/security/api-discovery-exposure", s.cacheMiddleware(120*time.Second, s.handleAPIDiscoveryExposure))
+	mux.HandleFunc("/api/docs/dependency-graph", s.cacheMiddleware(120*time.Second, s.handleDependencyGraphV2))
+	mux.HandleFunc("/api/docs/storage-class-inventory", s.cacheMiddleware(120*time.Second, s.handleStorageClassInv))
+	mux.HandleFunc("/api/docs/dns-resolution-map", s.cacheMiddleware(120*time.Second, s.handleDNSMap))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)

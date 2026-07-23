@@ -7414,6 +7414,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("API discovery", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/docs/dependency-graph", "get", OpenAPIOperation{
+		Summary: "Dependency Graph Mapper", OperationID: "dependency-graph", Tags: []string{"Documentation"},
+		Description: "Maps service-to-service dependencies by scanning env vars, configmaps, and volume references. Detects unresolved dependencies.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Dependency graph", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/docs/storage-class-inventory", "get", OpenAPIOperation{
+		Summary: "Storage Class Inventory", OperationID: "storage-class-inventory", Tags: []string{"Documentation"},
+		Description: "Documents all StorageClasses with provisioner, reclaim policy, binding mode, and PVC usage statistics.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Storage class inventory", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/docs/dns-resolution-map", "get", OpenAPIOperation{
+		Summary: "DNS Resolution Map", OperationID: "dns-resolution-map", Tags: []string{"Documentation"},
+		Description: "Maps service DNS names (FQDN), detects name collisions across namespaces, and documents headless services.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("DNS map", map[string]interface{}{"healthScore": 90})},
+	})
+
 	return spec
 }
 
