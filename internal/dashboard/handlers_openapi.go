@@ -7446,6 +7446,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pull policy", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/scalability/controller-health", "get", OpenAPIOperation{
+		Summary: "Controller Manager Health", OperationID: "controller-health", Tags: []string{"Scalability"},
+		Description: "Monitors control plane components (controller-manager, scheduler) for leader election, readiness, and restart stability.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Controller health", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/scalability/gc-pressure", "get", OpenAPIOperation{
+		Summary: "GC Pressure Monitor", OperationID: "gc-pressure", Tags: []string{"Scalability"},
+		Description: "Monitors kubelet garbage collection pressure from dead pods, image cache size, and pod churn per node.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("GC pressure", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/scalability/pod-limit-proximity", "get", OpenAPIOperation{
+		Summary: "kubelet Pod Limit Proximity", OperationID: "pod-limit-proximity", Tags: []string{"Scalability"},
+		Description: "Analyzes pod count per node vs kubelet maxPods limit. Identifies nodes near or at capacity.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod limit", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
