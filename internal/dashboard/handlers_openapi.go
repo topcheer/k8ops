@@ -7286,6 +7286,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("DS health", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/operations/hpa-scaling-events", "get", OpenAPIOperation{
+		Summary: "HPA Scaling Event Tracker", OperationID: "hpa-scaling-events", Tags: []string{"Operations"},
+		Description: "Tracks recent HPA scale-up/scale-down events from Kubernetes event stream. Detects thrashing patterns.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("HPA scaling events", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/node-cond-history", "get", OpenAPIOperation{
+		Summary: "Node Condition History", OperationID: "node-cond-history", Tags: []string{"Operations"},
+		Description: "Analyzes node conditions for pressure states, readiness transitions, and flapping patterns.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node conditions", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/operations/config-change-tracker", "get", OpenAPIOperation{
+		Summary: "ConfigMap Change Tracker", OperationID: "config-change-tracker", Tags: []string{"Operations"},
+		Description: "Tracks ConfigMap changes, detects stale configs, and flags oversized ConfigMaps affecting etcd.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Config changes", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
