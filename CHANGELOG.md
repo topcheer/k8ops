@@ -4,6 +4,51 @@
 
 ---
 
+## v19.35-v19.42 (2026-07-23)
+
+### v19.35: Deployment Revision Timeline + Pod QoS Distribution + DaemonSet Health (维度2: 部署)
+- `GET /api/deployment/revision-timeline` — ReplicaSet 版本历史, 过期 RS 检测, 清理建议
+- `GET /api/deployment/qos-distribution` — Guaranteed/Burstable/BestEffort 分布, 每命名空间统计
+- `GET /api/deployment/ds-health` — DaemonSet 滚动状态, 节点覆盖, misscheduled 检测
+
+### v19.36: HPA Scaling Event Tracker + Node Condition History + ConfigMap Change Tracker (维度3: 运维)
+- `GET /api/operations/hpa-scaling-events` — HPA 扩缩容事件追踪, 抖动检测 (>10 事件)
+- `GET /api/operations/node-cond-history` — 节点条件历史, 压力状态分析, flapping 检测
+- `GET /api/operations/config-change-tracker` — ConfigMap 变更追踪, 过期检测 (>180天), 大 CM 告警 (>1MB)
+
+### v19.37: RBAC Overexposure Auditor + Secret Encryption at Rest + Admission Webhook Risk (维度4: 安全)
+- `GET /api/security/rbac-overexpose` — 通配符权限审计, cluster-admin 过度使用, 提权风险检测
+- `GET /api/security/secret-enc-rest` — etcd 加密状态检查, SA token 过期检测, 大密钥告警
+- `GET /api/security/webhook-risk` — 准入 webhook 失败策略, 超时分析, catch-all 检测
+
+### v19.38: Workload Ownership Registry v2 + API Resource Inventory + Cluster Capacity Report (维度5: 文档)
+- `GET /api/docs/ownership-registry-v2` — 工作负载归属元数据 (owner/team/escalation), 合规率统计
+- `GET /api/docs/api-resource-inventory` — API 资源清单 (原生+CRD), 废弃 API 版本检测
+- `GET /api/docs/capacity-report` — 集群容量报告, 每命名空间分配, 利用率百分比
+
+### v19.39: Container Resource Wastage + Service Account Usage Tracker + Endpoint Slice Health (维度1: 产品)
+- `GET /api/product/res-wastage` — 资源过度分配分析 (limit >> request), 浪费估算 (USD/月)
+- `GET /api/product/sa-usage-tracker` — ServiceAccount 使用追踪, 孤儿 SA 检测, default SA 滥用
+- `GET /api/product/ep-slice-health` — EndpointSlice 分布, 就绪率, 无端点服务告警
+
+### v19.40: Resource Pressure Score + Anti-Affinity Coverage + Pod Startup Latency (维度6: 可扩展性)
+- `GET /api/scalability/res-pressure-score` — 节点资源压力评分 (CPU/内存/Pod 密度加权)
+- `GET /api/scalability/anti-affinity-coverage` — 多副本工作负载反亲和性覆盖审计
+- `GET /api/scalability/startup-latency` — Pod 启动延迟分析 (调度到就绪), 慢启动检测
+
+### v19.41: Deployment Pause Detector + Image Tag Compliance + Rollout Strategy Analyzer (维度2: 部署)
+- `GET /api/deployment/pause-detect` — 暂停部署检测, 过期部署 (>90天), 不完整滚动更新
+- `GET /api/deployment/tag-compliance` — 镜像标签合规性 (:latest vs versioned vs pinned digest)
+- `GET /api/deployment/rollout-strategy` — 滚动策略分析 (RollingUpdate vs Recreate), 零停机能力评估
+
+### v19.42: Pod Restart Storm V2 + Event Storm V2 + Node Taint Impact (维度3: 运维)
+- `GET /api/operations/restart-storm` — Pod 重启风暴检测 (重启率/小时, 严重度分级), 验证评分 F (54), 16 风暴 Pod
+- `GET /api/operations/event-storm` — 事件风暴分析 (异常事件量/频率), 验证评分 A (94), 0 风暴
+- `GET /api/operations/taint-impact` — 节点 Taint 影响 (NoSchedule/NoExecute), 验证评分 A (100), 0 taint
+- 部署状态: Pod k8ops-mkdm6 1/1 Running, CI/Release 全绿
+
+---
+
 ## v17.21-v17.26 (2026-07-15)
 
 ### v17.21: API 文档同步 v17.15-v17.20 (维度5: 文档)
