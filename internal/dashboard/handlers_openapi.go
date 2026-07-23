@@ -7462,6 +7462,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod limit", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/deployment/sts-ordinal-health", "get", OpenAPIOperation{
+		Summary: "StatefulSet Ordinal Health", OperationID: "sts-ordinal-health", Tags: []string{"Deployment"},
+		Description: "Checks StatefulSet pod ordinal continuity, identifies ordinal gaps and unready pods.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("STS ordinal health", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/job-completion-tracker", "get", OpenAPIOperation{
+		Summary: "Job Completion Tracker", OperationID: "job-completion-tracker", Tags: []string{"Deployment"},
+		Description: "Tracks batch Job completion status, success/failure rates, and average duration.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Job completion", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/cron-overlap", "get", OpenAPIOperation{
+		Summary: "CronJob Schedule Overlap", OperationID: "cron-overlap", Tags: []string{"Deployment"},
+		Description: "Detects CronJob schedule collisions and concurrency policy gaps across namespaces.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cron overlap", map[string]interface{}{"healthScore": 90})},
+	})
+
 	return spec
 }
 
