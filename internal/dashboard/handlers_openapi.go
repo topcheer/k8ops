@@ -7238,6 +7238,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("NS isolation matrix", map[string]interface{}{"healthScore": 80})},
 	})
 
+	add("/api/product/mesh-ready-check", "get", OpenAPIOperation{
+		Summary: "Mesh Readiness Checker", OperationID: "mesh-ready-check", Tags: []string{"Product"},
+		Description: "Checks for mesh sidecar presence, injection annotations, and enrollment gaps.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Mesh readiness", map[string]interface{}{"healthScore": 75})},
+	})
+	add("/api/product/vol-access-audit", "get", OpenAPIOperation{
+		Summary: "Volume Access Mode Audit", OperationID: "vol-access-audit", Tags: []string{"Product"},
+		Description: "Audits PVC access modes for RWO/ROX/RWX compatibility and shared volume conflicts.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Volume access", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/pdb-gap-analysis-v2", "get", OpenAPIOperation{
+		Summary: "PDB Gap Analysis", OperationID: "pdb-gap-analysis-v2", Tags: []string{"Product"},
+		Description: "Analyzes PDB coverage across workloads. Identifies unprotected deployments.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PDB gap", map[string]interface{}{"healthScore": 80})},
+	})
+
 	return spec
 }
 

@@ -678,7 +678,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/seccomp-profile-audit", s.cacheMiddleware(60*time.Second, s.handleSeccompProfileAudit))                // seccomp profile audit
 	mux.HandleFunc("/api/security/sa-token-age", s.cacheMiddleware(60*time.Second, s.handleSATokenAge))                                  // sa token age
 	mux.HandleFunc("/api/security/runtime-class-audit", s.cacheMiddleware(60*time.Second, s.handleRuntimeClassIsolation))                // runtime class audit
-	mux.HandleFunc("/api/scalability/pdb-gap-analysis", s.cacheMiddleware(60*time.Second, s.handlePDBGapAnalysis))                       // pdb gap analysis
+	mux.HandleFunc("/api/scalability/pdb-gap-analysis", s.cacheMiddleware(60*time.Second, s.handlePDBGapAnalysisV2))                     // pdb gap analysis
 	mux.HandleFunc("/api/scalability/topology-spread-violation", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadViolation))     // topology spread violation
 	mux.HandleFunc("/api/scalability/overcommit-deep", s.cacheMiddleware(60*time.Second, s.handleOvercommitDeep))                        // overcommit deep
 	mux.HandleFunc("/api/operations/node-condition-trend", s.cacheMiddleware(60*time.Second, s.handleNodeConditionTrend))                // node condition trend
@@ -820,6 +820,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/label-standardization", s.cacheMiddleware(120*time.Second, s.handleLabelStandardization))                  // label standardization
 	mux.HandleFunc("/api/docs/resource-age-distribution", s.cacheMiddleware(120*time.Second, s.handleResourceAgeDistribution))           // resource age distribution
 	mux.HandleFunc("/api/docs/ns-isolation-matrix", s.cacheMiddleware(120*time.Second, s.handleNSIsolationMatrix))                       // namespace isolation matrix
+	mux.HandleFunc("/api/product/mesh-ready-check", s.cacheMiddleware(120*time.Second, s.handleMeshReadyCheck))
+	mux.HandleFunc("/api/product/vol-access-audit", s.cacheMiddleware(120*time.Second, s.handleVolAccessAudit))
+	mux.HandleFunc("/api/product/pdb-gap-analysis-v2", s.cacheMiddleware(120*time.Second, s.handlePDBGapAnalysisV2))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
