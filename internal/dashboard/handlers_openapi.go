@@ -7462,6 +7462,38 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod limit", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/deployment/sts-ordinal-health", "get", OpenAPIOperation{
+		Summary: "StatefulSet Ordinal Health", OperationID: "sts-ordinal-health", Tags: []string{"Deployment"},
+		Description: "Checks StatefulSet pod ordinal continuity, identifies ordinal gaps and unready pods.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("STS ordinal health", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/job-completion-tracker", "get", OpenAPIOperation{
+		Summary: "Job Completion Tracker", OperationID: "job-completion-tracker", Tags: []string{"Deployment"},
+		Description: "Tracks batch Job completion status, success/failure rates, and average duration.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Job completion", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/cron-overlap", "get", OpenAPIOperation{
+		Summary: "CronJob Schedule Overlap", OperationID: "cron-overlap", Tags: []string{"Deployment"},
+		Description: "Detects CronJob schedule collisions and concurrency policy gaps across namespaces.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cron overlap", map[string]interface{}{"healthScore": 90})},
+	})
+
+	add("/api/operations/log-volume-estimator", "get", OpenAPIOperation{
+		Summary: "Container Log Volume Estimator", OperationID: "log-volume-estimator", Tags: []string{"Operations"},
+		Description: "Estimates per-container log throughput and storage pressure. Identifies pods without log rotation limits.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Log volume", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/eviction-history", "get", OpenAPIOperation{
+		Summary: "Pod Eviction History", OperationID: "eviction-history", Tags: []string{"Operations"},
+		Description: "Tracks pod evictions from events. Classifies as pressure-based, preemption, or voluntary. Shows 24h trends.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Eviction history", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/kubelet-sync", "get", OpenAPIOperation{
+		Summary: "Kubelet Sync Latency", OperationID: "kubelet-sync", Tags: []string{"Operations"},
+		Description: "Monitors node heartbeat freshness from kubelet. Detects stale nodes with delayed status updates.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Kubelet sync", map[string]interface{}{"healthScore": 90})},
+	})
+
 	return spec
 }
 
