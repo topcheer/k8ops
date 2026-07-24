@@ -7588,6 +7588,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits preStop and postStart lifecycle hooks. Identifies containers missing graceful shutdown.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Lifecycle hooks", map[string]interface{}{"healthScore": 80})},
 	})
+	add("/api/deployment/antiaffinity-gap", "get", OpenAPIOperation{
+		Summary: "Pod Anti-Affinity Gap", OperationID: "antiaffinity-gap", Tags: []string{"Deployment"},
+		Description: "Identifies multi-replica workloads without anti-affinity rules, risking pod co-location on same node.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Anti-affinity gap", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/deployment/command-audit", "get", OpenAPIOperation{
+		Summary: "Container Command Audit", OperationID: "command-audit", Tags: []string{"Deployment"},
+		Description: "Audits container command/args for security risks including shell entrypoints and privileged mode.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Command audit", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/annotation-signal", "get", OpenAPIOperation{
+		Summary: "Deploy Annotation Signal", OperationID: "annotation-signal", Tags: []string{"Deployment"},
+		Description: "Audits automation annotation coverage including owner, managed-by, reloader, and git revision signals.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Annotation signal", map[string]interface{}{"healthScore": 82})},
+	})
 
 	add("/api/operations/oom-forecast", "get", OpenAPIOperation{
 		Summary: "Container OOM Risk Forecaster", OperationID: "oom-forecast", Tags: []string{"Operations"},
