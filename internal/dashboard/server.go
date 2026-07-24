@@ -436,64 +436,64 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/reliability-scorecard", s.cacheMiddleware(120*time.Second, s.handleReliabilityScorecard))     // per-workload reliability posture scorecard (A-F grading)
 	mux.HandleFunc("/api/security/posture-scorecard", s.cacheMiddleware(120*time.Second, s.handleSecurityPosture))
 	mux.HandleFunc("/api/operations/triage", s.cacheMiddleware(30*time.Second, s.handleTriage))
-	mux.HandleFunc("/api/deployment/impact-simulator", s.cacheMiddleware(60*time.Second, s.handleDeployImpact))                          // cluster-wide security posture scorecard (A-F grading)
-	mux.HandleFunc("/api/deployment/rollout-forensics", s.cacheMiddleware(60*time.Second, s.handleRolloutForensics))                     // rollout failure forensics & deployment pattern detector
-	mux.HandleFunc("/api/deployment/resource-governance", s.cacheMiddleware(60*time.Second, s.handleResourceGovernance))                 // resource governance & namespace quota effectiveness
-	mux.HandleFunc("/api/scalability/cost-intelligence", s.cacheMiddleware(120*time.Second, s.handleCostIntelligence))                   // cost intelligence & spend forecast engine
-	mux.HandleFunc("/api/scalability/autoscaling-intel", s.cacheMiddleware(120*time.Second, s.handleAutoscalingIntel))                   // autoscaling intelligence & scaling behavior profiler
-	mux.HandleFunc("/api/scalability/scheduling-intel", s.cacheMiddleware(60*time.Second, s.handleSchedulingIntel))                      // scheduling intelligence & bin-packing efficiency analyzer
-	mux.HandleFunc("/api/product/golden-signals", s.cacheMiddleware(60*time.Second, s.handleGoldenSignals))                              // SRE four golden signals unified health engine
-	mux.HandleFunc("/api/product/dependency-resilience", s.cacheMiddleware(60*time.Second, s.handleDependencyResilience))                // service dependency resilience & cascade failure risk analyzer
-	mux.HandleFunc("/api/product/ownership-map", s.cacheMiddleware(60*time.Second, s.handleOwnershipMap))                                // workload ownership & accountability governance engine
-	mux.HandleFunc("/api/security/remediation-matrix", s.cacheMiddleware(120*time.Second, s.handleRemediationMatrix))                    // security remediation priority & risk-effort matrix
-	mux.HandleFunc("/api/security/compliance-posture", s.cacheMiddleware(120*time.Second, s.handleCompliancePosture))                    // multi-framework compliance posture & control mapping (SOC2/PCI-DSS/HIPAA/NIST/GDPR)
-	mux.HandleFunc("/api/security/net-policy-effectiveness", s.cacheMiddleware(120*time.Second, s.handleNetPolicyEffectiveness))         // network policy effectiveness & zero-trust isolation scorer
-	mux.HandleFunc("/api/operations/mttr", s.cacheMiddleware(60*time.Second, s.handleMTTR))                                              // mean time to recovery & incident lifecycle analytics
-	mux.HandleFunc("/api/operations/change-intel", s.cacheMiddleware(60*time.Second, s.handleChangeIntel))                               // change intelligence & blast radius analyzer
-	mux.HandleFunc("/api/operations/obs-coverage", s.cacheMiddleware(120*time.Second, s.handleObsCoverage))                              // observability coverage & blind spot detector
-	mux.HandleFunc("/api/operations/obs-cardinality", s.cacheMiddleware(120*time.Second, s.handleObsCardinality))                        // observability data cardinality & volume cost analyzer
-	mux.HandleFunc("/api/deployment/gitops-drift", s.cacheMiddleware(120*time.Second, s.handleGitOpsDrift))                              // GitOps sync health & configuration drift analyzer
-	mux.HandleFunc("/api/product/api-version-governance", s.cacheMiddleware(120*time.Second, s.handleAPIVersionGov))                     // K8s API version governance & deprecation tracker
-	mux.HandleFunc("/api/security/secret-lifecycle", s.cacheMiddleware(120*time.Second, s.handleSecretLifecycle))                        // secret management lifecycle & rotation tracker
-	mux.HandleFunc("/api/scalability/dr-backup-verify", s.cacheMiddleware(120*time.Second, s.handleDRBackup))                            // disaster recovery & backup verification assessor
-	mux.HandleFunc("/api/docs/training-readiness", s.cacheMiddleware(120*time.Second, s.handleTrainingReadiness))                        // platform onboarding & documentation quality assessor
-	mux.HandleFunc("/api/operations/cert-expiry", s.cacheMiddleware(120*time.Second, s.handleCertExpiry))                                // TLS certificate expiry & lifecycle monitor
-	mux.HandleFunc("/api/security/image-supply-chain", s.cacheMiddleware(120*time.Second, s.handleSupplyChain))                          // container image supply chain security scanner
-	mux.HandleFunc("/api/scalability/node-os-drift", s.cacheMiddleware(120*time.Second, s.handleNodeOSDrift))                            // node OS lifecycle & kernel drift deep analyzer
-	mux.HandleFunc("/api/product/traffic-flow", s.cacheMiddleware(60*time.Second, s.handleTrafficFlow))                                  // east-west traffic flow & service communication map
-	mux.HandleFunc("/api/deployment/pipeline-health", s.cacheMiddleware(60*time.Second, s.handlePipelineHealth))                         // CI/CD pipeline health & DORA maturity analyzer
-	mux.HandleFunc("/api/operations/alert-rule-quality", s.cacheMiddleware(120*time.Second, s.handleAlertRuleQuality))                   // alerting rule quality & coverage gap analyzer
-	mux.HandleFunc("/api/scalability/chargeback", s.cacheMiddleware(300*time.Second, s.handleChargeback))                                // cost chargeback & team budget allocation report
-	mux.HandleFunc("/api/security/runtime-scan", s.cacheMiddleware(60*time.Second, s.handleRuntimeThreat))                               // runtime threat detection & behavioral anomaly scanner
-	mux.HandleFunc("/api/docs/exec-dashboard", s.cacheMiddleware(60*time.Second, s.handleExecDashboard))                                 // executive platform health summary & scorecard
-	mux.HandleFunc("/api/product/slo-compliance", s.cacheMiddleware(30*time.Second, s.handleSLOCompliance))                              // service SLO compliance & error budget burn rate
-	mux.HandleFunc("/api/operations/probe-latency", s.cacheMiddleware(60*time.Second, s.handleProbeLatency))                             // health probe latency & readiness performance analyzer
-	mux.HandleFunc("/api/deployment/helm-health-deep", s.cacheMiddleware(120*time.Second, s.handleHelmHealthDeep))                       // deep Helm release health & chart staleness analyzer
-	mux.HandleFunc("/api/scalability/spot-readiness-deep", s.cacheMiddleware(120*time.Second, s.handleSpotReadinessDeep))                // spot/preemptible instance readiness deep analyzer
-	mux.HandleFunc("/api/security/rbac-blast", s.cacheMiddleware(120*time.Second, s.handleRBACBlast))                                    // RBAC privilege escalation & blast radius analyzer
-	mux.HandleFunc("/api/product/api-gateway-health", s.cacheMiddleware(60*time.Second, s.handleGatewayHealth))                          // API gateway & ingress controller health analyzer
-	mux.HandleFunc("/api/operations/throttle-risk", s.cacheMiddleware(60*time.Second, s.handleThrottleRisk))                             // pod resource throttling risk & CPU pressure detector
-	mux.HandleFunc("/api/security/audit-trail", s.cacheMiddleware(120*time.Second, s.handleAuditTrail))                                  // audit logging coverage & compliance trail analyzer
-	mux.HandleFunc("/api/deployment/image-freshness", s.cacheMiddleware(120*time.Second, s.handleImageFreshness))                        // container image freshness & update tracking
-	mux.HandleFunc("/api/scalability/multi-cluster-conn", s.cacheMiddleware(120*time.Second, s.handleMultiClusterConn))                  // multi-cluster connectivity & federation health
-	mux.HandleFunc("/api/security/admission-posture", s.cacheMiddleware(120*time.Second, s.handleAdmissionAudit))                        // admission controller posture & policy engine audit
-	mux.HandleFunc("/api/operations/dashboard-availability", s.cacheMiddleware(120*time.Second, s.handleDashAvail))                      // Grafana dashboard availability & observability UI coverage
-	mux.HandleFunc("/api/scalability/storage-orphan", s.cacheMiddleware(120*time.Second, s.handleStorageOrphan))                         // orphaned PVC & storage waste analyzer
-	mux.HandleFunc("/api/deployment/workload-deps", s.cacheMiddleware(120*time.Second, s.handleWLDeps))                                  // workload dependency graph analyzer
-	mux.HandleFunc("/api/operations/metrics-pipe", s.cacheMiddleware(120*time.Second, s.handleMetricsPipe))                              // metrics pipeline integrity & scraping coverage
-	mux.HandleFunc("/api/docs/platform-changelog", s.cacheMiddleware(30*time.Second, s.handleChangeLog))                                 // platform changelog from recent resource changes
-	mux.HandleFunc("/api/scalability/capacity-forecast-deep", s.cacheMiddleware(60*time.Second, s.handleCapacityForecastDeep))           // cluster capacity exhaustion forecast
-	mux.HandleFunc("/api/security/compliance-framework", s.cacheMiddleware(120*time.Second, s.handleComplianceMap))                      // SOC2/PCI-DSS/CIS compliance framework mapping
-	mux.HandleFunc("/api/product/mttr-analysis", s.cacheMiddleware(60*time.Second, s.handleMTTR))                                        // mean time to recovery from restart patterns
-	mux.HandleFunc("/api/deployment/gitops-sync-status", s.cacheMiddleware(120*time.Second, s.handleGitOpsSync))                         // GitOps sync state & drift detection
-	mux.HandleFunc("/api/operations/endpoint-probe", s.cacheMiddleware(60*time.Second, s.handleEndpointProbe))                           // service endpoint readiness probe
-	mux.HandleFunc("/api/scalability/node-decomm", s.cacheMiddleware(120*time.Second, s.handleNodeDecomm))                               // node decommissioning & lifecycle rotation
-	mux.HandleFunc("/api/operations/backup-coverage", s.cacheMiddleware(120*time.Second, s.handleBackupCoverage))                        // backup & disaster recovery posture analyzer
-	mux.HandleFunc("/api/deployment/idle-zombie", s.cacheMiddleware(120*time.Second, s.handleIdleZombie))                                // idle/zombie workload detector
-	mux.HandleFunc("/api/product/service-mesh", s.cacheMiddleware(120*time.Second, s.handleServiceMesh))                                 // service mesh coverage & mTLS analyzer
-	mux.HandleFunc("/api/product/mesh-readiness", s.cacheMiddleware(120*time.Second, s.handleMeshReadiness))                             // service mesh readiness & mTLS coverage gap analyzer
-	mux.HandleFunc("/api/scalability/idle-waste", s.cacheMiddleware(120*time.Second, s.handleIdleWaste))                                 // idle resource waste quantification & cost recovery engine
-	mux.HandleFunc("/api/security/policy-governance", s.cacheMiddleware(120*time.Second, s.handlePolicyGovernance))                      // admission policy governance & enforcement auditor
+	mux.HandleFunc("/api/deployment/impact-simulator", s.cacheMiddleware(60*time.Second, s.handleDeployImpact))                  // cluster-wide security posture scorecard (A-F grading)
+	mux.HandleFunc("/api/deployment/rollout-forensics", s.cacheMiddleware(60*time.Second, s.handleRolloutForensics))             // rollout failure forensics & deployment pattern detector
+	mux.HandleFunc("/api/deployment/resource-governance", s.cacheMiddleware(60*time.Second, s.handleResourceGovernance))         // resource governance & namespace quota effectiveness
+	mux.HandleFunc("/api/scalability/cost-intelligence", s.cacheMiddleware(120*time.Second, s.handleCostIntelligence))           // cost intelligence & spend forecast engine
+	mux.HandleFunc("/api/scalability/autoscaling-intel", s.cacheMiddleware(120*time.Second, s.handleAutoscalingIntel))           // autoscaling intelligence & scaling behavior profiler
+	mux.HandleFunc("/api/scalability/scheduling-intel", s.cacheMiddleware(60*time.Second, s.handleSchedulingIntel))              // scheduling intelligence & bin-packing efficiency analyzer
+	mux.HandleFunc("/api/product/golden-signals", s.cacheMiddleware(60*time.Second, s.handleGoldenSignals))                      // SRE four golden signals unified health engine
+	mux.HandleFunc("/api/product/dependency-resilience", s.cacheMiddleware(60*time.Second, s.handleDependencyResilience))        // service dependency resilience & cascade failure risk analyzer
+	mux.HandleFunc("/api/product/ownership-map", s.cacheMiddleware(60*time.Second, s.handleOwnershipMap))                        // workload ownership & accountability governance engine
+	mux.HandleFunc("/api/security/remediation-matrix", s.cacheMiddleware(120*time.Second, s.handleRemediationMatrix))            // security remediation priority & risk-effort matrix
+	mux.HandleFunc("/api/security/compliance-posture", s.cacheMiddleware(120*time.Second, s.handleCompliancePosture))            // multi-framework compliance posture & control mapping (SOC2/PCI-DSS/HIPAA/NIST/GDPR)
+	mux.HandleFunc("/api/security/net-policy-effectiveness", s.cacheMiddleware(120*time.Second, s.handleNetPolicyEffectiveness)) // network policy effectiveness & zero-trust isolation scorer
+	mux.HandleFunc("/api/operations/mttr", s.cacheMiddleware(60*time.Second, s.handleMTTR))                                      // mean time to recovery & incident lifecycle analytics
+	mux.HandleFunc("/api/operations/change-intel", s.cacheMiddleware(60*time.Second, s.handleChangeIntel))                       // change intelligence & blast radius analyzer
+	mux.HandleFunc("/api/operations/obs-coverage", s.cacheMiddleware(120*time.Second, s.handleObsCoverage))                      // observability coverage & blind spot detector
+	mux.HandleFunc("/api/operations/obs-cardinality", s.cacheMiddleware(120*time.Second, s.handleObsCardinality))                // observability data cardinality & volume cost analyzer
+	mux.HandleFunc("/api/deployment/gitops-drift", s.cacheMiddleware(120*time.Second, s.handleGitOpsDrift))                      // GitOps sync health & configuration drift analyzer
+	mux.HandleFunc("/api/product/api-version-governance", s.cacheMiddleware(120*time.Second, s.handleAPIVersionGov))             // K8s API version governance & deprecation tracker
+	mux.HandleFunc("/api/security/secret-lifecycle", s.cacheMiddleware(120*time.Second, s.handleSecretLifecycle))                // secret management lifecycle & rotation tracker
+	mux.HandleFunc("/api/scalability/dr-backup-verify", s.cacheMiddleware(120*time.Second, s.handleDRBackup))                    // disaster recovery & backup verification assessor
+	mux.HandleFunc("/api/docs/training-readiness", s.cacheMiddleware(120*time.Second, s.handleTrainingReadiness))                // platform onboarding & documentation quality assessor
+	mux.HandleFunc("/api/operations/cert-expiry", s.cacheMiddleware(120*time.Second, s.handleCertExpiry))                        // TLS certificate expiry & lifecycle monitor
+	mux.HandleFunc("/api/security/image-supply-chain", s.cacheMiddleware(120*time.Second, s.handleSupplyChain))                  // container image supply chain security scanner
+	mux.HandleFunc("/api/scalability/node-os-drift", s.cacheMiddleware(120*time.Second, s.handleNodeOSDrift))                    // node OS lifecycle & kernel drift deep analyzer
+	mux.HandleFunc("/api/product/traffic-flow", s.cacheMiddleware(60*time.Second, s.handleTrafficFlow))                          // east-west traffic flow & service communication map
+	mux.HandleFunc("/api/deployment/pipeline-health", s.cacheMiddleware(60*time.Second, s.handlePipelineHealth))                 // CI/CD pipeline health & DORA maturity analyzer
+	mux.HandleFunc("/api/operations/alert-rule-quality", s.cacheMiddleware(120*time.Second, s.handleAlertRuleQuality))           // alerting rule quality & coverage gap analyzer
+	mux.HandleFunc("/api/scalability/chargeback", s.cacheMiddleware(300*time.Second, s.handleChargeback))                        // cost chargeback & team budget allocation report
+	mux.HandleFunc("/api/security/runtime-scan", s.cacheMiddleware(60*time.Second, s.handleRuntimeThreat))                       // runtime threat detection & behavioral anomaly scanner
+	mux.HandleFunc("/api/docs/exec-dashboard", s.cacheMiddleware(60*time.Second, s.handleExecDashboard))                         // executive platform health summary & scorecard
+	mux.HandleFunc("/api/product/slo-compliance", s.cacheMiddleware(30*time.Second, s.handleSLOCompliance))                      // service SLO compliance & error budget burn rate
+	mux.HandleFunc("/api/operations/probe-latency", s.cacheMiddleware(60*time.Second, s.handleProbeLatency))                     // health probe latency & readiness performance analyzer
+	mux.HandleFunc("/api/deployment/helm-health-deep", s.cacheMiddleware(120*time.Second, s.handleHelmHealthDeep))               // deep Helm release health & chart staleness analyzer
+	mux.HandleFunc("/api/scalability/spot-readiness-deep", s.cacheMiddleware(120*time.Second, s.handleSpotReadinessDeep))        // spot/preemptible instance readiness deep analyzer
+	mux.HandleFunc("/api/security/rbac-blast", s.cacheMiddleware(120*time.Second, s.handleRBACBlast))                            // RBAC privilege escalation & blast radius analyzer
+	mux.HandleFunc("/api/product/api-gateway-health", s.cacheMiddleware(60*time.Second, s.handleGatewayHealth))                  // API gateway & ingress controller health analyzer
+	mux.HandleFunc("/api/operations/throttle-risk", s.cacheMiddleware(60*time.Second, s.handleThrottleRisk))                     // pod resource throttling risk & CPU pressure detector
+	mux.HandleFunc("/api/security/audit-trail", s.cacheMiddleware(120*time.Second, s.handleAuditTrail))                          // audit logging coverage & compliance trail analyzer
+	mux.HandleFunc("/api/deployment/image-freshness", s.cacheMiddleware(120*time.Second, s.handleImageFreshness))                // container image freshness & update tracking
+	mux.HandleFunc("/api/scalability/multi-cluster-conn", s.cacheMiddleware(120*time.Second, s.handleMultiClusterConn))          // multi-cluster connectivity & federation health
+	mux.HandleFunc("/api/security/admission-posture", s.cacheMiddleware(120*time.Second, s.handleAdmissionAudit))                // admission controller posture & policy engine audit
+	mux.HandleFunc("/api/operations/dashboard-availability", s.cacheMiddleware(120*time.Second, s.handleDashAvail))              // Grafana dashboard availability & observability UI coverage
+	mux.HandleFunc("/api/scalability/storage-orphan", s.cacheMiddleware(120*time.Second, s.handleStorageOrphan))                 // orphaned PVC & storage waste analyzer
+	mux.HandleFunc("/api/deployment/workload-deps", s.cacheMiddleware(120*time.Second, s.handleWLDeps))                          // workload dependency graph analyzer
+	mux.HandleFunc("/api/operations/metrics-pipe", s.cacheMiddleware(120*time.Second, s.handleMetricsPipe))                      // metrics pipeline integrity & scraping coverage
+	mux.HandleFunc("/api/docs/platform-changelog", s.cacheMiddleware(30*time.Second, s.handleChangeLog))                         // platform changelog from recent resource changes
+	mux.HandleFunc("/api/scalability/capacity-forecast-deep", s.cacheMiddleware(60*time.Second, s.handleCapacityForecastDeep))   // cluster capacity exhaustion forecast
+	mux.HandleFunc("/api/security/compliance-framework", s.cacheMiddleware(120*time.Second, s.handleComplianceMap))              // SOC2/PCI-DSS/CIS compliance framework mapping
+	mux.HandleFunc("/api/product/mttr-analysis", s.cacheMiddleware(60*time.Second, s.handleMTTR))                                // mean time to recovery from restart patterns
+	mux.HandleFunc("/api/deployment/gitops-sync-status", s.cacheMiddleware(120*time.Second, s.handleGitOpsSync))                 // GitOps sync state & drift detection
+	mux.HandleFunc("/api/operations/endpoint-probe", s.cacheMiddleware(60*time.Second, s.handleEndpointProbe))                   // service endpoint readiness probe
+	mux.HandleFunc("/api/scalability/node-decomm", s.cacheMiddleware(120*time.Second, s.handleNodeDecomm))                       // node decommissioning & lifecycle rotation
+	mux.HandleFunc("/api/operations/backup-coverage", s.cacheMiddleware(120*time.Second, s.handleBackupCoverage))                // backup & disaster recovery posture analyzer
+	mux.HandleFunc("/api/deployment/idle-zombie", s.cacheMiddleware(120*time.Second, s.handleIdleZombie))                        // idle/zombie workload detector
+	mux.HandleFunc("/api/product/service-mesh", s.cacheMiddleware(120*time.Second, s.handleServiceMesh))                         // service mesh coverage & mTLS analyzer
+	mux.HandleFunc("/api/product/mesh-readiness", s.cacheMiddleware(120*time.Second, s.handleMeshReadiness))                     // service mesh readiness & mTLS coverage gap analyzer
+	mux.HandleFunc("/api/scalability/idle-waste", s.cacheMiddleware(120*time.Second, s.handleIdleWaste))                         // idle resource waste quantification & cost recovery engine
+	mux.HandleFunc("/api/security/policy-governance", s.cacheMiddleware(120*time.Second, s.handlePolicyGovernance))              // admission policy governance & enforcement auditor
 	mux.HandleFunc("/api/security/linux-capabilities-audit", s.cacheMiddleware(120*time.Second, s.handleLinuxCapAudit))
 	mux.HandleFunc("/api/security/egress-traffic-audit", s.cacheMiddleware(120*time.Second, s.handleEgressTrafficAudit))
 	mux.HandleFunc("/api/security/node-hardening-score", s.cacheMiddleware(120*time.Second, s.handleNodeHardeningScore))
