@@ -883,6 +883,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/oom-forecast", s.cacheMiddleware(120*time.Second, s.handleOOMForecast))
 	mux.HandleFunc("/api/operations/api-request-pattern", s.cacheMiddleware(120*time.Second, s.handleAPIRequestPattern))
 	mux.HandleFunc("/api/operations/terminated-reason-catalog", s.cacheMiddleware(120*time.Second, s.handleTerminatedReasonCatalog))
+	mux.HandleFunc("/api/security/psa-violation", s.cacheMiddleware(120*time.Second, s.handlePSAViolation))
+	mux.HandleFunc("/api/security/automount-risk", s.cacheMiddleware(120*time.Second, s.handleAutoMountRisk))
+	mux.HandleFunc("/api/security/registry-trust", s.cacheMiddleware(120*time.Second, s.handleRegistryTrust))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)

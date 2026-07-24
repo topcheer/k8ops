@@ -7590,6 +7590,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Term catalog", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/security/psa-violation", "get", OpenAPIOperation{
+		Summary: "Pod Security Standard Violation", OperationID: "psa-violation", Tags: []string{"Security"},
+		Description: "Audits Pod Security Admission enforcement. Detects privileged containers, hostNetwork, hostPath violations.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PSA violations", map[string]interface{}{"healthScore": 75})},
+	})
+	add("/api/security/automount-risk", "get", OpenAPIOperation{
+		Summary: "SA Automount Risk", OperationID: "automount-risk", Tags: []string{"Security"},
+		Description: "Analyzes ServiceAccount token automount exposure. Identifies pods using default SA with automount.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Automount risk", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/security/registry-trust", "get", OpenAPIOperation{
+		Summary: "Image Registry Trust", OperationID: "registry-trust", Tags: []string{"Security"},
+		Description: "Audits container image registries for trust status. Identifies untrusted registries in use.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Registry trust", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
