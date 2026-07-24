@@ -7510,6 +7510,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("SA token age", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/docs/cluster-config-snap", "get", OpenAPIOperation{
+		Summary: "Cluster Config Snapshot", OperationID: "cluster-config-snap", Tags: []string{"Documentation"},
+		Description: "Documents cluster version, node kubelet versions, OS images, capacity, and feature gate status.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cluster config", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/docs/event-history-doc", "get", OpenAPIOperation{
+		Summary: "Event History Doc", OperationID: "event-history-doc", Tags: []string{"Documentation"},
+		Description: "Catalogs recent Kubernetes events by type, kind, and reason for audit trail documentation.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event history", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/docs/quota-doc", "get", OpenAPIOperation{
+		Summary: "Resource Quota Doc", OperationID: "quota-doc", Tags: []string{"Documentation"},
+		Description: "Documents ResourceQuota allocation across namespaces. Tracks CPU, memory, and pod quota coverage.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Quota doc", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
