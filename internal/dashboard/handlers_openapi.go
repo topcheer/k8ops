@@ -7557,6 +7557,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes pod density per node and provides optimization recommendations for bin-packing efficiency.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod density", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/scalability/autoscaler-readiness-v2", "get", OpenAPIOperation{
+		Summary: "Cluster Autoscaler Readiness", OperationID: "autoscaler-readiness-v2", Tags: []string{"Scalability"},
+		Description: "Analyzes cluster autoscaler configuration, pending pods, node pool readiness, and scale-down health.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Autoscaler readiness", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/scalability/request-headroom", "get", OpenAPIOperation{
+		Summary: "Resource Request Headroom", OperationID: "request-headroom", Tags: []string{"Scalability"},
+		Description: "Calculates remaining resource request headroom and forecasts days until CPU/memory/pod exhaustion.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Request headroom", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/scalability/failover-readiness", "get", OpenAPIOperation{
+		Summary: "Failover Readiness Score", OperationID: "failover-readiness", Tags: []string{"Scalability"},
+		Description: "Scores failover readiness based on multi-zone distribution, PDB coverage, and workload topology spread.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Failover readiness", map[string]interface{}{"healthScore": 82})},
+	})
 
 	add("/api/deployment/canary-detector", "get", OpenAPIOperation{
 		Summary: "Canary Release Detector", OperationID: "canary-detector", Tags: []string{"Deployment"},
