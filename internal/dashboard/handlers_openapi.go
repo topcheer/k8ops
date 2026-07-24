@@ -7526,6 +7526,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Quota doc", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/product/helm-release-audit-v2", "get", OpenAPIOperation{
+		Summary: "Helm Release Audit V2", OperationID: "helm-release-audit-v2", Tags: []string{"Product"},
+		Description: "Audits Helm releases by scanning secrets/configmaps with owner=helm label. Detects failed and pending releases.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Helm audit", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/ingress-consolidation", "get", OpenAPIOperation{
+		Summary: "Ingress Rule Consolidation", OperationID: "ingress-consolidation", Tags: []string{"Product"},
+		Description: "Analyzes ingress rules for duplicate hosts, TLS coverage gaps, and path consolidation opportunities.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Ingress consolidation", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/ns-lifecycle-tracker", "get", OpenAPIOperation{
+		Summary: "Namespace Lifecycle Tracker", OperationID: "ns-lifecycle-tracker", Tags: []string{"Product"},
+		Description: "Tracks namespace lifecycle: active vs dormant (0 pods). Identifies namespaces for archival.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("NS lifecycle", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 

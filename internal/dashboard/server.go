@@ -871,6 +871,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/cluster-config-snap", s.cacheMiddleware(120*time.Second, s.handleClusterConfigSnap))
 	mux.HandleFunc("/api/docs/event-history-doc", s.cacheMiddleware(120*time.Second, s.handleEventHistoryDoc))
 	mux.HandleFunc("/api/docs/quota-doc", s.cacheMiddleware(120*time.Second, s.handleQuotaDoc))
+	mux.HandleFunc("/api/product/helm-release-audit-v2", s.cacheMiddleware(120*time.Second, s.handleHelmReleaseAuditV2))
+	mux.HandleFunc("/api/product/ingress-consolidation", s.cacheMiddleware(120*time.Second, s.handleIngressConsolidation))
+	mux.HandleFunc("/api/product/ns-lifecycle-tracker", s.cacheMiddleware(120*time.Second, s.handleNSLifecycleTracker))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
