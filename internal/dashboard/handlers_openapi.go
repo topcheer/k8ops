@@ -7574,6 +7574,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Lifecycle hooks", map[string]interface{}{"healthScore": 80})},
 	})
 
+	add("/api/operations/oom-forecast", "get", OpenAPIOperation{
+		Summary: "Container OOM Risk Forecaster", OperationID: "oom-forecast", Tags: []string{"Operations"},
+		Description: "Forecasts OOM risk by analyzing memory limits, OOM history, and containers without limits.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("OOM forecast", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/api-request-pattern", "get", OpenAPIOperation{
+		Summary: "API Server Request Pattern", OperationID: "api-request-pattern", Tags: []string{"Operations"},
+		Description: "Analyzes API resource verb distribution and namespace load patterns from discovery API.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API pattern", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/operations/terminated-reason-catalog", "get", OpenAPIOperation{
+		Summary: "Pod Terminated Reason Catalog", OperationID: "terminated-reason-catalog", Tags: []string{"Operations"},
+		Description: "Classifies container termination reasons (OOMKilled, Error, Completed) across the cluster.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Term catalog", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 

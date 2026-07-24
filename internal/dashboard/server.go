@@ -880,6 +880,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/deployment/canary-detector", s.cacheMiddleware(120*time.Second, s.handleCanaryDetector))
 	mux.HandleFunc("/api/deployment/init-container-overhead", s.cacheMiddleware(120*time.Second, s.handleInitContainerOverhead))
 	mux.HandleFunc("/api/deployment/lifecycle-hook-comp", s.cacheMiddleware(120*time.Second, s.handleLifecycleHookComp))
+	mux.HandleFunc("/api/operations/oom-forecast", s.cacheMiddleware(120*time.Second, s.handleOOMForecast))
+	mux.HandleFunc("/api/operations/api-request-pattern", s.cacheMiddleware(120*time.Second, s.handleAPIRequestPattern))
+	mux.HandleFunc("/api/operations/terminated-reason-catalog", s.cacheMiddleware(120*time.Second, s.handleTerminatedReasonCatalog))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
