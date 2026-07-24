@@ -7542,6 +7542,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("NS lifecycle", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/scalability/node-frag-analysis", "get", OpenAPIOperation{
+		Summary: "Node Resource Fragmentation", OperationID: "node-frag-analysis", Tags: []string{"Scalability"},
+		Description: "Analyzes resource fragmentation per node. Identifies stranded CPU/memory that can't fit new pods.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node fragmentation", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/scalability/ctrl-queue-pressure", "get", OpenAPIOperation{
+		Summary: "Controller Queue Pressure", OperationID: "ctrl-queue-pressure", Tags: []string{"Scalability"},
+		Description: "Monitors operator/controller pods for restart patterns indicating queue pressure or reconciliation loops.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Controller queue", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/scalability/pod-density-optimizer", "get", OpenAPIOperation{
+		Summary: "Pod Density Optimizer", OperationID: "pod-density-optimizer", Tags: []string{"Scalability"},
+		Description: "Analyzes pod density per node and provides optimization recommendations for bin-packing efficiency.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod density", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
