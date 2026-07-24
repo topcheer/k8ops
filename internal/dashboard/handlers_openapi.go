@@ -7714,6 +7714,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("PVC access", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/product/workload-insights", "get", OpenAPIOperation{
+		Summary: "Workload Insights", OperationID: "workload-insights", Tags: []string{"Product"},
+		Description: "Per-workload health score, resource efficiency, and performance ranking.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Workload insights", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/storage-summary", "get", OpenAPIOperation{
+		Summary: "Storage Summary", OperationID: "storage-summary", Tags: []string{"Product"},
+		Description: "Storage overview: PVC usage, storage class distribution, capacity and large volume detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Storage summary", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/product/network-topology-insights", "get", OpenAPIOperation{
+		Summary: "Network Topology Insights", OperationID: "network-topology-insights", Tags: []string{"Product"},
+		Description: "Service connectivity map, endpoint health, and traffic flow topology overview.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Network topology", map[string]interface{}{"healthScore": 88})},
+	})
+
 	return spec
 }
 
