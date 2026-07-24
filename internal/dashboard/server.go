@@ -494,6 +494,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/mesh-readiness", s.cacheMiddleware(120*time.Second, s.handleMeshReadiness))                             // service mesh readiness & mTLS coverage gap analyzer
 	mux.HandleFunc("/api/scalability/idle-waste", s.cacheMiddleware(120*time.Second, s.handleIdleWaste))                                 // idle resource waste quantification & cost recovery engine
 	mux.HandleFunc("/api/security/policy-governance", s.cacheMiddleware(120*time.Second, s.handlePolicyGovernance))                      // admission policy governance & enforcement auditor
+	mux.HandleFunc("/api/security/linux-capabilities-audit", s.cacheMiddleware(120*time.Second, s.handleLinuxCapAudit))
+	mux.HandleFunc("/api/security/egress-traffic-audit", s.cacheMiddleware(120*time.Second, s.handleEgressTrafficAudit))
+	mux.HandleFunc("/api/security/node-hardening-score", s.cacheMiddleware(120*time.Second, s.handleNodeHardeningScore))
 	mux.HandleFunc("/api/docs/api-quality", s.cacheMiddleware(120*time.Second, s.handleAPIQuality))                                      // platform API endpoint quality & coverage gap analyzer
 	mux.HandleFunc("/api/product/cloud-portability", s.cacheMiddleware(120*time.Second, s.handleCloudPortability))                       // cloud vendor lock-in & workload portability assessor
 	mux.HandleFunc("/api/scalability/storage-performance", s.cacheMiddleware(120*time.Second, s.handleStoragePerf))                      // storage performance tier classification & mismatch detector

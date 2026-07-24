@@ -4808,6 +4808,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes admission policy governance: OPA Gatekeeper/Kyverno installation status, Pod Security Admission (PSA) label coverage, and policy enforcement gaps across namespaces. Enforcement scoring (0-100, A-F grading).",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Policy governance", map[string]interface{}{"enforcementScore": 0, "gatekeeperStatus": "not-installed", "psaCoverage": map[string]interface{}{"coveragePct": 0}})},
 	})
+	add("/api/security/linux-capabilities-audit", "get", OpenAPIOperation{
+		Summary: "Linux Capabilities Audit", OperationID: "linux-capabilities-audit", Tags: []string{"Security"},
+		Description: "Audits container Linux capabilities (cap_add/cap_drop) for dangerous privilege grants.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Capabilities audit", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/security/egress-traffic-audit", "get", OpenAPIOperation{
+		Summary: "Egress Traffic Audit", OperationID: "egress-traffic-audit", Tags: []string{"Security"},
+		Description: "Maps outbound traffic exposure, external service endpoints, and namespace egress policy gaps.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Egress audit", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/security/node-hardening-score", "get", OpenAPIOperation{
+		Summary: "Node Hardening Score", OperationID: "node-hardening-score", Tags: []string{"Security"},
+		Description: "Scores node security configuration and hardening posture across container runtime, OS, and kernel.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node hardening", map[string]interface{}{"healthScore": 90})},
+	})
 
 	// --- API Quality (v17.79) ---
 	add("/api/docs/api-quality", "get", OpenAPIOperation{
