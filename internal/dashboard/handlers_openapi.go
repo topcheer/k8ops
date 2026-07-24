@@ -6388,7 +6388,7 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits seccomp profile settings across all pods.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Seccomp audit", map[string]interface{}{"healthScore": 5})},
 	})
-	add("/api/security/sa-token-age", "get", OpenAPIOperation{
+	add("/api/security/sa-token-age-v2", "get", OpenAPIOperation{
 		Summary: "SA token age", OperationID: "saTokenAge",
 		Tags:        []string{"Security", "ServiceAccount", "Token"},
 		Description: "Audits service account token ages and rotation status.",
@@ -7492,6 +7492,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Summary: "Kubelet Sync Latency", OperationID: "kubelet-sync", Tags: []string{"Operations"},
 		Description: "Monitors node heartbeat freshness from kubelet. Detects stale nodes with delayed status updates.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Kubelet sync", map[string]interface{}{"healthScore": 90})},
+	})
+
+	add("/api/security/pod-forensics-snap", "get", OpenAPIOperation{
+		Summary: "Pod Forensics Snapshot", OperationID: "pod-forensics-snap", Tags: []string{"Security"},
+		Description: "Collects suspicious pod indicators: hostNetwork, hostPID, hostPath, privileged, CAP_SYS_ADMIN, writable rootfs.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod forensics", map[string]interface{}{"healthScore": 75})},
+	})
+	add("/api/security/egress-exposure", "get", OpenAPIOperation{
+		Summary: "Egress Traffic Exposure", OperationID: "egress-exposure", Tags: []string{"Security"},
+		Description: "Audits egress NetworkPolicies, external CIDR destinations, and namespaces without egress restrictions.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Egress exposure", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/security/sa-token-age-v2", "get", OpenAPIOperation{
+		Summary: "Service Account Token Age", OperationID: "sa-token-age", Tags: []string{"Security"},
+		Description: "Tracks SA token age for rotation compliance. Identifies old secret-based tokens and projected token adoption.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SA token age", map[string]interface{}{"healthScore": 85})},
 	})
 
 	return spec

@@ -43,7 +43,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/security/container-capabilities', name: 'Cap Audit', icon: '\u1F511' },
         { path: '/api/security/readonly-rootfs-audit', name: 'Readonly RootFS', icon: '\u1F512' },
         { path: '/api/security/seccomp-profile-audit', name: 'Seccomp Profile', icon: '\u1F6E1' },
-        { path: '/api/security/sa-token-age', name: 'SA Token Age', icon: '\u1F511' },
+        { path: '/api/security/sa-token-age-v2', name: 'SA Token Age', icon: '\u1F511' },
         { path: '/api/security/runtime-class-audit', name: 'Runtime Class', icon: '\u1F9E9' },
       ],
       'Network Security': [
@@ -477,6 +477,9 @@ const AUDIT_STRUCTURE = {
         { path: '/api/operations/log-volume-estimator', name: 'Log Volume', icon: '\u1F4DD' },
         { path: '/api/operations/eviction-history', name: 'Eviction Hist', icon: '\u274C' },
         { path: '/api/operations/kubelet-sync', name: 'Kubelet Sync', icon: '\u1F494' },
+        { path: '/api/security/pod-forensics-snap', name: 'Pod Forensics', icon: '\u1F50D' },
+        { path: '/api/security/egress-exposure', name: 'Egress Exposure', icon: '\u2197' },
+        { path: '/api/security/sa-token-age-v2', name: 'SA Token Age', icon: '\u231B' },
         { path: '/api/scalability/restart-rate', name: 'Restart Rate', icon: '\u1F501' },
         { path: '/api/scalability/node-affinity-compliance', name: 'Node Affinity', icon: '\u1F4CD' },
         { path: '/api/scalability/quota-pressure-index', name: 'Quota Pressure', icon: '\u1F4CA' },

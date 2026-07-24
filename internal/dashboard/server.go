@@ -676,7 +676,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/dns-record-audit", s.cacheMiddleware(60*time.Second, s.handleDNSRecordAudit))                           // dns record audit
 	mux.HandleFunc("/api/product/workload-startup-profile", s.cacheMiddleware(60*time.Second, s.handleWorkloadStartupProfile))           // workload startup profile
 	mux.HandleFunc("/api/security/seccomp-profile-audit", s.cacheMiddleware(60*time.Second, s.handleSeccompProfileAudit))                // seccomp profile audit
-	mux.HandleFunc("/api/security/sa-token-age", s.cacheMiddleware(60*time.Second, s.handleSATokenAge))                                  // sa token age
+	mux.HandleFunc("/api/security/sa-token-age-v2", s.cacheMiddleware(60*time.Second, s.handleSATokenAgeV2))                             // sa token age
 	mux.HandleFunc("/api/security/runtime-class-audit", s.cacheMiddleware(60*time.Second, s.handleRuntimeClassIsolation))                // runtime class audit
 	mux.HandleFunc("/api/scalability/pdb-gap-analysis", s.cacheMiddleware(60*time.Second, s.handlePDBGapAnalysisV2))                     // pdb gap analysis
 	mux.HandleFunc("/api/scalability/topology-spread-violation", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadViolation))     // topology spread violation
@@ -866,6 +866,8 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/operations/log-volume-estimator", s.cacheMiddleware(120*time.Second, s.handleLogVolumeEstimator))
 	mux.HandleFunc("/api/operations/eviction-history", s.cacheMiddleware(120*time.Second, s.handleEvictionHistory))
 	mux.HandleFunc("/api/operations/kubelet-sync", s.cacheMiddleware(120*time.Second, s.handleKubeletSync))
+	mux.HandleFunc("/api/security/pod-forensics-snap", s.cacheMiddleware(120*time.Second, s.handlePodForensicsSnap))
+	mux.HandleFunc("/api/security/egress-exposure", s.cacheMiddleware(120*time.Second, s.handleEgressExposure))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
