@@ -7588,6 +7588,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Failover readiness", map[string]interface{}{"healthScore": 82})},
 	})
 
+	add("/api/scalability/api-object-count", "get", OpenAPIOperation{
+		Summary: "API Object Count", OperationID: "api-object-count", Tags: []string{"Scalability"},
+		Description: "Counts total API objects vs Kubernetes recommended limits to detect scalability ceiling.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Object count", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/scalability/watch-cache-pressure", "get", OpenAPIOperation{
+		Summary: "Watch Cache Pressure", OperationID: "watch-cache-pressure", Tags: []string{"Scalability"},
+		Description: "Estimates controller watch cache pressure and etcd read load from object counts and churn rate.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Watch pressure", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/scalability/scheduler-cache-health", "get", OpenAPIOperation{
+		Summary: "Scheduler Cache Health", OperationID: "scheduler-cache-health", Tags: []string{"Scalability"},
+		Description: "Analyzes pending pod backlog and scheduling throughput to assess scheduler cache health.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Scheduler health", map[string]interface{}{"healthScore": 92})},
+	})
+
 	add("/api/deployment/canary-detector", "get", OpenAPIOperation{
 		Summary: "Canary Release Detector", OperationID: "canary-detector", Tags: []string{"Deployment"},
 		Description: "Detects canary, blue-green, and progressive delivery patterns. Identifies candidates for progressive delivery.",
