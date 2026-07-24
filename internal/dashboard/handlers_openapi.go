@@ -7682,6 +7682,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Storage attachment", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/docs/port-catalog", "get", OpenAPIOperation{
+		Summary: "Port Catalog", OperationID: "port-catalog", Tags: []string{"Documentation"},
+		Description: "Catalogs all exposed ports across services, including NodePort conflicts and external exposure.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Port catalog", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/docs/rbac-cheatsheet", "get", OpenAPIOperation{
+		Summary: "RBAC Cheatsheet", OperationID: "rbac-cheatsheet", Tags: []string{"Documentation"},
+		Description: "Generates a who-can-do-what RBAC permission matrix with high-risk role detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("RBAC cheatsheet", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/docs/cluster-blueprint", "get", OpenAPIOperation{
+		Summary: "Cluster Blueprint", OperationID: "cluster-blueprint", Tags: []string{"Documentation"},
+		Description: "Generates cluster architecture blueprint: nodes, namespaces, addons, provider info.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cluster blueprint", map[string]interface{}{"healthScore": 95})},
+	})
+
 	add("/api/product/scale-limit-analysis", "get", OpenAPIOperation{
 		Summary: "Horizontal Scale Limit Analysis", OperationID: "scale-limit-analysis", Tags: []string{"Product"},
 		Description: "Analyzes HPA scale limits: min/max replica gap, deployments without HPA, and scaling headroom.",
