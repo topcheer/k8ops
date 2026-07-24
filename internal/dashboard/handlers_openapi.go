@@ -7619,6 +7619,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Classifies container termination reasons (OOMKilled, Error, Completed) across the cluster.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Term catalog", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/operations/quota-waste-detector", "get", OpenAPIOperation{
+		Summary: "Quota Waste Detector", OperationID: "quota-waste-detector", Tags: []string{"Operations"},
+		Description: "Detects namespaces where ResourceQuota allocation significantly exceeds actual usage.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Quota waste", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/admission-health", "get", OpenAPIOperation{
+		Summary: "Admission Controller Health", OperationID: "admission-health", Tags: []string{"Operations"},
+		Description: "Checks MutatingWebhook and ValidatingWebhook configurations for health and misconfigurations.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Admission health", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/operations/clock-sync", "get", OpenAPIOperation{
+		Summary: "Cluster Clock Sync", OperationID: "clock-sync", Tags: []string{"Operations"},
+		Description: "Detects node clock skew and time synchronization issues across the cluster.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Clock sync", map[string]interface{}{"healthScore": 95})},
+	})
 
 	add("/api/security/psa-violation", "get", OpenAPIOperation{
 		Summary: "Pod Security Standard Violation", OperationID: "psa-violation", Tags: []string{"Security"},
