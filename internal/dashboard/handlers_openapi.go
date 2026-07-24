@@ -7622,6 +7622,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Storage attachment", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/product/scale-limit-analysis", "get", OpenAPIOperation{
+		Summary: "Horizontal Scale Limit Analysis", OperationID: "scale-limit-analysis", Tags: []string{"Product"},
+		Description: "Analyzes HPA scale limits: min/max replica gap, deployments without HPA, and scaling headroom.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Scale limits", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/product/cm-key-exposure", "get", OpenAPIOperation{
+		Summary: "ConfigMap Key Exposure", OperationID: "cm-key-exposure", Tags: []string{"Product"},
+		Description: "Detects sensitive keys (passwords, tokens, API keys) stored in ConfigMaps that should be in Secrets.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CM key exposure", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/pvc-access-pattern", "get", OpenAPIOperation{
+		Summary: "PVC Access Pattern", OperationID: "pvc-access-pattern", Tags: []string{"Product"},
+		Description: "Analyzes PVC access modes, mount counts, and identifies risky multi-mount RWO volumes.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PVC access", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
