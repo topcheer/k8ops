@@ -7558,6 +7558,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod density", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/deployment/canary-detector", "get", OpenAPIOperation{
+		Summary: "Canary Release Detector", OperationID: "canary-detector", Tags: []string{"Deployment"},
+		Description: "Detects canary, blue-green, and progressive delivery patterns. Identifies candidates for progressive delivery.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Canary detection", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/deployment/init-container-overhead", "get", OpenAPIOperation{
+		Summary: "Init Container Overhead", OperationID: "init-container-overhead", Tags: []string{"Deployment"},
+		Description: "Analyzes init container count, resource cost, and startup delay impact on pod readiness.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Init overhead", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/lifecycle-hook-comp", "get", OpenAPIOperation{
+		Summary: "Lifecycle Hook Compliance", OperationID: "lifecycle-hook-comp", Tags: []string{"Deployment"},
+		Description: "Audits preStop and postStart lifecycle hooks. Identifies containers missing graceful shutdown.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Lifecycle hooks", map[string]interface{}{"healthScore": 80})},
+	})
+
 	return spec
 }
 
