@@ -886,6 +886,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/psa-violation", s.cacheMiddleware(120*time.Second, s.handlePSAViolation))
 	mux.HandleFunc("/api/security/automount-risk", s.cacheMiddleware(120*time.Second, s.handleAutoMountRisk))
 	mux.HandleFunc("/api/security/registry-trust", s.cacheMiddleware(120*time.Second, s.handleRegistryTrust))
+	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
+	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
+	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)

@@ -7606,6 +7606,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Registry trust", map[string]interface{}{"healthScore": 85})},
 	})
 
+	add("/api/docs/annotation-report", "get", OpenAPIOperation{
+		Summary: "Annotation Coverage Report", OperationID: "annotation-report", Tags: []string{"Documentation"},
+		Description: "Audits metadata annotation coverage across Deployments, Services, and Namespaces.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Annotation report", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/docs/topology-map-v2", "get", OpenAPIOperation{
+		Summary: "Pod Topology Map V2", OperationID: "topology-map-v2", Tags: []string{"Documentation"},
+		Description: "Documents node-to-pod placement, zone distribution, and per-namespace node spread.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Topology map", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/docs/storage-attachment-inv", "get", OpenAPIOperation{
+		Summary: "Storage Attachment Inventory", OperationID: "storage-attachment-inv", Tags: []string{"Documentation"},
+		Description: "Maps PVC-to-pod-to-node storage attachments. Identifies unattached PVCs.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Storage attachment", map[string]interface{}{"healthScore": 85})},
+	})
+
 	return spec
 }
 
