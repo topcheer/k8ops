@@ -7746,6 +7746,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event QPS", map[string]interface{}{"healthScore": 88})},
 	})
 
+	add("/api/operations/pod-age-distribution", "get", OpenAPIOperation{
+		Summary: "Pod Age Distribution", OperationID: "pod-age-distribution", Tags: []string{"Operations"},
+		Description: "Classifies pod lifecycle stages by age buckets for staleness and churn analysis.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod age", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/operations/node-condition-flap", "get", OpenAPIOperation{
+		Summary: "Node Condition Flap", OperationID: "node-condition-flap", Tags: []string{"Operations"},
+		Description: "Detects node condition oscillation and flapping from recent transitions.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node flap", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/operations/csi-attach-latency", "get", OpenAPIOperation{
+		Summary: "CSI Attach Latency", OperationID: "csi-attach-latency", Tags: []string{"Operations"},
+		Description: "Estimates CSI volume attach/detach latency and pending PVC provisioning health.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CSI latency", map[string]interface{}{"healthScore": 92})},
+	})
+
 	add("/api/security/psa-violation", "get", OpenAPIOperation{
 		Summary: "Pod Security Standard Violation", OperationID: "psa-violation", Tags: []string{"Security"},
 		Description: "Audits Pod Security Admission enforcement. Detects privileged containers, hostNetwork, hostPath violations.",
