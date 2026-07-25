@@ -7762,6 +7762,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cluster blueprint", map[string]interface{}{"healthScore": 95})},
 	})
 
+	add("/api/docs/ingress-catalog", "get", OpenAPIOperation{
+		Summary: "Ingress Catalog", OperationID: "ingress-catalog", Tags: []string{"Documentation"},
+		Description: "Catalogs all ingress rules, TLS coverage, and host-to-backend service mapping.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Ingress catalog", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/docs/network-policy-catalog", "get", OpenAPIOperation{
+		Summary: "Network Policy Catalog", OperationID: "network-policy-catalog", Tags: []string{"Documentation"},
+		Description: "Inventories network policies and namespace isolation coverage.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("NetPol catalog", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/docs/label-inventory", "get", OpenAPIOperation{
+		Summary: "Label Inventory", OperationID: "label-inventory", Tags: []string{"Documentation"},
+		Description: "Inventories all labels used across pods with standard vs non-standard classification.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Label inventory", map[string]interface{}{"healthScore": 88})},
+	})
+
 	add("/api/product/scale-limit-analysis", "get", OpenAPIOperation{
 		Summary: "Horizontal Scale Limit Analysis", OperationID: "scale-limit-analysis", Tags: []string{"Product"},
 		Description: "Analyzes HPA scale limits: min/max replica gap, deployments without HPA, and scaling headroom.",
