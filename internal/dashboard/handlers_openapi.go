@@ -7619,6 +7619,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes pending pod backlog and scheduling throughput to assess scheduler cache health.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Scheduler health", map[string]interface{}{"healthScore": 92})},
 	})
+	add("/api/scalability/conntrack-capacity", "get", OpenAPIOperation{
+		Summary: "Conntrack Capacity", OperationID: "conntrack-capacity", Tags: []string{"Scalability"},
+		Description: "Estimates connection tracking table pressure from pod count and network activity.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Conntrack", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/scalability/ip-pool-health", "get", OpenAPIOperation{
+		Summary: "IP Pool Health", OperationID: "ip-pool-health", Tags: []string{"Scalability"},
+		Description: "Checks Pod and Service CIDR availability and forecasts IP exhaustion.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("IP pool", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/scalability/resource-version-staleness", "get", OpenAPIOperation{
+		Summary: "Resource Version Staleness", OperationID: "resource-version-staleness", Tags: []string{"Scalability"},
+		Description: "Estimates API object freshness and cache coherence from pod age distribution.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Staleness", map[string]interface{}{"healthScore": 88})},
+	})
 
 	add("/api/deployment/canary-detector", "get", OpenAPIOperation{
 		Summary: "Canary Release Detector", OperationID: "canary-detector", Tags: []string{"Deployment"},
