@@ -7635,6 +7635,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Annotation signal", map[string]interface{}{"healthScore": 82})},
 	})
 
+	add("/api/deployment/dns-policy-audit", "get", OpenAPIOperation{
+		Summary: "DNS Policy Audit", OperationID: "dns-policy-audit", Tags: []string{"Deployment"},
+		Description: "Audits pod DNS policy and custom DNS configuration for service discovery compliance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("DNS policy", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/deployment/pod-priority-preempt", "get", OpenAPIOperation{
+		Summary: "Pod Priority Preemption", OperationID: "pod-priority-preempt", Tags: []string{"Deployment"},
+		Description: "Analyzes priority class usage, preemption risk, and scheduling predictability.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod priority", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/secret-env-ref", "get", OpenAPIOperation{
+		Summary: "Secret Env Reference", OperationID: "secret-env-ref", Tags: []string{"Deployment"},
+		Description: "Maps secret environment variable references and detects all-keys exposure via envFrom.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Secret env refs", map[string]interface{}{"healthScore": 88})},
+	})
+
 	add("/api/operations/oom-forecast", "get", OpenAPIOperation{
 		Summary: "Container OOM Risk Forecaster", OperationID: "oom-forecast", Tags: []string{"Operations"},
 		Description: "Forecasts OOM risk by analyzing memory limits, OOM history, and containers without limits.",
