@@ -7993,6 +7993,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Deployment replica readiness overview with unhealthy deployment detection.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Replica health", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/product/pod-density-score", "get", OpenAPIOperation{
+		Summary: "Pod Density Score", OperationID: "pod-density-score", Tags: []string{"Product"},
+		Description: "Measures pods-per-node density against K8s limits for capacity planning.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod density", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/image-cache-efficiency", "get", OpenAPIOperation{
+		Summary: "Image Cache Efficiency", OperationID: "image-cache-efficiency", Tags: []string{"Product"},
+		Description: "Analyzes image reuse ratio and cache hit estimation across nodes.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image cache", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/product/node-bin-packing", "get", OpenAPIOperation{
+		Summary: "Node Bin Packing", OperationID: "node-bin-packing", Tags: []string{"Product"},
+		Description: "Measures resource bin packing efficiency per node for optimization.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Bin packing", map[string]interface{}{"healthScore": 90})},
+	})
 
 	return spec
 }
