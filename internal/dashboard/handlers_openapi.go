@@ -7687,6 +7687,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits termination message configuration for crash diagnostic quality.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Term message", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/deployment/init-container-dep", "get", OpenAPIOperation{
+		Summary: "Init Container Dependency", OperationID: "init-container-dep", Tags: []string{"Deployment"},
+		Description: "Analyzes init container ordering, count, and resource limit compliance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Init dependency", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/strategy-compliance", "get", OpenAPIOperation{
+		Summary: "Strategy Compliance", OperationID: "strategy-compliance", Tags: []string{"Deployment"},
+		Description: "Audits RollingUpdate vs Recreate strategy and surge/unavailable configuration.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Strategy", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/deployment/pull-secret-coverage", "get", OpenAPIOperation{
+		Summary: "Pull Secret Coverage", OperationID: "pull-secret-coverage", Tags: []string{"Deployment"},
+		Description: "Analyzes namespace image pull secret coverage and private registry gaps.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pull secret", map[string]interface{}{"healthScore": 88})},
+	})
 
 	add("/api/deployment/init-container-overhead", "get", OpenAPIOperation{
 		Summary: "Init Container Overhead", OperationID: "init-container-overhead", Tags: []string{"Deployment"},
