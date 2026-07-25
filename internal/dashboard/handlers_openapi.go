@@ -7650,6 +7650,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Estimates API object freshness and cache coherence from pod age distribution.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Staleness", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/scalability/node-allocatable-gap", "get", OpenAPIOperation{
+		Summary: "Node Allocatable Gap", OperationID: "node-allocatable-gap", Tags: []string{"Scalability"},
+		Description: "Analyzes kubelet reserved vs allocatable resources per node.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Allocatable gap", map[string]interface{}{"healthScore": 92})},
+	})
+	add("/api/scalability/pod-overhead-ratio", "get", OpenAPIOperation{
+		Summary: "Pod Overhead Ratio", OperationID: "pod-overhead-ratio", Tags: []string{"Scalability"},
+		Description: "Estimates pod overhead from container count and resource request sizing.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod overhead", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/scalability/api-server-qps-est", "get", OpenAPIOperation{
+		Summary: "API Server QPS Estimator", OperationID: "api-server-qps-est", Tags: []string{"Scalability"},
+		Description: "Estimates API server QPS load from pod count and controller activity.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API QPS", map[string]interface{}{"healthScore": 90})},
+	})
 
 	add("/api/deployment/canary-detector", "get", OpenAPIOperation{
 		Summary: "Canary Release Detector", OperationID: "canary-detector", Tags: []string{"Deployment"},
