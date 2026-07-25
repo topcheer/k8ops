@@ -4855,6 +4855,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Composite security posture scorecard across privileged, root, hostNet, hostPID, SA checks.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Posture V2", map[string]interface{}{"healthScore": 75})},
 	})
+	add("/api/security/sa-privilege-scope", "get", OpenAPIOperation{
+		Summary: "SA Privilege Scope", OperationID: "sa-privilege-scope", Tags: []string{"Security"},
+		Description: "Analyzes service account permission breadth and cluster-scoped bindings.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SA scope", map[string]interface{}{"healthScore": 82})},
+	})
+	add("/api/security/token-audit-trail", "get", OpenAPIOperation{
+		Summary: "Token Audit Trail", OperationID: "token-audit-trail", Tags: []string{"Security"},
+		Description: "Tracks SA token automount patterns and default SA usage.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Token audit", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/security/secret-volume-exposure", "get", OpenAPIOperation{
+		Summary: "Secret Volume Exposure", OperationID: "secret-volume-exposure", Tags: []string{"Security"},
+		Description: "Maps secrets mounted as volumes vs env vars with all-keys exposure detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Secret volume", map[string]interface{}{"healthScore": 85})},
+	})
 
 	// --- API Quality (v17.79) ---
 	add("/api/docs/api-quality", "get", OpenAPIOperation{
