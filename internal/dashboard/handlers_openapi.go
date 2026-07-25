@@ -7916,6 +7916,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Inventories PodDisruptionBudgets and identifies unprotected multi-replica deployments.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("PDB catalog", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/docs/secret-inventory", "get", OpenAPIOperation{
+		Summary: "Secret Inventory", OperationID: "secret-inventory", Tags: []string{"Documentation"},
+		Description: "Catalogs all secrets with type classification, key count, and age-based rotation alerts.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Secret inventory", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/docs/service-account-inventory", "get", OpenAPIOperation{
+		Summary: "Service Account Inventory", OperationID: "service-account-inventory", Tags: []string{"Documentation"},
+		Description: "Catalogs service accounts with binding status and image pull secret coverage.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SA inventory", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/docs/event-type-catalog", "get", OpenAPIOperation{
+		Summary: "Event Type Catalog", OperationID: "event-type-catalog", Tags: []string{"Documentation"},
+		Description: "Catalogs event reasons and sources with distribution analysis.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event types", map[string]interface{}{"healthScore": 92})},
+	})
 
 	add("/api/product/scale-limit-analysis", "get", OpenAPIOperation{
 		Summary: "Horizontal Scale Limit Analysis", OperationID: "scale-limit-analysis", Tags: []string{"Product"},
