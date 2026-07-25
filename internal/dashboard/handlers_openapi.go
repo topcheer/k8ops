@@ -7903,6 +7903,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Aggregate cluster resource utilization with per-namespace breakdown.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cluster utilization", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/product/pod-uptime-tracker", "get", OpenAPIOperation{
+		Summary: "Pod Uptime Tracker", OperationID: "pod-uptime-tracker", Tags: []string{"Product"},
+		Description: "Tracks per-pod and per-namespace uptime statistics for SLA monitoring.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod uptime", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/product/namespace-cost-summary", "get", OpenAPIOperation{
+		Summary: "Namespace Cost Summary", OperationID: "namespace-cost-summary", Tags: []string{"Product"},
+		Description: "Estimates monthly cost per namespace based on resource requests.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("NS cost", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/replica-health-summary", "get", OpenAPIOperation{
+		Summary: "Replica Health Summary", OperationID: "replica-health-summary", Tags: []string{"Product"},
+		Description: "Deployment replica readiness overview with unhealthy deployment detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Replica health", map[string]interface{}{"healthScore": 88})},
+	})
 
 	return spec
 }
