@@ -4840,6 +4840,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Digest pinning", map[string]interface{}{"healthScore": 88})},
 	})
 
+	add("/api/security/container-uid-gid", "get", OpenAPIOperation{
+		Summary: "Container UID/GID Audit", OperationID: "container-uid-gid", Tags: []string{"Security"},
+		Description: "Audits container user/group ID compliance for root privilege detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("UID/GID", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/security/default-sa-binding", "get", OpenAPIOperation{
+		Summary: "Default SA Binding Audit", OperationID: "default-sa-binding", Tags: []string{"Security"},
+		Description: "Detects pods using the default ServiceAccount with automount token.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Default SA", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/security/pod-security-posture-v2", "get", OpenAPIOperation{
+		Summary: "Pod Security Posture V2", OperationID: "pod-security-posture-v2", Tags: []string{"Security"},
+		Description: "Composite security posture scorecard across privileged, root, hostNet, hostPID, SA checks.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Posture V2", map[string]interface{}{"healthScore": 75})},
+	})
+
 	// --- API Quality (v17.79) ---
 	add("/api/docs/api-quality", "get", OpenAPIOperation{
 		Summary:     "Platform API endpoint quality & coverage gap analyzer",
