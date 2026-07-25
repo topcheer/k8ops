@@ -7807,6 +7807,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Estimates CSI volume attach/detach latency and pending PVC provisioning health.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("CSI latency", map[string]interface{}{"healthScore": 92})},
 	})
+	add("/api/operations/exit-code-pattern", "get", OpenAPIOperation{
+		Summary: "Exit Code Pattern", OperationID: "exit-code-pattern", Tags: []string{"Operations"},
+		Description: "Classifies container exit codes and termination reasons for crash pattern analysis.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Exit codes", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/pod-qos-class", "get", OpenAPIOperation{
+		Summary: "Pod QoS Class", OperationID: "pod-qos-class", Tags: []string{"Operations"},
+		Description: "Analyzes QoS class distribution (Guaranteed/Burstable/BestEffort) across pods.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("QoS class", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/operations/ns-resource-pressure", "get", OpenAPIOperation{
+		Summary: "Namespace Resource Pressure", OperationID: "ns-resource-pressure", Tags: []string{"Operations"},
+		Description: "Estimates per-namespace resource contention and pressure level.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("NS pressure", map[string]interface{}{"healthScore": 85})},
+	})
 
 	add("/api/security/psa-violation", "get", OpenAPIOperation{
 		Summary: "Pod Security Standard Violation", OperationID: "psa-violation", Tags: []string{"Security"},
