@@ -4824,6 +4824,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node hardening", map[string]interface{}{"healthScore": 90})},
 	})
 
+	add("/api/security/run-as-non-root-audit", "get", OpenAPIOperation{
+		Summary: "Run-As-Non-Root Audit", OperationID: "run-as-non-root-audit", Tags: []string{"Security"},
+		Description: "Detects containers running as root user (UID 0) or missing runAsNonRoot constraint.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Non-root audit", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/security/host-pid-ipc-audit", "get", OpenAPIOperation{
+		Summary: "Host PID/IPC Audit", OperationID: "host-pid-ipc-audit", Tags: []string{"Security"},
+		Description: "Audits pods sharing host PID, IPC, or network namespaces for container isolation violations.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Host PID/IPC", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/security/image-digest-pinning", "get", OpenAPIOperation{
+		Summary: "Image Digest Pinning", OperationID: "image-digest-pinning", Tags: []string{"Security"},
+		Description: "Checks image references for digest pinning vs floating tags or latest for supply chain integrity.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Digest pinning", map[string]interface{}{"healthScore": 88})},
+	})
+
 	// --- API Quality (v17.79) ---
 	add("/api/docs/api-quality", "get", OpenAPIOperation{
 		Summary:     "Platform API endpoint quality & coverage gap analyzer",

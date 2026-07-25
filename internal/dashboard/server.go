@@ -497,6 +497,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/linux-capabilities-audit", s.cacheMiddleware(120*time.Second, s.handleLinuxCapAudit))
 	mux.HandleFunc("/api/security/egress-traffic-audit", s.cacheMiddleware(120*time.Second, s.handleEgressTrafficAudit))
 	mux.HandleFunc("/api/security/node-hardening-score", s.cacheMiddleware(120*time.Second, s.handleNodeHardeningScore))
+	mux.HandleFunc("/api/security/run-as-non-root-audit", s.cacheMiddleware(120*time.Second, s.handleRunAsNonRootAudit))
+	mux.HandleFunc("/api/security/host-pid-ipc-audit", s.cacheMiddleware(120*time.Second, s.handleHostPIDIPCAudit))
+	mux.HandleFunc("/api/security/image-digest-pinning", s.cacheMiddleware(120*time.Second, s.handleImageDigestPinning))
 	mux.HandleFunc("/api/docs/api-quality", s.cacheMiddleware(120*time.Second, s.handleAPIQuality))                                      // platform API endpoint quality & coverage gap analyzer
 	mux.HandleFunc("/api/product/cloud-portability", s.cacheMiddleware(120*time.Second, s.handleCloudPortability))                       // cloud vendor lock-in & workload portability assessor
 	mux.HandleFunc("/api/scalability/storage-performance", s.cacheMiddleware(120*time.Second, s.handleStoragePerf))                      // storage performance tier classification & mismatch detector
