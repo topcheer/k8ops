@@ -7640,6 +7640,23 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Detects canary, blue-green, and progressive delivery patterns. Identifies candidates for progressive delivery.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Canary detection", map[string]interface{}{"healthScore": 80})},
 	})
+
+	add("/api/deployment/resource-request-gap", "get", OpenAPIOperation{
+		Summary: "Resource Request Gap", OperationID: "resource-request-gap", Tags: []string{"Deployment"},
+		Description: "Detects containers without resource requests or limits for scheduling reliability.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Request gap", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/container-port-map", "get", OpenAPIOperation{
+		Summary: "Container Port Map", OperationID: "container-port-map", Tags: []string{"Deployment"},
+		Description: "Maps all container ports including host port exposure and duplicate detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Port map", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/deployment/termination-message-audit", "get", OpenAPIOperation{
+		Summary: "Termination Message Audit", OperationID: "termination-message-audit", Tags: []string{"Deployment"},
+		Description: "Audits termination message configuration for crash diagnostic quality.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Term message", map[string]interface{}{"healthScore": 88})},
+	})
+
 	add("/api/deployment/init-container-overhead", "get", OpenAPIOperation{
 		Summary: "Init Container Overhead", OperationID: "init-container-overhead", Tags: []string{"Deployment"},
 		Description: "Analyzes init container count, resource cost, and startup delay impact on pod readiness.",
