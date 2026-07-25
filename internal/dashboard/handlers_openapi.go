@@ -7680,6 +7680,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Estimates API server QPS load from pod count and controller activity.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("API QPS", map[string]interface{}{"healthScore": 90})},
 	})
+	add("/api/scalability/pod-topology-skew", "get", OpenAPIOperation{
+		Summary: "Pod Topology Skew", OperationID: "pod-topology-skew", Tags: []string{"Scalability"},
+		Description: "Analyzes pod distribution imbalance across zones for HA planning.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Topology skew", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/scalability/iptables-size", "get", OpenAPIOperation{
+		Summary: "IPTables Size Estimator", OperationID: "iptables-size", Tags: []string{"Scalability"},
+		Description: "Estimates kube-proxy iptables rule count per node from service count.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("IPTables size", map[string]interface{}{"healthScore": 92})},
+	})
+	add("/api/scalability/etcd-compaction", "get", OpenAPIOperation{
+		Summary: "ETCD Compaction Health", OperationID: "etcd-compaction", Tags: []string{"Scalability"},
+		Description: "Estimates etcd revision pressure and DB size for compaction planning.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("ETCD compact", map[string]interface{}{"healthScore": 90})},
+	})
 
 	add("/api/deployment/canary-detector", "get", OpenAPIOperation{
 		Summary: "Canary Release Detector", OperationID: "canary-detector", Tags: []string{"Deployment"},
