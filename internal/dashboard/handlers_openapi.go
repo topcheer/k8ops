@@ -7841,6 +7841,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Inventories all labels used across pods with standard vs non-standard classification.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Label inventory", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/docs/configmap-catalog", "get", OpenAPIOperation{
+		Summary: "ConfigMap Catalog", OperationID: "configmap-catalog", Tags: []string{"Documentation"},
+		Description: "Catalogs all ConfigMaps with key count, data size, binary data, and unused detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CM catalog", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/docs/hpa-catalog", "get", OpenAPIOperation{
+		Summary: "HPA Catalog", OperationID: "hpa-catalog", Tags: []string{"Documentation"},
+		Description: "Inventories HPA autoscaling policies: CPU/memory targets, min/max replicas.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("HPA catalog", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/docs/pdb-catalog", "get", OpenAPIOperation{
+		Summary: "PDB Catalog", OperationID: "pdb-catalog", Tags: []string{"Documentation"},
+		Description: "Inventories PodDisruptionBudgets and identifies unprotected multi-replica deployments.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PDB catalog", map[string]interface{}{"healthScore": 88})},
+	})
 
 	add("/api/product/scale-limit-analysis", "get", OpenAPIOperation{
 		Summary: "Horizontal Scale Limit Analysis", OperationID: "scale-limit-analysis", Tags: []string{"Product"},
