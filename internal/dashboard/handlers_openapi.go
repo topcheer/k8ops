@@ -7682,6 +7682,22 @@ func buildOpenAPISpec() OpenAPISpec {
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Clock sync", map[string]interface{}{"healthScore": 95})},
 	})
 
+	add("/api/operations/pod-restart-cost", "get", OpenAPIOperation{
+		Summary: "Pod Restart Cost", OperationID: "pod-restart-cost", Tags: []string{"Operations"},
+		Description: "Estimates downtime and resource waste cost from pod restarts across the cluster.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Restart cost", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/node-disk-io-health", "get", OpenAPIOperation{
+		Summary: "Node Disk I/O Health", OperationID: "node-disk-io-health", Tags: []string{"Operations"},
+		Description: "Detects node disk pressure and estimates image GC pressure from image counts.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Disk I/O health", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/operations/event-qps-analyzer", "get", OpenAPIOperation{
+		Summary: "Event QPS Analyzer", OperationID: "event-qps-analyzer", Tags: []string{"Operations"},
+		Description: "Analyzes event generation rate and API server event pressure from namespace noise.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event QPS", map[string]interface{}{"healthScore": 88})},
+	})
+
 	add("/api/security/psa-violation", "get", OpenAPIOperation{
 		Summary: "Pod Security Standard Violation", OperationID: "psa-violation", Tags: []string{"Security"},
 		Description: "Audits Pod Security Admission enforcement. Detects privileged containers, hostNetwork, hostPath violations.",
