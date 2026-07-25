@@ -7732,6 +7732,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes namespace image pull secret coverage and private registry gaps.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pull secret", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/deployment/node-selector-audit", "get", OpenAPIOperation{
+		Summary: "Node Selector Audit", OperationID: "node-selector-audit", Tags: []string{"Deployment"},
+		Description: "Audits nodeSelector, nodeAffinity, and toleration coverage across pods.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node selector", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/deployment/pod-os-selector", "get", OpenAPIOperation{
+		Summary: "Pod OS Selector", OperationID: "pod-os-selector", Tags: []string{"Deployment"},
+		Description: "Checks pod OS/arch constraint (spec.os.name) compliance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod OS", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/deployment/container-working-dir", "get", OpenAPIOperation{
+		Summary: "Container Working Dir", OperationID: "container-working-dir", Tags: []string{"Deployment"},
+		Description: "Audits container working directory configuration for best practice compliance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Work dir", map[string]interface{}{"healthScore": 92})},
+	})
 
 	add("/api/deployment/init-container-overhead", "get", OpenAPIOperation{
 		Summary: "Init Container Overhead", OperationID: "init-container-overhead", Tags: []string{"Deployment"},
