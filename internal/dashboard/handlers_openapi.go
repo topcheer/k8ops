@@ -7809,6 +7809,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Service connectivity map, endpoint health, and traffic flow topology overview.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Network topology", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/product/pod-efficiency-score", "get", OpenAPIOperation{
+		Summary: "Pod Efficiency Score", OperationID: "pod-efficiency-score", Tags: []string{"Product"},
+		Description: "Scores pod resource efficiency based on CPU/memory request sizing heuristics.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod efficiency", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/service-health-overview", "get", OpenAPIOperation{
+		Summary: "Service Health Overview", OperationID: "service-health-overview", Tags: []string{"Product"},
+		Description: "Composite service health score based on endpoint readiness and backing pod availability.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Service health", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/product/cluster-utilization-summary", "get", OpenAPIOperation{
+		Summary: "Cluster Utilization Summary", OperationID: "cluster-utilization-summary", Tags: []string{"Product"},
+		Description: "Aggregate cluster resource utilization with per-namespace breakdown.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cluster utilization", map[string]interface{}{"healthScore": 88})},
+	})
 
 	return spec
 }
