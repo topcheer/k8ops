@@ -7867,6 +7867,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Estimates per-namespace resource contention and pressure level.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("NS pressure", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/operations/pod-probe-latency", "get", OpenAPIOperation{
+		Summary: "Pod Probe Latency", OperationID: "pod-probe-latency", Tags: []string{"Operations"},
+		Description: "Analyzes readiness/liveness/startup probe configuration for gaps and aggressive intervals.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Probe config", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/image-pull-duration", "get", OpenAPIOperation{
+		Summary: "Image Pull Duration", OperationID: "image-pull-duration", Tags: []string{"Operations"},
+		Description: "Estimates image pull time from image characteristics and detects Always pull policy waste.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Image pull", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/operations/config-reload-health", "get", OpenAPIOperation{
+		Summary: "Config Reload Health", OperationID: "config-reload-health", Tags: []string{"Operations"},
+		Description: "Tracks ConfigMap/Secret mount reload coverage and reloader annotation gaps.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Config reload", map[string]interface{}{"healthScore": 88})},
+	})
 
 	add("/api/security/psa-violation", "get", OpenAPIOperation{
 		Summary: "Pod Security Standard Violation", OperationID: "psa-violation", Tags: []string{"Security"},
