@@ -8066,6 +8066,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Catalogs storage classes with provisioner, reclaim policy, and binding mode.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("SC catalog", map[string]interface{}{"healthScore": 92})},
 	})
+	add("/api/docs/priority-class-catalog", "get", OpenAPIOperation{
+		Summary: "Priority Class Catalog", OperationID: "priority-class-catalog", Tags: []string{"Documentation"},
+		Description: "Catalogs all priority classes with values and global default status.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PC catalog", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/docs/role-binding-catalog", "get", OpenAPIOperation{
+		Summary: "Role Binding Catalog", OperationID: "role-binding-catalog", Tags: []string{"Documentation"},
+		Description: "Inventories all RBAC role bindings and cluster role bindings with subject mapping.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("RB catalog", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/docs/endpoint-slice-catalog", "get", OpenAPIOperation{
+		Summary: "Endpoint Slice Catalog", OperationID: "endpoint-slice-catalog", Tags: []string{"Documentation"},
+		Description: "Catalogs endpoint slices with address, port, and readiness mapping for discovery.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("EP slice", map[string]interface{}{"healthScore": 92})},
+	})
 
 	add("/api/product/scale-limit-analysis", "get", OpenAPIOperation{
 		Summary: "Horizontal Scale Limit Analysis", OperationID: "scale-limit-analysis", Tags: []string{"Product"},
