@@ -4885,6 +4885,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes node label tamper surface for NodeRestriction admission planning.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node restrict", map[string]interface{}{"healthScore": 92})},
 	})
+	add("/api/security/priv-esc-audit", "get", OpenAPIOperation{
+		Summary: "Privilege Escalation Audit", OperationID: "priv-esc-audit", Tags: []string{"Security"},
+		Description: "Audits allowPrivilegeEscalation setting for container breakout prevention.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Priv esc", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/security/seccomp-profile-audit", "get", OpenAPIOperation{
+		Summary: "Seccomp Profile Audit", OperationID: "seccomp-profile-audit", Tags: []string{"Security"},
+		Description: "Audits seccomp profile compliance (RuntimeDefault vs Unconfined vs not set).",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Seccomp", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/security/cap-drop-audit", "get", OpenAPIOperation{
+		Summary: "CapDrop Audit", OperationID: "cap-drop-audit", Tags: []string{"Security"},
+		Description: "Tracks dropped capabilities and high-risk capAdd usage for least-privilege analysis.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cap drop", map[string]interface{}{"healthScore": 85})},
+	})
 
 	// --- API Quality (v17.79) ---
 	add("/api/docs/api-quality", "get", OpenAPIOperation{

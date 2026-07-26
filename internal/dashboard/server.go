@@ -509,6 +509,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/rbac-wildcard-verb", s.cacheMiddleware(120*time.Second, s.handleRBACWildcardVerb))
 	mux.HandleFunc("/api/security/anonymous-auth-risk", s.cacheMiddleware(120*time.Second, s.handleAnonymousAuthRisk))
 	mux.HandleFunc("/api/security/node-restriction-label", s.cacheMiddleware(120*time.Second, s.handleNodeRestrictionLabel))
+	mux.HandleFunc("/api/security/priv-esc-audit", s.cacheMiddleware(120*time.Second, s.handlePrivEscAudit))
+	mux.HandleFunc("/api/security/seccomp-profile-audit", s.cacheMiddleware(120*time.Second, s.handleSeccompProfileV2))
+	mux.HandleFunc("/api/security/cap-drop-audit", s.cacheMiddleware(120*time.Second, s.handleCapDropAudit))
 	mux.HandleFunc("/api/docs/api-quality", s.cacheMiddleware(120*time.Second, s.handleAPIQuality))                                      // platform API endpoint quality & coverage gap analyzer
 	mux.HandleFunc("/api/product/cloud-portability", s.cacheMiddleware(120*time.Second, s.handleCloudPortability))                       // cloud vendor lock-in & workload portability assessor
 	mux.HandleFunc("/api/scalability/storage-performance", s.cacheMiddleware(120*time.Second, s.handleStoragePerf))                      // storage performance tier classification & mismatch detector
@@ -690,7 +693,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/env-var-drift-detect", s.cacheMiddleware(60*time.Second, s.handleEnvVarDriftDetect))                    // env var drift detect
 	mux.HandleFunc("/api/product/dns-record-audit", s.cacheMiddleware(60*time.Second, s.handleDNSRecordAudit))                           // dns record audit
 	mux.HandleFunc("/api/product/workload-startup-profile", s.cacheMiddleware(60*time.Second, s.handleWorkloadStartupProfile))           // workload startup profile
-	mux.HandleFunc("/api/security/seccomp-profile-audit", s.cacheMiddleware(60*time.Second, s.handleSeccompProfileAudit))                // seccomp profile audit
+	mux.HandleFunc("/api/security/seccomp-profile-audit", s.cacheMiddleware(60*time.Second, s.handleSeccompProfileV2))                   // seccomp profile audit
 	mux.HandleFunc("/api/security/sa-token-age-v2", s.cacheMiddleware(60*time.Second, s.handleSATokenAgeV2))                             // sa token age
 	mux.HandleFunc("/api/security/runtime-class-audit", s.cacheMiddleware(60*time.Second, s.handleRuntimeClassIsolation))                // runtime class audit
 	mux.HandleFunc("/api/scalability/pdb-gap-analysis", s.cacheMiddleware(60*time.Second, s.handlePDBGapAnalysisV2))                     // pdb gap analysis
