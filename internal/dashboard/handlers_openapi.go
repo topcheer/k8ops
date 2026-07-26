@@ -7991,6 +7991,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Catalogs event reasons and sources with distribution analysis.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event types", map[string]interface{}{"healthScore": 92})},
 	})
+	add("/api/docs/node-taint-catalog", "get", OpenAPIOperation{
+		Summary: "Node Taint Catalog", OperationID: "node-taint-catalog", Tags: []string{"Documentation"},
+		Description: "Catalogs all node taints with their scheduling effects for capacity documentation.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Taint catalog", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/docs/volume-snapshot-catalog", "get", OpenAPIOperation{
+		Summary: "Volume Snapshot Catalog", OperationID: "volume-snapshot-catalog", Tags: []string{"Documentation"},
+		Description: "Inventories VolumeSnapshots with readiness status and source PVC mapping.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Snapshot catalog", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/docs/storage-class-catalog", "get", OpenAPIOperation{
+		Summary: "Storage Class Catalog", OperationID: "storage-class-catalog", Tags: []string{"Documentation"},
+		Description: "Catalogs storage classes with provisioner, reclaim policy, and binding mode.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SC catalog", map[string]interface{}{"healthScore": 92})},
+	})
 
 	add("/api/product/scale-limit-analysis", "get", OpenAPIOperation{
 		Summary: "Horizontal Scale Limit Analysis", OperationID: "scale-limit-analysis", Tags: []string{"Product"},
