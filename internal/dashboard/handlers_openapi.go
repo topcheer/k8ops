@@ -8173,6 +8173,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Tracks batch job success/failure rates and completion statistics.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Job rate", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/product/cpu-throttle-est", "get", OpenAPIOperation{
+		Summary: "CPU Throttle Estimator", OperationID: "cpu-throttle-est", Tags: []string{"Product"},
+		Description: "Estimates CFS quota throttling risk from CPU limit ratios.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CPU throttle", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/image-layer-dedup", "get", OpenAPIOperation{
+		Summary: "Image Layer Dedup", OperationID: "image-layer-dedup", Tags: []string{"Product"},
+		Description: "Analyzes cross-pod image layer sharing potential for storage optimization.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Img dedup", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/product/pod-scheduling-latency", "get", OpenAPIOperation{
+		Summary: "Pod Scheduling Latency", OperationID: "pod-scheduling-latency", Tags: []string{"Product"},
+		Description: "Measures time from pod creation to running for scheduling performance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Sched latency", map[string]interface{}{"healthScore": 88})},
+	})
 
 	return spec
 }
