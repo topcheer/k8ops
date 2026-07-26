@@ -7740,6 +7740,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Checks IP address management capacity and exhaustion risk per node.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("CNI IPAM", map[string]interface{}{"healthScore": 92})},
 	})
+	add("/api/scalability/control-plane-load", "get", OpenAPIOperation{
+		Summary: "Control Plane Load", OperationID: "control-plane-load", Tags: []string{"Scalability"},
+		Description: "Estimates API server and controller load from total object count.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CP load", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/scalability/volume-attach-density", "get", OpenAPIOperation{
+		Summary: "Volume Attach Density", OperationID: "volume-attach-density", Tags: []string{"Scalability"},
+		Description: "Measures per-node PVC attachment count for storage scalability limits.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Vol attach", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/scalability/ns-quota-utilization", "get", OpenAPIOperation{
+		Summary: "NS Quota Utilization", OperationID: "ns-quota-utilization", Tags: []string{"Scalability"},
+		Description: "Analyzes resource quota consumption and near-limit namespace detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Quota util", map[string]interface{}{"healthScore": 88})},
+	})
 
 	add("/api/deployment/canary-detector", "get", OpenAPIOperation{
 		Summary: "Canary Release Detector", OperationID: "canary-detector", Tags: []string{"Deployment"},
