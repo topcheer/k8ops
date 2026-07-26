@@ -823,7 +823,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/restart-rate", s.cacheMiddleware(120*time.Second, s.handleRestartRate))                             // pod restart rate limiter
 	mux.HandleFunc("/api/scalability/node-affinity-compliance", s.cacheMiddleware(120*time.Second, s.handleNodeAffinityCompliance))      // node affinity compliance
 	mux.HandleFunc("/api/scalability/quota-pressure-index", s.cacheMiddleware(120*time.Second, s.handleQuotaPressure))                   // quota pressure index
-	mux.HandleFunc("/api/deployment/sts-health", s.cacheMiddleware(120*time.Second, s.handleStatefulSetHealth))                          // statefulset health audit
+	mux.HandleFunc("/api/deployment/sts-health", s.cacheMiddleware(120*time.Second, s.handleStatefulSetHealthV2))                        // statefulset health audit
 	mux.HandleFunc("/api/deployment/image-pull-secret-gap", s.cacheMiddleware(120*time.Second, s.handleImagePullSecretGap))              // image pull secret gap
 	mux.HandleFunc("/api/deployment/topology-distribution", s.cacheMiddleware(120*time.Second, s.handleTopologyDistribution))            // pod topology distribution
 	mux.HandleFunc("/api/operations/pvc-lifecycle", s.cacheMiddleware(120*time.Second, s.handlePVCLifecycle))                            // pvc lifecycle monitor
@@ -979,6 +979,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/pod-density-score", s.cacheMiddleware(120*time.Second, s.handlePodDensityScore))
 	mux.HandleFunc("/api/product/image-cache-efficiency", s.cacheMiddleware(120*time.Second, s.handleImageCacheEff))
 	mux.HandleFunc("/api/product/node-bin-packing", s.cacheMiddleware(120*time.Second, s.handleNodeBinPacking))
+	mux.HandleFunc("/api/product/statefulset-health", s.cacheMiddleware(120*time.Second, s.handleStatefulSetHealthV2))
+	mux.HandleFunc("/api/product/daemonset-coverage", s.cacheMiddleware(120*time.Second, s.handleDaemonSetCoverage))
+	mux.HandleFunc("/api/product/job-completion-rate", s.cacheMiddleware(120*time.Second, s.handleJobCompletionRate))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)

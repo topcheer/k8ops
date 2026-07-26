@@ -8083,6 +8083,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Measures resource bin packing efficiency per node for optimization.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Bin packing", map[string]interface{}{"healthScore": 90})},
 	})
+	add("/api/product/statefulset-health", "get", OpenAPIOperation{
+		Summary: "StatefulSet Health", OperationID: "statefulset-health", Tags: []string{"Product"},
+		Description: "Checks StatefulSet ordering and readiness compliance for stateful workload health.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("STS health", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/product/daemonset-coverage", "get", OpenAPIOperation{
+		Summary: "DaemonSet Coverage", OperationID: "daemonset-coverage", Tags: []string{"Product"},
+		Description: "Analyzes DaemonSet node coverage gaps and scheduling completeness.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("DS coverage", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/product/job-completion-rate", "get", OpenAPIOperation{
+		Summary: "Job Completion Rate", OperationID: "job-completion-rate", Tags: []string{"Product"},
+		Description: "Tracks batch job success/failure rates and completion statistics.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Job rate", map[string]interface{}{"healthScore": 85})},
+	})
 
 	return spec
 }
