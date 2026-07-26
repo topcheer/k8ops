@@ -506,6 +506,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/sa-privilege-scope", s.cacheMiddleware(120*time.Second, s.handleSAPrivScope))
 	mux.HandleFunc("/api/security/token-audit-trail", s.cacheMiddleware(120*time.Second, s.handleTokenAuditTrail))
 	mux.HandleFunc("/api/security/secret-volume-exposure", s.cacheMiddleware(120*time.Second, s.handleSecretVolExposure))
+	mux.HandleFunc("/api/security/rbac-wildcard-verb", s.cacheMiddleware(120*time.Second, s.handleRBACWildcardVerb))
+	mux.HandleFunc("/api/security/anonymous-auth-risk", s.cacheMiddleware(120*time.Second, s.handleAnonymousAuthRisk))
+	mux.HandleFunc("/api/security/node-restriction-label", s.cacheMiddleware(120*time.Second, s.handleNodeRestrictionLabel))
 	mux.HandleFunc("/api/docs/api-quality", s.cacheMiddleware(120*time.Second, s.handleAPIQuality))                                      // platform API endpoint quality & coverage gap analyzer
 	mux.HandleFunc("/api/product/cloud-portability", s.cacheMiddleware(120*time.Second, s.handleCloudPortability))                       // cloud vendor lock-in & workload portability assessor
 	mux.HandleFunc("/api/scalability/storage-performance", s.cacheMiddleware(120*time.Second, s.handleStoragePerf))                      // storage performance tier classification & mismatch detector

@@ -4870,6 +4870,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Maps secrets mounted as volumes vs env vars with all-keys exposure detection.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Secret volume", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/security/rbac-wildcard-verb", "get", OpenAPIOperation{
+		Summary: "RBAC Wildcard Verb", OperationID: "rbac-wildcard-verb", Tags: []string{"Security"},
+		Description: "Detects wildcard (*) verb and resource usage in RBAC roles for overbroad permission analysis.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("RBAC wildcard", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/security/anonymous-auth-risk", "get", OpenAPIOperation{
+		Summary: "Anonymous Auth Risk", OperationID: "anonymous-auth-risk", Tags: []string{"Security"},
+		Description: "Identifies externally exposed services without authentication annotations.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Anon auth", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/security/node-restriction-label", "get", OpenAPIOperation{
+		Summary: "Node Restriction Label", OperationID: "node-restriction-label", Tags: []string{"Security"},
+		Description: "Analyzes node label tamper surface for NodeRestriction admission planning.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node restrict", map[string]interface{}{"healthScore": 92})},
+	})
 
 	// --- API Quality (v17.79) ---
 	add("/api/docs/api-quality", "get", OpenAPIOperation{
