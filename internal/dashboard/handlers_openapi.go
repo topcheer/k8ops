@@ -7822,6 +7822,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Tracks /etc/hosts overrides via pod hostAliases for configuration drift detection.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Host alias", map[string]interface{}{"healthScore": 90})},
 	})
+	add("/api/deployment/restart-policy-audit", "get", OpenAPIOperation{
+		Summary: "Restart Policy Audit", OperationID: "restart-policy-audit", Tags: []string{"Deployment"},
+		Description: "Audits pod restart policy compliance for recovery reliability.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Restart policy", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/deployment/revision-history-audit", "get", OpenAPIOperation{
+		Summary: "Revision History Audit", OperationID: "revision-history-audit", Tags: []string{"Deployment"},
+		Description: "Checks deployment revision history limit configuration for rollback capability.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Rev history", map[string]interface{}{"healthScore": 92})},
+	})
+	add("/api/deployment/container-env-health", "get", OpenAPIOperation{
+		Summary: "Container Env Health", OperationID: "container-env-health", Tags: []string{"Deployment"},
+		Description: "Detects hardcoded sensitive env vars and tracks Secret/ConfigMap reference usage.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Env health", map[string]interface{}{"healthScore": 85})},
+	})
 
 	add("/api/deployment/init-container-overhead", "get", OpenAPIOperation{
 		Summary: "Init Container Overhead", OperationID: "init-container-overhead", Tags: []string{"Deployment"},
