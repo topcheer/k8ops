@@ -7777,6 +7777,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits container working directory configuration for best practice compliance.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Work dir", map[string]interface{}{"healthScore": 92})},
 	})
+	add("/api/deployment/container-stdin-tty", "get", OpenAPIOperation{
+		Summary: "Container Stdin/TTY", OperationID: "container-stdin-tty", Tags: []string{"Deployment"},
+		Description: "Detects containers with stdin or TTY enabled in production workloads.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Stdin/TTY", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/deployment/pod-dns-config", "get", OpenAPIOperation{
+		Summary: "Pod DNS Config", OperationID: "pod-dns-config", Tags: []string{"Deployment"},
+		Description: "Audits custom DNS configuration and DNSNone policy usage across pods.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("DNS config", map[string]interface{}{"healthScore": 92})},
+	})
+	add("/api/deployment/host-alias-audit", "get", OpenAPIOperation{
+		Summary: "Host Alias Audit", OperationID: "host-alias-audit", Tags: []string{"Deployment"},
+		Description: "Tracks /etc/hosts overrides via pod hostAliases for configuration drift detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Host alias", map[string]interface{}{"healthScore": 90})},
+	})
 
 	add("/api/deployment/init-container-overhead", "get", OpenAPIOperation{
 		Summary: "Init Container Overhead", OperationID: "init-container-overhead", Tags: []string{"Deployment"},
