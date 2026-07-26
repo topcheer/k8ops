@@ -221,17 +221,22 @@ func (s *Server) handleCapDropAudit(w http.ResponseWriter, r *http.Request) {
 		for _, c := range pod.Spec.Containers {
 			result.Summary.TotalContainers++
 
-			hasDrop := len(c.SecurityContext.Capabilities.Drop) > 0
-			hasAdd := len(c.SecurityContext.Capabilities.Add) > 0
+			hasDrop := false
+			hasAdd := false
+			if c.SecurityContext != nil && c.SecurityContext.Capabilities != nil {
+				hasDrop = len(c.SecurityContext.Capabilities.Drop) > 0
+				hasAdd = len(c.SecurityContext.Capabilities.Add) > 0
+			}
 
 			entry := CapDropEntry1991{
 				Pod: pod.Name, Namespace: pod.Namespace, Container: c.Name,
 			}
 
-			if hasDrop {
+			if hasDrop && c.SecurityContext.Capabilities != nil {
 				result.Summary.WithCapDrop++
-				entry.CapDrop = make([]string, len(c.SecurityContext.Capabilities.Drop))
-				for i, d := range c.SecurityContext.Capabilities.Drop {
+				drops := c.SecurityContext.Capabilities.Drop
+				entry.CapDrop = make([]string, len(drops))
+				for i, d := range drops {
 					entry.CapDrop[i] = string(d)
 				}
 				// Check if ALL dropped
@@ -243,7 +248,7 @@ func (s *Server) handleCapDropAudit(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 
-			if hasAdd {
+			if hasAdd && c.SecurityContext.Capabilities != nil {
 				result.Summary.WithCapAdd++
 				entry.CapAdd = make([]string, len(c.SecurityContext.Capabilities.Add))
 				for i, a := range c.SecurityContext.Capabilities.Add {
