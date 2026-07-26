@@ -7710,6 +7710,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Estimates etcd revision pressure and DB size for compaction planning.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("ETCD compact", map[string]interface{}{"healthScore": 90})},
 	})
+	add("/api/scalability/kubelet-pod-limit", "get", OpenAPIOperation{
+		Summary: "Kubelet Pod Limit", OperationID: "kubelet-pod-limit", Tags: []string{"Scalability"},
+		Description: "Checks per-node pod count against maxPods limit for density ceiling analysis.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod limit", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/scalability/dns-query-pressure", "get", OpenAPIOperation{
+		Summary: "DNS Query Pressure", OperationID: "dns-query-pressure", Tags: []string{"Scalability"},
+		Description: "Estimates CoreDNS QPS load from pod count for DNS scalability planning.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("DNS pressure", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/scalability/cni-ipam-capacity", "get", OpenAPIOperation{
+		Summary: "CNI IPAM Capacity", OperationID: "cni-ipam-capacity", Tags: []string{"Scalability"},
+		Description: "Checks IP address management capacity and exhaustion risk per node.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CNI IPAM", map[string]interface{}{"healthScore": 92})},
+	})
 
 	add("/api/deployment/canary-detector", "get", OpenAPIOperation{
 		Summary: "Canary Release Detector", OperationID: "canary-detector", Tags: []string{"Deployment"},
