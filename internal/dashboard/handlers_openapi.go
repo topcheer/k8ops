@@ -7927,6 +7927,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Tracks ConfigMap/Secret mount reload coverage and reloader annotation gaps.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Config reload", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/operations/pod-grace-period", "get", OpenAPIOperation{
+		Summary: "Pod Grace Period", OperationID: "pod-grace-period", Tags: []string{"Operations"},
+		Description: "Audits terminationGracePeriodSeconds for too-short or too-long cleanup windows.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Grace period", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/operations/resource-limit-ratio", "get", OpenAPIOperation{
+		Summary: "Resource Limit Ratio", OperationID: "resource-limit-ratio", Tags: []string{"Operations"},
+		Description: "Analyzes request-to-limit ratio for overcommit detection and resource sizing.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Limit ratio", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/cronjob-execution-health", "get", OpenAPIOperation{
+		Summary: "CronJob Execution Health", OperationID: "cronjob-execution-health", Tags: []string{"Operations"},
+		Description: "Tracks CronJob schedule adherence, suspension status, and concurrency limits.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CronJob health", map[string]interface{}{"healthScore": 88})},
+	})
 
 	add("/api/security/psa-violation", "get", OpenAPIOperation{
 		Summary: "Pod Security Standard Violation", OperationID: "psa-violation", Tags: []string{"Security"},
