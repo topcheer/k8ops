@@ -8141,6 +8141,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Catalogs endpoint slices with address, port, and readiness mapping for discovery.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("EP slice", map[string]interface{}{"healthScore": 92})},
 	})
+	add("/api/docs/topology-spread-catalog", "get", OpenAPIOperation{
+		Summary: "Topology Spread Catalog", OperationID: "topology-spread-catalog", Tags: []string{"Documentation"},
+		Description: "Inventories topology spread constraints for HA distribution analysis.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Topo spread", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/docs/limitrange-catalog", "get", OpenAPIOperation{
+		Summary: "LimitRange Catalog", OperationID: "limitrange-catalog", Tags: []string{"Documentation"},
+		Description: "Catalogs LimitRange resources with CPU/memory default limits.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("LimitRange", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/docs/lease-holder-catalog", "get", OpenAPIOperation{
+		Summary: "Lease Holder Catalog", OperationID: "lease-holder-catalog", Tags: []string{"Documentation"},
+		Description: "Inventories leader election leases with holder and renewal tracking.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Lease catalog", map[string]interface{}{"healthScore": 95})},
+	})
 
 	add("/api/product/scale-limit-analysis", "get", OpenAPIOperation{
 		Summary: "Horizontal Scale Limit Analysis", OperationID: "scale-limit-analysis", Tags: []string{"Product"},
