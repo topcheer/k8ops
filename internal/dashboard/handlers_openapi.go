@@ -8047,6 +8047,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Evaluates network policy enforcement coverage and default-deny posture.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("NetPol budget", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/operations/pod-init-time", "get", OpenAPIOperation{
+		Summary: "Pod Init Time", OperationID: "pod-init-time", Tags: []string{"Operations"},
+		Description: "Analyzes container startup duration for slow initialization detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod init", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/operations/kubelet-cert-expiry", "get", OpenAPIOperation{
+		Summary: "Kubelet Cert Expiry", OperationID: "kubelet-cert-expiry", Tags: []string{"Operations"},
+		Description: "Estimates kubelet serving certificate staleness from node age.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Kubelet cert", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/operations/ns-event-noise", "get", OpenAPIOperation{
+		Summary: "NS Event Noise", OperationID: "ns-event-noise", Tags: []string{"Operations"},
+		Description: "Identifies high-volume event namespaces for noise reduction.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event noise", map[string]interface{}{"healthScore": 85})},
+	})
 
 	add("/api/security/psa-violation", "get", OpenAPIOperation{
 		Summary: "Pod Security Standard Violation", OperationID: "psa-violation", Tags: []string{"Security"},
