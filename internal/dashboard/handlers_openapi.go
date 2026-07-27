@@ -7912,6 +7912,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits volume mount subPath usage for mount isolation compliance.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("SubPath", map[string]interface{}{"healthScore": 92})},
 	})
+	add("/api/deployment/pod-ephemeral-storage", "get", OpenAPIOperation{
+		Summary: "Pod Ephemeral Storage", OperationID: "pod-ephemeral-storage", Tags: []string{"Deployment"},
+		Description: "Audits ephemeral storage request/limit for disk exhaustion prevention.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Eph storage", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/deployment-condition-history", "get", OpenAPIOperation{
+		Summary: "Deployment Condition History", OperationID: "deployment-condition-history", Tags: []string{"Deployment"},
+		Description: "Tracks deployment condition transitions (Available/Progressing/ReplicaFailure).",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cond history", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/deployment/container-resources-gap", "get", OpenAPIOperation{
+		Summary: "Container Resources Gap", OperationID: "container-resources-gap", Tags: []string{"Deployment"},
+		Description: "Detects containers missing resource requests or limits.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Res gap", map[string]interface{}{"healthScore": 85})},
+	})
 
 	add("/api/deployment/init-container-overhead", "get", OpenAPIOperation{
 		Summary: "Init Container Overhead", OperationID: "init-container-overhead", Tags: []string{"Deployment"},
