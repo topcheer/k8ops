@@ -7957,6 +7957,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Detects containers missing resource requests or limits.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Res gap", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/deployment/pod-sethostname-domain", "get", OpenAPIOperation{
+		Summary: "Pod SetHostname Domain", OperationID: "pod-sethostname-domain", Tags: []string{"Deployment"},
+		Description: "Audits pod hostname, subdomain, and SetHostnameAsFQDN configuration.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Hostname", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/deployment/container-tc-egress-mark", "get", OpenAPIOperation{
+		Summary: "Container TC Egress Mark", OperationID: "container-tc-egress-mark", Tags: []string{"Deployment"},
+		Description: "Audits traffic shaping bandwidth annotations and TC marks.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("TC egress", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/deployment/pod-nodeselector-validation", "get", OpenAPIOperation{
+		Summary: "Pod NodeSelector Validation", OperationID: "pod-nodeselector-validation", Tags: []string{"Deployment"},
+		Description: "Validates nodeSelector key format against known label prefixes.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("NS valid", map[string]interface{}{"healthScore": 92})},
+	})
 
 	add("/api/deployment/init-container-overhead", "get", OpenAPIOperation{
 		Summary: "Init Container Overhead", OperationID: "init-container-overhead", Tags: []string{"Deployment"},
