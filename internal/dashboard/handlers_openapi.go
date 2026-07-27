@@ -4930,6 +4930,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Tracks dangerous sysctl configuration exposure in pod securityContext.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Kernel param", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/security/sa-image-pull-secret", "get", OpenAPIOperation{
+		Summary: "SA Image Pull Secret", OperationID: "sa-image-pull-secret", Tags: []string{"Security"},
+		Description: "Audits service account image pull secret coverage for private registry access.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SA pull sec", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/security/pod-dns-policy-restrict", "get", OpenAPIOperation{
+		Summary: "Pod DNS Policy Restrict", OperationID: "pod-dns-policy-restrict", Tags: []string{"Security"},
+		Description: "Checks pod DNS policy compliance for cluster DNS isolation.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("DNS policy", map[string]interface{}{"healthScore": 92})},
+	})
+	add("/api/security/container-run-as-user", "get", OpenAPIOperation{
+		Summary: "Container RunAsUser", OperationID: "container-run-as-user", Tags: []string{"Security"},
+		Description: "Audits runAsUser for root (UID 0) vs non-root compliance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("RunAsUser", map[string]interface{}{"healthScore": 80})},
+	})
 
 	// --- API Quality (v17.79) ---
 	add("/api/docs/api-quality", "get", OpenAPIOperation{
