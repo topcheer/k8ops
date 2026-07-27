@@ -1014,6 +1014,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/cpu-throttle-est", s.cacheMiddleware(120*time.Second, s.handleCPUThrottleEst))
 	mux.HandleFunc("/api/product/image-layer-dedup", s.cacheMiddleware(120*time.Second, s.handleImageLayerDedup))
 	mux.HandleFunc("/api/product/pod-scheduling-latency", s.cacheMiddleware(120*time.Second, s.handlePodSchedLatency))
+	mux.HandleFunc("/api/product/vol-lifecycle-age", s.cacheMiddleware(120*time.Second, s.handleVolLifecycleAge))
+	mux.HandleFunc("/api/product/service-endpoint-health", s.cacheMiddleware(120*time.Second, s.handleServiceEndpointHealth))
+	mux.HandleFunc("/api/product/image-tag-freshness", s.cacheMiddleware(120*time.Second, s.handleImageTagFreshness))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)

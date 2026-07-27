@@ -8263,6 +8263,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Measures time from pod creation to running for scheduling performance.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Sched latency", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/product/vol-lifecycle-age", "get", OpenAPIOperation{
+		Summary: "Volume Lifecycle Age", OperationID: "vol-lifecycle-age", Tags: []string{"Product"},
+		Description: "Tracks PVC age distribution and identifies stale volumes for cleanup.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Vol lifecycle", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/product/service-endpoint-health", "get", OpenAPIOperation{
+		Summary: "Service Endpoint Health", OperationID: "service-endpoint-health", Tags: []string{"Product"},
+		Description: "Checks backing pod readiness per service for endpoint health.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Svc EP health", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/product/image-tag-freshness", "get", OpenAPIOperation{
+		Summary: "Image Tag Freshness", OperationID: "image-tag-freshness", Tags: []string{"Product"},
+		Description: "Classifies image tags (semver/SHA/latest/none) for reproducibility.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Img tag fresh", map[string]interface{}{"healthScore": 85})},
+	})
 
 	return spec
 }
