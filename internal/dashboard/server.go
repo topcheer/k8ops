@@ -515,6 +515,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/host-path-audit", s.cacheMiddleware(120*time.Second, s.handleHostPathAuditV2))
 	mux.HandleFunc("/api/security/readonly-rootfs", s.cacheMiddleware(120*time.Second, s.handleReadOnlyRootFSV2))
 	mux.HandleFunc("/api/security/sa-token-age", s.cacheMiddleware(120*time.Second, s.handleSATokenAgeV3))
+	mux.HandleFunc("/api/security/fs-group-audit", s.cacheMiddleware(120*time.Second, s.handleFSGroupAudit))
+	mux.HandleFunc("/api/security/proc-mount-type", s.cacheMiddleware(120*time.Second, s.handleProcMountType))
+	mux.HandleFunc("/api/security/kernel-param-access", s.cacheMiddleware(120*time.Second, s.handleKernelParamAccess))
 	mux.HandleFunc("/api/docs/api-quality", s.cacheMiddleware(120*time.Second, s.handleAPIQuality))                                      // platform API endpoint quality & coverage gap analyzer
 	mux.HandleFunc("/api/product/cloud-portability", s.cacheMiddleware(120*time.Second, s.handleCloudPortability))                       // cloud vendor lock-in & workload portability assessor
 	mux.HandleFunc("/api/scalability/storage-performance", s.cacheMiddleware(120*time.Second, s.handleStoragePerf))                      // storage performance tier classification & mismatch detector

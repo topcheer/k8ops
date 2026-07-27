@@ -4915,6 +4915,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Estimates service account token staleness from creation timestamp.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("SA token age", map[string]interface{}{"healthScore": 90})},
 	})
+	add("/api/security/fs-group-audit", "get", OpenAPIOperation{
+		Summary: "FSGroup Audit", OperationID: "fs-group-audit", Tags: []string{"Security"},
+		Description: "Audits pod securityContext.fsGroup for volume ownership compliance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("FSGroup", map[string]interface{}{"healthScore": 92})},
+	})
+	add("/api/security/proc-mount-type", "get", OpenAPIOperation{
+		Summary: "Proc Mount Type", OperationID: "proc-mount-type", Tags: []string{"Security"},
+		Description: "Audits proc mount type (Default vs Unmasked) for /proc exposure.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Proc mount", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/security/kernel-param-access", "get", OpenAPIOperation{
+		Summary: "Kernel Param Access", OperationID: "kernel-param-access", Tags: []string{"Security"},
+		Description: "Tracks dangerous sysctl configuration exposure in pod securityContext.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Kernel param", map[string]interface{}{"healthScore": 85})},
+	})
 
 	// --- API Quality (v17.79) ---
 	add("/api/docs/api-quality", "get", OpenAPIOperation{
