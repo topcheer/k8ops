@@ -7830,6 +7830,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Counts total objects per type for API server scaling risk assessment.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Obj budget", map[string]interface{}{"healthScore": 90})},
 	})
+	add("/api/scalability/etcd-db-size-estimator", "get", OpenAPIOperation{
+		Summary: "ETCD DB Size Estimator", OperationID: "etcd-db-size-estimator", Tags: []string{"Scalability"},
+		Description: "Estimates etcd storage consumption from object count per type.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("ETCD size", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/scalability/scheduler-cache-pressure", "get", OpenAPIOperation{
+		Summary: "Scheduler Cache Pressure", OperationID: "scheduler-cache-pressure", Tags: []string{"Scalability"},
+		Description: "Measures scheduler cache pressure from pod-per-node ratio.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Sched cache", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/scalability/apiserver-request-latency", "get", OpenAPIOperation{
+		Summary: "APIServer Request Latency", OperationID: "apiserver-request-latency", Tags: []string{"Scalability"},
+		Description: "Estimates API server response latency from total pod count.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("API latency", map[string]interface{}{"healthScore": 90})},
+	})
 
 	add("/api/deployment/canary-detector", "get", OpenAPIOperation{
 		Summary: "Canary Release Detector", OperationID: "canary-detector", Tags: []string{"Deployment"},
