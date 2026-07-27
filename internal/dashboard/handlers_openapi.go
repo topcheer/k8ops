@@ -7770,6 +7770,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Analyzes resource quota consumption and near-limit namespace detection.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Quota util", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/scalability/control-plane-ha", "get", OpenAPIOperation{
+		Summary: "Control Plane HA", OperationID: "control-plane-ha", Tags: []string{"Scalability"},
+		Description: "Estimates API server and etcd replica count for HA assessment.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CP HA", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/scalability/anti-affinity-coverage", "get", OpenAPIOperation{
+		Summary: "Anti-Affinity Coverage", OperationID: "anti-affinity-coverage", Tags: []string{"Scalability"},
+		Description: "Checks pod anti-affinity spread guarantee for multi-replica HA workloads.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Anti-affinity", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/scalability/request-headroom", "get", OpenAPIOperation{
+		Summary: "Request Headroom", OperationID: "request-headroom", Tags: []string{"Scalability"},
+		Description: "Measures cluster-wide schedulable capacity headroom from resource requests.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Req headroom", map[string]interface{}{"healthScore": 88})},
+	})
 
 	add("/api/deployment/canary-detector", "get", OpenAPIOperation{
 		Summary: "Canary Release Detector", OperationID: "canary-detector", Tags: []string{"Deployment"},
