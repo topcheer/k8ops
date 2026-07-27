@@ -512,6 +512,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/priv-esc-audit", s.cacheMiddleware(120*time.Second, s.handlePrivEscAudit))
 	mux.HandleFunc("/api/security/seccomp-profile-audit", s.cacheMiddleware(120*time.Second, s.handleSeccompProfileV2))
 	mux.HandleFunc("/api/security/cap-drop-audit", s.cacheMiddleware(120*time.Second, s.handleCapDropAudit))
+	mux.HandleFunc("/api/security/host-path-audit", s.cacheMiddleware(120*time.Second, s.handleHostPathAuditV2))
+	mux.HandleFunc("/api/security/readonly-rootfs", s.cacheMiddleware(120*time.Second, s.handleReadOnlyRootFSV2))
+	mux.HandleFunc("/api/security/sa-token-age", s.cacheMiddleware(120*time.Second, s.handleSATokenAgeV3))
 	mux.HandleFunc("/api/docs/api-quality", s.cacheMiddleware(120*time.Second, s.handleAPIQuality))                                      // platform API endpoint quality & coverage gap analyzer
 	mux.HandleFunc("/api/product/cloud-portability", s.cacheMiddleware(120*time.Second, s.handleCloudPortability))                       // cloud vendor lock-in & workload portability assessor
 	mux.HandleFunc("/api/scalability/storage-performance", s.cacheMiddleware(120*time.Second, s.handleStoragePerf))                      // storage performance tier classification & mismatch detector
@@ -675,9 +678,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/secret-mount-audit", s.cacheMiddleware(60*time.Second, s.handleSecretMountAudit))                       // secret mount audit
 	mux.HandleFunc("/api/product/label-propagation", s.cacheMiddleware(60*time.Second, s.handleLabelPropagation))                        // label propagation
 	mux.HandleFunc("/api/product/cronjob-orphan-audit", s.cacheMiddleware(60*time.Second, s.handleCronJobOrphanAudit))                   // cronjob orphan audit
-	mux.HandleFunc("/api/security/hostpath-audit", s.cacheMiddleware(60*time.Second, s.handleHostPathAudit))                             // hostpath audit
+	mux.HandleFunc("/api/security/hostpath-audit", s.cacheMiddleware(60*time.Second, s.handleHostPathAuditV2))                           // hostpath audit
 	mux.HandleFunc("/api/security/container-capabilities", s.cacheMiddleware(60*time.Second, s.handleContainerCapabilities))             // container capabilities
-	mux.HandleFunc("/api/security/readonly-rootfs-audit", s.cacheMiddleware(60*time.Second, s.handleReadOnlyRootFS))                     // readonly rootfs audit
+	mux.HandleFunc("/api/security/readonly-rootfs-audit", s.cacheMiddleware(60*time.Second, s.handleReadOnlyRootFSV2))                   // readonly rootfs audit
 	mux.HandleFunc("/api/scalability/hpa-cooldown-audit", s.cacheMiddleware(60*time.Second, s.handleHPACooldownAudit))                   // hpa cooldown audit
 	mux.HandleFunc("/api/scalability/resource-request-saturation", s.cacheMiddleware(60*time.Second, s.handleResourceRequestSaturation)) // request saturation
 	mux.HandleFunc("/api/scalability/cluster-pod-limit", s.cacheMiddleware(60*time.Second, s.handleClusterPodLimit))                     // cluster pod limit
@@ -693,7 +696,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/env-var-drift-detect", s.cacheMiddleware(60*time.Second, s.handleEnvVarDriftDetect))                    // env var drift detect
 	mux.HandleFunc("/api/product/dns-record-audit", s.cacheMiddleware(60*time.Second, s.handleDNSRecordAudit))                           // dns record audit
 	mux.HandleFunc("/api/product/workload-startup-profile", s.cacheMiddleware(60*time.Second, s.handleWorkloadStartupProfile))           // workload startup profile
-	mux.HandleFunc("/api/security/sa-token-age-v2", s.cacheMiddleware(60*time.Second, s.handleSATokenAgeV2))                             // sa token age
+	mux.HandleFunc("/api/security/sa-token-age-v2", s.cacheMiddleware(60*time.Second, s.handleSATokenAgeV3))                             // sa token age
 	mux.HandleFunc("/api/security/runtime-class-audit", s.cacheMiddleware(60*time.Second, s.handleRuntimeClassIsolation))                // runtime class audit
 	mux.HandleFunc("/api/scalability/pdb-gap-analysis", s.cacheMiddleware(60*time.Second, s.handlePDBGapAnalysisV2))                     // pdb gap analysis
 	mux.HandleFunc("/api/scalability/topology-spread-violation", s.cacheMiddleware(60*time.Second, s.handleTopologySpreadViolation))     // topology spread violation

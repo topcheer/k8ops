@@ -4900,6 +4900,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Tracks dropped capabilities and high-risk capAdd usage for least-privilege analysis.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cap drop", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/security/host-path-audit", "get", OpenAPIOperation{
+		Summary: "HostPath Audit", OperationID: "host-path-audit", Tags: []string{"Security"},
+		Description: "Tracks hostPath volume mounts and dangerous path exposure.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("HostPath", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/security/readonly-rootfs", "get", OpenAPIOperation{
+		Summary: "ReadOnly RootFS", OperationID: "readonly-rootfs", Tags: []string{"Security"},
+		Description: "Audits ReadOnlyRootFilesystem compliance for tamper resistance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("RO rootfs", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/security/sa-token-age", "get", OpenAPIOperation{
+		Summary: "SA Token Age", OperationID: "sa-token-age", Tags: []string{"Security"},
+		Description: "Estimates service account token staleness from creation timestamp.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SA token age", map[string]interface{}{"healthScore": 90})},
+	})
 
 	// --- API Quality (v17.79) ---
 	add("/api/docs/api-quality", "get", OpenAPIOperation{
