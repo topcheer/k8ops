@@ -71,13 +71,13 @@ func (s *Server) handlePodInitTime(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		if createdTime.IsZero() || readyTime.IsZero() {
+		if createdTime.IsZero() || readyTime.IsZero() || readyTime.Before(createdTime) {
 			continue
 		}
 
 		initSec := readyTime.Sub(createdTime).Seconds()
-		if initSec < 0 {
-			initSec = 0
+		if initSec < 0 || initSec > 86400 {
+			continue // skip unreasonable values (>1 day)
 		}
 
 		result.Summary.TotalPods++
