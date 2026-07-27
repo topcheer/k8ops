@@ -8291,6 +8291,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Inventories CSI drivers with attach, pod-info, and storage capacity support.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("CSI driver", map[string]interface{}{"healthScore": 95})},
 	})
+	add("/api/docs/pod-disruption-coverage", "get", OpenAPIOperation{
+		Summary: "Pod Disruption Coverage", OperationID: "pod-disruption-coverage", Tags: []string{"Documentation"},
+		Description: "Checks PDB coverage for multi-replica deployments.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PDB coverage", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/docs/csi-snapshot-class-inventory", "get", OpenAPIOperation{
+		Summary: "CSI Snapshot Class Inventory", OperationID: "csi-snapshot-class-inventory", Tags: []string{"Documentation"},
+		Description: "Inventories VolumeSnapshotClasses with driver and default status.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SnapClass", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/docs/mutating-webhook-catalog", "get", OpenAPIOperation{
+		Summary: "Mutating Webhook Catalog", OperationID: "mutating-webhook-catalog", Tags: []string{"Documentation"},
+		Description: "Catalogs mutating admission webhooks with failure policy and catch-all detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Mut webhook", map[string]interface{}{"healthScore": 90})},
+	})
 
 	add("/api/product/scale-limit-analysis", "get", OpenAPIOperation{
 		Summary: "Horizontal Scale Limit Analysis", OperationID: "scale-limit-analysis", Tags: []string{"Product"},
