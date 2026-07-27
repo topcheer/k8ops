@@ -8443,6 +8443,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Checks PVC binding latency and pending status for storage health.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("PVC binding", map[string]interface{}{"healthScore": 90})},
 	})
+	add("/api/product/hpa-target-utilization", "get", OpenAPIOperation{
+		Summary: "HPA Target Utilization", OperationID: "hpa-target-utilization", Tags: []string{"Product"},
+		Description: "Analyzes HPA target utilization config for autoscaler gap detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("HPA target", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/product/replica-age-distribution", "get", OpenAPIOperation{
+		Summary: "Replica Age Distribution", OperationID: "replica-age-distribution", Tags: []string{"Product"},
+		Description: "Tracks pod age distribution across buckets for freshness monitoring.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Replica age", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/product/node-pod-affinity-score", "get", OpenAPIOperation{
+		Summary: "Node Pod Affinity Score", OperationID: "node-pod-affinity-score", Tags: []string{"Product"},
+		Description: "Scores node workload balance for scheduling optimization.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node affinity", map[string]interface{}{"healthScore": 90})},
+	})
 
 	return spec
 }
