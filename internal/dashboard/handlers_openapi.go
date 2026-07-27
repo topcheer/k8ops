@@ -7867,6 +7867,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Detects hardcoded sensitive env vars and tracks Secret/ConfigMap reference usage.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Env health", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/deployment/share-process-namespace", "get", OpenAPIOperation{
+		Summary: "Share Process Namespace", OperationID: "share-process-namespace", Tags: []string{"Deployment"},
+		Description: "Audits PID namespace sharing (shareProcessNamespace) across pods.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Share PID", map[string]interface{}{"healthScore": 92})},
+	})
+	add("/api/deployment/pod-priority-audit", "get", OpenAPIOperation{
+		Summary: "Pod Priority Audit", OperationID: "pod-priority-audit", Tags: []string{"Deployment"},
+		Description: "Checks priority class assignment gaps across workloads.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod priority", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/deployment/container-subpath", "get", OpenAPIOperation{
+		Summary: "Container SubPath", OperationID: "container-subpath", Tags: []string{"Deployment"},
+		Description: "Audits volume mount subPath usage for mount isolation compliance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SubPath", map[string]interface{}{"healthScore": 92})},
+	})
 
 	add("/api/deployment/init-container-overhead", "get", OpenAPIOperation{
 		Summary: "Init Container Overhead", OperationID: "init-container-overhead", Tags: []string{"Deployment"},
