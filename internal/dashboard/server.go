@@ -919,7 +919,6 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/volume-attach-density", s.cacheMiddleware(120*time.Second, s.handleVolAttachDensity))
 	mux.HandleFunc("/api/scalability/ns-quota-utilization", s.cacheMiddleware(120*time.Second, s.handleNSQuotaUtilization))
 	mux.HandleFunc("/api/scalability/control-plane-ha", s.cacheMiddleware(120*time.Second, s.handleControlPlaneHA))
-	mux.HandleFunc("/api/scalability/anti-affinity-coverage", s.cacheMiddleware(120*time.Second, s.handleAntiAffinityCoverageV2))
 	mux.HandleFunc("/api/scalability/request-headroom", s.cacheMiddleware(120*time.Second, s.handleRequestHeadroom))
 	mux.HandleFunc("/api/deployment/canary-detector", s.cacheMiddleware(120*time.Second, s.handleCanaryDetector))
 	mux.HandleFunc("/api/deployment/init-container-overhead", s.cacheMiddleware(120*time.Second, s.handleInitContainerOverhead))
