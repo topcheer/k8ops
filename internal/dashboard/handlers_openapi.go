@@ -8107,6 +8107,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Identifies high-volume event namespaces for noise reduction.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event noise", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/operations/pod-taint-toleration-match", "get", OpenAPIOperation{
+		Summary: "Pod Taint Toleration Match", OperationID: "pod-taint-toleration-match", Tags: []string{"Operations"},
+		Description: "Checks pod-taint scheduling compliance and toleration coverage.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Taint match", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/operations/node-condition-budget", "get", OpenAPIOperation{
+		Summary: "Node Condition Budget", OperationID: "node-condition-budget", Tags: []string{"Operations"},
+		Description: "Tracks node conditions (DiskPressure/MemPressure/PIDPressure) for health monitoring.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node cond", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/operations/cluster-log-volume", "get", OpenAPIOperation{
+		Summary: "Cluster Log Volume", OperationID: "cluster-log-volume", Tags: []string{"Operations"},
+		Description: "Estimates daily log output volume per namespace for capacity planning.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Log volume", map[string]interface{}{"healthScore": 88})},
+	})
 
 	add("/api/security/psa-violation", "get", OpenAPIOperation{
 		Summary: "Pod Security Standard Violation", OperationID: "psa-violation", Tags: []string{"Security"},
