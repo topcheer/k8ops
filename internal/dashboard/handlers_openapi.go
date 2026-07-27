@@ -8216,6 +8216,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Inventories leader election leases with holder and renewal tracking.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Lease catalog", map[string]interface{}{"healthScore": 95})},
 	})
+	add("/api/docs/runtime-class-inventory", "get", OpenAPIOperation{
+		Summary: "RuntimeClass Inventory", OperationID: "runtime-class-inventory", Tags: []string{"Documentation"},
+		Description: "Inventories all RuntimeClasses with handler, overhead, and scheduling constraints.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("RC inv", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/docs/ingress-backend-catalog", "get", OpenAPIOperation{
+		Summary: "Ingress Backend Catalog", OperationID: "ingress-backend-catalog", Tags: []string{"Documentation"},
+		Description: "Catalogs ingress backends with host, TLS, and service mapping.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Ing backend", map[string]interface{}{"healthScore": 92})},
+	})
+	add("/api/docs/csi-driver-inventory", "get", OpenAPIOperation{
+		Summary: "CSI Driver Inventory", OperationID: "csi-driver-inventory", Tags: []string{"Documentation"},
+		Description: "Inventories CSI drivers with attach, pod-info, and storage capacity support.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CSI driver", map[string]interface{}{"healthScore": 95})},
+	})
 
 	add("/api/product/scale-limit-analysis", "get", OpenAPIOperation{
 		Summary: "Horizontal Scale Limit Analysis", OperationID: "scale-limit-analysis", Tags: []string{"Product"},
