@@ -209,7 +209,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/certificates/expiry", s.cacheMiddleware(120*time.Second, s.handleCertExpiryScan))                      // 2min cache
 	mux.HandleFunc("/api/system/drain-status", s.handleDrainStatus)                                                             // server draining/shutdown observability
 	mux.HandleFunc("/api/addons/health", s.cacheMiddleware(120*time.Second, s.handleAddonScan))                                 // 2min cache
-	mux.HandleFunc("/api/deployments/rollout", s.cacheMiddleware(30*time.Second, s.handleRolloutStatus))                        // deployment rollout health
+	mux.HandleFunc("/api/deployments/rollout", s.cacheMiddleware(30*time.Second, s.handleRolloutStatusV2))                      // deployment rollout health
 	mux.HandleFunc("/api/resources/waste", s.cacheMiddleware(60*time.Second, s.handleWasteDetection))                           // resource waste detection
 	mux.HandleFunc("/api/resources/quota", s.cacheMiddleware(60*time.Second, s.handleQuotaMonitor))                             // ResourceQuota & LimitRange monitor
 	mux.HandleFunc("/api/scaling/bottlenecks", s.cacheMiddleware(60*time.Second, s.handleScalingBottlenecks))                   // scaling bottleneck detection
@@ -350,7 +350,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/network-policy", s.cacheMiddleware(60*time.Second, s.handleNetworkPolicyAudit))          // network policy compliance & traffic isolation
 	mux.HandleFunc("/api/product/label-hygiene", s.cacheMiddleware(60*time.Second, s.handleLabelHygiene))                 // label & annotation hygiene auditor
 	mux.HandleFunc("/api/product/orphaned-resources", s.cacheMiddleware(60*time.Second, s.handleOrphanedResources))       // orphaned resource detector
-	mux.HandleFunc("/api/product/pvc-health", s.cacheMiddleware(60*time.Second, s.handlePVCHealth))                       // PV/PVC storage health & capacity
+	mux.HandleFunc("/api/product/pvc-health", s.cacheMiddleware(60*time.Second, s.handlePVCBindingHealth))                // PV/PVC storage health & capacity
 	mux.HandleFunc("/api/product/statefulset-audit", s.cacheMiddleware(60*time.Second, s.handleStatefulSetAudit))         // StatefulSet health & ordered rollout audit
 	mux.HandleFunc("/api/product/affinity-conflict", s.cacheMiddleware(60*time.Second, s.handleAffinityConflict))         // affinity & anti-affinity conflict detector
 	mux.HandleFunc("/api/product/taint-toleration", s.cacheMiddleware(60*time.Second, s.handleTaintToleration))           // node taint & pod toleration impact analyzer
@@ -1030,6 +1030,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/vol-lifecycle-age", s.cacheMiddleware(120*time.Second, s.handleVolLifecycleAge))
 	mux.HandleFunc("/api/product/service-endpoint-health", s.cacheMiddleware(120*time.Second, s.handleServiceEndpointHealth))
 	mux.HandleFunc("/api/product/image-tag-freshness", s.cacheMiddleware(120*time.Second, s.handleImageTagFreshness))
+	mux.HandleFunc("/api/product/pod-restart-trend", s.cacheMiddleware(120*time.Second, s.handlePodRestartTrend))
+	mux.HandleFunc("/api/product/deployment-rollout-status", s.cacheMiddleware(120*time.Second, s.handleRolloutStatusV2))
+	mux.HandleFunc("/api/product/pvc-binding-health", s.cacheMiddleware(120*time.Second, s.handlePVCBindingHealth))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)

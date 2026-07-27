@@ -8353,6 +8353,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Classifies image tags (semver/SHA/latest/none) for reproducibility.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Img tag fresh", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/product/pod-restart-trend", "get", OpenAPIOperation{
+		Summary: "Pod Restart Trend", OperationID: "pod-restart-trend", Tags: []string{"Product"},
+		Description: "Analyzes pod restart count distribution and detects instability patterns.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Restart trend", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/deployment-rollout-status", "get", OpenAPIOperation{
+		Summary: "Deployment Rollout Status", OperationID: "deployment-rollout-status", Tags: []string{"Product"},
+		Description: "Tracks deployment rollout progress and detects stale/incomplete rollouts.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Rollout status", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/product/pvc-binding-health", "get", OpenAPIOperation{
+		Summary: "PVC Binding Health", OperationID: "pvc-binding-health", Tags: []string{"Product"},
+		Description: "Checks PVC binding latency and pending status for storage health.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PVC binding", map[string]interface{}{"healthScore": 90})},
+	})
 
 	return spec
 }
