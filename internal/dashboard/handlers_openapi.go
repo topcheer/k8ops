@@ -7800,6 +7800,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Measures cluster-wide schedulable capacity headroom from resource requests.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Req headroom", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/scalability/node-cordone-readiness", "get", OpenAPIOperation{
+		Summary: "Node Cordon Readiness", OperationID: "node-cordone-readiness", Tags: []string{"Scalability"},
+		Description: "Checks node cordon/drain state and schedulability for capacity planning.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cordon ready", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/scalability/pv-reclaim-gap", "get", OpenAPIOperation{
+		Summary: "PV Reclaim Gap", OperationID: "pv-reclaim-gap", Tags: []string{"Scalability"},
+		Description: "Tracks released PVs and reclaim policy gaps for storage cleanup.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PV reclaim", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/scalability/cluster-object-budget", "get", OpenAPIOperation{
+		Summary: "Cluster Object Budget", OperationID: "cluster-object-budget", Tags: []string{"Scalability"},
+		Description: "Counts total objects per type for API server scaling risk assessment.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Obj budget", map[string]interface{}{"healthScore": 90})},
+	})
 
 	add("/api/deployment/canary-detector", "get", OpenAPIOperation{
 		Summary: "Canary Release Detector", OperationID: "canary-detector", Tags: []string{"Deployment"},
