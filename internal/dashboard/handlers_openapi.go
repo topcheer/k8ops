@@ -7987,6 +7987,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Tracks CronJob schedule adherence, suspension status, and concurrency limits.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("CronJob health", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/operations/node-pressure-budget", "get", OpenAPIOperation{
+		Summary: "Node Pressure Budget", OperationID: "node-pressure-budget", Tags: []string{"Operations"},
+		Description: "Measures per-node resource headroom and pressure level for capacity planning.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node budget", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/operations/event-budget", "get", OpenAPIOperation{
+		Summary: "Event Budget", OperationID: "event-budget", Tags: []string{"Operations"},
+		Description: "Analyzes event rate, warning distribution, and top reasons per namespace.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Event budget", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/net-policy-budget", "get", OpenAPIOperation{
+		Summary: "Net Policy Budget", OperationID: "net-policy-budget", Tags: []string{"Operations"},
+		Description: "Evaluates network policy enforcement coverage and default-deny posture.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("NetPol budget", map[string]interface{}{"healthScore": 85})},
+	})
 
 	add("/api/security/psa-violation", "get", OpenAPIOperation{
 		Summary: "Pod Security Standard Violation", OperationID: "psa-violation", Tags: []string{"Security"},
