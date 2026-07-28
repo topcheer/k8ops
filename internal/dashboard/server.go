@@ -524,6 +524,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/validating-webhook-coverage", s.cacheMiddleware(120*time.Second, s.handleValWebhookCov))
 	mux.HandleFunc("/api/security/ingress-tls-cert-age", s.cacheMiddleware(120*time.Second, s.handleTLSCertAge))
 	mux.HandleFunc("/api/security/sa-token-volume", s.cacheMiddleware(120*time.Second, s.handleSATokenVol))
+	mux.HandleFunc("/api/security/container-cap-effective", s.cacheMiddleware(120*time.Second, s.handleCapEffAudit))
+	mux.HandleFunc("/api/security/secret-type-coverage", s.cacheMiddleware(120*time.Second, s.handleSecTypeCov))
+	mux.HandleFunc("/api/security/pod-serviceaccount-mapping", s.cacheMiddleware(120*time.Second, s.handleSAPodMap))
 	mux.HandleFunc("/api/docs/api-quality", s.cacheMiddleware(120*time.Second, s.handleAPIQuality))                                      // platform API endpoint quality & coverage gap analyzer
 	mux.HandleFunc("/api/product/cloud-portability", s.cacheMiddleware(120*time.Second, s.handleCloudPortability))                       // cloud vendor lock-in & workload portability assessor
 	mux.HandleFunc("/api/scalability/storage-performance", s.cacheMiddleware(120*time.Second, s.handleStoragePerf))                      // storage performance tier classification & mismatch detector

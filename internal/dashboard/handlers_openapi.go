@@ -4960,6 +4960,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Tracks projected service account token volume mounts across pods.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("SA token vol", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/security/container-cap-effective", "get", OpenAPIOperation{
+		Summary: "Container CapEffective", OperationID: "container-cap-effective", Tags: []string{"Security"},
+		Description: "Audits effective capabilities after drop/add with high-risk detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cap effective", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/security/secret-type-coverage", "get", OpenAPIOperation{
+		Summary: "Secret Type Coverage", OperationID: "secret-type-coverage", Tags: []string{"Security"},
+		Description: "Tracks secret type distribution (Opaque/TLS/DockerConfig/SA) for compliance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Secret type", map[string]interface{}{"healthScore": 92})},
+	})
+	add("/api/security/pod-serviceaccount-mapping", "get", OpenAPIOperation{
+		Summary: "Pod ServiceAccount Mapping", OperationID: "pod-serviceaccount-mapping", Tags: []string{"Security"},
+		Description: "Audits SA-to-pod binding for default SA overexposure detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SA mapping", map[string]interface{}{"healthScore": 88})},
+	})
 
 	// --- API Quality (v17.79) ---
 	add("/api/docs/api-quality", "get", OpenAPIOperation{
