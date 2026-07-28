@@ -8002,6 +8002,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Validates nodeSelector key format against known label prefixes.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("NS valid", map[string]interface{}{"healthScore": 92})},
 	})
+	add("/api/deployment/startup-probe-audit", "get", OpenAPIOperation{
+		Summary: "Startup Probe Audit", OperationID: "startup-probe-audit", Tags: []string{"Deployment"},
+		Description: "Audits startup probe configuration for containers missing probes.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Startup probe", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/container-command-hash", "get", OpenAPIOperation{
+		Summary: "Container Command Hash", OperationID: "container-command-hash", Tags: []string{"Deployment"},
+		Description: "Tracks command/args reproducibility via hash deduplication.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Cmd hash", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/deployment/deployment-strategy-type", "get", OpenAPIOperation{
+		Summary: "Deployment Strategy Type", OperationID: "deployment-strategy-type", Tags: []string{"Deployment"},
+		Description: "Tracks deployment rollout strategy (RollingUpdate vs Recreate) distribution.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Strategy type", map[string]interface{}{"healthScore": 95})},
+	})
 
 	add("/api/deployment/init-container-overhead", "get", OpenAPIOperation{
 		Summary: "Init Container Overhead", OperationID: "init-container-overhead", Tags: []string{"Deployment"},
