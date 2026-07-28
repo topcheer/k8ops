@@ -8047,6 +8047,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Tracks deployment rollout strategy (RollingUpdate vs Recreate) distribution.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Strategy type", map[string]interface{}{"healthScore": 95})},
 	})
+	add("/api/deployment/pod-toleration-scope", "get", OpenAPIOperation{
+		Summary: "Pod Toleration Scope", OperationID: "pod-toleration-scope", Tags: []string{"Deployment"},
+		Description: "Tracks toleration key/effect distribution and catch-all detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Tol scope", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/deployment/container-port-hostport-map", "get", OpenAPIOperation{
+		Summary: "Container Port HostPort Map", OperationID: "container-port-hostport-map", Tags: []string{"Deployment"},
+		Description: "Audits hostPort mappings and privileged port exposure.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("HostPort map", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/deployment/deploy-progress-deadline", "get", OpenAPIOperation{
+		Summary: "Deployment Progress Deadline", OperationID: "deploy-progress-deadline", Tags: []string{"Deployment"},
+		Description: "Checks progressDeadlineSeconds compliance and timeout detection.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Prog deadline", map[string]interface{}{"healthScore": 90})},
+	})
 
 	add("/api/deployment/init-container-overhead", "get", OpenAPIOperation{
 		Summary: "Init Container Overhead", OperationID: "init-container-overhead", Tags: []string{"Deployment"},
