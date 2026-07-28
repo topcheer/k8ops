@@ -8623,6 +8623,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits image pull policy (Always/IfNotPresent/Never) for compliance.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pull policy", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/product/pvc-resize-tracking", "get", OpenAPIOperation{
+		Summary: "PVC Resize Tracking", OperationID: "pvc-resize-tracking", Tags: []string{"Product"},
+		Description: "Tracks PVC capacity changes and ongoing expansions.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PVC resize", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/product/service-type-distribution", "get", OpenAPIOperation{
+		Summary: "Service Type Distribution", OperationID: "service-type-distribution", Tags: []string{"Product"},
+		Description: "Breaks down services by type (ClusterIP/NodePort/LB/ExternalName).",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Svc type", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/product/pod-qos-distribution", "get", OpenAPIOperation{
+		Summary: "Pod QoS Distribution", OperationID: "pod-qos-distribution", Tags: []string{"Product"},
+		Description: "Tracks QoS class distribution (Guaranteed/Burstable/BestEffort).",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("QoS dist", map[string]interface{}{"healthScore": 88})},
+	})
 
 	return spec
 }
