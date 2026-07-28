@@ -8287,6 +8287,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Tracks kubelet version distribution and drift across nodes.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Kubelet ver", map[string]interface{}{"healthScore": 92})},
 	})
+	add("/api/operations/pod-cpu-throttling-estimator", "get", OpenAPIOperation{
+		Summary: "Pod CPU Throttling Estimator", OperationID: "pod-cpu-throttling-estimator", Tags: []string{"Operations"},
+		Description: "Estimates CPU throttling risk from low CPU limits.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CPU throt est", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/namespace-resource-pressure", "get", OpenAPIOperation{
+		Summary: "Namespace Resource Pressure", OperationID: "namespace-resource-pressure", Tags: []string{"Operations"},
+		Description: "Calculates per-namespace resource consumption pressure score.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("NS pressure", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/event-age-decay-tracker", "get", OpenAPIOperation{
+		Summary: "Event Age Decay Tracker", OperationID: "event-age-decay-tracker", Tags: []string{"Operations"},
+		Description: "Tracks event age distribution for stale event cleanup.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Evt age decay", map[string]interface{}{"healthScore": 90})},
+	})
 
 	add("/api/security/psa-violation", "get", OpenAPIOperation{
 		Summary: "Pod Security Standard Violation", OperationID: "psa-violation", Tags: []string{"Security"},
