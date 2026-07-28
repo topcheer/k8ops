@@ -8533,6 +8533,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Scores node workload balance for scheduling optimization.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Node affinity", map[string]interface{}{"healthScore": 90})},
 	})
+	add("/api/product/pod-network-policy-match", "get", OpenAPIOperation{
+		Summary: "Pod Network Policy Match", OperationID: "pod-network-policy-match", Tags: []string{"Product"},
+		Description: "Checks pod-level network policy enforcement coverage per namespace.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod NetPol", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/product/deployment-maxunavailable", "get", OpenAPIOperation{
+		Summary: "Deployment MaxUnavailable", OperationID: "deployment-maxunavailable", Tags: []string{"Product"},
+		Description: "Analyzes rollout strategy MaxUnavailable and MaxSurge configuration.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("MaxUnavail", map[string]interface{}{"healthScore": 92})},
+	})
+	add("/api/product/container-image-pull-policy", "get", OpenAPIOperation{
+		Summary: "Container Image Pull Policy", OperationID: "container-image-pull-policy", Tags: []string{"Product"},
+		Description: "Audits image pull policy (Always/IfNotPresent/Never) for compliance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pull policy", map[string]interface{}{"healthScore": 88})},
+	})
 
 	return spec
 }

@@ -1066,6 +1066,9 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/hpa-target-utilization", s.cacheMiddleware(120*time.Second, s.handleHPATargetUtil))
 	mux.HandleFunc("/api/product/replica-age-distribution", s.cacheMiddleware(120*time.Second, s.handleReplicaAgeDist))
 	mux.HandleFunc("/api/product/node-pod-affinity-score", s.cacheMiddleware(120*time.Second, s.handleNodeAffScore))
+	mux.HandleFunc("/api/product/pod-network-policy-match", s.cacheMiddleware(120*time.Second, s.handlePodNetPolMatch))
+	mux.HandleFunc("/api/product/deployment-maxunavailable", s.cacheMiddleware(120*time.Second, s.handleMaxUnavail))
+	mux.HandleFunc("/api/product/container-image-pull-policy", s.cacheMiddleware(120*time.Second, s.handlePullPol))
 	// /api/security/supply-chain already registered at line ~280
 	// /api/scalability/capacity-forecast-deep already registered above
 	// Prometheus /metrics — restricted to localhost only (Prometheus scrapes from inside the cluster)
