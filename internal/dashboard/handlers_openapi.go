@@ -7860,6 +7860,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Estimates API server response latency from total pod count.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("API latency", map[string]interface{}{"healthScore": 90})},
 	})
+	add("/api/scalability/cluster-pod-density-trend", "get", OpenAPIOperation{
+		Summary: "Cluster Pod Density Trend", OperationID: "cluster-pod-density-trend", Tags: []string{"Scalability"},
+		Description: "Tracks pods-per-node density pressure against maxPods limit.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod density", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/scalability/service-mesh-endpoint-budget", "get", OpenAPIOperation{
+		Summary: "Service Mesh Endpoint Budget", OperationID: "service-mesh-endpoint-budget", Tags: []string{"Scalability"},
+		Description: "Counts service endpoints for mesh sidecar scaling assessment.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Mesh EP", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/scalability/node-allocatable-headroom", "get", OpenAPIOperation{
+		Summary: "Node Allocatable Headroom", OperationID: "node-allocatable-headroom", Tags: []string{"Scalability"},
+		Description: "Measures allocatable vs capacity ratio per node for overhead tracking.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Alloc head", map[string]interface{}{"healthScore": 92})},
+	})
 
 	add("/api/deployment/canary-detector", "get", OpenAPIOperation{
 		Summary: "Canary Release Detector", OperationID: "canary-detector", Tags: []string{"Deployment"},
