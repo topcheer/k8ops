@@ -8167,6 +8167,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Estimates daily log output volume per namespace for capacity planning.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Log volume", map[string]interface{}{"healthScore": 88})},
 	})
+	add("/api/operations/pod-crash-loop-detect", "get", OpenAPIOperation{
+		Summary: "Pod Crash Loop Detect", OperationID: "pod-crash-loop-detect", Tags: []string{"Operations"},
+		Description: "Detects CrashLoopBackOff and high-restart pods for instability tracking.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Crash loop", map[string]interface{}{"healthScore": 80})},
+	})
+	add("/api/operations/deployment-replica-health", "get", OpenAPIOperation{
+		Summary: "Deployment Replica Health", OperationID: "deployment-replica-health", Tags: []string{"Operations"},
+		Description: "Compares desired vs ready vs available replicas for deployment health.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Replica health", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/event-warning-hotspot", "get", OpenAPIOperation{
+		Summary: "Event Warning Hotspot", OperationID: "event-warning-hotspot", Tags: []string{"Operations"},
+		Description: "Identifies namespaces with high warning event concentration.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Evt hotspot", map[string]interface{}{"healthScore": 85})},
+	})
 
 	add("/api/security/psa-violation", "get", OpenAPIOperation{
 		Summary: "Pod Security Standard Violation", OperationID: "psa-violation", Tags: []string{"Security"},
