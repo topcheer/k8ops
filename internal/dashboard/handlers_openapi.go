@@ -8366,6 +8366,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Catalogs mutating admission webhooks with failure policy and catch-all detection.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Mut webhook", map[string]interface{}{"healthScore": 90})},
 	})
+	add("/api/docs/validating-webhook-config-inventory", "get", OpenAPIOperation{
+		Summary: "Validating Webhook Config Inventory", OperationID: "validating-webhook-config-inventory", Tags: []string{"Documentation"},
+		Description: "Inventories validating webhook configs with service, TLS, and scope details.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("ValWH config", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/docs/ingress-class-inventory", "get", OpenAPIOperation{
+		Summary: "Ingress Class Inventory", OperationID: "ingress-class-inventory", Tags: []string{"Documentation"},
+		Description: "Inventories ingress classes with controller and default-class status.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Ing class", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/docs/apiservice-registration-catalog", "get", OpenAPIOperation{
+		Summary: "APIService Registration Catalog", OperationID: "apiservice-registration-catalog", Tags: []string{"Documentation"},
+		Description: "Catalogs aggregated API server registrations with availability status.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("APISvc reg", map[string]interface{}{"healthScore": 95})},
+	})
 
 	add("/api/product/scale-limit-analysis", "get", OpenAPIOperation{
 		Summary: "Horizontal Scale Limit Analysis", OperationID: "scale-limit-analysis", Tags: []string{"Product"},
