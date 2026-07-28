@@ -8441,6 +8441,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Catalogs aggregated API server registrations with availability status.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("APISvc reg", map[string]interface{}{"healthScore": 95})},
 	})
+	add("/api/docs/storage-class-binding-mode", "get", OpenAPIOperation{
+		Summary: "Storage Class Binding Mode", OperationID: "storage-class-binding-mode", Tags: []string{"Documentation"},
+		Description: "Catalogs storage classes with volume binding mode and default status.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SC bindmode", map[string]interface{}{"healthScore": 92})},
+	})
+	add("/api/docs/crd-version-catalog", "get", OpenAPIOperation{
+		Summary: "CRD Version Catalog", OperationID: "crd-version-catalog", Tags: []string{"Documentation"},
+		Description: "Inventories CRDs with served/stored versions for lifecycle tracking.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CRD ver", map[string]interface{}{"healthScore": 95})},
+	})
+	add("/api/docs/prioritylevel-config-catalog", "get", OpenAPIOperation{
+		Summary: "PriorityLevel Config Catalog", OperationID: "prioritylevel-config-catalog", Tags: []string{"Documentation"},
+		Description: "Catalogs API Priority and Fairness PriorityLevelConfigurations.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("PrioLevel", map[string]interface{}{"healthScore": 95})},
+	})
 
 	add("/api/product/scale-limit-analysis", "get", OpenAPIOperation{
 		Summary: "Horizontal Scale Limit Analysis", OperationID: "scale-limit-analysis", Tags: []string{"Product"},
