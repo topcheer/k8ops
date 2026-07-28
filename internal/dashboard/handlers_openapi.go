@@ -4945,6 +4945,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Audits runAsUser for root (UID 0) vs non-root compliance.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("RunAsUser", map[string]interface{}{"healthScore": 80})},
 	})
+	add("/api/security/validating-webhook-coverage", "get", OpenAPIOperation{
+		Summary: "Validating Webhook Coverage", OperationID: "validating-webhook-coverage", Tags: []string{"Security"},
+		Description: "Catalogs validating admission webhooks with failure policy and timeout.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Val webhook", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/security/ingress-tls-cert-age", "get", OpenAPIOperation{
+		Summary: "Ingress TLS Cert Age", OperationID: "ingress-tls-cert-age", Tags: []string{"Security"},
+		Description: "Audits TLS certificate usage on ingresses for encryption compliance.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("TLS cert", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/security/sa-token-volume", "get", OpenAPIOperation{
+		Summary: "SA Token Volume", OperationID: "sa-token-volume", Tags: []string{"Security"},
+		Description: "Tracks projected service account token volume mounts across pods.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("SA token vol", map[string]interface{}{"healthScore": 88})},
+	})
 
 	// --- API Quality (v17.79) ---
 	add("/api/docs/api-quality", "get", OpenAPIOperation{
