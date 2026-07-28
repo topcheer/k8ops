@@ -7890,6 +7890,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Measures allocatable vs capacity ratio per node for overhead tracking.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Alloc head", map[string]interface{}{"healthScore": 92})},
 	})
+	add("/api/scalability/cluster-label-cardinality", "get", OpenAPIOperation{
+		Summary: "Cluster Label Cardinality", OperationID: "cluster-label-cardinality", Tags: []string{"Scalability"},
+		Description: "Tracks unique label key count for API server index scaling.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Label card", map[string]interface{}{"healthScore": 88})},
+	})
+	add("/api/scalability/configmap-size-budget", "get", OpenAPIOperation{
+		Summary: "ConfigMap Size Budget", OperationID: "configmap-size-budget", Tags: []string{"Scalability"},
+		Description: "Detects large ConfigMaps for etcd storage pressure.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("CM size", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/scalability/epslice-address-budget", "get", OpenAPIOperation{
+		Summary: "EndpointSlice Address Budget", OperationID: "epslice-address-budget", Tags: []string{"Scalability"},
+		Description: "Counts endpoint slice addresses for mesh scaling assessment.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("EPS addr", map[string]interface{}{"healthScore": 90})},
+	})
 
 	add("/api/deployment/canary-detector", "get", OpenAPIOperation{
 		Summary: "Canary Release Detector", OperationID: "canary-detector", Tags: []string{"Deployment"},
