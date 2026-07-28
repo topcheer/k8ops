@@ -8227,6 +8227,21 @@ func buildOpenAPISpec() OpenAPISpec {
 		Description: "Identifies namespaces with high warning event concentration.",
 		Responses:   map[string]OpenAPIResponse{"200": okResponse("Evt hotspot", map[string]interface{}{"healthScore": 85})},
 	})
+	add("/api/operations/pod-phase-distribution", "get", OpenAPIOperation{
+		Summary: "Pod Phase Distribution", OperationID: "pod-phase-distribution", Tags: []string{"Operations"},
+		Description: "Tracks pod phase (Running/Pending/Failed/Succeeded) distribution across cluster.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Pod phase", map[string]interface{}{"healthScore": 90})},
+	})
+	add("/api/operations/container-restart-reason", "get", OpenAPIOperation{
+		Summary: "Container Restart Reason", OperationID: "container-restart-reason", Tags: []string{"Operations"},
+		Description: "Categorizes container restart reasons (OOMKilled/Exited/Unknown).",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Restart reason", map[string]interface{}{"healthScore": 85})},
+	})
+	add("/api/operations/node-kubelet-version", "get", OpenAPIOperation{
+		Summary: "Node Kubelet Version", OperationID: "node-kubelet-version", Tags: []string{"Operations"},
+		Description: "Tracks kubelet version distribution and drift across nodes.",
+		Responses:   map[string]OpenAPIResponse{"200": okResponse("Kubelet ver", map[string]interface{}{"healthScore": 92})},
+	})
 
 	add("/api/security/psa-violation", "get", OpenAPIOperation{
 		Summary: "Pod Security Standard Violation", OperationID: "psa-violation", Tags: []string{"Security"},
