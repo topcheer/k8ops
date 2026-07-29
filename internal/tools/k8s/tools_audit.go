@@ -751,7 +751,7 @@ var auditRegistry = []auditEndpoint{
 	{"product:strategy-audit-2043", "/api/product/strategy-audit-2043", "Deployment update strategy audit — RollingUpdate vs Recreate"},
 	{"product:cm-reload-detector", "/api/product/cm-reload-detector", "ConfigMap hot reload detector — stale env-var consumers"},
 	{"product:pdb-readiness", "/api/product/pdb-readiness", "Pod disruption readiness — PDB + anti-affinity score"},
-	{"deployment:rs-staleness", "/api/deployment/rs-staleness", "ReplicaSet staleness — orphaned old replica sets"},
+	{"deployment:rs-staleness-v2044", "/api/deployment/rs-staleness-v2044", "ReplicaSet staleness v2044 — orphaned old replica sets"},
 	{"deployment:pull-policy-audit", "/api/deployment/pull-policy-audit", "Image pull policy audit — Always vs IfNotPresent compliance"},
 	{"deployment:max-surge-analyzer", "/api/deployment/max-surge-analyzer", "Max surge analyzer — rollout surge configuration"},
 	{"operations:pod-qps-estimate", "/api/operations/pod-qps-estimate", "Pod QPS estimate — service-level request rate estimate"},

@@ -1075,7 +1075,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/product/strategy-audit-2043", s.cacheMiddleware(120*time.Second, s.handleStrategyAudit2043))
 	mux.HandleFunc("/api/product/cm-reload-detector", s.cacheMiddleware(120*time.Second, s.handleCMReloadDetector))
 	mux.HandleFunc("/api/product/pdb-readiness", s.cacheMiddleware(120*time.Second, s.handlePDBReadiness))
-	mux.HandleFunc("/api/deployment/rs-staleness", s.cacheMiddleware(120*time.Second, s.handleRSStaleness2044))
+	mux.HandleFunc("/api/deployment/rs-staleness-v2044", s.cacheMiddleware(120*time.Second, s.handleRSStaleness2044))
 	mux.HandleFunc("/api/deployment/pull-policy-audit", s.cacheMiddleware(120*time.Second, s.handlePullPolicyAudit2044))
 	mux.HandleFunc("/api/deployment/max-surge-analyzer", s.cacheMiddleware(120*time.Second, s.handleMaxSurgeAnalyzer))
 	mux.HandleFunc("/api/operations/pod-qps-estimate", s.cacheMiddleware(120*time.Second, s.handlePodQPSEstimate))

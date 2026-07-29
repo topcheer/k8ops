@@ -618,7 +618,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/product/strategy-audit-2043', name: 'Strategy Audit', icon: '\u1F501' },
         { path: '/api/product/cm-reload-detector', name: 'CM Reload', icon: '\u1F504' },
         { path: '/api/product/pdb-readiness', name: 'PDB Readiness', icon: '\u1F6E1' },
-        { path: '/api/deployment/rs-staleness', name: 'RS Staleness', icon: '\u1F4E6' },
+        { path: '/api/deployment/rs-staleness-v2044', name: 'RS Staleness', icon: '\u1F4E6' },
         { path: '/api/deployment/pull-policy-audit', name: 'Pull Policy', icon: '\u2B07' },
         { path: '/api/deployment/max-surge-analyzer', name: 'Max Surge', icon: '\u1F4C8' },
         { path: '/api/operations/pod-qps-estimate', name: 'Pod QPS Est', icon: '\u1F4C8' },
