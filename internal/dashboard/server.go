@@ -1084,7 +1084,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/security/rootfs-writable-audit", s.cacheMiddleware(120*time.Second, s.handleRootFSAudit))
 	mux.HandleFunc("/api/security/hostpath-mount-audit", s.cacheMiddleware(120*time.Second, s.handleHostPathAudit2046))
 	mux.HandleFunc("/api/security/token-secret-rotation", s.cacheMiddleware(120*time.Second, s.handleTokenRotAudit))
-	mux.HandleFunc("/api/docs/volume-snapshot-catalog", s.cacheMiddleware(120*time.Second, s.handleVSnapCatalog))
+	mux.HandleFunc("/api/docs/volume-snapshot-catalog-v2047", s.cacheMiddleware(120*time.Second, s.handleVSnapCatalog))
 	mux.HandleFunc("/api/docs/priority-class-doc", s.cacheMiddleware(120*time.Second, s.handlePriClassDoc))
 	mux.HandleFunc("/api/docs/endpoint-slice-topology", s.cacheMiddleware(120*time.Second, s.handleEPSliceTopology))
 	mux.HandleFunc("/api/scalability/autoscale-behavior", s.cacheMiddleware(120*time.Second, s.handleAutoBehavior))

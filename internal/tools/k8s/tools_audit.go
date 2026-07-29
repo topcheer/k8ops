@@ -760,7 +760,7 @@ var auditRegistry = []auditEndpoint{
 	{"security:rootfs-writable-audit", "/api/security/rootfs-writable-audit", "Root filesystem writable audit — readOnlyRootFilesystem compliance"},
 	{"security:hostpath-mount-audit", "/api/security/hostpath-mount-audit", "HostPath mount audit — host volume exposure"},
 	{"security:token-secret-rotation", "/api/security/token-secret-rotation", "Token secret rotation — long-lived SA token tracking"},
-	{"docs:volume-snapshot-catalog", "/api/docs/volume-snapshot-catalog", "Volume snapshot catalog — snapshot inventory and age"},
+	{"docs:volume-snapshot-catalog-v2047", "/api/docs/volume-snapshot-catalog-v2047", "Volume snapshot catalog v2047 — PVC snapshot inventory"},
 	{"docs:priority-class-doc", "/api/docs/priority-class-doc", "Pod priority documentation — priority class usage catalog"},
 	{"docs:endpoint-slice-topology", "/api/docs/endpoint-slice-topology", "Endpoint slice topology — endpoint distribution documentation"},
 	{"scalability:autoscale-behavior", "/api/scalability/autoscale-behavior", "Autoscale behavior analyzer — HPA scaling behavior policy audit"},

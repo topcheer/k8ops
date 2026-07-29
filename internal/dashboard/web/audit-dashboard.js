@@ -627,7 +627,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/security/rootfs-writable-audit', name: 'RootFS Writable', icon: '\u1F4BE' },
         { path: '/api/security/hostpath-mount-audit', name: 'HostPath Mount', icon: '\u1F4C2' },
         { path: '/api/security/token-secret-rotation', name: 'Token Rotation', icon: '\u1F501' },
-        { path: '/api/docs/volume-snapshot-catalog', name: 'Snapshot Catalog', icon: '\u1F4F7' },
+        { path: '/api/docs/volume-snapshot-catalog-v2047', name: 'Snapshot Catalog', icon: '\u1F4F7' },
         { path: '/api/docs/priority-class-doc', name: 'Priority Class', icon: '\u26A1' },
         { path: '/api/docs/endpoint-slice-topology', name: 'EP Slice Topo', icon: '\u1F5FA' },
         { path: '/api/scalability/autoscale-behavior', name: 'Auto Behavior', icon: '\u1F4C8' },
