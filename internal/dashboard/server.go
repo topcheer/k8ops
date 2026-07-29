@@ -1106,7 +1106,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/docs/node-label-standardization-v2053", s.cacheMiddleware(120*time.Second, s.handleNodeLabelStd))
 	mux.HandleFunc("/api/docs/cluster-component-inventory", s.cacheMiddleware(120*time.Second, s.handleClusterCompInv))
 	mux.HandleFunc("/api/scalability/hpa-metric-coverage", s.cacheMiddleware(120*time.Second, s.handleHPAMetricCoverage))
-	mux.HandleFunc("/api/scalability/anti-affinity-coverage", s.cacheMiddleware(120*time.Second, s.handleAntiAffinityCoverage2054))
+	mux.HandleFunc("/api/scalability/anti-affinity-coverage-v2054", s.cacheMiddleware(120*time.Second, s.handleAntiAffinityCoverage2054))
 	mux.HandleFunc("/api/scalability/cluster-capacity-headroom-v2054", s.cacheMiddleware(120*time.Second, s.handleClusterCapHeadroom))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))

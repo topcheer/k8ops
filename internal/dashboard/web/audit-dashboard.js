@@ -649,7 +649,7 @@ const AUDIT_STRUCTURE = {
         { path: '/api/docs/node-label-standardization-v2053', name: 'Node Label Std v2', icon: '\u1F3F7' },
         { path: '/api/docs/cluster-component-inventory', name: 'Comp Inventory', icon: '\u1F4E6' },
         { path: '/api/scalability/hpa-metric-coverage', name: 'HPA Metric', icon: '\u1F4C8' },
-        { path: '/api/scalability/anti-affinity-coverage', name: 'Anti-Affinity', icon: '\u1F310' },
+        { path: '/api/scalability/anti-affinity-coverage-v2054', name: 'Anti-Affinity v2', icon: '\u1F310' },
         { path: '/api/scalability/cluster-capacity-headroom-v2054', name: 'Cluster Cap v2', icon: '\u1F4CF' },
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u1F4DD' },
         { path: '/api/docs/topology-map-v2', name: 'Topology Map v2', icon: '\u1F5FA' },
