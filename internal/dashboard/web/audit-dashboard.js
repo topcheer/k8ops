@@ -1351,46 +1351,61 @@ window.loadAuditDashboard = function() {
   }
   document.getElementById('audit-dimensions').innerHTML = dimHtml;
 
-  // Fetch all endpoints
-  for (const [dim, info] of Object.entries(AUDIT_STRUCTURE)) {
+  // Fetch all endpoints with concurrency limiting (max 8 concurrent to prevent HTTP/2 stream exhaustion)
+  const allEndpoints = [];
+  for (const info of Object.values(AUDIT_STRUCTURE)) {
     for (const endpoints of Object.values(info.subcategories)) {
-      for (const ep of endpoints) {
-        const cardId = btoa(ep.path).replace(/=/g, '');
-        fetchJSON(ep.path)
-          .then(data => {
-            const score = data.healthScore !== undefined ? data.healthScore
-              : data.riskScore !== undefined ? data.riskScore
-              : data.score !== undefined ? data.score
-              : data.grade ? undefined : null;
-            const scoreEl = document.getElementById('score-' + cardId);
-            const statusEl = document.getElementById('status-' + cardId);
-            const cardEl = document.getElementById('audit-card-' + cardId);
-            if (scoreEl && score !== undefined && score !== null) {
-              scoreEl.textContent = score;
-              cardEl.dataset.score = score;
-              cardEl.className = score >= 80 ? 'audit-card audit-card-good' : score >= 60 ? 'audit-card audit-card-warn' : score >= 40 ? 'audit-card audit-card-bad' : 'audit-card audit-card-crit';
-            }
-            if (statusEl) {
-              const summary = data.summary || {};
-              const parts = [];
-              for (const [k, v] of Object.entries(summary)) {
-                if (typeof v === 'number' && parts.length < 3) parts.push(`${v} ${k.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toLowerCase()).replace(/total/g, '').trim()}`.trim());
-              }
-              if (parts.length === 0 && data.recommendations && data.recommendations.length > 0) {
-                let rec = data.recommendations[0] || '';
-                statusEl.textContent = rec.length > 60 ? rec.substring(0, 60) + '...' : rec;
-              } else {
-                statusEl.textContent = parts.join(', ') || 'OK';
-              }
-            }
-          })
-          .catch(() => {
-            const statusEl = document.getElementById('status-' + cardId);
-            if (statusEl) statusEl.textContent = 'Failed';
-          });
-      }
+      for (const ep of endpoints) { allEndpoints.push(ep); }
     }
   }
+
+  const BATCH_SIZE = 8;
+  let batchIdx = 0;
+
+  function processBatch() {
+    const batch = allEndpoints.slice(batchIdx, batchIdx + BATCH_SIZE);
+    if (batch.length === 0) return;
+
+    Promise.allSettled(batch.map(ep => {
+      const cardId = btoa(ep.path).replace(/=/g, '');
+      return fetchJSON(ep.path)
+        .then(data => {
+          const score = data.healthScore !== undefined ? data.healthScore
+            : data.riskScore !== undefined ? data.riskScore
+            : data.score !== undefined ? data.score
+            : data.grade ? undefined : null;
+          const scoreEl = document.getElementById('score-' + cardId);
+          const statusEl = document.getElementById('status-' + cardId);
+          const cardEl = document.getElementById('audit-card-' + cardId);
+          if (scoreEl && score !== undefined && score !== null) {
+            scoreEl.textContent = score;
+            cardEl.dataset.score = score;
+            cardEl.className = score >= 80 ? 'audit-card audit-card-good' : score >= 60 ? 'audit-card audit-card-warn' : score >= 40 ? 'audit-card audit-card-bad' : 'audit-card audit-card-crit';
+          }
+          if (statusEl) {
+            const summary = data.summary || {};
+            const parts = [];
+            for (const [k, v] of Object.entries(summary)) {
+              if (typeof v === 'number' && parts.length < 3) parts.push(`${v} ${k.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toLowerCase()).replace(/total/g, '').trim()}`.trim());
+            }
+            if (parts.length === 0 && data.recommendations && data.recommendations.length > 0) {
+              let rec = data.recommendations[0] || '';
+              statusEl.textContent = rec.length > 60 ? rec.substring(0, 60) + '...' : rec;
+            } else {
+              statusEl.textContent = parts.join(', ') || 'OK';
+            }
+          }
+        })
+        .catch(() => {
+          const statusEl = document.getElementById('status-' + cardId);
+          if (statusEl) statusEl.textContent = 'Failed';
+        });
+    })).then(() => {
+      batchIdx += BATCH_SIZE;
+      if (batchIdx < allEndpoints.length) { setTimeout(processBatch, 200); }
+    });
+  }
+  processBatch();
 
   // Render dimension summary cards
   renderSummaryCards();
