@@ -1500,3 +1500,12 @@ func (t *ListAuditsTool) Execute(ctx context.Context, args map[string]any) (*too
 	}, "", "  ")
 	return &tools.ToolResult{Success: true, Output: string(data)}, nil
 }
+
+// GetAuditEndpointPaths returns all audit endpoint paths for batch operations
+func GetAuditEndpointPaths() []string {
+	paths := make([]string, 0, len(auditRegistry))
+	for _, e := range auditRegistry {
+		paths = append(paths, e.path)
+	}
+	return paths
+}

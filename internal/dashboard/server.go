@@ -1378,6 +1378,7 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/cpu-quartile-v2144", s.cacheMiddleware(120*time.Second, s.handleCPUQuartile2144))
 	mux.HandleFunc("/api/scalability/pvc-overhead-v2144", s.cacheMiddleware(120*time.Second, s.handlePVCOverhead2144))
 	mux.HandleFunc("/api/scalability/ns-forecast-v2144", s.cacheMiddleware(120*time.Second, s.handleNSForecast2144))
+	mux.HandleFunc("/api/audit/summary", s.handleAuditSummary)
 	mux.HandleFunc("/api/product/pod-overhead-v2145", s.cacheMiddleware(120*time.Second, s.handleOverhead2145))
 	mux.HandleFunc("/api/product/stdin-once-v2145", s.cacheMiddleware(120*time.Second, s.handleStdinOnce2145))
 	mux.HandleFunc("/api/product/alloc-lb-nodeports-v2145", s.cacheMiddleware(120*time.Second, s.handleAllocLB2145))

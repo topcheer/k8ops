@@ -1351,61 +1351,78 @@ window.loadAuditDashboard = function() {
   }
   document.getElementById('audit-dimensions').innerHTML = dimHtml;
 
-  // Fetch all endpoints with concurrency limiting (max 8 concurrent to prevent HTTP/2 stream exhaustion)
-  const allEndpoints = [];
-  for (const info of Object.values(AUDIT_STRUCTURE)) {
-    for (const endpoints of Object.values(info.subcategories)) {
-      for (const ep of endpoints) { allEndpoints.push(ep); }
-    }
-  }
+  // Fetch ALL audit results in ONE request via batch summary endpoint
+  // This replaces 1000+ individual HTTP requests with a single call
+  // The backend caches results for 60s, so 100 users = 1 K8s API call per minute
+  fetchJSON('/api/audit/summary')
+    .then(data => {
+      if (!data.results) return;
+      for (const [path, entry] of Object.entries(data.results)) {
+        const cardId = btoa(path).replace(/=/g, '');
+        const scoreEl = document.getElementById('score-' + cardId);
+        const statusEl = document.getElementById('status-' + cardId);
+        const cardEl = document.getElementById('audit-card-' + cardId);
+        if (!scoreEl || !cardEl) continue;
 
-  const BATCH_SIZE = 8;
-  let batchIdx = 0;
-
-  function processBatch() {
-    const batch = allEndpoints.slice(batchIdx, batchIdx + BATCH_SIZE);
-    if (batch.length === 0) return;
-
-    Promise.allSettled(batch.map(ep => {
-      const cardId = btoa(ep.path).replace(/=/g, '');
-      return fetchJSON(ep.path)
-        .then(data => {
-          const score = data.healthScore !== undefined ? data.healthScore
-            : data.riskScore !== undefined ? data.riskScore
-            : data.score !== undefined ? data.score
-            : data.grade ? undefined : null;
-          const scoreEl = document.getElementById('score-' + cardId);
-          const statusEl = document.getElementById('status-' + cardId);
-          const cardEl = document.getElementById('audit-card-' + cardId);
-          if (scoreEl && score !== undefined && score !== null) {
-            scoreEl.textContent = score;
-            cardEl.dataset.score = score;
-            cardEl.className = score >= 80 ? 'audit-card audit-card-good' : score >= 60 ? 'audit-card audit-card-warn' : score >= 40 ? 'audit-card audit-card-bad' : 'audit-card audit-card-crit';
-          }
-          if (statusEl) {
-            const summary = data.summary || {};
+        if (entry.score !== undefined && entry.score > 0) {
+          scoreEl.textContent = entry.score;
+          cardEl.dataset.score = entry.score;
+          cardEl.className = entry.score >= 80 ? 'audit-card audit-card-good'
+            : entry.score >= 60 ? 'audit-card audit-card-warn'
+            : entry.score >= 40 ? 'audit-card audit-card-bad'
+            : 'audit-card audit-card-crit';
+        }
+        if (statusEl) {
+          if (entry.status === 'pending') {
+            statusEl.textContent = 'Loading...';
+          } else if (entry.summary) {
             const parts = [];
-            for (const [k, v] of Object.entries(summary)) {
-              if (typeof v === 'number' && parts.length < 3) parts.push(`${v} ${k.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toLowerCase()).replace(/total/g, '').trim()}`.trim());
+            for (const [k, v] of Object.entries(entry.summary)) {
+              if (typeof v === 'number' && parts.length < 2) {
+                const label = k.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toLowerCase()).replace(/total/g, '').trim();
+                parts.push(`${v} ${label}`);
+              }
             }
-            if (parts.length === 0 && data.recommendations && data.recommendations.length > 0) {
-              let rec = data.recommendations[0] || '';
-              statusEl.textContent = rec.length > 60 ? rec.substring(0, 60) + '...' : rec;
-            } else {
-              statusEl.textContent = parts.join(', ') || 'OK';
-            }
+            statusEl.textContent = parts.join(', ') || (entry.grade ? 'Grade: ' + entry.grade : 'OK');
+          } else {
+            statusEl.textContent = entry.grade ? 'Grade: ' + entry.grade : 'OK';
           }
-        })
-        .catch(() => {
-          const statusEl = document.getElementById('status-' + cardId);
-          if (statusEl) statusEl.textContent = 'Failed';
-        });
-    })).then(() => {
-      batchIdx += BATCH_SIZE;
-      if (batchIdx < allEndpoints.length) { setTimeout(processBatch, 200); }
+        }
+      }
+    })
+    .catch(err => {
+      // Fallback: if batch endpoint fails, load endpoints in small batches
+      const allEP = [];
+      for (const info of Object.values(AUDIT_STRUCTURE)) {
+        for (const eps of Object.values(info.subcategories)) {
+          for (const ep of eps) { allEP.push(ep); }
+        }
+      }
+      const BATCH = 8;
+      let idx = 0;
+      function fallback() {
+        const batch = allEP.slice(idx, idx + BATCH);
+        if (!batch.length) return;
+        Promise.allSettled(batch.map(ep => {
+          const cid = btoa(ep.path).replace(/=/g, '');
+          return fetchJSON(ep.path).then(d => {
+            const sEl = document.getElementById('score-' + cid);
+            const stEl = document.getElementById('status-' + cid);
+            const cEl = document.getElementById('audit-card-' + cid);
+            if (sEl && d.healthScore !== undefined) {
+              sEl.textContent = d.healthScore;
+              cEl.className = d.healthScore >= 80 ? 'audit-card audit-card-good' : d.healthScore >= 60 ? 'audit-card audit-card-warn' : d.healthScore >= 40 ? 'audit-card audit-card-bad' : 'audit-card audit-card-crit';
+            }
+            if (stEl && d.summary) {
+              const p = [];
+              for (const [k, v] of Object.entries(d.summary)) { if (typeof v === 'number' && p.length < 2) p.push(`${v} ${k.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toLowerCase()).replace(/total/g, '').trim()}`); }
+              stEl.textContent = p.join(', ') || 'OK';
+            }
+          }).catch(() => { const st = document.getElementById('status-' + cid); if (st) st.textContent = 'Failed'; });
+        })).then(() => { idx += BATCH; if (idx < allEP.length) setTimeout(fallback, 300); });
+      }
+      fallback();
     });
-  }
-  processBatch();
 
   // Render dimension summary cards
   renderSummaryCards();
