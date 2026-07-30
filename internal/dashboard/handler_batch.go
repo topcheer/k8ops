@@ -8,6 +8,8 @@ import (
 	"sync"
 	"time"
 
+	"context"
+
 	k8saudit "github.com/ggai/k8ops/internal/tools/k8s"
 )
 
@@ -83,14 +85,19 @@ func (s *Server) warmAuditCache() {
 				if _, ok := s.cache.get(cacheKey); ok {
 					continue
 				}
-				// Execute handler via internal HTTP call
+				// Execute handler via internal HTTP call with proper context
 				rec := httptest.NewRecorder()
-				httpReq := &http.Request{
+				httpReq := (&http.Request{
 					Method: "GET",
 					URL:    &url.URL{Path: path},
 					Header: make(http.Header),
-				}
-				s.mux.ServeHTTP(rec, httpReq)
+				}).WithContext(context.Background())
+				func() {
+					defer func() {
+						_ = recover() // ignore handler panics
+					}()
+					s.mux.ServeHTTP(rec, httpReq)
+				}()
 				body := rec.Body.Bytes()
 				if len(body) > 0 && len(body) < 5*1024*1024 {
 					s.cache.set(cacheKey, body)
