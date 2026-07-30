@@ -60,6 +60,7 @@ type Server struct {
 	tlsKey             string
 	startTime          *time.Time
 	perfTracker        *apiPerformanceTracker
+	mux                *http.ServeMux // stored for audit cache warmer
 
 	// Graceful shutdown state
 	draining       atomic.Bool  // true when server is draining (SIGTERM received)
@@ -1525,6 +1526,7 @@ func (s *Server) Start(addr string) error {
 
 	// Wrap all routes with auth middleware (if enabled)
 	// Order: AuthMiddleware (validates JWT, sets user) → ImpersonationMiddleware (creates per-user K8s client) → mux
+	s.mux = mux
 	var handler http.Handler = mux
 	if s.auth != nil {
 		handler = s.auth.Middleware(s.ImpersonationMiddleware(mux))
@@ -1542,6 +1544,9 @@ func (s *Server) Start(addr string) error {
 		IdleTimeout:  120 * time.Second,
 		ConnState:    s.connStateTracker, // track active connections for graceful draining
 	}
+
+	// Start audit cache pre-warmer (background goroutine)
+	s.StartAuditWarmer()
 
 	// TLS support: use HTTPS if cert/key are configured
 	if s.tlsCert != "" && s.tlsKey != "" {
