@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"sync"
 	"time"
 
@@ -82,10 +83,14 @@ func (s *Server) warmAuditCache() {
 				if _, ok := s.cache.get(cacheKey); ok {
 					continue
 				}
-				// Execute the handler internally to populate cache
-				req := httptest.NewRequest("GET", path, nil)
+				// Execute handler via internal HTTP call
 				rec := httptest.NewRecorder()
-				s.mux.ServeHTTP(rec, req)
+				httpReq := &http.Request{
+					Method: "GET",
+					URL:    &url.URL{Path: path},
+					Header: make(http.Header),
+				}
+				s.mux.ServeHTTP(rec, httpReq)
 				body := rec.Body.Bytes()
 				if len(body) > 0 && len(body) < 5*1024*1024 {
 					s.cache.set(cacheKey, body)
