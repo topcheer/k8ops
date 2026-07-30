@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -99,6 +100,25 @@ func (s *Server) handleDiagnosticsHistory(w http.ResponseWriter, r *http.Request
 
 	filterStatus := r.URL.Query().Get("status")
 
+	// Date range filtering: parse from/to query params (RFC3339 or date-only)
+	var fromTime, toTime time.Time
+	if from := r.URL.Query().Get("from"); from != "" {
+		// Try RFC3339 first, then date-only format
+		if t, err := time.Parse(time.RFC3339, from); err == nil {
+			fromTime = t
+		} else if t, err := time.Parse("2006-01-02", from); err == nil {
+			fromTime = t
+		}
+	}
+	if to := r.URL.Query().Get("to"); to != "" {
+		if t, err := time.Parse(time.RFC3339, to); err == nil {
+			toTime = t
+		} else if t, err := time.Parse("2006-01-02", to); err == nil {
+			// End of day for date-only
+			toTime = t.Add(24*time.Hour - time.Second)
+		}
+	}
+
 	type historyItem struct {
 		ID        string `json:"id"`
 		Namespace string `json:"namespace"`
@@ -119,6 +139,14 @@ func (s *Server) handleDiagnosticsHistory(w http.ResponseWriter, r *http.Request
 			continue
 		}
 
+		// Apply date range filter
+		if !fromTime.IsZero() && d.CreationTimestamp.Time.Before(fromTime) {
+			continue
+		}
+		if !toTime.IsZero() && d.CreationTimestamp.Time.After(toTime) {
+			continue
+		}
+
 		results = append(results, historyItem{
 			ID:        d.Name,
 			Namespace: d.Namespace,
@@ -133,7 +161,43 @@ func (s *Server) handleDiagnosticsHistory(w http.ResponseWriter, r *http.Request
 		return results[i].CreatedAt > results[j].CreatedAt
 	})
 
-	writeJSON(w, map[string]any{"count": len(results), "items": results})
+	// Pagination: default page=1, pageSize=20; max pageSize=100
+	page := 1
+	pageSize := 20
+	if p := r.URL.Query().Get("page"); p != "" {
+		if v, err := strconv.Atoi(p); err == nil && v > 0 {
+			page = v
+		}
+	}
+	if ps := r.URL.Query().Get("pageSize"); ps != "" {
+		if v, err := strconv.Atoi(ps); err == nil && v > 0 && v <= 100 {
+			pageSize = v
+		}
+	}
+
+	total := len(results)
+	totalPages := (total + pageSize - 1) / pageSize
+	if totalPages == 0 {
+		totalPages = 1
+	}
+	start := (page - 1) * pageSize
+	end := start + pageSize
+	if start > total {
+		start = total
+	}
+	if end > total {
+		end = total
+	}
+
+	paged := results[start:end]
+
+	writeJSON(w, map[string]any{
+		"count":      total,
+		"page":       page,
+		"pageSize":   pageSize,
+		"totalPages": totalPages,
+		"items":      paged,
+	})
 }
 
 // handleDiagnosticDetail returns full details of a DiagnosticReport as markdown.

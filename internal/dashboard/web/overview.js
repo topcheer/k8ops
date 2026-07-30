@@ -246,13 +246,30 @@ export function sparklineSvg(data, color) {
 // Implemented below: loadCostOverview, loadCost, loadCostSummary, loadCostRecommendations
 
 // --- Diagnostics History ---
+let diagCurrentPage = 1;
+let diagTotalPages = 1;
+
 export async function loadDiagnostics() {
   const container = document.getElementById('diagnosticsTable');
   try {
     const statusFilter = document.getElementById('diagStatusFilter')?.value || '';
-    const url = '/api/diagnostics/history' + (statusFilter ? '?status=' + encodeURIComponent(statusFilter) : '');
+    const fromFilter = document.getElementById('diagDateFrom')?.value || '';
+    const toFilter = document.getElementById('diagDateTo')?.value || '';
+    const params = new URLSearchParams();
+    if (statusFilter) params.set('status', statusFilter);
+    if (fromFilter) params.set('from', fromFilter);
+    if (toFilter) params.set('to', toFilter);
+    params.set('page', String(diagCurrentPage));
+    params.set('pageSize', '20');
+    const url = '/api/diagnostics/history?' + params.toString();
     const data = await fetchJSON(url);
-    if (!data.items?.length) { container.innerHTML = '<div class="empty">No diagnostic reports found' + (statusFilter ? ' for status: ' + statusFilter : '') + '</div>'; return; }
+    diagTotalPages = data.totalPages || 1;
+    if (diagCurrentPage > diagTotalPages) { diagCurrentPage = diagTotalPages; }
+    if (!data.items?.length) {
+      container.innerHTML = '<div class="empty">No diagnostic reports found' + (statusFilter ? ' for status: ' + statusFilter : '') + '</div>';
+      renderDiagPagination(data.count || 0);
+      return;
+    }
     container.innerHTML = `<table>
       <thead><tr><th>ID</th><th>Namespace</th><th>Status</th><th>Summary</th><th>Age</th><th>Details</th></tr></thead>
       <tbody>${data.items.map(d => `<tr>
@@ -264,11 +281,34 @@ export async function loadDiagnostics() {
         <td><a href="javascript:void(0)" onclick="viewDiagnostic('${escapeHtml(d.namespace)}','${escapeHtml(d.name || d.id)}')" style="color:var(--accent-blue);text-decoration:none;">View Report</a></td>
       </tr>`).join('')}</tbody>
     </table>`;
+    renderDiagPagination(data.count || 0);
   } catch(e) {
     if (isForbidden(e)) renderForbidden(container);
     else container.innerHTML = `<div class="empty">Error: ${escapeHtml(e.message)}</div>`;
   }
 }
+
+function renderDiagPagination(total) {
+  const el = document.getElementById('diagPagination');
+  if (!el) return;
+  if (total <= 20) { el.innerHTML = ''; return; }
+  const start = (diagCurrentPage - 1) * 20 + 1;
+  const end = Math.min(diagCurrentPage * 20, total);
+  el.innerHTML = `<div style="display:flex;align-items:center;gap:12px;padding:8px 0;font-size:13px;color:var(--text-muted);">
+    <span>Showing ${start}-${end} of ${total}</span>
+    <div style="display:flex;gap:4px;">
+      <button class="btn-sm" ${diagCurrentPage <= 1 ? 'disabled' : ''} onclick="diagGoToPage(${diagCurrentPage - 1})">Prev</button>
+      <span style="padding:2px 8px;">Page ${diagCurrentPage} / ${diagTotalPages}</span>
+      <button class="btn-sm" ${diagCurrentPage >= diagTotalPages ? 'disabled' : ''} onclick="diagGoToPage(${diagCurrentPage + 1})">Next</button>
+    </div>
+  </div>`;
+}
+
+window.diagGoToPage = function(page) {
+  if (page < 1 || page > diagTotalPages) return;
+  diagCurrentPage = page;
+  loadDiagnostics();
+};
 
 export async function viewDiagnostic(ns, name) {
   const overlay = document.getElementById('diagDetailOverlay');

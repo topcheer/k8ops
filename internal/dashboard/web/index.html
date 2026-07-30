@@ -152,19 +152,24 @@
   <div id="tab-diagnostics" class="hidden">
     <div class="refresh-bar">
       <div class="section-title">Diagnostic Reports</div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <label style="font-size:12px;color:#8b949e;">Status:</label>
-        <select id="diagStatusFilter" onchange="loadDiagnostics()" class="form-input" style="width:140px;">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <label style="font-size:12px;color:var(--text-muted);">Status:</label>
+        <select id="diagStatusFilter" onchange="diagCurrentPage=1;loadDiagnostics()" class="form-input" style="width:120px;">
           <option value="">All</option>
           <option value="Pending">Pending</option>
           <option value="Running">Running</option>
           <option value="Completed">Completed</option>
           <option value="Failed">Failed</option>
         </select>
-        <button onclick="loadDiagnostics()">Refresh</button>
+        <label style="font-size:12px;color:var(--text-muted);">From:</label>
+        <input type="date" id="diagDateFrom" onchange="diagCurrentPage=1;loadDiagnostics()" class="form-input" style="width:140px;" />
+        <label style="font-size:12px;color:var(--text-muted);">To:</label>
+        <input type="date" id="diagDateTo" onchange="diagCurrentPage=1;loadDiagnostics()" class="form-input" style="width:140px;" />
+        <button onclick="diagCurrentPage=1;loadDiagnostics()">Refresh</button>
       </div>
     </div>
     <div id="diagnosticsTable"><div class="loading">Loading...</div></div>
+    <div id="diagPagination"></div>
   </div>
 
   <!-- Remediations -->
