@@ -1258,6 +1258,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/ns-cpu-request-v2259', name: 'NS CPU Request', icon: '\u26A1' },
         { path: '/api/scalability/node-mem-fragmentation-v2259', name: 'Node Mem Frag', icon: '\u{1F4A8}' },
         { path: '/api/scalability/cluster-service-health-v2259', name: 'Svc Health', icon: '\u{1F493}' },
+        // v22.60 Product
+        { path: '/api/product/container-port-catalog-v2260', name: 'Port Catalog', icon: '\u{1F50C}' },
+        { path: '/api/product/pod-qos-distribution-v2260', name: 'Pod QoS Dist', icon: '\u{1F4CA}' },
+        { path: '/api/product/resource-limit-adherence-v2260', name: 'Res Limit Adh', icon: '\u{1F4CF}' },
+        // v22.61 Deployment
+        { path: '/api/deployment/deploy-strategy-census-v2261', name: 'Deploy Strategy', icon: '\u{1F4E6}' },
+        { path: '/api/deployment/sts-update-strategy-v2261', name: 'STS Update Strat', icon: '\u{1F504}' },
+        { path: '/api/deployment/ds-update-strategy-v2261', name: 'DS Update Strat', icon: '\u{1F680}' },
+        // v22.62 Operations
+        { path: '/api/ops/restart-policy-distribution-v2262', name: 'Restart Policy', icon: '\u{1F501}' },
+        { path: '/api/ops/node-architecture-census-v2262', name: 'Node Arch', icon: '\u{1F5A5}' },
+        { path: '/api/ops/privileged-escalation-v2262', name: 'Privileged Esc', icon: '\u{1F6E1}' },
+        // v22.63 Security
+        { path: '/api/security/service-account-audit-v2263', name: 'SvcAccount Audit', icon: '\u{1F451}' },
+        { path: '/api/security/secret-type-distribution-v2263', name: 'Secret Type Dist', icon: '\u{1F510}' },
+        { path: '/api/security/pod-security-violations-v2263', name: 'Pod Sec Violation', icon: '\u{1F6E1}' },
+        // v22.64 Documentation
+        { path: '/api/docs/tolerations-catalog-v2264', name: 'Tolerations Catalog', icon: '\u{1F6A7}' },
+        { path: '/api/docs/node-os-image-census-v2264', name: 'Node OS Image', icon: '\u{1F4BB}' },
+        { path: '/api/docs/pv-reclaim-policy-inventory-v2264', name: 'PV Reclaim Policy', icon: '\u{1F4BF}' },
+        // v22.65 Scalability
+        { path: '/api/scalability/ns-memory-request-v2265', name: 'NS Mem Request', icon: '\u{1F4BE}' },
+        { path: '/api/scalability/pod-density-per-node-v2265', name: 'Pod Density/Node', icon: '\u{1F3D7}' },
+        { path: '/api/scalability/cluster-endpoint-count-v2265', name: 'Endpoint Count', icon: '\u{1F310}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

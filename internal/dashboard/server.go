@@ -1729,6 +1729,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/ns-cpu-request-v2259", s.cacheMiddleware(120*time.Second, s.handleNSCPUReq2259))
 	mux.HandleFunc("/api/scalability/node-mem-fragmentation-v2259", s.cacheMiddleware(120*time.Second, s.handleNodeMemFrag2259))
 	mux.HandleFunc("/api/scalability/cluster-service-health-v2259", s.cacheMiddleware(120*time.Second, s.handleSvcHealth2259))
+
+	// v22.60 Product
+	mux.HandleFunc("/api/product/container-port-catalog-v2260", s.cacheMiddleware(120*time.Second, s.handleCtnrPortCatalog2260))
+	mux.HandleFunc("/api/product/pod-qos-distribution-v2260", s.cacheMiddleware(120*time.Second, s.handlePodQoSDist2260))
+	mux.HandleFunc("/api/product/resource-limit-adherence-v2260", s.cacheMiddleware(120*time.Second, s.handleResLimitAdherence2260))
+	// v22.61 Deployment
+	mux.HandleFunc("/api/deployment/deploy-strategy-census-v2261", s.cacheMiddleware(120*time.Second, s.handleDepStrategy2261))
+	mux.HandleFunc("/api/deployment/sts-update-strategy-v2261", s.cacheMiddleware(120*time.Second, s.handleSTSUpdateStrategy2261))
+	mux.HandleFunc("/api/deployment/ds-update-strategy-v2261", s.cacheMiddleware(120*time.Second, s.handleDSUpdateStrategy2261))
+	// v22.62 Operations
+	mux.HandleFunc("/api/ops/restart-policy-distribution-v2262", s.cacheMiddleware(120*time.Second, s.handleRestartPolicy2262))
+	mux.HandleFunc("/api/ops/node-architecture-census-v2262", s.cacheMiddleware(120*time.Second, s.handleNodeArch2262))
+	mux.HandleFunc("/api/ops/privileged-escalation-v2262", s.cacheMiddleware(120*time.Second, s.handlePrivilegedEsc2262))
+	// v22.63 Security
+	mux.HandleFunc("/api/security/service-account-audit-v2263", s.cacheMiddleware(120*time.Second, s.handleSvcAccount2263))
+	mux.HandleFunc("/api/security/secret-type-distribution-v2263", s.cacheMiddleware(120*time.Second, s.handleSecretType2263))
+	mux.HandleFunc("/api/security/pod-security-violations-v2263", s.cacheMiddleware(120*time.Second, s.handlePodSecViolation2263))
+	// v22.64 Documentation
+	mux.HandleFunc("/api/docs/tolerations-catalog-v2264", s.cacheMiddleware(120*time.Second, s.handleTolerationCatalog2264))
+	mux.HandleFunc("/api/docs/node-os-image-census-v2264", s.cacheMiddleware(120*time.Second, s.handleNodeOSImage2264))
+	mux.HandleFunc("/api/docs/pv-reclaim-policy-inventory-v2264", s.cacheMiddleware(120*time.Second, s.handlePVReclaim2264))
+	// v22.65 Scalability
+	mux.HandleFunc("/api/scalability/ns-memory-request-v2265", s.cacheMiddleware(120*time.Second, s.handleNSMemReq2265))
+	mux.HandleFunc("/api/scalability/pod-density-per-node-v2265", s.cacheMiddleware(120*time.Second, s.handlePodDensityPerNode2265))
+	mux.HandleFunc("/api/scalability/cluster-endpoint-count-v2265", s.cacheMiddleware(120*time.Second, s.handleEndpointCount2265))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

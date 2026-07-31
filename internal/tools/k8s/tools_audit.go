@@ -1673,6 +1673,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:ns-cpu-request-v2259", "/api/scalability/ns-cpu-request-v2259", "Namespace CPU request distribution"},
 	{"scalability:node-mem-fragmentation-v2259", "/api/scalability/node-mem-fragmentation-v2259", "Node memory fragmentation"},
 	{"scalability:cluster-service-health-v2259", "/api/scalability/cluster-service-health-v2259", "Cluster service health via endpoints"},
+
+	// v22.60 Product
+	{"product:container-port-catalog-v2260", "/api/product/container-port-catalog-v2260", "Container port catalog"},
+	{"product:pod-qos-distribution-v2260", "/api/product/pod-qos-distribution-v2260", "Pod QoS class distribution"},
+	{"product:resource-limit-adherence-v2260", "/api/product/resource-limit-adherence-v2260", "Resource limit adherence"},
+	// v22.61 Deployment
+	{"deployment:deploy-strategy-census-v2261", "/api/deployment/deploy-strategy-census-v2261", "Deployment strategy census"},
+	{"deployment:sts-update-strategy-v2261", "/api/deployment/sts-update-strategy-v2261", "STS update strategy"},
+	{"deployment:ds-update-strategy-v2261", "/api/deployment/ds-update-strategy-v2261", "DaemonSet update strategy"},
+	// v22.62 Operations
+	{"ops:restart-policy-distribution-v2262", "/api/ops/restart-policy-distribution-v2262", "Restart policy distribution"},
+	{"ops:node-architecture-census-v2262", "/api/ops/node-architecture-census-v2262", "Node architecture census"},
+	{"ops:privileged-escalation-v2262", "/api/ops/privileged-escalation-v2262", "Privileged container escalation"},
+	// v22.63 Security
+	{"security:service-account-audit-v2263", "/api/security/service-account-audit-v2263", "Service account audit"},
+	{"security:secret-type-distribution-v2263", "/api/security/secret-type-distribution-v2263", "Secret type distribution"},
+	{"security:pod-security-violations-v2263", "/api/security/pod-security-violations-v2263", "Pod security violations"},
+	// v22.64 Documentation
+	{"docs:tolerations-catalog-v2264", "/api/docs/tolerations-catalog-v2264", "Pod tolerations catalog"},
+	{"docs:node-os-image-census-v2264", "/api/docs/node-os-image-census-v2264", "Node OS image census"},
+	{"docs:pv-reclaim-policy-inventory-v2264", "/api/docs/pv-reclaim-policy-inventory-v2264", "PV reclaim policy inventory"},
+	// v22.65 Scalability
+	{"scalability:ns-memory-request-v2265", "/api/scalability/ns-memory-request-v2265", "Namespace memory request distribution"},
+	{"scalability:pod-density-per-node-v2265", "/api/scalability/pod-density-per-node-v2265", "Pod density per node"},
+	{"scalability:cluster-endpoint-count-v2265", "/api/scalability/cluster-endpoint-count-v2265", "Cluster endpoint count"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.
