@@ -1998,6 +1998,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-namespace-secret-count-v2337", "/api/scalability/top-namespace-secret-count-v2337", "Top namespace by secret count"},
 	{"scalability:node-cpu-headroom-v2337", "/api/scalability/node-cpu-headroom-v2337", "Node CPU headroom"},
 	{"scalability:endpoint-health-ratio-v2337", "/api/scalability/endpoint-health-ratio-v2337", "Endpoint health ratio"},
+
+	// v23.38 Product
+	{"product:pod-os-name-windows-v2338", "/api/product/pod-os-name-windows-v2338", "Pod OS name census"},
+	{"product:stderr-redirect-audit-v2338", "/api/product/stderr-redirect-audit-v2338", "Container stderr redirect"},
+	{"product:session-affinity-config-v2338", "/api/product/session-affinity-config-v2338", "Session affinity config"},
+	// v23.39 Deployment
+	{"deployment:sts-collision-count-v2339", "/api/deployment/sts-collision-count-v2339", "STS collision count"},
+	{"deployment:ds-updated-desired-v2339", "/api/deployment/ds-updated-desired-v2339", "DS updated vs desired"},
+	{"deployment:job-ttl-seconds-v2339", "/api/deployment/job-ttl-seconds-v2339", "Job TTL cleanup"},
+	// v23.40 Operations
+	{"ops:image-id-catalog-v2340", "/api/ops/image-id-catalog-v2340", "Container image ID catalog"},
+	{"ops:node-condition-disk-v2340", "/api/ops/node-condition-disk-v2340", "Node disk pressure condition"},
+	{"ops:volume-device-audit-v2340", "/api/ops/volume-device-audit-v2340", "Container volume device audit"},
+	// v23.41 Security
+	{"security:uid-range-audit-v2341", "/api/security/uid-range-audit-v2341", "UID range audit"},
+	{"security:docker-config-secret-v2341", "/api/security/docker-config-secret-v2341", "Docker config secret"},
+	{"security:role-verb-wildcard-v2341", "/api/security/role-verb-wildcard-v2341", "Role verb wildcard audit"},
+	// v23.42 Documentation
+	{"docs:node-region-label-v2342", "/api/docs/node-region-label-v2342", "Node region label"},
+	{"docs:pod-owner-kind-v2342", "/api/docs/pod-owner-kind-v2342", "Pod owner kind"},
+	{"docs:secret-creation-order-v2342", "/api/docs/secret-creation-order-v2342", "Secret creation order"},
+	// v23.43 Scalability
+	{"scalability:node-zone-distribution-v2343", "/api/scalability/node-zone-distribution-v2343", "Node zone distribution"},
+	{"scalability:scheduling-latency-risk-v2343", "/api/scalability/scheduling-latency-risk-v2343", "Scheduling latency risk"},
+	{"scalability:deployment-density-v2343", "/api/scalability/deployment-density-v2343", "Deployment density"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

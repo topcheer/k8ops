@@ -1571,6 +1571,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-namespace-secret-count-v2337', name: 'Top NS Secret', icon: '\u{1F510}' },
         { path: '/api/scalability/node-cpu-headroom-v2337', name: 'Node CPU Headrm', icon: '\u26A1' },
         { path: '/api/scalability/endpoint-health-ratio-v2337', name: 'EP Health Ratio', icon: '\u{1F493}' },
+        // v23.38 Product
+        { path: '/api/product/pod-os-name-windows-v2338', name: 'Pod OS Name', icon: '\u{1F4BB}' },
+        { path: '/api/product/stderr-redirect-audit-v2338', name: 'Stderr Redirect', icon: '\u{1F4DD}' },
+        { path: '/api/product/session-affinity-config-v2338', name: 'Session Aff Cfg', icon: '\u{1F91D}' },
+        // v23.39 Deployment
+        { path: '/api/deployment/sts-collision-count-v2339', name: 'STS Collision', icon: '\u{26A0}' },
+        { path: '/api/deployment/ds-updated-desired-v2339', name: 'DS Upd/Desired', icon: '\u{1F680}' },
+        { path: '/api/deployment/job-ttl-seconds-v2339', name: 'Job TTL', icon: '\u{23F1}' },
+        // v23.40 Operations
+        { path: '/api/ops/image-id-catalog-v2340', name: 'Image ID', icon: '\u{1F4E6}' },
+        { path: '/api/ops/node-condition-disk-v2340', name: 'Node Disk Cond', icon: '\u{1F4BF}' },
+        { path: '/api/ops/volume-device-audit-v2340', name: 'Vol Device', icon: '\u{1F4BD}' },
+        // v23.41 Security
+        { path: '/api/security/uid-range-audit-v2341', name: 'UID Range', icon: '\u{1F464}' },
+        { path: '/api/security/docker-config-secret-v2341', name: 'Docker Config', icon: '\u{1F510}' },
+        { path: '/api/security/role-verb-wildcard-v2341', name: 'Role Verb Wild', icon: '\u{1F451}' },
+        // v23.42 Documentation
+        { path: '/api/docs/node-region-label-v2342', name: 'Node Region', icon: '\u{1F5FA}' },
+        { path: '/api/docs/pod-owner-kind-v2342', name: 'Pod Owner Kind', icon: '\u{1F517}' },
+        { path: '/api/docs/secret-creation-order-v2342', name: 'Secret Create Order', icon: '\u{1F4C5}' },
+        // v23.43 Scalability
+        { path: '/api/scalability/node-zone-distribution-v2343', name: 'Node Zone Dist', icon: '\u{1F310}' },
+        { path: '/api/scalability/scheduling-latency-risk-v2343', name: 'Sched Latency', icon: '\u{23F1}' },
+        { path: '/api/scalability/deployment-density-v2343', name: 'Deploy Density', icon: '\u{1F4CA}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

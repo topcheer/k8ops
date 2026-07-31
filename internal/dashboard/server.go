@@ -2054,6 +2054,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-namespace-secret-count-v2337", s.cacheMiddleware(120*time.Second, s.handleTopNSSecret2337))
 	mux.HandleFunc("/api/scalability/node-cpu-headroom-v2337", s.cacheMiddleware(120*time.Second, s.handleNodeCPUHeadroom2337))
 	mux.HandleFunc("/api/scalability/endpoint-health-ratio-v2337", s.cacheMiddleware(120*time.Second, s.handleEPRatio2337))
+
+	// v23.38 Product
+	mux.HandleFunc("/api/product/pod-os-name-windows-v2338", s.cacheMiddleware(120*time.Second, s.handlePodOSName2338))
+	mux.HandleFunc("/api/product/stderr-redirect-audit-v2338", s.cacheMiddleware(120*time.Second, s.handleStderr2338))
+	mux.HandleFunc("/api/product/session-affinity-config-v2338", s.cacheMiddleware(120*time.Second, s.handleSessionAffConfig2338))
+	// v23.39 Deployment
+	mux.HandleFunc("/api/deployment/sts-collision-count-v2339", s.cacheMiddleware(120*time.Second, s.handleSTSCollision2339))
+	mux.HandleFunc("/api/deployment/ds-updated-desired-v2339", s.cacheMiddleware(120*time.Second, s.handleDSUpdatedDesired2339))
+	mux.HandleFunc("/api/deployment/job-ttl-seconds-v2339", s.cacheMiddleware(120*time.Second, s.handleJobTTL2339))
+	// v23.40 Operations
+	mux.HandleFunc("/api/ops/image-id-catalog-v2340", s.cacheMiddleware(120*time.Second, s.handleImgID2340))
+	mux.HandleFunc("/api/ops/node-condition-disk-v2340", s.cacheMiddleware(120*time.Second, s.handleNodeCondDisk2340))
+	mux.HandleFunc("/api/ops/volume-device-audit-v2340", s.cacheMiddleware(120*time.Second, s.handleVolDevice2340))
+	// v23.41 Security
+	mux.HandleFunc("/api/security/uid-range-audit-v2341", s.cacheMiddleware(120*time.Second, s.handleUIDRange2341))
+	mux.HandleFunc("/api/security/docker-config-secret-v2341", s.cacheMiddleware(120*time.Second, s.handleDockerConfig2341))
+	mux.HandleFunc("/api/security/role-verb-wildcard-v2341", s.cacheMiddleware(120*time.Second, s.handleRoleVerbWildcard2341))
+	// v23.42 Documentation
+	mux.HandleFunc("/api/docs/node-region-label-v2342", s.cacheMiddleware(120*time.Second, s.handleNodeRegion2342))
+	mux.HandleFunc("/api/docs/pod-owner-kind-v2342", s.cacheMiddleware(120*time.Second, s.handlePodOwnerKind2342))
+	mux.HandleFunc("/api/docs/secret-creation-order-v2342", s.cacheMiddleware(120*time.Second, s.handleSecretCreationOrder2342))
+	// v23.43 Scalability
+	mux.HandleFunc("/api/scalability/node-zone-distribution-v2343", s.cacheMiddleware(120*time.Second, s.handleNodeZone2343))
+	mux.HandleFunc("/api/scalability/scheduling-latency-risk-v2343", s.cacheMiddleware(120*time.Second, s.handleSchedLatency2343))
+	mux.HandleFunc("/api/scalability/deployment-density-v2343", s.cacheMiddleware(120*time.Second, s.handleDeployDensity2343))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))
