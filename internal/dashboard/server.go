@@ -2029,6 +2029,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/image-registry-distribution-v2331", s.cacheMiddleware(120*time.Second, s.handleImgRegistry2331))
 	mux.HandleFunc("/api/scalability/node-pod-headroom-v2331", s.cacheMiddleware(120*time.Second, s.handleNodeHeadroom2331))
 	mux.HandleFunc("/api/scalability/namespace-service-density-v2331", s.cacheMiddleware(120*time.Second, s.handleNSSvcDensity2331))
+
+	// v23.32 Product
+	mux.HandleFunc("/api/product/supplemental-groups-audit-v2332", s.cacheMiddleware(120*time.Second, s.handleSupplementalGroups2332))
+	mux.HandleFunc("/api/product/termination-message-path-v2332", s.cacheMiddleware(120*time.Second, s.handleTermMsgPath2332))
+	mux.HandleFunc("/api/product/lb-source-range-audit-v2332", s.cacheMiddleware(120*time.Second, s.handleLBSourceRange2332))
+	// v23.33 Deployment
+	mux.HandleFunc("/api/deployment/sts-pvc-template-size-v2333", s.cacheMiddleware(120*time.Second, s.handleSTSPVCSize2333))
+	mux.HandleFunc("/api/deployment/max-unavailable-custom-v2333", s.cacheMiddleware(120*time.Second, s.handleMaxUnavail2333))
+	mux.HandleFunc("/api/deployment/cronjob-history-limits-v2333", s.cacheMiddleware(120*time.Second, s.handleCronJobHistLimit2333))
+	// v23.34 Operations
+	mux.HandleFunc("/api/ops/failed-scheduling-census-v2334", s.cacheMiddleware(120*time.Second, s.handleFailedSched2334))
+	mux.HandleFunc("/api/ops/node-network-condition-v2334", s.cacheMiddleware(120*time.Second, s.handleNodeCondNet2334))
+	mux.HandleFunc("/api/ops/resource-summary-v2334", s.cacheMiddleware(120*time.Second, s.handleResSummary2334))
+	// v23.35 Security
+	mux.HandleFunc("/api/security/fsgroup-always-policy-v2335", s.cacheMiddleware(120*time.Second, s.handleFSGroupAlways2335))
+	mux.HandleFunc("/api/security/sa-automount-default-v2335", s.cacheMiddleware(120*time.Second, s.handleSAAutomount2335))
+	mux.HandleFunc("/api/security/secret-immutable-mark-v2335", s.cacheMiddleware(120*time.Second, s.handleSecretImmutable2335))
+	// v23.36 Documentation
+	mux.HandleFunc("/api/docs/hostnetwork-namespace-audit-v2336", s.cacheMiddleware(120*time.Second, s.handleHostNetNS2336))
+	mux.HandleFunc("/api/docs/node-systemuuid-census-v2336", s.cacheMiddleware(120*time.Second, s.handleNodeUUID2336))
+	mux.HandleFunc("/api/docs/configmap-immutable-mark-v2336", s.cacheMiddleware(120*time.Second, s.handleCMImmutableMark2336))
+	// v23.37 Scalability
+	mux.HandleFunc("/api/scalability/top-namespace-secret-count-v2337", s.cacheMiddleware(120*time.Second, s.handleTopNSSecret2337))
+	mux.HandleFunc("/api/scalability/node-cpu-headroom-v2337", s.cacheMiddleware(120*time.Second, s.handleNodeCPUHeadroom2337))
+	mux.HandleFunc("/api/scalability/endpoint-health-ratio-v2337", s.cacheMiddleware(120*time.Second, s.handleEPRatio2337))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

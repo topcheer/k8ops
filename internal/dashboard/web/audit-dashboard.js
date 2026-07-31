@@ -1547,6 +1547,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/image-registry-distribution-v2331', name: 'Img Registry', icon: '\u{1F5C3}' },
         { path: '/api/scalability/node-pod-headroom-v2331', name: 'Node Headroom', icon: '\u{1F3D7}' },
         { path: '/api/scalability/namespace-service-density-v2331', name: 'NS Svc Density', icon: '\u{1F4CA}' },
+        // v23.32 Product
+        { path: '/api/product/supplemental-groups-audit-v2332', name: 'Suppl Groups', icon: '\u{1F465}' },
+        { path: '/api/product/termination-message-path-v2332', name: 'TermMsg Path', icon: '\u{1F4DD}' },
+        { path: '/api/product/lb-source-range-audit-v2332', name: 'LB Src Range', icon: '\u{1F6E1}' },
+        // v23.33 Deployment
+        { path: '/api/deployment/sts-pvc-template-size-v2333', name: 'STS PVC Size', icon: '\u{1F4BF}' },
+        { path: '/api/deployment/max-unavailable-custom-v2333', name: 'MaxUnavail', icon: '\u{1F4C9}' },
+        { path: '/api/deployment/cronjob-history-limits-v2333', name: 'CJ Hist Lim', icon: '\u{23F0}' },
+        // v23.34 Operations
+        { path: '/api/ops/failed-scheduling-census-v2334', name: 'Failed Sched', icon: '\u{26A0}' },
+        { path: '/api/ops/node-network-condition-v2334', name: 'Node Net Cond', icon: '\u{1F310}' },
+        { path: '/api/ops/resource-summary-v2334', name: 'Res Summary', icon: '\u{1F4CA}' },
+        // v23.35 Security
+        { path: '/api/security/fsgroup-always-policy-v2335', name: 'FSGroup Always', icon: '\u{1F465}' },
+        { path: '/api/security/sa-automount-default-v2335', name: 'SA Automount', icon: '\u{1F511}' },
+        { path: '/api/security/secret-immutable-mark-v2335', name: 'Secret Immutable', icon: '\u{1F512}' },
+        // v23.36 Documentation
+        { path: '/api/docs/hostnetwork-namespace-audit-v2336', name: 'HostNet NS', icon: '\u{1F310}' },
+        { path: '/api/docs/node-systemuuid-census-v2336', name: 'Node SysUUID', icon: '\u{1F5A5}' },
+        { path: '/api/docs/configmap-immutable-mark-v2336', name: 'CM Immutable', icon: '\u{1F4DD}' },
+        // v23.37 Scalability
+        { path: '/api/scalability/top-namespace-secret-count-v2337', name: 'Top NS Secret', icon: '\u{1F510}' },
+        { path: '/api/scalability/node-cpu-headroom-v2337', name: 'Node CPU Headrm', icon: '\u26A1' },
+        { path: '/api/scalability/endpoint-health-ratio-v2337', name: 'EP Health Ratio', icon: '\u{1F493}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

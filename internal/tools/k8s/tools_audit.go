@@ -1973,6 +1973,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:image-registry-distribution-v2331", "/api/scalability/image-registry-distribution-v2331", "Image registry distribution"},
 	{"scalability:node-pod-headroom-v2331", "/api/scalability/node-pod-headroom-v2331", "Node pod headroom"},
 	{"scalability:namespace-service-density-v2331", "/api/scalability/namespace-service-density-v2331", "Namespace service density"},
+
+	// v23.32 Product
+	{"product:supplemental-groups-audit-v2332", "/api/product/supplemental-groups-audit-v2332", "Pod supplemental groups audit"},
+	{"product:termination-message-path-v2332", "/api/product/termination-message-path-v2332", "Container termination message policy"},
+	{"product:lb-source-range-audit-v2332", "/api/product/lb-source-range-audit-v2332", "LoadBalancer source range restriction"},
+	// v23.33 Deployment
+	{"deployment:sts-pvc-template-size-v2333", "/api/deployment/sts-pvc-template-size-v2333", "STS PVC template size"},
+	{"deployment:max-unavailable-custom-v2333", "/api/deployment/max-unavailable-custom-v2333", "Deployment custom MaxUnavailable"},
+	{"deployment:cronjob-history-limits-v2333", "/api/deployment/cronjob-history-limits-v2333", "CronJob history limits"},
+	// v23.34 Operations
+	{"ops:failed-scheduling-census-v2334", "/api/ops/failed-scheduling-census-v2334", "Failed scheduling census"},
+	{"ops:node-network-condition-v2334", "/api/ops/node-network-condition-v2334", "Node network condition"},
+	{"ops:resource-summary-v2334", "/api/ops/resource-summary-v2334", "Cluster resource summary"},
+	// v23.35 Security
+	{"security:fsgroup-always-policy-v2335", "/api/security/fsgroup-always-policy-v2335", "FSGroup Always change policy"},
+	{"security:sa-automount-default-v2335", "/api/security/sa-automount-default-v2335", "ServiceAccount automount default"},
+	{"security:secret-immutable-mark-v2335", "/api/security/secret-immutable-mark-v2335", "Secret immutable mark"},
+	// v23.36 Documentation
+	{"docs:hostnetwork-namespace-audit-v2336", "/api/docs/hostnetwork-namespace-audit-v2336", "HostNetwork namespace audit"},
+	{"docs:node-systemuuid-census-v2336", "/api/docs/node-systemuuid-census-v2336", "Node system UUID census"},
+	{"docs:configmap-immutable-mark-v2336", "/api/docs/configmap-immutable-mark-v2336", "ConfigMap immutable mark"},
+	// v23.37 Scalability
+	{"scalability:top-namespace-secret-count-v2337", "/api/scalability/top-namespace-secret-count-v2337", "Top namespace by secret count"},
+	{"scalability:node-cpu-headroom-v2337", "/api/scalability/node-cpu-headroom-v2337", "Node CPU headroom"},
+	{"scalability:endpoint-health-ratio-v2337", "/api/scalability/endpoint-health-ratio-v2337", "Endpoint health ratio"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.
