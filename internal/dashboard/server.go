@@ -2104,6 +2104,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-node-container-count-v2349", s.cacheMiddleware(120*time.Second, s.handleTopNodeContainer2349))
 	mux.HandleFunc("/api/scalability/cluster-hpa-coverage-v2349", s.cacheMiddleware(120*time.Second, s.handleHPACoverage2349))
 	mux.HandleFunc("/api/scalability/namespace-replica-distribution-v2349", s.cacheMiddleware(120*time.Second, s.handleNSReplicaDist2349))
+
+	// v23.50 Product
+	mux.HandleFunc("/api/product/fqdn-coverage-v2350", s.cacheMiddleware(120*time.Second, s.handleFQDNCoverage2350))
+	mux.HandleFunc("/api/product/empty-resource-audit-v2350", s.cacheMiddleware(120*time.Second, s.handleEmptyRes2350))
+	mux.HandleFunc("/api/product/nodeport-healthcheck-v2350", s.cacheMiddleware(120*time.Second, s.handleHCNodePort2350))
+	// v23.51 Deployment
+	mux.HandleFunc("/api/deployment/deployment-updated-replicas-v2351", s.cacheMiddleware(120*time.Second, s.handleDepUpdatedReps2351))
+	mux.HandleFunc("/api/deployment/sts-current-replicas-v2351", s.cacheMiddleware(120*time.Second, s.handleSTSCurrentReps2351))
+	mux.HandleFunc("/api/deployment/rs-full-status-v2351", s.cacheMiddleware(120*time.Second, s.handleRSFullStatus2351))
+	// v23.52 Operations
+	mux.HandleFunc("/api/ops/waiting-reason-catalog-v2352", s.cacheMiddleware(120*time.Second, s.handleWaitingReason2352))
+	mux.HandleFunc("/api/ops/node-memory-allocatable-v2352", s.cacheMiddleware(120*time.Second, s.handleNodeMemAlloc2352))
+	mux.HandleFunc("/api/ops/limit-cpu-summary-v2352", s.cacheMiddleware(120*time.Second, s.handleLimitCPU2352))
+	// v23.53 Security
+	mux.HandleFunc("/api/security/seccomp-localhost-v2353", s.cacheMiddleware(120*time.Second, s.handleSeccompLocal2353))
+	mux.HandleFunc("/api/security/secret-basic-auth-v2353", s.cacheMiddleware(120*time.Second, s.handleBasicAuth2353))
+	mux.HandleFunc("/api/security/role-resource-wildcard-v2353", s.cacheMiddleware(120*time.Second, s.handleRoleResWildcard2353))
+	// v23.54 Documentation
+	mux.HandleFunc("/api/docs/node-instance-type-v2354", s.cacheMiddleware(120*time.Second, s.handleInstanceType2354))
+	mux.HandleFunc("/api/docs/env-from-configmap-v2354", s.cacheMiddleware(120*time.Second, s.handleEnvFromCM2354))
+	mux.HandleFunc("/api/docs/pvc-storageclassname-v2354", s.cacheMiddleware(120*time.Second, s.handlePVCSCName2354))
+	// v23.55 Scalability
+	mux.HandleFunc("/api/scalability/top-namespace-configmap-v2355", s.cacheMiddleware(120*time.Second, s.handleTopNSCM2355))
+	mux.HandleFunc("/api/scalability/node-cpu-allocatable-core-v2355", s.cacheMiddleware(120*time.Second, s.handleNodeCPUAlloc2355))
+	mux.HandleFunc("/api/scalability/sts-density-v2355", s.cacheMiddleware(120*time.Second, s.handleSTSDensity2355))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

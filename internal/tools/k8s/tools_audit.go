@@ -2048,6 +2048,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-node-container-count-v2349", "/api/scalability/top-node-container-count-v2349", "Top node by container count"},
 	{"scalability:cluster-hpa-coverage-v2349", "/api/scalability/cluster-hpa-coverage-v2349", "Cluster HPA coverage"},
 	{"scalability:namespace-replica-distribution-v2349", "/api/scalability/namespace-replica-distribution-v2349", "Namespace replica distribution"},
+
+	// v23.50 Product
+	{"product:fqdn-coverage-v2350", "/api/product/fqdn-coverage-v2350", "Pod FQDN coverage"},
+	{"product:empty-resource-audit-v2350", "/api/product/empty-resource-audit-v2350", "Empty resource request audit"},
+	{"product:nodeport-healthcheck-v2350", "/api/product/nodeport-healthcheck-v2350", "NodePort service healthcheck"},
+	// v23.51 Deployment
+	{"deployment:deployment-updated-replicas-v2351", "/api/deployment/deployment-updated-replicas-v2351", "Deployment updated replicas"},
+	{"deployment:sts-current-replicas-v2351", "/api/deployment/sts-current-replicas-v2351", "STS current replicas"},
+	{"deployment:rs-full-status-v2351", "/api/deployment/rs-full-status-v2351", "RS full status"},
+	// v23.52 Operations
+	{"ops:waiting-reason-catalog-v2352", "/api/ops/waiting-reason-catalog-v2352", "Container waiting reason catalog"},
+	{"ops:node-memory-allocatable-v2352", "/api/ops/node-memory-allocatable-v2352", "Node memory allocatable GB"},
+	{"ops:limit-cpu-summary-v2352", "/api/ops/limit-cpu-summary-v2352", "Container limit CPU summary"},
+	// v23.53 Security
+	{"security:seccomp-localhost-v2353", "/api/security/seccomp-localhost-v2353", "Seccomp localhost profile"},
+	{"security:secret-basic-auth-v2353", "/api/security/secret-basic-auth-v2353", "Secret basic auth"},
+	{"security:role-resource-wildcard-v2353", "/api/security/role-resource-wildcard-v2353", "Role resource wildcard"},
+	// v23.54 Documentation
+	{"docs:node-instance-type-v2354", "/api/docs/node-instance-type-v2354", "Node instance type label"},
+	{"docs:env-from-configmap-v2354", "/api/docs/env-from-configmap-v2354", "Env from ConfigMap"},
+	{"docs:pvc-storageclassname-v2354", "/api/docs/pvc-storageclassname-v2354", "PVC storageClassName"},
+	// v23.55 Scalability
+	{"scalability:top-namespace-configmap-v2355", "/api/scalability/top-namespace-configmap-v2355", "Top namespace by configmap"},
+	{"scalability:node-cpu-allocatable-core-v2355", "/api/scalability/node-cpu-allocatable-core-v2355", "Node CPU allocatable cores"},
+	{"scalability:sts-density-v2355", "/api/scalability/sts-density-v2355", "StatefulSet density"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

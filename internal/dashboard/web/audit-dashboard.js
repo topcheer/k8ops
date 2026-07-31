@@ -1619,6 +1619,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-node-container-count-v2349', name: 'Top Node Ctnr', icon: '\u{1F3E0}' },
         { path: '/api/scalability/cluster-hpa-coverage-v2349', name: 'HPA Coverage', icon: '\u{1F4C8}' },
         { path: '/api/scalability/namespace-replica-distribution-v2349', name: 'NS Replica Dist', icon: '\u{1F4CA}' },
+        // v23.50 Product
+        { path: '/api/product/fqdn-coverage-v2350', name: 'FQDN Coverage', icon: '\u{1F310}' },
+        { path: '/api/product/empty-resource-audit-v2350', name: 'Empty Res Audit', icon: '\u{26A0}' },
+        { path: '/api/product/nodeport-healthcheck-v2350', name: 'NodePort HC', icon: '\u{1F50C}' },
+        // v23.51 Deployment
+        { path: '/api/deployment/deployment-updated-replicas-v2351', name: 'Deploy Updated', icon: '\u{1F4C8}' },
+        { path: '/api/deployment/sts-current-replicas-v2351', name: 'STS Current Rep', icon: '\u{1F504}' },
+        { path: '/api/deployment/rs-full-status-v2351', name: 'RS Full Status', icon: '\u{1F4CA}' },
+        // v23.52 Operations
+        { path: '/api/ops/waiting-reason-catalog-v2352', name: 'Waiting Reason', icon: '\u{23F3}' },
+        { path: '/api/ops/node-memory-allocatable-v2352', name: 'Node Mem Alloc', icon: '\u{1F4BE}' },
+        { path: '/api/ops/limit-cpu-summary-v2352', name: 'Limit CPU Summary', icon: '\u26A1' },
+        // v23.53 Security
+        { path: '/api/security/seccomp-localhost-v2353', name: 'Seccomp Local', icon: '\u{1F6E1}' },
+        { path: '/api/security/secret-basic-auth-v2353', name: 'Secret BasicAuth', icon: '\u{1F510}' },
+        { path: '/api/security/role-resource-wildcard-v2353', name: 'Role Res Wild', icon: '\u{1F451}' },
+        // v23.54 Documentation
+        { path: '/api/docs/node-instance-type-v2354', name: 'Node InstanceType', icon: '\u{1F527}' },
+        { path: '/api/docs/env-from-configmap-v2354', name: 'Env From CM', icon: '\u{1F4DD}' },
+        { path: '/api/docs/pvc-storageclassname-v2354', name: 'PVC SC Name', icon: '\u{1F4BF}' },
+        // v23.55 Scalability
+        { path: '/api/scalability/top-namespace-configmap-v2355', name: 'Top NS CM', icon: '\u{1F4DA}' },
+        { path: '/api/scalability/node-cpu-allocatable-core-v2355', name: 'Node CPU Core', icon: '\u26A1' },
+        { path: '/api/scalability/sts-density-v2355', name: 'STS Density', icon: '\u{1F3E8}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },
