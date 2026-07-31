@@ -1450,6 +1450,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/ns-cpu-limit-request-ratio-v2307', name: 'NS CPU Ratio', icon: '\u26A1' },
         { path: '/api/scalability/node-storage-commit-v2307', name: 'Node Storage', icon: '\u{1F4E6}' },
         { path: '/api/scalability/cluster-pod-churn-rate-v2307', name: 'Pod Churn', icon: '\u{1F504}' },
+        // v23.08 Product
+        { path: '/api/product/pod-gmsa-audit-v2308', name: 'Pod GMSA', icon: '\u{1F510}' },
+        { path: '/api/product/startup-probe-type-v2308', name: 'Startup Probe', icon: '\u{1F680}' },
+        { path: '/api/product/internal-traffic-policy-v2308', name: 'Int Traffic Pol', icon: '\u{1F310}' },
+        // v23.09 Deployment
+        { path: '/api/deployment/observed-generation-v2309', name: 'Observed Gen', icon: '\u{1F501}' },
+        { path: '/api/deployment/rs-template-hash-v2309', name: 'RS Template Hash', icon: '\u{1F3F7}' },
+        { path: '/api/deployment/cronjob-concurrency-v2309', name: 'CJ Concurrency', icon: '\u{23F0}' },
+        // v23.10 Operations
+        { path: '/api/ops/ephemeral-container-count-v2310', name: 'Ephemeral Ctnr', icon: '\u{1F50D}' },
+        { path: '/api/ops/node-unschedulable-v2310', name: 'Node Unsched', icon: '\u{1F6A6}' },
+        { path: '/api/ops/event-source-component-v2310', name: 'Event Source', icon: '\u{1F4CB}' },
+        // v23.11 Security
+        { path: '/api/security/selinux-audit-v2311', name: 'SELinux Audit', icon: '\u{1F6E1}' },
+        { path: '/api/security/configmap-binarydata-v2311', name: 'CM BinaryData', icon: '\u{1F4DD}' },
+        { path: '/api/security/sa-secret-ref-v2311', name: 'SA Secret Ref', icon: '\u{1F511}' },
+        // v23.12 Documentation
+        { path: '/api/docs/service-port-name-catalog-v2312', name: 'Svc Port Name', icon: '\u{1F50C}' },
+        { path: '/api/docs/pod-hostalias-inventory-v2312', name: 'Pod HostAlias', icon: '\u{1F310}' },
+        { path: '/api/docs/node-bootid-census-v2312', name: 'Node BootID', icon: '\u{1F4BB}' },
+        // v23.13 Scalability
+        { path: '/api/scalability/ns-limit-request-balance-v2313', name: 'NS Limit/Req', icon: '\u2696' },
+        { path: '/api/scalability/node-ephemeral-storage-v2313', name: 'Node Ephemeral', icon: '\u{1F4BE}' },
+        { path: '/api/scalability/cluster-replica-total-v2313', name: 'Replica Total', icon: '\u{1F4CA}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

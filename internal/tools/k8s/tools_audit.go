@@ -1873,6 +1873,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:ns-cpu-limit-request-ratio-v2307", "/api/scalability/ns-cpu-limit-request-ratio-v2307", "Namespace CPU limit/request ratio"},
 	{"scalability:node-storage-commit-v2307", "/api/scalability/node-storage-commit-v2307", "Node storage commit"},
 	{"scalability:cluster-pod-churn-rate-v2307", "/api/scalability/cluster-pod-churn-rate-v2307", "Cluster pod churn rate"},
+
+	// v23.08 Product
+	{"product:pod-gmsa-audit-v2308", "/api/product/pod-gmsa-audit-v2308", "Pod GMSA audit"},
+	{"product:startup-probe-type-v2308", "/api/product/startup-probe-type-v2308", "Startup probe type distribution"},
+	{"product:internal-traffic-policy-v2308", "/api/product/internal-traffic-policy-v2308", "Service internal traffic policy"},
+	// v23.09 Deployment
+	{"deployment:observed-generation-v2309", "/api/deployment/observed-generation-v2309", "Deployment observed generation"},
+	{"deployment:rs-template-hash-v2309", "/api/deployment/rs-template-hash-v2309", "ReplicaSet template hash distribution"},
+	{"deployment:cronjob-concurrency-v2309", "/api/deployment/cronjob-concurrency-v2309", "CronJob concurrency policy"},
+	// v23.10 Operations
+	{"ops:ephemeral-container-count-v2310", "/api/ops/ephemeral-container-count-v2310", "Ephemeral container count"},
+	{"ops:node-unschedulable-v2310", "/api/ops/node-unschedulable-v2310", "Node unschedulable census"},
+	{"ops:event-source-component-v2310", "/api/ops/event-source-component-v2310", "Event source component"},
+	// v23.11 Security
+	{"security:selinux-audit-v2311", "/api/security/selinux-audit-v2311", "SELinux options audit"},
+	{"security:configmap-binarydata-v2311", "/api/security/configmap-binarydata-v2311", "ConfigMap binary data audit"},
+	{"security:sa-secret-ref-v2311", "/api/security/sa-secret-ref-v2311", "ServiceAccount secret ref"},
+	// v23.12 Documentation
+	{"docs:service-port-name-catalog-v2312", "/api/docs/service-port-name-catalog-v2312", "Service port name catalog"},
+	{"docs:pod-hostalias-inventory-v2312", "/api/docs/pod-hostalias-inventory-v2312", "Pod hostAlias inventory"},
+	{"docs:node-bootid-census-v2312", "/api/docs/node-bootid-census-v2312", "Node boot ID census"},
+	// v23.13 Scalability
+	{"scalability:ns-limit-request-balance-v2313", "/api/scalability/ns-limit-request-balance-v2313", "Namespace limit/request balance"},
+	{"scalability:node-ephemeral-storage-v2313", "/api/scalability/node-ephemeral-storage-v2313", "Node ephemeral storage usage"},
+	{"scalability:cluster-replica-total-v2313", "/api/scalability/cluster-replica-total-v2313", "Cluster replica total"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.
