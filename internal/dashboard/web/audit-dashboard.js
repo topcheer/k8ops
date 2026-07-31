@@ -1378,6 +1378,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-image-by-replica-v2289', name: 'Top Image', icon: '\u{1F4E6}' },
         { path: '/api/scalability/node-memory-oversubscription-v2289', name: 'Mem Oversub', icon: '\u{1F4BE}' },
         { path: '/api/scalability/pod-age-distribution-v2289', name: 'Pod Age Dist', icon: '\u{1F4C5}' },
+        // v22.90 Product
+        { path: '/api/product/pod-preemption-history-v2290', name: 'Preemption', icon: '\u{26A1}' },
+        { path: '/api/product/stdin-tty-audit-v2290', name: 'Stdin/TTY', icon: '\u{2328}' },
+        { path: '/api/product/loadbalancer-health-v2290', name: 'LB Health', icon: '\u{1F310}' },
+        // v22.91 Deployment
+        { path: '/api/deployment/deployment-progress-audit-v2291', name: 'Deploy Progress', icon: '\u{1F4C8}' },
+        { path: '/api/deployment/rs-owner-reference-v2291', name: 'RS Owner Ref', icon: '\u{1F517}' },
+        { path: '/api/deployment/job-active-deadline-v2291', name: 'Job Deadline', icon: '\u{23F1}' },
+        // v22.92 Operations
+        { path: '/api/ops/node-memory-pressure-v2292', name: 'Node Mem Pressure', icon: '\u{1F4BE}' },
+        { path: '/api/ops/restart-top-containers-v2292', name: 'Restart Top', icon: '\u{1F501}' },
+        { path: '/api/ops/image-pull-duration-risk-v2292', name: 'Pull Duration Risk', icon: '\u{1F4E5}' },
+        // v22.93 Security
+        { path: '/api/security/cap-drop-audit-v2293', name: 'CapDrop Audit', icon: '\u{1F6E1}' },
+        { path: '/api/security/image-registry-trust-v2293', name: 'Registry Trust', icon: '\u{1F510}' },
+        { path: '/api/security/secret-env-var-exposure-v2293', name: 'Secret Env Var', icon: '\u{1F451}' },
+        // v22.94 Documentation
+        { path: '/api/docs/volume-type-census-v2294', name: 'Volume Types', icon: '\u{1F4BF}' },
+        { path: '/api/docs/nodeselector-key-inventory-v2294', name: 'NodeSelector Keys', icon: '\u{1F50D}' },
+        { path: '/api/docs/namespace-finalizer-catalog-v2294', name: 'NS Finalizer', icon: '\u{1F527}' },
+        // v22.95 Scalability
+        { path: '/api/scalability/resource-waste-detection-v2295', name: 'Res Waste', icon: '\u{1F9F9}' },
+        { path: '/api/scalability/pod-spread-balance-v2295', name: 'Pod Spread Balance', icon: '\u{1F3D7}' },
+        { path: '/api/scalability/workload-concentration-v2295', name: 'Workload Conc', icon: '\u{1F4CA}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

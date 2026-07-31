@@ -1798,6 +1798,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-image-by-replica-v2289", "/api/scalability/top-image-by-replica-v2289", "Top image by replica count"},
 	{"scalability:node-memory-oversubscription-v2289", "/api/scalability/node-memory-oversubscription-v2289", "Node memory oversubscription"},
 	{"scalability:pod-age-distribution-v2289", "/api/scalability/pod-age-distribution-v2289", "Pod age distribution"},
+
+	// v22.90 Product
+	{"product:pod-preemption-history-v2290", "/api/product/pod-preemption-history-v2290", "Pod preemption history"},
+	{"product:stdin-tty-audit-v2290", "/api/product/stdin-tty-audit-v2290", "Container stdin/TTY audit"},
+	{"product:loadbalancer-health-v2290", "/api/product/loadbalancer-health-v2290", "LoadBalancer service health"},
+	// v22.91 Deployment
+	{"deployment:deployment-progress-audit-v2291", "/api/deployment/deployment-progress-audit-v2291", "Deployment rollout progress"},
+	{"deployment:rs-owner-reference-v2291", "/api/deployment/rs-owner-reference-v2291", "ReplicaSet owner reference census"},
+	{"deployment:job-active-deadline-v2291", "/api/deployment/job-active-deadline-v2291", "Job active deadline audit"},
+	// v22.92 Operations
+	{"ops:node-memory-pressure-v2292", "/api/ops/node-memory-pressure-v2292", "Node memory pressure"},
+	{"ops:restart-top-containers-v2292", "/api/ops/restart-top-containers-v2292", "High restart count containers"},
+	{"ops:image-pull-duration-risk-v2292", "/api/ops/image-pull-duration-risk-v2292", "Image pull duration risk"},
+	// v22.93 Security
+	{"security:cap-drop-audit-v2293", "/api/security/cap-drop-audit-v2293", "Capabilities drop audit"},
+	{"security:image-registry-trust-v2293", "/api/security/image-registry-trust-v2293", "Image registry trust audit"},
+	{"security:secret-env-var-exposure-v2293", "/api/security/secret-env-var-exposure-v2293", "Secret env var exposure"},
+	// v22.94 Documentation
+	{"docs:volume-type-census-v2294", "/api/docs/volume-type-census-v2294", "Volume type census"},
+	{"docs:nodeselector-key-inventory-v2294", "/api/docs/nodeselector-key-inventory-v2294", "Pod nodeSelector key inventory"},
+	{"docs:namespace-finalizer-catalog-v2294", "/api/docs/namespace-finalizer-catalog-v2294", "Namespace finalizer catalog"},
+	// v22.95 Scalability
+	{"scalability:resource-waste-detection-v2295", "/api/scalability/resource-waste-detection-v2295", "Resource waste detection"},
+	{"scalability:pod-spread-balance-v2295", "/api/scalability/pod-spread-balance-v2295", "Pod spread balance"},
+	{"scalability:workload-concentration-v2295", "/api/scalability/workload-concentration-v2295", "Cluster workload concentration"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

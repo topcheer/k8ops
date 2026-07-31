@@ -1854,6 +1854,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-image-by-replica-v2289", s.cacheMiddleware(120*time.Second, s.handleTopImage2289))
 	mux.HandleFunc("/api/scalability/node-memory-oversubscription-v2289", s.cacheMiddleware(120*time.Second, s.handleNodeMemOversub2289))
 	mux.HandleFunc("/api/scalability/pod-age-distribution-v2289", s.cacheMiddleware(120*time.Second, s.handlePodAgeDist2289))
+
+	// v22.90 Product
+	mux.HandleFunc("/api/product/pod-preemption-history-v2290", s.cacheMiddleware(120*time.Second, s.handlePreemption2290))
+	mux.HandleFunc("/api/product/stdin-tty-audit-v2290", s.cacheMiddleware(120*time.Second, s.handleStdinTTY2290))
+	mux.HandleFunc("/api/product/loadbalancer-health-v2290", s.cacheMiddleware(120*time.Second, s.handleLBHealth2290))
+	// v22.91 Deployment
+	mux.HandleFunc("/api/deployment/deployment-progress-audit-v2291", s.cacheMiddleware(120*time.Second, s.handleDepProgress2291))
+	mux.HandleFunc("/api/deployment/rs-owner-reference-v2291", s.cacheMiddleware(120*time.Second, s.handleRSOwner2291))
+	mux.HandleFunc("/api/deployment/job-active-deadline-v2291", s.cacheMiddleware(120*time.Second, s.handleJobDeadline2291))
+	// v22.92 Operations
+	mux.HandleFunc("/api/ops/node-memory-pressure-v2292", s.cacheMiddleware(120*time.Second, s.handleMemPressure2292))
+	mux.HandleFunc("/api/ops/restart-top-containers-v2292", s.cacheMiddleware(120*time.Second, s.handleRestartTop2292))
+	mux.HandleFunc("/api/ops/image-pull-duration-risk-v2292", s.cacheMiddleware(120*time.Second, s.handlePullDuration2292))
+	// v22.93 Security
+	mux.HandleFunc("/api/security/cap-drop-audit-v2293", s.cacheMiddleware(120*time.Second, s.handleCapDrop2293))
+	mux.HandleFunc("/api/security/image-registry-trust-v2293", s.cacheMiddleware(120*time.Second, s.handleRegistryTrust2293))
+	mux.HandleFunc("/api/security/secret-env-var-exposure-v2293", s.cacheMiddleware(120*time.Second, s.handleSecretEnv2293))
+	// v22.94 Documentation
+	mux.HandleFunc("/api/docs/volume-type-census-v2294", s.cacheMiddleware(120*time.Second, s.handleVolType2294))
+	mux.HandleFunc("/api/docs/nodeselector-key-inventory-v2294", s.cacheMiddleware(120*time.Second, s.handleNodeSelectorKey2294))
+	mux.HandleFunc("/api/docs/namespace-finalizer-catalog-v2294", s.cacheMiddleware(120*time.Second, s.handleNSFinalizer2294))
+	// v22.95 Scalability
+	mux.HandleFunc("/api/scalability/resource-waste-detection-v2295", s.cacheMiddleware(120*time.Second, s.handleResourceWaste2295))
+	mux.HandleFunc("/api/scalability/pod-spread-balance-v2295", s.cacheMiddleware(120*time.Second, s.handlePodSpreadBalance2295))
+	mux.HandleFunc("/api/scalability/workload-concentration-v2295", s.cacheMiddleware(120*time.Second, s.handleWorkloadConc2295))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))
