@@ -1739,6 +1739,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-namespace-replica-v2379', name: 'Top NS Replica', icon: '\u{1F4CA}' },
         { path: '/api/scalability/node-memory-capacity-v2379', name: 'Node Mem Cap', icon: '\u{1F4BE}' },
         { path: '/api/scalability/daemonset-spread-v2379', name: 'DS Spread', icon: '\u{1F680}' },
+        // v23.80 Product
+        { path: '/api/product/dns-search-domains-v2380', name: 'DNS Search', icon: '\u{1F310}' },
+        { path: '/api/product/liveness-probe-audit-v2380', name: 'Liveness Probe', icon: '\u{1F494}' },
+        { path: '/api/product/service-type-distribution-v2380', name: 'Svc Type Dist', icon: '\u{1F4CA}' },
+        // v23.81 Deployment
+        { path: '/api/deployment/deploy-revision-history-v2381', name: 'Deploy RevHist', icon: '\u{1F4DC}' },
+        { path: '/api/deployment/sts-template-hash-count-v2381', name: 'STS Hash Count', icon: '\u{1F3F7}' },
+        { path: '/api/deployment/job-active-pods-v2381', name: 'Job Active Pods', icon: '\u{1F680}' },
+        // v23.82 Operations
+        { path: '/api/ops/pod-phase-census-v2382', name: 'Pod Phase', icon: '\u{1F4CA}' },
+        { path: '/api/ops/node-capacity-pods-v2382', name: 'Node Cap Pods', icon: '\u{1F3E0}' },
+        { path: '/api/ops/container-state-running-v2382', name: 'Ctnr Running', icon: '\u25B6' },
+        // v23.83 Security
+        { path: '/api/security/readonly-rootfs-audit-v2383', name: 'ReadOnly RootFS', icon: '\u{1F512}' },
+        { path: '/api/security/secret-empty-data-v2383', name: 'Secret Empty', icon: '\u{1F4ED}' },
+        { path: '/api/security/role-binding-all-v2383', name: 'Role Bind All', icon: '\u{1F451}' },
+        // v23.84 Documentation
+        { path: '/api/docs/node-kubeproxy-version-v2384', name: 'Node KP Ver', icon: '\u{1F527}' },
+        { path: '/api/docs/image-size-catalog-v2384', name: 'Image Size', icon: '\u{1F4E6}' },
+        { path: '/api/docs/pvc-access-mode-v2384', name: 'PVC Access Mode', icon: '\u{1F4BF}' },
+        // v23.85 Scalability
+        { path: '/api/scalability/top-image-deployment-v2385', name: 'Top Img Deploy', icon: '\u{1F4E6}' },
+        { path: '/api/scalability/node-cpu-limit-commit-v2385', name: 'Node CPU Limit', icon: '\u26A1' },
+        { path: '/api/scalability/cluster-service-total-v2385', name: 'Svc Total', icon: '\u{1F4CA}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

@@ -2173,6 +2173,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-namespace-replica-v2379", "/api/scalability/top-namespace-replica-v2379", "Top namespace by replica"},
 	{"scalability:node-memory-capacity-v2379", "/api/scalability/node-memory-capacity-v2379", "Node memory capacity"},
 	{"scalability:daemonset-spread-v2379", "/api/scalability/daemonset-spread-v2379", "DaemonSet spread"},
+
+	// v23.80 Product
+	{"product:dns-search-domains-v2380", "/api/product/dns-search-domains-v2380", "Pod DNS search domains"},
+	{"product:liveness-probe-audit-v2380", "/api/product/liveness-probe-audit-v2380", "Liveness probe audit"},
+	{"product:service-type-distribution-v2380", "/api/product/service-type-distribution-v2380", "Service type distribution"},
+	// v23.81 Deployment
+	{"deployment:deploy-revision-history-v2381", "/api/deployment/deploy-revision-history-v2381", "Deployment revision history"},
+	{"deployment:sts-template-hash-count-v2381", "/api/deployment/sts-template-hash-count-v2381", "STS template hash count"},
+	{"deployment:job-active-pods-v2381", "/api/deployment/job-active-pods-v2381", "Job active pods"},
+	// v23.82 Operations
+	{"ops:pod-phase-census-v2382", "/api/ops/pod-phase-census-v2382", "Pod phase census"},
+	{"ops:node-capacity-pods-v2382", "/api/ops/node-capacity-pods-v2382", "Node capacity pods"},
+	{"ops:container-state-running-v2382", "/api/ops/container-state-running-v2382", "Container state running"},
+	// v23.83 Security
+	{"security:readonly-rootfs-audit-v2383", "/api/security/readonly-rootfs-audit-v2383", "ReadOnly RootFS audit"},
+	{"security:secret-empty-data-v2383", "/api/security/secret-empty-data-v2383", "Secret empty data"},
+	{"security:role-binding-all-v2383", "/api/security/role-binding-all-v2383", "Role binding all subjects"},
+	// v23.84 Documentation
+	{"docs:node-kubeproxy-version-v2384", "/api/docs/node-kubeproxy-version-v2384", "Node kube-proxy version"},
+	{"docs:image-size-catalog-v2384", "/api/docs/image-size-catalog-v2384", "Image size catalog"},
+	{"docs:pvc-access-mode-v2384", "/api/docs/pvc-access-mode-v2384", "PVC access mode"},
+	// v23.85 Scalability
+	{"scalability:top-image-deployment-v2385", "/api/scalability/top-image-deployment-v2385", "Top image by deployment"},
+	{"scalability:node-cpu-limit-commit-v2385", "/api/scalability/node-cpu-limit-commit-v2385", "Node CPU limit commit"},
+	{"scalability:cluster-service-total-v2385", "/api/scalability/cluster-service-total-v2385", "Cluster service total"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

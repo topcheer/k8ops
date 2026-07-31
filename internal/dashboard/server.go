@@ -2229,6 +2229,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-namespace-replica-v2379", s.cacheMiddleware(120*time.Second, s.handleTopNSReplica2379))
 	mux.HandleFunc("/api/scalability/node-memory-capacity-v2379", s.cacheMiddleware(120*time.Second, s.handleNodeMemCap2379))
 	mux.HandleFunc("/api/scalability/daemonset-spread-v2379", s.cacheMiddleware(120*time.Second, s.handleDSSpread2379))
+
+	// v23.80 Product
+	mux.HandleFunc("/api/product/dns-search-domains-v2380", s.cacheMiddleware(120*time.Second, s.handleDNSSearch2380))
+	mux.HandleFunc("/api/product/liveness-probe-audit-v2380", s.cacheMiddleware(120*time.Second, s.handleLivenessProbe2380))
+	mux.HandleFunc("/api/product/service-type-distribution-v2380", s.cacheMiddleware(120*time.Second, s.handleSvcTypeDist2380))
+	// v23.81 Deployment
+	mux.HandleFunc("/api/deployment/deploy-revision-history-v2381", s.cacheMiddleware(120*time.Second, s.handleDepRevHistory2381))
+	mux.HandleFunc("/api/deployment/sts-template-hash-count-v2381", s.cacheMiddleware(120*time.Second, s.handleSTSTemplateHash2381))
+	mux.HandleFunc("/api/deployment/job-active-pods-v2381", s.cacheMiddleware(120*time.Second, s.handleJobActivePods2381))
+	// v23.82 Operations
+	mux.HandleFunc("/api/ops/pod-phase-census-v2382", s.cacheMiddleware(120*time.Second, s.handlePodPhase2382))
+	mux.HandleFunc("/api/ops/node-capacity-pods-v2382", s.cacheMiddleware(120*time.Second, s.handleNodeCapPods2382))
+	mux.HandleFunc("/api/ops/container-state-running-v2382", s.cacheMiddleware(120*time.Second, s.handleStateRunning2382))
+	// v23.83 Security
+	mux.HandleFunc("/api/security/readonly-rootfs-audit-v2383", s.cacheMiddleware(120*time.Second, s.handleReadOnlyFS2383))
+	mux.HandleFunc("/api/security/secret-empty-data-v2383", s.cacheMiddleware(120*time.Second, s.handleSecretEmpty2383))
+	mux.HandleFunc("/api/security/role-binding-all-v2383", s.cacheMiddleware(120*time.Second, s.handleRoleBindAll2383))
+	// v23.84 Documentation
+	mux.HandleFunc("/api/docs/node-kubeproxy-version-v2384", s.cacheMiddleware(120*time.Second, s.handleKPVer2384))
+	mux.HandleFunc("/api/docs/image-size-catalog-v2384", s.cacheMiddleware(120*time.Second, s.handleImgSize2384))
+	mux.HandleFunc("/api/docs/pvc-access-mode-v2384", s.cacheMiddleware(120*time.Second, s.handlePVCAccessMode2384))
+	// v23.85 Scalability
+	mux.HandleFunc("/api/scalability/top-image-deployment-v2385", s.cacheMiddleware(120*time.Second, s.handleTopImgDeploy2385))
+	mux.HandleFunc("/api/scalability/node-cpu-limit-commit-v2385", s.cacheMiddleware(120*time.Second, s.handleNodeCPULimit2385))
+	mux.HandleFunc("/api/scalability/cluster-service-total-v2385", s.cacheMiddleware(120*time.Second, s.handleSvcTotal2385))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))
