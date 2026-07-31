@@ -1691,6 +1691,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-namespace-deployment-v2367', name: 'Top NS Deploy', icon: '\u{1F4CA}' },
         { path: '/api/scalability/node-capacity-storage-v2367', name: 'Node Cap Storage', icon: '\u{1F4BF}' },
         { path: '/api/scalability/networkpolicy-density-v2367', name: 'NetPol Density', icon: '\u{1F6E1}' },
+        // v23.68 Product
+        { path: '/api/product/host-ipc-audit-v2368', name: 'HostIPC Audit', icon: '\u{1F517}' },
+        { path: '/api/product/container-probe-timeout-v2368', name: 'Probe Timeout', icon: '\u{23F1}' },
+        { path: '/api/product/clusterip-type-audit-v2368', name: 'ClusterIP Type', icon: '\u{1F310}' },
+        // v23.69 Deployment
+        { path: '/api/deployment/deployment-minready-v2369', name: 'Deploy MinReady', icon: '\u{1F4C8}' },
+        { path: '/api/deployment/sts-minready-v2369', name: 'STS MinReady', icon: '\u{1F4C8}' },
+        { path: '/api/deployment/ds-minready-v2369', name: 'DS MinReady', icon: '\u{1F4C8}' },
+        // v23.70 Operations
+        { path: '/api/ops/pod-condition-type-v2370', name: 'Pod CondType', icon: '\u{1F4CB}' },
+        { path: '/api/ops/node-os-name-v2370', name: 'Node OS Name', icon: '\u{1F4BB}' },
+        { path: '/api/ops/termination-exitcode-v2370', name: 'Term ExitCode', icon: '\u{1F480}' },
+        // v23.71 Security
+        { path: '/api/security/nonroot-uid-audit-v2371', name: 'NonRoot UID', icon: '\u{1F464}' },
+        { path: '/api/security/helm-secret-audit-v2371', name: 'Helm Secret', icon: '\u{1F510}' },
+        { path: '/api/security/crb-roleref-census-v2371', name: 'CRB RoleRef', icon: '\u{1F451}' },
+        // v23.72 Documentation
+        { path: '/api/docs/node-provider-label-v2372', name: 'Node Provider', icon: '\u{1F527}' },
+        { path: '/api/docs/pod-env-var-count-v2372', name: 'Pod Env Count', icon: '\u{1F4DD}' },
+        { path: '/api/docs/secret-annotation-census-v2372', name: 'Secret Annot', icon: '\u{1F4DD}' },
+        // v23.73 Scalability
+        { path: '/api/scalability/top-node-by-pod-v2373', name: 'Top Node Pods', icon: '\u{1F3E0}' },
+        { path: '/api/scalability/namespace-hpa-coverage-v2373', name: 'NS HPA Cov', icon: '\u{1F4C8}' },
+        { path: '/api/scalability/endpoint-service-ratio-v2373', name: 'EP/Svc Ratio', icon: '\u{1F4CA}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

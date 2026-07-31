@@ -2123,6 +2123,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-namespace-deployment-v2367", "/api/scalability/top-namespace-deployment-v2367", "Top namespace by deployment"},
 	{"scalability:node-capacity-storage-v2367", "/api/scalability/node-capacity-storage-v2367", "Node capacity storage"},
 	{"scalability:networkpolicy-density-v2367", "/api/scalability/networkpolicy-density-v2367", "NetworkPolicy density"},
+
+	// v23.68 Product
+	{"product:host-ipc-audit-v2368", "/api/product/host-ipc-audit-v2368", "Host IPC audit"},
+	{"product:container-probe-timeout-v2368", "/api/product/container-probe-timeout-v2368", "Container probe timeout"},
+	{"product:clusterip-type-audit-v2368", "/api/product/clusterip-type-audit-v2368", "ClusterIP type audit"},
+	// v23.69 Deployment
+	{"deployment:deployment-minready-v2369", "/api/deployment/deployment-minready-v2369", "Deployment MinReadySeconds"},
+	{"deployment:sts-minready-v2369", "/api/deployment/sts-minready-v2369", "STS MinReadySeconds"},
+	{"deployment:ds-minready-v2369", "/api/deployment/ds-minready-v2369", "DS MinReadySeconds"},
+	// v23.70 Operations
+	{"ops:pod-condition-type-v2370", "/api/ops/pod-condition-type-v2370", "Pod condition type census"},
+	{"ops:node-os-name-v2370", "/api/ops/node-os-name-v2370", "Node OS name"},
+	{"ops:termination-exitcode-v2370", "/api/ops/termination-exitcode-v2370", "Termination exit code"},
+	// v23.71 Security
+	{"security:nonroot-uid-audit-v2371", "/api/security/nonroot-uid-audit-v2371", "NonRoot UID audit"},
+	{"security:helm-secret-audit-v2371", "/api/security/helm-secret-audit-v2371", "Helm secret audit"},
+	{"security:crb-roleref-census-v2371", "/api/security/crb-roleref-census-v2371", "ClusterRoleBinding RoleRef"},
+	// v23.72 Documentation
+	{"docs:node-provider-label-v2372", "/api/docs/node-provider-label-v2372", "Node provider label"},
+	{"docs:pod-env-var-count-v2372", "/api/docs/pod-env-var-count-v2372", "Pod env var count"},
+	{"docs:secret-annotation-census-v2372", "/api/docs/secret-annotation-census-v2372", "Secret annotation census"},
+	// v23.73 Scalability
+	{"scalability:top-node-by-pod-v2373", "/api/scalability/top-node-by-pod-v2373", "Top node by pod count"},
+	{"scalability:namespace-hpa-coverage-v2373", "/api/scalability/namespace-hpa-coverage-v2373", "Namespace HPA coverage"},
+	{"scalability:endpoint-service-ratio-v2373", "/api/scalability/endpoint-service-ratio-v2373", "Endpoint service ratio"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.
