@@ -1474,6 +1474,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/ns-limit-request-balance-v2313', name: 'NS Limit/Req', icon: '\u2696' },
         { path: '/api/scalability/node-ephemeral-storage-v2313', name: 'Node Ephemeral', icon: '\u{1F4BE}' },
         { path: '/api/scalability/cluster-replica-total-v2313', name: 'Replica Total', icon: '\u{1F4CA}' },
+        // v23.14 Product
+        { path: '/api/product/pod-os-audit-v2314', name: 'Pod OS', icon: '\u{1F4BB}' },
+        { path: '/api/product/resource-resize-policy-v2314', name: 'Resize Policy', icon: '\u{1F4CF}' },
+        { path: '/api/product/publish-notready-v2314', name: 'PubNotReady', icon: '\u{1F4E1}' },
+        // v23.15 Deployment
+        { path: '/api/deployment/deployment-available-ratio-v2315', name: 'Deploy Avail Ratio', icon: '\u{1F4C8}' },
+        { path: '/api/deployment/sts-generation-sync-v2315', name: 'STS Gen Sync', icon: '\u{1F501}' },
+        { path: '/api/deployment/ds-number-available-v2315', name: 'DS Num Avail', icon: '\u{1F680}' },
+        // v23.16 Operations
+        { path: '/api/ops/image-pull-backoff-v2316', name: 'ImgPullBackOff', icon: '\u{1F6A8}' },
+        { path: '/api/ops/node-ready-transition-v2316', name: 'Node Ready', icon: '\u2705' },
+        { path: '/api/ops/event-warning-rate-v2316', name: 'Event Warn Rate', icon: '\u{26A0}' },
+        // v23.17 Security
+        { path: '/api/security/proc-mount-audit-v2317', name: 'ProcMount Audit', icon: '\u{1F6E1}' },
+        { path: '/api/security/pv-security-context-v2317', name: 'PV SecCtx', icon: '\u{1F512}' },
+        { path: '/api/security/namespace-deletion-guard-v2317', name: 'NS Del Guard', icon: '\u{1F6AB}' },
+        // v23.18 Documentation
+        { path: '/api/docs/secret-age-distribution-v2318', name: 'Secret Age', icon: '\u{1F4C5}' },
+        { path: '/api/docs/pvc-finalizer-catalog-v2318', name: 'PVC Finalizer', icon: '\u{1F527}' },
+        { path: '/api/docs/node-machineid-census-v2318', name: 'Node MachineID', icon: '\u{1F5A5}' },
+        // v23.19 Scalability
+        { path: '/api/scalability/top-namespace-cpu-request-v2319', name: 'Top NS CPU', icon: '\u26A1' },
+        { path: '/api/scalability/node-pod-allocation-balance-v2319', name: 'Node Pod Balance', icon: '\u{1F3D7}' },
+        { path: '/api/scalability/service-endpoint-density-v2319', name: 'Svc EP Density', icon: '\u{1F310}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

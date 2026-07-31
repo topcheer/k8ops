@@ -1898,6 +1898,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:ns-limit-request-balance-v2313", "/api/scalability/ns-limit-request-balance-v2313", "Namespace limit/request balance"},
 	{"scalability:node-ephemeral-storage-v2313", "/api/scalability/node-ephemeral-storage-v2313", "Node ephemeral storage usage"},
 	{"scalability:cluster-replica-total-v2313", "/api/scalability/cluster-replica-total-v2313", "Cluster replica total"},
+
+	// v23.14 Product
+	{"product:pod-os-audit-v2314", "/api/product/pod-os-audit-v2314", "Pod OS audit"},
+	{"product:resource-resize-policy-v2314", "/api/product/resource-resize-policy-v2314", "Container resource resize policy"},
+	{"product:publish-notready-v2314", "/api/product/publish-notready-v2314", "Service publishNotReadyAddresses"},
+	// v23.15 Deployment
+	{"deployment:deployment-available-ratio-v2315", "/api/deployment/deployment-available-ratio-v2315", "Deployment available ratio"},
+	{"deployment:sts-generation-sync-v2315", "/api/deployment/sts-generation-sync-v2315", "STS generation sync"},
+	{"deployment:ds-number-available-v2315", "/api/deployment/ds-number-available-v2315", "DaemonSet number available"},
+	// v23.16 Operations
+	{"ops:image-pull-backoff-v2316", "/api/ops/image-pull-backoff-v2316", "ImagePullBackOff detection"},
+	{"ops:node-ready-transition-v2316", "/api/ops/node-ready-transition-v2316", "Node ready transition"},
+	{"ops:event-warning-rate-v2316", "/api/ops/event-warning-rate-v2316", "Event warning rate"},
+	// v23.17 Security
+	{"security:proc-mount-audit-v2317", "/api/security/proc-mount-audit-v2317", "ProcMount audit"},
+	{"security:pv-security-context-v2317", "/api/security/pv-security-context-v2317", "PV security context"},
+	{"security:namespace-deletion-guard-v2317", "/api/security/namespace-deletion-guard-v2317", "Namespace deletion guard"},
+	// v23.18 Documentation
+	{"docs:secret-age-distribution-v2318", "/api/docs/secret-age-distribution-v2318", "Secret age distribution"},
+	{"docs:pvc-finalizer-catalog-v2318", "/api/docs/pvc-finalizer-catalog-v2318", "PVC finalizer catalog"},
+	{"docs:node-machineid-census-v2318", "/api/docs/node-machineid-census-v2318", "Node machine ID census"},
+	// v23.19 Scalability
+	{"scalability:top-namespace-cpu-request-v2319", "/api/scalability/top-namespace-cpu-request-v2319", "Top namespace by CPU request"},
+	{"scalability:node-pod-allocation-balance-v2319", "/api/scalability/node-pod-allocation-balance-v2319", "Node pod allocation balance"},
+	{"scalability:service-endpoint-density-v2319", "/api/scalability/service-endpoint-density-v2319", "Service endpoint density"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.
