@@ -1704,6 +1704,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/ns-pod-density-v2253", s.cacheMiddleware(120*time.Second, s.handleNSPodDensity2253))
 	mux.HandleFunc("/api/scalability/cpu-lim-commit-v2253", s.cacheMiddleware(120*time.Second, s.handleCPULimCommit2253))
 	mux.HandleFunc("/api/scalability/pvc-bound-pending-v2253", s.cacheMiddleware(120*time.Second, s.handlePVCBoundPending2253))
+
+	// v22.54 Product
+	mux.HandleFunc("/api/product/hostname-fqdn-v2254", s.cacheMiddleware(120*time.Second, s.handleHostnameFQDN2254))
+	mux.HandleFunc("/api/product/env-var-count-v2254", s.cacheMiddleware(120*time.Second, s.handleEnvVarCount2254))
+	mux.HandleFunc("/api/product/svc-ipfamily-v2254", s.cacheMiddleware(120*time.Second, s.handleSvcIPFam2254))
+	// v22.55 Deployment
+	mux.HandleFunc("/api/deployment/deploy-available-cond-v2255", s.cacheMiddleware(120*time.Second, s.handleDepAvailCond2255))
+	mux.HandleFunc("/api/deployment/sts-replicas-status-v2255", s.cacheMiddleware(120*time.Second, s.handleSTSRepStatus2255))
+	mux.HandleFunc("/api/deployment/rs-full-status-v2255", s.cacheMiddleware(120*time.Second, s.handleRSFullStatus2255))
+	// v22.56 Operations
+	mux.HandleFunc("/api/ops/ready-container-ratio-v2256", s.cacheMiddleware(120*time.Second, s.handleReadyCtnrRatio2256))
+	mux.HandleFunc("/api/ops/node-kube-version-v2256", s.cacheMiddleware(120*time.Second, s.handleNodeKubeVer2256))
+	mux.HandleFunc("/api/ops/event-type-distribution-v2256", s.cacheMiddleware(120*time.Second, s.handleEvtType2256))
+	// v22.57 Security
+	mux.HandleFunc("/api/security/cap-add-audit-v2257", s.cacheMiddleware(120*time.Second, s.handleCapAdd2257))
+	mux.HandleFunc("/api/security/secret-ns-distribution-v2257", s.cacheMiddleware(120*time.Second, s.handleSecNSDist2257))
+	mux.HandleFunc("/api/security/rbac-role-count-v2257", s.cacheMiddleware(120*time.Second, s.handleRBACRoleCount2257))
+	// v22.58 Documentation
+	mux.HandleFunc("/api/docs/node-condition-summary-v2258", s.cacheMiddleware(120*time.Second, s.handleNodeCondSummary2258))
+	mux.HandleFunc("/api/docs/pvc-volume-name-catalog-v2258", s.cacheMiddleware(120*time.Second, s.handlePVCVolName2258))
+	mux.HandleFunc("/api/docs/pod-image-count-v2258", s.cacheMiddleware(120*time.Second, s.handlePodImgCount2258))
+	// v22.59 Scalability
+	mux.HandleFunc("/api/scalability/ns-cpu-request-v2259", s.cacheMiddleware(120*time.Second, s.handleNSCPUReq2259))
+	mux.HandleFunc("/api/scalability/node-mem-fragmentation-v2259", s.cacheMiddleware(120*time.Second, s.handleNodeMemFrag2259))
+	mux.HandleFunc("/api/scalability/cluster-service-health-v2259", s.cacheMiddleware(120*time.Second, s.handleSvcHealth2259))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

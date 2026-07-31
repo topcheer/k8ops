@@ -1648,6 +1648,31 @@ var auditRegistry = []auditEndpoint{
 	{"infra:api-performance", "/api/system/performance", "API performance metrics (p50/p95/p99 latency)"},
 	{"infra:namespaces-ranking", "/api/namespaces/ranking", "Namespace ranking by resource usage"},
 	{"infra:hpas", "/api/hpa", "Horizontal Pod Autoscaler list"},
+
+	// v22.54 Product
+	{"product:hostname-fqdn-v2254", "/api/product/hostname-fqdn-v2254", "Pod SetHostnameAsFQDN usage"},
+	{"product:env-var-count-v2254", "/api/product/env-var-count-v2254", "Container env var count stats"},
+	{"product:svc-ipfamily-v2254", "/api/product/svc-ipfamily-v2254", "Service IPFamily distribution"},
+	// v22.55 Deployment
+	{"deployment:deploy-available-cond-v2255", "/api/deployment/deploy-available-cond-v2255", "Deployment Available condition audit"},
+	{"deployment:sts-replicas-status-v2255", "/api/deployment/sts-replicas-status-v2255", "StatefulSet replicas status"},
+	{"deployment:rs-full-status-v2255", "/api/deployment/rs-full-status-v2255", "ReplicaSet full ready status"},
+	// v22.56 Operations
+	{"ops:ready-container-ratio-v2256", "/api/ops/ready-container-ratio-v2256", "Pod ready container ratio"},
+	{"ops:node-kube-version-v2256", "/api/ops/node-kube-version-v2256", "Node kubelet version distribution"},
+	{"ops:event-type-distribution-v2256", "/api/ops/event-type-distribution-v2256", "Event type distribution"},
+	// v22.57 Security
+	{"security:cap-add-audit-v2257", "/api/security/cap-add-audit-v2257", "Container capabilities add audit"},
+	{"security:secret-ns-distribution-v2257", "/api/security/secret-ns-distribution-v2257", "Secret namespace distribution"},
+	{"security:rbac-role-count-v2257", "/api/security/rbac-role-count-v2257", "RBAC role & clusterrole count"},
+	// v22.58 Documentation
+	{"docs:node-condition-summary-v2258", "/api/docs/node-condition-summary-v2258", "Node condition summary"},
+	{"docs:pvc-volume-name-catalog-v2258", "/api/docs/pvc-volume-name-catalog-v2258", "PVC volume name catalog"},
+	{"docs:pod-image-count-v2258", "/api/docs/pod-image-count-v2258", "Pod image reference count"},
+	// v22.59 Scalability
+	{"scalability:ns-cpu-request-v2259", "/api/scalability/ns-cpu-request-v2259", "Namespace CPU request distribution"},
+	{"scalability:node-mem-fragmentation-v2259", "/api/scalability/node-mem-fragmentation-v2259", "Node memory fragmentation"},
+	{"scalability:cluster-service-health-v2259", "/api/scalability/cluster-service-health-v2259", "Cluster service health via endpoints"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

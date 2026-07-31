@@ -1234,6 +1234,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/ns-pod-density-v2253', name: 'NS Pod Density', icon: '\u{1F4CA}' },
         { path: '/api/scalability/cpu-lim-commit-v2253', name: 'CPU Lim Commit', icon: '\u{1F525}' },
         { path: '/api/scalability/pvc-bound-pending-v2253', name: 'PVC Bound/Pending', icon: '\u{1F4BF}' },
+        // v22.54 Product
+        { path: '/api/product/hostname-fqdn-v2254', name: 'Hostname FQDN', icon: '\u{1F5A5}' },
+        { path: '/api/product/env-var-count-v2254', name: 'Env Var Count', icon: '\u{1F4DD}' },
+        { path: '/api/product/svc-ipfamily-v2254', name: 'Svc IP Family', icon: '\u{1F310}' },
+        // v22.55 Deployment
+        { path: '/api/deployment/deploy-available-cond-v2255', name: 'Deploy Avail Cond', icon: '\u2705' },
+        { path: '/api/deployment/sts-replicas-status-v2255', name: 'STS Rep Status', icon: '\u{1F504}' },
+        { path: '/api/deployment/rs-full-status-v2255', name: 'RS Full Status', icon: '\u{1F4E6}' },
+        // v22.56 Operations
+        { path: '/api/ops/ready-container-ratio-v2256', name: 'Ready Ctnr Ratio', icon: '\u{1F4CA}' },
+        { path: '/api/ops/node-kube-version-v2256', name: 'Node Kube Ver', icon: '\u{1F527}' },
+        { path: '/api/ops/event-type-distribution-v2256', name: 'Event Type Dist', icon: '\u{1F4CB}' },
+        // v22.57 Security
+        { path: '/api/security/cap-add-audit-v2257', name: 'CapAdd Audit', icon: '\u{1F6E1}' },
+        { path: '/api/security/secret-ns-distribution-v2257', name: 'Secret NS Dist', icon: '\u{1F510}' },
+        { path: '/api/security/rbac-role-count-v2257', name: 'RBAC Role Count', icon: '\u{1F451}' },
+        // v22.58 Documentation
+        { path: '/api/docs/node-condition-summary-v2258', name: 'Node Cond Summary', icon: '\u{1F4D}' },
+        { path: '/api/docs/pvc-volume-name-catalog-v2258', name: 'PVC Vol Name', icon: '\u{1F4BF}' },
+        { path: '/api/docs/pod-image-count-v2258', name: 'Pod Image Count', icon: '\u{1F3E0}' },
+        // v22.59 Scalability
+        { path: '/api/scalability/ns-cpu-request-v2259', name: 'NS CPU Request', icon: '\u26A1' },
+        { path: '/api/scalability/node-mem-fragmentation-v2259', name: 'Node Mem Frag', icon: '\u{1F4A8}' },
+        { path: '/api/scalability/cluster-service-health-v2259', name: 'Svc Health', icon: '\u{1F493}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },
