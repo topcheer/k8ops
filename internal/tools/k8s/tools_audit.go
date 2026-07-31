@@ -2148,6 +2148,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-node-by-pod-v2373", "/api/scalability/top-node-by-pod-v2373", "Top node by pod count"},
 	{"scalability:namespace-hpa-coverage-v2373", "/api/scalability/namespace-hpa-coverage-v2373", "Namespace HPA coverage"},
 	{"scalability:endpoint-service-ratio-v2373", "/api/scalability/endpoint-service-ratio-v2373", "Endpoint service ratio"},
+
+	// v23.74 Product
+	{"product:pod-priority-audit-v2374", "/api/product/pod-priority-audit-v2374", "Pod priority class audit"},
+	{"product:readiness-probe-exist-v2374", "/api/product/readiness-probe-exist-v2374", "Readiness probe existence"},
+	{"product:service-targetport-custom-v2374", "/api/product/service-targetport-custom-v2374", "Service targetPort custom"},
+	// v23.75 Deployment
+	{"deployment:max-surge-config-v2375", "/api/deployment/max-surge-config-v2375", "Deployment MaxSurge config"},
+	{"deployment:sts-servicename-empty-v2375", "/api/deployment/sts-servicename-empty-v2375", "STS serviceName empty audit"},
+	{"deployment:cronjob-suspend-status-v2375", "/api/deployment/cronjob-suspend-status-v2375", "CronJob suspend status"},
+	// v23.76 Operations
+	{"ops:qos-guaranteed-ratio-v2376", "/api/ops/qos-guaranteed-ratio-v2376", "QoS Guaranteed ratio"},
+	{"ops:node-kernel-version-v2376", "/api/ops/node-kernel-version-v2376", "Node kernel version"},
+	{"ops:event-reason-catalog-v2376", "/api/ops/event-reason-catalog-v2376", "Event reason catalog"},
+	// v23.77 Security
+	{"security:runas-nonroot-audit-v2377", "/api/security/runas-nonroot-audit-v2377", "RunAsNonRoot audit"},
+	{"security:secret-type-census-v2377", "/api/security/secret-type-census-v2377", "Secret type census"},
+	{"security:rolebinding-kind-census-v2377", "/api/security/rolebinding-kind-census-v2377", "RoleBinding kind census"},
+	// v23.78 Documentation
+	{"docs:node-cr-version-v2378", "/api/docs/node-cr-version-v2378", "Node container runtime version"},
+	{"docs:pod-uid-audit-v2378", "/api/docs/pod-uid-audit-v2378", "Pod UID audit"},
+	{"docs:configmap-age-distribution-v2378", "/api/docs/configmap-age-distribution-v2378", "ConfigMap age distribution"},
+	// v23.79 Scalability
+	{"scalability:top-namespace-replica-v2379", "/api/scalability/top-namespace-replica-v2379", "Top namespace by replica"},
+	{"scalability:node-memory-capacity-v2379", "/api/scalability/node-memory-capacity-v2379", "Node memory capacity"},
+	{"scalability:daemonset-spread-v2379", "/api/scalability/daemonset-spread-v2379", "DaemonSet spread"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

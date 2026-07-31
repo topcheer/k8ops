@@ -2204,6 +2204,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-node-by-pod-v2373", s.cacheMiddleware(120*time.Second, s.handleTopNodePod2373))
 	mux.HandleFunc("/api/scalability/namespace-hpa-coverage-v2373", s.cacheMiddleware(120*time.Second, s.handleNSHPACoverage2373))
 	mux.HandleFunc("/api/scalability/endpoint-service-ratio-v2373", s.cacheMiddleware(120*time.Second, s.handleEPSvcRatio2373))
+
+	// v23.74 Product
+	mux.HandleFunc("/api/product/pod-priority-audit-v2374", s.cacheMiddleware(120*time.Second, s.handlePriority2374))
+	mux.HandleFunc("/api/product/readiness-probe-exist-v2374", s.cacheMiddleware(120*time.Second, s.handleReadinessExist2374))
+	mux.HandleFunc("/api/product/service-targetport-custom-v2374", s.cacheMiddleware(120*time.Second, s.handleTargetPortCustom2374))
+	// v23.75 Deployment
+	mux.HandleFunc("/api/deployment/max-surge-config-v2375", s.cacheMiddleware(120*time.Second, s.handleMaxSurge2375))
+	mux.HandleFunc("/api/deployment/sts-servicename-empty-v2375", s.cacheMiddleware(120*time.Second, s.handleSTSSvcNameEmpty2375))
+	mux.HandleFunc("/api/deployment/cronjob-suspend-status-v2375", s.cacheMiddleware(120*time.Second, s.handleCronJobSuspend2375))
+	// v23.76 Operations
+	mux.HandleFunc("/api/ops/qos-guaranteed-ratio-v2376", s.cacheMiddleware(120*time.Second, s.handleQoSGuaranteed2376))
+	mux.HandleFunc("/api/ops/node-kernel-version-v2376", s.cacheMiddleware(120*time.Second, s.handleNodeKernel2376))
+	mux.HandleFunc("/api/ops/event-reason-catalog-v2376", s.cacheMiddleware(120*time.Second, s.handleEventReason2376))
+	// v23.77 Security
+	mux.HandleFunc("/api/security/runas-nonroot-audit-v2377", s.cacheMiddleware(120*time.Second, s.handleRunAsNonRoot2377))
+	mux.HandleFunc("/api/security/secret-type-census-v2377", s.cacheMiddleware(120*time.Second, s.handleSecretTypeCensus2377))
+	mux.HandleFunc("/api/security/rolebinding-kind-census-v2377", s.cacheMiddleware(120*time.Second, s.handleRoleBindingKind2377))
+	// v23.78 Documentation
+	mux.HandleFunc("/api/docs/node-cr-version-v2378", s.cacheMiddleware(120*time.Second, s.handleNodeCRTVer2378))
+	mux.HandleFunc("/api/docs/pod-uid-audit-v2378", s.cacheMiddleware(120*time.Second, s.handlePodUID2378))
+	mux.HandleFunc("/api/docs/configmap-age-distribution-v2378", s.cacheMiddleware(120*time.Second, s.handleCMAge2378))
+	// v23.79 Scalability
+	mux.HandleFunc("/api/scalability/top-namespace-replica-v2379", s.cacheMiddleware(120*time.Second, s.handleTopNSReplica2379))
+	mux.HandleFunc("/api/scalability/node-memory-capacity-v2379", s.cacheMiddleware(120*time.Second, s.handleNodeMemCap2379))
+	mux.HandleFunc("/api/scalability/daemonset-spread-v2379", s.cacheMiddleware(120*time.Second, s.handleDSSpread2379))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

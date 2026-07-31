@@ -1715,6 +1715,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-node-by-pod-v2373', name: 'Top Node Pods', icon: '\u{1F3E0}' },
         { path: '/api/scalability/namespace-hpa-coverage-v2373', name: 'NS HPA Cov', icon: '\u{1F4C8}' },
         { path: '/api/scalability/endpoint-service-ratio-v2373', name: 'EP/Svc Ratio', icon: '\u{1F4CA}' },
+        // v23.74 Product
+        { path: '/api/product/pod-priority-audit-v2374', name: 'Pod Priority', icon: '\u{1F3ED}' },
+        { path: '/api/product/readiness-probe-exist-v2374', name: 'Readiness Exist', icon: '\u2705' },
+        { path: '/api/product/service-targetport-custom-v2374', name: 'TargetPort', icon: '\u{1F50C}' },
+        // v23.75 Deployment
+        { path: '/api/deployment/max-surge-config-v2375', name: 'MaxSurge Cfg', icon: '\u{1F4C9}' },
+        { path: '/api/deployment/sts-servicename-empty-v2375', name: 'STS SvcName Empty', icon: '\u{26A0}' },
+        { path: '/api/deployment/cronjob-suspend-status-v2375', name: 'CJ Suspend', icon: '\u{23F8}' },
+        // v23.76 Operations
+        { path: '/api/ops/qos-guaranteed-ratio-v2376', name: 'QoS Guaranteed', icon: '\u{1F4CA}' },
+        { path: '/api/ops/node-kernel-version-v2376', name: 'Node Kernel', icon: '\u{1F527}' },
+        { path: '/api/ops/event-reason-catalog-v2376', name: 'Event Reason', icon: '\u{1F4CB}' },
+        // v23.77 Security
+        { path: '/api/security/runas-nonroot-audit-v2377', name: 'RunAsNonRoot', icon: '\u{1F464}' },
+        { path: '/api/security/secret-type-census-v2377', name: 'Secret Type', icon: '\u{1F510}' },
+        { path: '/api/security/rolebinding-kind-census-v2377', name: 'RB Kind', icon: '\u{1F451}' },
+        // v23.78 Documentation
+        { path: '/api/docs/node-cr-version-v2378', name: 'Node CR Ver', icon: '\u{1F527}' },
+        { path: '/api/docs/pod-uid-audit-v2378', name: 'Pod UID', icon: '\u{1F194}' },
+        { path: '/api/docs/configmap-age-distribution-v2378', name: 'CM Age Dist', icon: '\u{1F4C5}' },
+        // v23.79 Scalability
+        { path: '/api/scalability/top-namespace-replica-v2379', name: 'Top NS Replica', icon: '\u{1F4CA}' },
+        { path: '/api/scalability/node-memory-capacity-v2379', name: 'Node Mem Cap', icon: '\u{1F4BE}' },
+        { path: '/api/scalability/daemonset-spread-v2379', name: 'DS Spread', icon: '\u{1F680}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },
