@@ -2023,6 +2023,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:node-zone-distribution-v2343", "/api/scalability/node-zone-distribution-v2343", "Node zone distribution"},
 	{"scalability:scheduling-latency-risk-v2343", "/api/scalability/scheduling-latency-risk-v2343", "Scheduling latency risk"},
 	{"scalability:deployment-density-v2343", "/api/scalability/deployment-density-v2343", "Deployment density"},
+
+	// v23.44 Product
+	{"product:pod-hostusers-audit-v2344", "/api/product/pod-hostusers-audit-v2344", "Pod hostUsers audit"},
+	{"product:container-hostport-audit-v2344", "/api/product/container-hostport-audit-v2344", "Container hostPort audit"},
+	{"product:service-externalip-catalog-v2344", "/api/product/service-externalip-catalog-v2344", "Service externalIP catalog"},
+	// v23.45 Deployment
+	{"deployment:sts-replicas-vs-ready-v2345", "/api/deployment/sts-replicas-vs-ready-v2345", "STS replicas vs ready"},
+	{"deployment:ds-number-unavailable-v2345", "/api/deployment/ds-number-unavailable-v2345", "DS number unavailable"},
+	{"deployment:job-completion-duration-v2345", "/api/deployment/job-completion-duration-v2345", "Job completion duration"},
+	// v23.46 Operations
+	{"ops:unhealthy-container-v2346", "/api/ops/unhealthy-container-v2346", "Unhealthy container count"},
+	{"ops:node-condition-pid-v2346", "/api/ops/node-condition-pid-v2346", "Node PID pressure condition"},
+	{"ops:event-message-catalog-v2346", "/api/ops/event-message-catalog-v2346", "Event message catalog"},
+	// v23.47 Security
+	{"security:auto-sa-token-audit-v2347", "/api/security/auto-sa-token-audit-v2347", "Auto SA token mount audit"},
+	{"security:secret-type-tls-v2347", "/api/security/secret-type-tls-v2347", "Secret type TLS"},
+	{"security:clusterrole-verbs-census-v2347", "/api/security/clusterrole-verbs-census-v2347", "ClusterRole verbs census"},
+	// v23.48 Documentation
+	{"docs:node-zone-label-v2348", "/api/docs/node-zone-label-v2348", "Node zone label"},
+	{"docs:pod-resource-request-summary-v2348", "/api/docs/pod-resource-request-summary-v2348", "Pod resource request summary"},
+	{"docs:secret-namespace-count-v2348", "/api/docs/secret-namespace-count-v2348", "Secret namespace count"},
+	// v23.49 Scalability
+	{"scalability:top-node-container-count-v2349", "/api/scalability/top-node-container-count-v2349", "Top node by container count"},
+	{"scalability:cluster-hpa-coverage-v2349", "/api/scalability/cluster-hpa-coverage-v2349", "Cluster HPA coverage"},
+	{"scalability:namespace-replica-distribution-v2349", "/api/scalability/namespace-replica-distribution-v2349", "Namespace replica distribution"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

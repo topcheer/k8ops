@@ -1595,6 +1595,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/node-zone-distribution-v2343', name: 'Node Zone Dist', icon: '\u{1F310}' },
         { path: '/api/scalability/scheduling-latency-risk-v2343', name: 'Sched Latency', icon: '\u{23F1}' },
         { path: '/api/scalability/deployment-density-v2343', name: 'Deploy Density', icon: '\u{1F4CA}' },
+        // v23.44 Product
+        { path: '/api/product/pod-hostusers-audit-v2344', name: 'HostUsers Audit', icon: '\u{1F464}' },
+        { path: '/api/product/container-hostport-audit-v2344', name: 'HostPort Audit', icon: '\u{1F50C}' },
+        { path: '/api/product/service-externalip-catalog-v2344', name: 'ExternalIP', icon: '\u{1F310}' },
+        // v23.45 Deployment
+        { path: '/api/deployment/sts-replicas-vs-ready-v2345', name: 'STS Rep/Ready', icon: '\u{1F504}' },
+        { path: '/api/deployment/ds-number-unavailable-v2345', name: 'DS Unavail', icon: '\u{1F680}' },
+        { path: '/api/deployment/job-completion-duration-v2345', name: 'Job Duration', icon: '\u{23F1}' },
+        // v23.46 Operations
+        { path: '/api/ops/unhealthy-container-v2346', name: 'Unhealthy Ctnr', icon: '\u{1F6A8}' },
+        { path: '/api/ops/node-condition-pid-v2346', name: 'Node PID Cond', icon: '\u{1F534}' },
+        { path: '/api/ops/event-message-catalog-v2346', name: 'Event Msg', icon: '\u{1F4CB}' },
+        // v23.47 Security
+        { path: '/api/security/auto-sa-token-audit-v2347', name: 'Auto SA Token', icon: '\u{1F511}' },
+        { path: '/api/security/secret-type-tls-v2347', name: 'Secret TLS', icon: '\u{1F510}' },
+        { path: '/api/security/clusterrole-verbs-census-v2347', name: 'CR Verbs', icon: '\u{1F451}' },
+        // v23.48 Documentation
+        { path: '/api/docs/node-zone-label-v2348', name: 'Node Zone Label', icon: '\u{1F310}' },
+        { path: '/api/docs/pod-resource-request-summary-v2348', name: 'Pod ResReq', icon: '\u{1F4CA}' },
+        { path: '/api/docs/secret-namespace-count-v2348', name: 'Secret NS Count', icon: '\u{1F4C4}' },
+        // v23.49 Scalability
+        { path: '/api/scalability/top-node-container-count-v2349', name: 'Top Node Ctnr', icon: '\u{1F3E0}' },
+        { path: '/api/scalability/cluster-hpa-coverage-v2349', name: 'HPA Coverage', icon: '\u{1F4C8}' },
+        { path: '/api/scalability/namespace-replica-distribution-v2349', name: 'NS Replica Dist', icon: '\u{1F4CA}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

@@ -2079,6 +2079,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/node-zone-distribution-v2343", s.cacheMiddleware(120*time.Second, s.handleNodeZone2343))
 	mux.HandleFunc("/api/scalability/scheduling-latency-risk-v2343", s.cacheMiddleware(120*time.Second, s.handleSchedLatency2343))
 	mux.HandleFunc("/api/scalability/deployment-density-v2343", s.cacheMiddleware(120*time.Second, s.handleDeployDensity2343))
+
+	// v23.44 Product
+	mux.HandleFunc("/api/product/pod-hostusers-audit-v2344", s.cacheMiddleware(120*time.Second, s.handleHostUsers2344))
+	mux.HandleFunc("/api/product/container-hostport-audit-v2344", s.cacheMiddleware(120*time.Second, s.handleHostPort2344))
+	mux.HandleFunc("/api/product/service-externalip-catalog-v2344", s.cacheMiddleware(120*time.Second, s.handleExternalIP2344))
+	// v23.45 Deployment
+	mux.HandleFunc("/api/deployment/sts-replicas-vs-ready-v2345", s.cacheMiddleware(120*time.Second, s.handleSTSRepVsReady2345))
+	mux.HandleFunc("/api/deployment/ds-number-unavailable-v2345", s.cacheMiddleware(120*time.Second, s.handleDSUnavail2345))
+	mux.HandleFunc("/api/deployment/job-completion-duration-v2345", s.cacheMiddleware(120*time.Second, s.handleJobDuration2345))
+	// v23.46 Operations
+	mux.HandleFunc("/api/ops/unhealthy-container-v2346", s.cacheMiddleware(120*time.Second, s.handleUnhealthy2346))
+	mux.HandleFunc("/api/ops/node-condition-pid-v2346", s.cacheMiddleware(120*time.Second, s.handleNodeCondPID2346))
+	mux.HandleFunc("/api/ops/event-message-catalog-v2346", s.cacheMiddleware(120*time.Second, s.handleEventMsg2346))
+	// v23.47 Security
+	mux.HandleFunc("/api/security/auto-sa-token-audit-v2347", s.cacheMiddleware(120*time.Second, s.handleAutoSAToken2347))
+	mux.HandleFunc("/api/security/secret-type-tls-v2347", s.cacheMiddleware(120*time.Second, s.handleSecretTLS2347))
+	mux.HandleFunc("/api/security/clusterrole-verbs-census-v2347", s.cacheMiddleware(120*time.Second, s.handleCRVerbs2347))
+	// v23.48 Documentation
+	mux.HandleFunc("/api/docs/node-zone-label-v2348", s.cacheMiddleware(120*time.Second, s.handleNodeZoneLabel2348))
+	mux.HandleFunc("/api/docs/pod-resource-request-summary-v2348", s.cacheMiddleware(120*time.Second, s.handlePodResReq2348))
+	mux.HandleFunc("/api/docs/secret-namespace-count-v2348", s.cacheMiddleware(120*time.Second, s.handleSecretNSCount2348))
+	// v23.49 Scalability
+	mux.HandleFunc("/api/scalability/top-node-container-count-v2349", s.cacheMiddleware(120*time.Second, s.handleTopNodeContainer2349))
+	mux.HandleFunc("/api/scalability/cluster-hpa-coverage-v2349", s.cacheMiddleware(120*time.Second, s.handleHPACoverage2349))
+	mux.HandleFunc("/api/scalability/namespace-replica-distribution-v2349", s.cacheMiddleware(120*time.Second, s.handleNSReplicaDist2349))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))
