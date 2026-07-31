@@ -1779,6 +1779,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/node-allocatable-vs-capacity-v2271", s.cacheMiddleware(120*time.Second, s.handleNodeAllocVsCap2271))
 	mux.HandleFunc("/api/scalability/storageclass-usage-v2271", s.cacheMiddleware(120*time.Second, s.handleSCUsage2271))
 	mux.HandleFunc("/api/scalability/pvc-size-quartile-v2271", s.cacheMiddleware(120*time.Second, s.handlePVCQuartile2271))
+
+	// v22.72 Product
+	mux.HandleFunc("/api/product/volume-mount-count-v2272", s.cacheMiddleware(120*time.Second, s.handleVolMountCount2272))
+	mux.HandleFunc("/api/product/dns-policy-census-v2272", s.cacheMiddleware(120*time.Second, s.handleDNSPolicy2272))
+	mux.HandleFunc("/api/product/init-container-audit-v2272", s.cacheMiddleware(120*time.Second, s.handleInitCtnr2272))
+	// v22.73 Deployment
+	mux.HandleFunc("/api/deployment/cronjob-schedule-catalog-v2273", s.cacheMiddleware(120*time.Second, s.handleCronJobCatalog2273))
+	mux.HandleFunc("/api/deployment/revision-history-v2273", s.cacheMiddleware(120*time.Second, s.handleRevisionHistory2273))
+	mux.HandleFunc("/api/deployment/sts-ordinal-status-v2273", s.cacheMiddleware(120*time.Second, s.handleSTSOrdinal2273))
+	// v22.74 Operations
+	mux.HandleFunc("/api/ops/node-kernel-version-v2274", s.cacheMiddleware(120*time.Second, s.handleKernelVersion2274))
+	mux.HandleFunc("/api/ops/termination-grace-period-v2274", s.cacheMiddleware(120*time.Second, s.handleGracePeriod2274))
+	mux.HandleFunc("/api/ops/event-reason-top-v2274", s.cacheMiddleware(120*time.Second, s.handleEventReasonTop2274))
+	// v22.75 Security
+	mux.HandleFunc("/api/security/readonly-rootfs-audit-v2275", s.cacheMiddleware(120*time.Second, s.handleReadOnlyRootFS2275))
+	mux.HandleFunc("/api/security/privilege-escalation-audit-v2275", s.cacheMiddleware(120*time.Second, s.handlePrivEsc2275))
+	mux.HandleFunc("/api/security/runas-user-distribution-v2275", s.cacheMiddleware(120*time.Second, s.handleRunAsUser2275))
+	// v22.76 Documentation
+	mux.HandleFunc("/api/docs/resourcequota-catalog-v2276", s.cacheMiddleware(120*time.Second, s.handleResourceQuota2276))
+	mux.HandleFunc("/api/docs/topology-spread-constraints-v2276", s.cacheMiddleware(120*time.Second, s.handleTopoSpread2276))
+	mux.HandleFunc("/api/docs/node-taints-inventory-v2276", s.cacheMiddleware(120*time.Second, s.handleNodeTaints2276))
+	// v22.77 Scalability
+	mux.HandleFunc("/api/scalability/cluster-cpu-utilization-ratio-v2277", s.cacheMiddleware(120*time.Second, s.handleCPUUtilRatio2277))
+	mux.HandleFunc("/api/scalability/cluster-memory-utilization-ratio-v2277", s.cacheMiddleware(120*time.Second, s.handleMemUtilRatio2277))
+	mux.HandleFunc("/api/scalability/node-pod-capacity-usage-v2277", s.cacheMiddleware(120*time.Second, s.handleNodePodCapacity2277))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

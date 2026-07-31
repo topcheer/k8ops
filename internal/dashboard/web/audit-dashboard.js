@@ -1306,6 +1306,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/node-allocatable-vs-capacity-v2271', name: 'Node Alloc vs Cap', icon: '\u{1F4CF}' },
         { path: '/api/scalability/storageclass-usage-v2271', name: 'SC Usage', icon: '\u{1F4BF}' },
         { path: '/api/scalability/pvc-size-quartile-v2271', name: 'PVC Size Quartile', icon: '\u{1F4D0}' },
+        // v22.72 Product
+        { path: '/api/product/volume-mount-count-v2272', name: 'Vol Mount Count', icon: '\u{1F4BF}' },
+        { path: '/api/product/dns-policy-census-v2272', name: 'DNS Policy', icon: '\u{1F310}' },
+        { path: '/api/product/init-container-audit-v2272', name: 'Init Ctnr Audit', icon: '\u{1F680}' },
+        // v22.73 Deployment
+        { path: '/api/deployment/cronjob-schedule-catalog-v2273', name: 'CronJob Catalog', icon: '\u{23F0}' },
+        { path: '/api/deployment/revision-history-v2273', name: 'Revision History', icon: '\u{1F4DC}' },
+        { path: '/api/deployment/sts-ordinal-status-v2273', name: 'STS Ordinal', icon: '\u{1F522}' },
+        // v22.74 Operations
+        { path: '/api/ops/node-kernel-version-v2274', name: 'Node Kernel', icon: '\u{1F527}' },
+        { path: '/api/ops/termination-grace-period-v2274', name: 'Grace Period', icon: '\u{23F1}' },
+        { path: '/api/ops/event-reason-top-v2274', name: 'Event Reason Top', icon: '\u{1F4CB}' },
+        // v22.75 Security
+        { path: '/api/security/readonly-rootfs-audit-v2275', name: 'ReadOnly RootFS', icon: '\u{1F512}' },
+        { path: '/api/security/privilege-escalation-audit-v2275', name: 'PrivEsc Audit', icon: '\u{1F6E1}' },
+        { path: '/api/security/runas-user-distribution-v2275', name: 'RunAsUser UID', icon: '\u{1F464}' },
+        // v22.76 Documentation
+        { path: '/api/docs/resourcequota-catalog-v2276', name: 'ResourceQuota', icon: '\u{1F4CA}' },
+        { path: '/api/docs/topology-spread-constraints-v2276', name: 'Topo Spread', icon: '\u{1F9ED}' },
+        { path: '/api/docs/node-taints-inventory-v2276', name: 'Node Taints', icon: '\u{1F6A7}' },
+        // v22.77 Scalability
+        { path: '/api/scalability/cluster-cpu-utilization-ratio-v2277', name: 'CPU Util Ratio', icon: '\u26A1' },
+        { path: '/api/scalability/cluster-memory-utilization-ratio-v2277', name: 'Mem Util Ratio', icon: '\u{1F4BE}' },
+        { path: '/api/scalability/node-pod-capacity-usage-v2277', name: 'Pod Cap Usage', icon: '\u{1F3E0}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

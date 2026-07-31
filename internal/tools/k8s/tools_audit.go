@@ -1723,6 +1723,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:node-allocatable-vs-capacity-v2271", "/api/scalability/node-allocatable-vs-capacity-v2271", "Node allocatable vs capacity"},
 	{"scalability:storageclass-usage-v2271", "/api/scalability/storageclass-usage-v2271", "StorageClass usage"},
 	{"scalability:pvc-size-quartile-v2271", "/api/scalability/pvc-size-quartile-v2271", "PVC size quartile"},
+
+	// v22.72 Product
+	{"product:volume-mount-count-v2272", "/api/product/volume-mount-count-v2272", "Container volume mount count"},
+	{"product:dns-policy-census-v2272", "/api/product/dns-policy-census-v2272", "Pod DNS policy census"},
+	{"product:init-container-audit-v2272", "/api/product/init-container-audit-v2272", "Init container audit"},
+	// v22.73 Deployment
+	{"deployment:cronjob-schedule-catalog-v2273", "/api/deployment/cronjob-schedule-catalog-v2273", "CronJob schedule catalog"},
+	{"deployment:revision-history-v2273", "/api/deployment/revision-history-v2273", "Deployment revision history"},
+	{"deployment:sts-ordinal-status-v2273", "/api/deployment/sts-ordinal-status-v2273", "STS ordinal management status"},
+	// v22.74 Operations
+	{"ops:node-kernel-version-v2274", "/api/ops/node-kernel-version-v2274", "Node kernel version census"},
+	{"ops:termination-grace-period-v2274", "/api/ops/termination-grace-period-v2274", "Pod termination grace period"},
+	{"ops:event-reason-top-v2274", "/api/ops/event-reason-top-v2274", "Event reason top"},
+	// v22.75 Security
+	{"security:readonly-rootfs-audit-v2275", "/api/security/readonly-rootfs-audit-v2275", "ReadOnly root filesystem audit"},
+	{"security:privilege-escalation-audit-v2275", "/api/security/privilege-escalation-audit-v2275", "AllowPrivilegeEscalation audit"},
+	{"security:runas-user-distribution-v2275", "/api/security/runas-user-distribution-v2275", "RunAsUser UID distribution"},
+	// v22.76 Documentation
+	{"docs:resourcequota-catalog-v2276", "/api/docs/resourcequota-catalog-v2276", "ResourceQuota catalog"},
+	{"docs:topology-spread-constraints-v2276", "/api/docs/topology-spread-constraints-v2276", "Topology spread constraints"},
+	{"docs:node-taints-inventory-v2276", "/api/docs/node-taints-inventory-v2276", "Node taints inventory"},
+	// v22.77 Scalability
+	{"scalability:cluster-cpu-utilization-ratio-v2277", "/api/scalability/cluster-cpu-utilization-ratio-v2277", "Cluster CPU utilization ratio"},
+	{"scalability:cluster-memory-utilization-ratio-v2277", "/api/scalability/cluster-memory-utilization-ratio-v2277", "Cluster memory utilization ratio"},
+	{"scalability:node-pod-capacity-usage-v2277", "/api/scalability/node-pod-capacity-usage-v2277", "Node pod capacity usage"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.
