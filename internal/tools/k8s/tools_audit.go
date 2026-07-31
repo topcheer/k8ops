@@ -1848,6 +1848,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:cluster-efficiency-score-v2301", "/api/scalability/cluster-efficiency-score-v2301", "Cluster efficiency score"},
 	{"scalability:namespace-resource-density-v2301", "/api/scalability/namespace-resource-density-v2301", "Namespace resource density"},
 	{"scalability:node-cpu-commit-ratio-v2301", "/api/scalability/node-cpu-commit-ratio-v2301", "Node CPU commit ratio"},
+
+	// v23.02 Product
+	{"product:pod-overhead-audit-v2302", "/api/product/pod-overhead-audit-v2302", "Pod overhead resource audit"},
+	{"product:lifecycle-hook-coverage-v2302", "/api/product/lifecycle-hook-coverage-v2302", "Container lifecycle hook coverage"},
+	{"product:external-traffic-policy-v2302", "/api/product/external-traffic-policy-v2302", "Service external traffic policy"},
+	// v23.03 Deployment
+	{"deployment:sts-status-replicas-v2303", "/api/deployment/sts-status-replicas-v2303", "STS status replicas audit"},
+	{"deployment:ds-scheduled-vs-misscheduled-v2303", "/api/deployment/ds-scheduled-vs-misscheduled-v2303", "DaemonSet scheduled vs misscheduled"},
+	{"deployment:job-parallelism-config-v2303", "/api/deployment/job-parallelism-config-v2303", "Job parallelism configuration"},
+	// v23.04 Operations
+	{"ops:scheduling-gate-audit-v2304", "/api/ops/scheduling-gate-audit-v2304", "Pod scheduling gate audit"},
+	{"ops:node-kubeproxy-version-v2304", "/api/ops/node-kubeproxy-version-v2304", "Node kube-proxy version"},
+	{"ops:container-started-state-v2304", "/api/ops/container-started-state-v2304", "Container started state census"},
+	// v23.05 Security
+	{"security:sa-age-audit-v2305", "/api/security/sa-age-audit-v2305", "ServiceAccount age audit"},
+	{"security:fsgroup-change-policy-v2305", "/api/security/fsgroup-change-policy-v2305", "Pod FSGroupChangePolicy"},
+	{"security:clusterrole-aggregation-v2305", "/api/security/clusterrole-aggregation-v2305", "ClusterRole aggregation rules"},
+	// v23.06 Documentation
+	{"docs:pv-phase-inventory-v2306", "/api/docs/pv-phase-inventory-v2306", "PV phase inventory"},
+	{"docs:pod-resource-claim-catalog-v2306", "/api/docs/pod-resource-claim-catalog-v2306", "Pod resource claim catalog"},
+	{"docs:node-podcidr-catalog-v2306", "/api/docs/node-podcidr-catalog-v2306", "Node PodCIDR catalog"},
+	// v23.07 Scalability
+	{"scalability:ns-cpu-limit-request-ratio-v2307", "/api/scalability/ns-cpu-limit-request-ratio-v2307", "Namespace CPU limit/request ratio"},
+	{"scalability:node-storage-commit-v2307", "/api/scalability/node-storage-commit-v2307", "Node storage commit"},
+	{"scalability:cluster-pod-churn-rate-v2307", "/api/scalability/cluster-pod-churn-rate-v2307", "Cluster pod churn rate"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

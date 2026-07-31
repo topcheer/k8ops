@@ -1904,6 +1904,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/cluster-efficiency-score-v2301", s.cacheMiddleware(120*time.Second, s.handleClusterEff2301))
 	mux.HandleFunc("/api/scalability/namespace-resource-density-v2301", s.cacheMiddleware(120*time.Second, s.handleNSDensity2301))
 	mux.HandleFunc("/api/scalability/node-cpu-commit-ratio-v2301", s.cacheMiddleware(120*time.Second, s.handleNodeCPUCommit2301))
+
+	// v23.02 Product
+	mux.HandleFunc("/api/product/pod-overhead-audit-v2302", s.cacheMiddleware(120*time.Second, s.handlePodOverhead2302))
+	mux.HandleFunc("/api/product/lifecycle-hook-coverage-v2302", s.cacheMiddleware(120*time.Second, s.handleLifecycleHook2302))
+	mux.HandleFunc("/api/product/external-traffic-policy-v2302", s.cacheMiddleware(120*time.Second, s.handleExtTraffic2302))
+	// v23.03 Deployment
+	mux.HandleFunc("/api/deployment/sts-status-replicas-v2303", s.cacheMiddleware(120*time.Second, s.handleSTSStatus2303))
+	mux.HandleFunc("/api/deployment/ds-scheduled-vs-misscheduled-v2303", s.cacheMiddleware(120*time.Second, s.handleDSMisSchedule2303))
+	mux.HandleFunc("/api/deployment/job-parallelism-config-v2303", s.cacheMiddleware(120*time.Second, s.handleJobParallel2303))
+	// v23.04 Operations
+	mux.HandleFunc("/api/ops/scheduling-gate-audit-v2304", s.cacheMiddleware(120*time.Second, s.handleSchedGate2304))
+	mux.HandleFunc("/api/ops/node-kubeproxy-version-v2304", s.cacheMiddleware(120*time.Second, s.handleKubeProxy2304))
+	mux.HandleFunc("/api/ops/container-started-state-v2304", s.cacheMiddleware(120*time.Second, s.handleStartedState2304))
+	// v23.05 Security
+	mux.HandleFunc("/api/security/sa-age-audit-v2305", s.cacheMiddleware(120*time.Second, s.handleSAAge2305))
+	mux.HandleFunc("/api/security/fsgroup-change-policy-v2305", s.cacheMiddleware(120*time.Second, s.handleFSGroupChange2305))
+	mux.HandleFunc("/api/security/clusterrole-aggregation-v2305", s.cacheMiddleware(120*time.Second, s.handleCRAggRule2305))
+	// v23.06 Documentation
+	mux.HandleFunc("/api/docs/pv-phase-inventory-v2306", s.cacheMiddleware(120*time.Second, s.handlePVPhase2306))
+	mux.HandleFunc("/api/docs/pod-resource-claim-catalog-v2306", s.cacheMiddleware(120*time.Second, s.handleResClaim2306))
+	mux.HandleFunc("/api/docs/node-podcidr-catalog-v2306", s.cacheMiddleware(120*time.Second, s.handleNodePodCIDR2306))
+	// v23.07 Scalability
+	mux.HandleFunc("/api/scalability/ns-cpu-limit-request-ratio-v2307", s.cacheMiddleware(120*time.Second, s.handleNSCPURatio2307))
+	mux.HandleFunc("/api/scalability/node-storage-commit-v2307", s.cacheMiddleware(120*time.Second, s.handleNodeStorageCommit2307))
+	mux.HandleFunc("/api/scalability/cluster-pod-churn-rate-v2307", s.cacheMiddleware(120*time.Second, s.handlePodChurn2307))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

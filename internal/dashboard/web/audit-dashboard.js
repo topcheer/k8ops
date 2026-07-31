@@ -1426,6 +1426,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/cluster-efficiency-score-v2301', name: 'Cluster Eff', icon: '\u{1F4CA}' },
         { path: '/api/scalability/namespace-resource-density-v2301', name: 'NS Density', icon: '\u{1F3D7}' },
         { path: '/api/scalability/node-cpu-commit-ratio-v2301', name: 'Node CPU Commit', icon: '\u26A1' },
+        // v23.02 Product
+        { path: '/api/product/pod-overhead-audit-v2302', name: 'Pod Overhead', icon: '\u{1F4CF}' },
+        { path: '/api/product/lifecycle-hook-coverage-v2302', name: 'Lifecycle Hooks', icon: '\u{1F501}' },
+        { path: '/api/product/external-traffic-policy-v2302', name: 'Ext Traffic Pol', icon: '\u{1F310}' },
+        // v23.03 Deployment
+        { path: '/api/deployment/sts-status-replicas-v2303', name: 'STS Status', icon: '\u{1F4C8}' },
+        { path: '/api/deployment/ds-scheduled-vs-misscheduled-v2303', name: 'DS Scheduled', icon: '\u{1F680}' },
+        { path: '/api/deployment/job-parallelism-config-v2303', name: 'Job Parallelism', icon: '\u{1F5C3}' },
+        // v23.04 Operations
+        { path: '/api/ops/scheduling-gate-audit-v2304', name: 'Sched Gate', icon: '\u{1F6A7}' },
+        { path: '/api/ops/node-kubeproxy-version-v2304', name: 'KubeProxy Ver', icon: '\u{1F527}' },
+        { path: '/api/ops/container-started-state-v2304', name: 'Started State', icon: '\u25B6' },
+        // v23.05 Security
+        { path: '/api/security/sa-age-audit-v2305', name: 'SA Age', icon: '\u{1F4C5}' },
+        { path: '/api/security/fsgroup-change-policy-v2305', name: 'FSGroup ChgPol', icon: '\u{1F465}' },
+        { path: '/api/security/clusterrole-aggregation-v2305', name: 'CR Aggregation', icon: '\u{1F451}' },
+        // v23.06 Documentation
+        { path: '/api/docs/pv-phase-inventory-v2306', name: 'PV Phase', icon: '\u{1F4BF}' },
+        { path: '/api/docs/pod-resource-claim-catalog-v2306', name: 'Res Claims', icon: '\u{1F4DD}' },
+        { path: '/api/docs/node-podcidr-catalog-v2306', name: 'Node PodCIDR', icon: '\u{1F5FA}' },
+        // v23.07 Scalability
+        { path: '/api/scalability/ns-cpu-limit-request-ratio-v2307', name: 'NS CPU Ratio', icon: '\u26A1' },
+        { path: '/api/scalability/node-storage-commit-v2307', name: 'Node Storage', icon: '\u{1F4E6}' },
+        { path: '/api/scalability/cluster-pod-churn-rate-v2307', name: 'Pod Churn', icon: '\u{1F504}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },
