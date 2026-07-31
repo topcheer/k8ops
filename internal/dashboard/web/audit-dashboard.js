@@ -1787,6 +1787,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-namespace-event-v2391', name: 'Top NS Event', icon: '\u{1F4CB}' },
         { path: '/api/scalability/node-allocatable-mem-v2391', name: 'Node Alloc Mem', icon: '\u{1F4BE}' },
         { path: '/api/scalability/pod-by-controller-v2391', name: 'Pod by Ctrl', icon: '\u{1F517}' },
+        // v23.92 Product
+        { path: '/api/product/affinity-rule-count-v2392', name: 'Affinity Rules', icon: '\u{1F517}' },
+        { path: '/api/product/env-valuefrom-audit-v2392', name: 'Env ValueFrom', icon: '\u{1F4DD}' },
+        { path: '/api/product/loadbalancer-class-v2392', name: 'LB Class', icon: '\u{1F310}' },
+        // v23.93 Deployment
+        { path: '/api/deployment/deployment-paused-status-v2393', name: 'Deploy Paused', icon: '\u{23F8}' },
+        { path: '/api/deployment/sts-ordinal-replicas-v2393', name: 'STS Ordinal', icon: '\u{1F522}' },
+        { path: '/api/deployment/job-backoff-limit-v2393', name: 'Job Backoff', icon: '\u{1F501}' },
+        // v23.94 Operations
+        { path: '/api/ops/crashloop-backoff-v2394', name: 'CrashLoop', icon: '\u{1F6A8}' },
+        { path: '/api/ops/node-condition-memory-v2394', name: 'Node Mem Cond', icon: '\u{1F4BE}' },
+        { path: '/api/ops/container-restart-count-v2394', name: 'Restart Count', icon: '\u{1F504}' },
+        // v23.95 Security
+        { path: '/api/security/capabilities-audit-v2395', name: 'Caps Audit', icon: '\u{1F6E1}' },
+        { path: '/api/security/secret-data-size-v2395', name: 'Secret Data Size', icon: '\u{1F510}' },
+        { path: '/api/security/rolebinding-namespace-v2395', name: 'RB by NS', icon: '\u{1F451}' },
+        // v23.96 Documentation
+        { path: '/api/docs/node-taint-count-v2396', name: 'Node Taints', icon: '\u{1F6A7}' },
+        { path: '/api/docs/pod-nodeselector-key-v2396', name: 'NodeSelector Key', icon: '\u{1F50D}' },
+        { path: '/api/docs/endpoint-address-by-node-v2396', name: 'EP Addr by Node', icon: '\u{1F5FA}' },
+        // v23.97 Scalability
+        { path: '/api/scalability/top-namespace-cpu-limit-v2397', name: 'Top NS CPULim', icon: '\u26A1' },
+        { path: '/api/scalability/node-allocatable-cpu-summary-v2397', name: 'Node Alloc CPU', icon: '\u26A1' },
+        { path: '/api/scalability/pvc-density-v2397', name: 'PVC Density', icon: '\u{1F4BF}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

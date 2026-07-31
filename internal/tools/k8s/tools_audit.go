@@ -2223,6 +2223,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-namespace-event-v2391", "/api/scalability/top-namespace-event-v2391", "Top namespace by event"},
 	{"scalability:node-allocatable-mem-v2391", "/api/scalability/node-allocatable-mem-v2391", "Node allocatable memory"},
 	{"scalability:pod-by-controller-v2391", "/api/scalability/pod-by-controller-v2391", "Pod by controller kind"},
+
+	// v23.92 Product
+	{"product:affinity-rule-count-v2392", "/api/product/affinity-rule-count-v2392", "Pod affinity rule count"},
+	{"product:env-valuefrom-audit-v2392", "/api/product/env-valuefrom-audit-v2392", "Env valueFrom audit"},
+	{"product:loadbalancer-class-v2392", "/api/product/loadbalancer-class-v2392", "LoadBalancer class"},
+	// v23.93 Deployment
+	{"deployment:deployment-paused-status-v2393", "/api/deployment/deployment-paused-status-v2393", "Deployment paused status"},
+	{"deployment:sts-ordinal-replicas-v2393", "/api/deployment/sts-ordinal-replicas-v2393", "STS ordinal replicas"},
+	{"deployment:job-backoff-limit-v2393", "/api/deployment/job-backoff-limit-v2393", "Job backoffLimit"},
+	// v23.94 Operations
+	{"ops:crashloop-backoff-v2394", "/api/ops/crashloop-backoff-v2394", "CrashLoopBackOff detection"},
+	{"ops:node-condition-memory-v2394", "/api/ops/node-condition-memory-v2394", "Node memory pressure"},
+	{"ops:container-restart-count-v2394", "/api/ops/container-restart-count-v2394", "Container restart count"},
+	// v23.95 Security
+	{"security:capabilities-audit-v2395", "/api/security/capabilities-audit-v2395", "Capabilities audit"},
+	{"security:secret-data-size-v2395", "/api/security/secret-data-size-v2395", "Secret data size"},
+	{"security:rolebinding-namespace-v2395", "/api/security/rolebinding-namespace-v2395", "RoleBinding namespace"},
+	// v23.96 Documentation
+	{"docs:node-taint-count-v2396", "/api/docs/node-taint-count-v2396", "Node taint count"},
+	{"docs:pod-nodeselector-key-v2396", "/api/docs/pod-nodeselector-key-v2396", "Pod nodeSelector key"},
+	{"docs:endpoint-address-by-node-v2396", "/api/docs/endpoint-address-by-node-v2396", "Endpoint address by node"},
+	// v23.97 Scalability
+	{"scalability:top-namespace-cpu-limit-v2397", "/api/scalability/top-namespace-cpu-limit-v2397", "Top namespace by CPU limit"},
+	{"scalability:node-allocatable-cpu-summary-v2397", "/api/scalability/node-allocatable-cpu-summary-v2397", "Node allocatable CPU summary"},
+	{"scalability:pvc-density-v2397", "/api/scalability/pvc-density-v2397", "PVC density"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

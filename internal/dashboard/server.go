@@ -2279,6 +2279,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-namespace-event-v2391", s.cacheMiddleware(120*time.Second, s.handleTopNSEvent2391))
 	mux.HandleFunc("/api/scalability/node-allocatable-mem-v2391", s.cacheMiddleware(120*time.Second, s.handleNodeAllocMem2391))
 	mux.HandleFunc("/api/scalability/pod-by-controller-v2391", s.cacheMiddleware(120*time.Second, s.handlePodByCtrl2391))
+
+	// v23.92 Product
+	mux.HandleFunc("/api/product/affinity-rule-count-v2392", s.cacheMiddleware(120*time.Second, s.handleAffinityRule2392))
+	mux.HandleFunc("/api/product/env-valuefrom-audit-v2392", s.cacheMiddleware(120*time.Second, s.handleEnvValueFrom2392))
+	mux.HandleFunc("/api/product/loadbalancer-class-v2392", s.cacheMiddleware(120*time.Second, s.handleLBClass2392))
+	// v23.93 Deployment
+	mux.HandleFunc("/api/deployment/deployment-paused-status-v2393", s.cacheMiddleware(120*time.Second, s.handleDepPaused2393))
+	mux.HandleFunc("/api/deployment/sts-ordinal-replicas-v2393", s.cacheMiddleware(120*time.Second, s.handleSTSOrdinal2393))
+	mux.HandleFunc("/api/deployment/job-backoff-limit-v2393", s.cacheMiddleware(120*time.Second, s.handleJobBackoff2393))
+	// v23.94 Operations
+	mux.HandleFunc("/api/ops/crashloop-backoff-v2394", s.cacheMiddleware(120*time.Second, s.handleCrashLoop2394))
+	mux.HandleFunc("/api/ops/node-condition-memory-v2394", s.cacheMiddleware(120*time.Second, s.handleNodeCondMem2394))
+	mux.HandleFunc("/api/ops/container-restart-count-v2394", s.cacheMiddleware(120*time.Second, s.handleRestartCount2394))
+	// v23.95 Security
+	mux.HandleFunc("/api/security/capabilities-audit-v2395", s.cacheMiddleware(120*time.Second, s.handleCapabilities2395))
+	mux.HandleFunc("/api/security/secret-data-size-v2395", s.cacheMiddleware(120*time.Second, s.handleSecretDataSize2395))
+	mux.HandleFunc("/api/security/rolebinding-namespace-v2395", s.cacheMiddleware(120*time.Second, s.handleRBNS2395))
+	// v23.96 Documentation
+	mux.HandleFunc("/api/docs/node-taint-count-v2396", s.cacheMiddleware(120*time.Second, s.handleTaintCount2396))
+	mux.HandleFunc("/api/docs/pod-nodeselector-key-v2396", s.cacheMiddleware(120*time.Second, s.handleNodeSelectorKey2396))
+	mux.HandleFunc("/api/docs/endpoint-address-by-node-v2396", s.cacheMiddleware(120*time.Second, s.handleEPAddrByNode2396))
+	// v23.97 Scalability
+	mux.HandleFunc("/api/scalability/top-namespace-cpu-limit-v2397", s.cacheMiddleware(120*time.Second, s.handleTopNSCPULimit2397))
+	mux.HandleFunc("/api/scalability/node-allocatable-cpu-summary-v2397", s.cacheMiddleware(120*time.Second, s.handleNodeAllocCPUSum2397))
+	mux.HandleFunc("/api/scalability/pvc-density-v2397", s.cacheMiddleware(120*time.Second, s.handlePVCDensity2397))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))
