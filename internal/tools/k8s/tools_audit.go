@@ -1698,6 +1698,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:ns-memory-request-v2265", "/api/scalability/ns-memory-request-v2265", "Namespace memory request distribution"},
 	{"scalability:pod-density-per-node-v2265", "/api/scalability/pod-density-per-node-v2265", "Pod density per node"},
 	{"scalability:cluster-endpoint-count-v2265", "/api/scalability/cluster-endpoint-count-v2265", "Cluster endpoint count"},
+
+	// v22.66 Product
+	{"product:pod-priority-distribution-v2266", "/api/product/pod-priority-distribution-v2266", "Pod priority class distribution"},
+	{"product:probe-coverage-v2266", "/api/product/probe-coverage-v2266", "Container probe coverage"},
+	{"product:image-pull-policy-census-v2266", "/api/product/image-pull-policy-census-v2266", "Image pull policy census"},
+	// v22.67 Deployment
+	{"deployment:hpa-target-utilization-v2267", "/api/deployment/hpa-target-utilization-v2267", "HPA target utilization audit"},
+	{"deployment:pdb-min-available-v2267", "/api/deployment/pdb-min-available-v2267", "PDB min available census"},
+	{"deployment:job-completion-status-v2267", "/api/deployment/job-completion-status-v2267", "Job completion status"},
+	// v22.68 Operations
+	{"ops:pod-phase-distribution-v2268", "/api/ops/pod-phase-distribution-v2268", "Pod phase distribution"},
+	{"ops:node-container-runtime-v2268", "/api/ops/node-container-runtime-v2268", "Node container runtime"},
+	{"ops:container-state-census-v2268", "/api/ops/container-state-census-v2268", "Container state census"},
+	// v22.69 Security
+	{"security:run-as-non-root-v2269", "/api/security/run-as-non-root-v2269", "RunAsNonRoot audit"},
+	{"security:sa-token-auto-mount-v2269", "/api/security/sa-token-auto-mount-v2269", "ServiceAccount token auto-mount"},
+	{"security:hostpath-mount-audit-v2269", "/api/security/hostpath-mount-audit-v2269", "HostPath mount audit"},
+	// v22.70 Documentation
+	{"docs:affinity-rules-catalog-v2270", "/api/docs/affinity-rules-catalog-v2270", "Pod affinity rules catalog"},
+	{"docs:ns-label-inventory-v2270", "/api/docs/ns-label-inventory-v2270", "Namespace label inventory"},
+	{"docs:service-type-distribution-v2270", "/api/docs/service-type-distribution-v2270", "Service type distribution"},
+	// v22.71 Scalability
+	{"scalability:node-allocatable-vs-capacity-v2271", "/api/scalability/node-allocatable-vs-capacity-v2271", "Node allocatable vs capacity"},
+	{"scalability:storageclass-usage-v2271", "/api/scalability/storageclass-usage-v2271", "StorageClass usage"},
+	{"scalability:pvc-size-quartile-v2271", "/api/scalability/pvc-size-quartile-v2271", "PVC size quartile"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

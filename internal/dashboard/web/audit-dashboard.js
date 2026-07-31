@@ -1282,6 +1282,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/ns-memory-request-v2265', name: 'NS Mem Request', icon: '\u{1F4BE}' },
         { path: '/api/scalability/pod-density-per-node-v2265', name: 'Pod Density/Node', icon: '\u{1F3D7}' },
         { path: '/api/scalability/cluster-endpoint-count-v2265', name: 'Endpoint Count', icon: '\u{1F310}' },
+        // v22.66 Product
+        { path: '/api/product/pod-priority-distribution-v2266', name: 'Pod Priority', icon: '\u26A1' },
+        { path: '/api/product/probe-coverage-v2266', name: 'Probe Coverage', icon: '\u{1F50D}' },
+        { path: '/api/product/image-pull-policy-census-v2266', name: 'Pull Policy', icon: '\u{1F4E5}' },
+        // v22.67 Deployment
+        { path: '/api/deployment/hpa-target-utilization-v2267', name: 'HPA Target Util', icon: '\u{1F4C8}' },
+        { path: '/api/deployment/pdb-min-available-v2267', name: 'PDB Min Avail', icon: '\u{1F6E1}' },
+        { path: '/api/deployment/job-completion-status-v2267', name: 'Job Completion', icon: '\u2705' },
+        // v22.68 Operations
+        { path: '/api/ops/pod-phase-distribution-v2268', name: 'Pod Phase Dist', icon: '\u{1F4CA}' },
+        { path: '/api/ops/node-container-runtime-v2268', name: 'Node Runtime', icon: '\u{1F527}' },
+        { path: '/api/ops/container-state-census-v2268', name: 'Ctnr State', icon: '\u{1F4E6}' },
+        // v22.69 Security
+        { path: '/api/security/run-as-non-root-v2269', name: 'NonRoot Audit', icon: '\u{1F6E1}' },
+        { path: '/api/security/sa-token-auto-mount-v2269', name: 'SA Token Mount', icon: '\u{1F511}' },
+        { path: '/api/security/hostpath-mount-audit-v2269', name: 'HostPath Audit', icon: '\u{1F4BD}' },
+        // v22.70 Documentation
+        { path: '/api/docs/affinity-rules-catalog-v2270', name: 'Affinity Rules', icon: '\u{1F9ED}' },
+        { path: '/api/docs/ns-label-inventory-v2270', name: 'NS Label Inv', icon: '\u{1F3F7}' },
+        { path: '/api/docs/service-type-distribution-v2270', name: 'Svc Type Dist', icon: '\u{1F310}' },
+        // v22.71 Scalability
+        { path: '/api/scalability/node-allocatable-vs-capacity-v2271', name: 'Node Alloc vs Cap', icon: '\u{1F4CF}' },
+        { path: '/api/scalability/storageclass-usage-v2271', name: 'SC Usage', icon: '\u{1F4BF}' },
+        { path: '/api/scalability/pvc-size-quartile-v2271', name: 'PVC Size Quartile', icon: '\u{1F4D0}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

@@ -1754,6 +1754,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/ns-memory-request-v2265", s.cacheMiddleware(120*time.Second, s.handleNSMemReq2265))
 	mux.HandleFunc("/api/scalability/pod-density-per-node-v2265", s.cacheMiddleware(120*time.Second, s.handlePodDensityPerNode2265))
 	mux.HandleFunc("/api/scalability/cluster-endpoint-count-v2265", s.cacheMiddleware(120*time.Second, s.handleEndpointCount2265))
+
+	// v22.66 Product
+	mux.HandleFunc("/api/product/pod-priority-distribution-v2266", s.cacheMiddleware(120*time.Second, s.handlePodPriority2266))
+	mux.HandleFunc("/api/product/probe-coverage-v2266", s.cacheMiddleware(120*time.Second, s.handleProbeCoverage2266))
+	mux.HandleFunc("/api/product/image-pull-policy-census-v2266", s.cacheMiddleware(120*time.Second, s.handlePullPolicy2266))
+	// v22.67 Deployment
+	mux.HandleFunc("/api/deployment/hpa-target-utilization-v2267", s.cacheMiddleware(120*time.Second, s.handleHPATargetUtil2267))
+	mux.HandleFunc("/api/deployment/pdb-min-available-v2267", s.cacheMiddleware(120*time.Second, s.handlePDBMinAvail2267))
+	mux.HandleFunc("/api/deployment/job-completion-status-v2267", s.cacheMiddleware(120*time.Second, s.handleJobCompletion2267))
+	// v22.68 Operations
+	mux.HandleFunc("/api/ops/pod-phase-distribution-v2268", s.cacheMiddleware(120*time.Second, s.handlePodPhase2268))
+	mux.HandleFunc("/api/ops/node-container-runtime-v2268", s.cacheMiddleware(120*time.Second, s.handleNodeRuntime2268))
+	mux.HandleFunc("/api/ops/container-state-census-v2268", s.cacheMiddleware(120*time.Second, s.handleCtnrState2268))
+	// v22.69 Security
+	mux.HandleFunc("/api/security/run-as-non-root-v2269", s.cacheMiddleware(120*time.Second, s.handleNonRoot2269))
+	mux.HandleFunc("/api/security/sa-token-auto-mount-v2269", s.cacheMiddleware(120*time.Second, s.handleSATokenMount2269))
+	mux.HandleFunc("/api/security/hostpath-mount-audit-v2269", s.cacheMiddleware(120*time.Second, s.handleHostPath2269))
+	// v22.70 Documentation
+	mux.HandleFunc("/api/docs/affinity-rules-catalog-v2270", s.cacheMiddleware(120*time.Second, s.handleAffinityRules2270))
+	mux.HandleFunc("/api/docs/ns-label-inventory-v2270", s.cacheMiddleware(120*time.Second, s.handleNSLabel2270))
+	mux.HandleFunc("/api/docs/service-type-distribution-v2270", s.cacheMiddleware(120*time.Second, s.handleSvcType2270))
+	// v22.71 Scalability
+	mux.HandleFunc("/api/scalability/node-allocatable-vs-capacity-v2271", s.cacheMiddleware(120*time.Second, s.handleNodeAllocVsCap2271))
+	mux.HandleFunc("/api/scalability/storageclass-usage-v2271", s.cacheMiddleware(120*time.Second, s.handleSCUsage2271))
+	mux.HandleFunc("/api/scalability/pvc-size-quartile-v2271", s.cacheMiddleware(120*time.Second, s.handlePVCQuartile2271))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))
