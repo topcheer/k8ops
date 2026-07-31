@@ -1823,6 +1823,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:resource-waste-detection-v2295", "/api/scalability/resource-waste-detection-v2295", "Resource waste detection"},
 	{"scalability:pod-spread-balance-v2295", "/api/scalability/pod-spread-balance-v2295", "Pod spread balance"},
 	{"scalability:workload-concentration-v2295", "/api/scalability/workload-concentration-v2295", "Cluster workload concentration"},
+
+	// v22.96 Product
+	{"product:pod-completion-index-v2296", "/api/product/pod-completion-index-v2296", "Pod completion index"},
+	{"product:container-args-catalog-v2296", "/api/product/container-args-catalog-v2296", "Container args & command catalog"},
+	{"product:sa-pull-secret-audit-v2296", "/api/product/sa-pull-secret-audit-v2296", "ServiceAccount image pull secret"},
+	// v22.97 Deployment
+	{"deployment:ds-desired-vs-ready-v2297", "/api/deployment/ds-desired-vs-ready-v2297", "DaemonSet desired vs ready"},
+	{"deployment:rollout-condition-v2297", "/api/deployment/rollout-condition-v2297", "Deployment rollout conditions"},
+	{"deployment:cronjob-last-schedule-v2297", "/api/deployment/cronjob-last-schedule-v2297", "CronJob last schedule time"},
+	// v22.98 Operations
+	{"ops:node-network-unavailable-v2298", "/api/ops/node-network-unavailable-v2298", "Node network unavailable"},
+	{"ops:pod-ready-transition-v2298", "/api/ops/pod-ready-transition-v2298", "Pod ready transition status"},
+	{"ops:event-involved-object-v2298", "/api/ops/event-involved-object-v2298", "Event involved object census"},
+	// v22.99 Security
+	{"security:seccomp-type-audit-v2299", "/api/security/seccomp-type-audit-v2299", "Seccomp profile type audit"},
+	{"security:binding-subject-census-v2299", "/api/security/binding-subject-census-v2299", "Role binding subject census"},
+	{"security:netpol-port-catalog-v2299", "/api/security/netpol-port-catalog-v2299", "NetworkPolicy port catalog"},
+	// v23.00 Documentation
+	{"docs:service-clusterip-catalog-v2300", "/api/docs/service-clusterip-catalog-v2300", "Service ClusterIP catalog"},
+	{"docs:pod-node-distribution-v2300", "/api/docs/pod-node-distribution-v2300", "Pod node distribution"},
+	{"docs:configmap-key-count-v2300", "/api/docs/configmap-key-count-v2300", "ConfigMap key count"},
+	// v23.01 Scalability
+	{"scalability:cluster-efficiency-score-v2301", "/api/scalability/cluster-efficiency-score-v2301", "Cluster efficiency score"},
+	{"scalability:namespace-resource-density-v2301", "/api/scalability/namespace-resource-density-v2301", "Namespace resource density"},
+	{"scalability:node-cpu-commit-ratio-v2301", "/api/scalability/node-cpu-commit-ratio-v2301", "Node CPU commit ratio"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

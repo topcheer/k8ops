@@ -1402,6 +1402,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/resource-waste-detection-v2295', name: 'Res Waste', icon: '\u{1F9F9}' },
         { path: '/api/scalability/pod-spread-balance-v2295', name: 'Pod Spread Balance', icon: '\u{1F3D7}' },
         { path: '/api/scalability/workload-concentration-v2295', name: 'Workload Conc', icon: '\u{1F4CA}' },
+        // v22.96 Product
+        { path: '/api/product/pod-completion-index-v2296', name: 'Pod Completion', icon: '\u2705' },
+        { path: '/api/product/container-args-catalog-v2296', name: 'Args Catalog', icon: '\u{2328}' },
+        { path: '/api/product/sa-pull-secret-audit-v2296', name: 'SA PullSecret', icon: '\u{1F511}' },
+        // v22.97 Deployment
+        { path: '/api/deployment/ds-desired-vs-ready-v2297', name: 'DS Desired/Ready', icon: '\u{1F680}' },
+        { path: '/api/deployment/rollout-condition-v2297', name: 'Rollout Cond', icon: '\u{1F4C8}' },
+        { path: '/api/deployment/cronjob-last-schedule-v2297', name: 'CJ Last Sched', icon: '\u{23F0}' },
+        // v22.98 Operations
+        { path: '/api/ops/node-network-unavailable-v2298', name: 'Node Net Unavail', icon: '\u{1F6A6}' },
+        { path: '/api/ops/pod-ready-transition-v2298', name: 'Pod Ready Trans', icon: '\u{1F504}' },
+        { path: '/api/ops/event-involved-object-v2298', name: 'Event InvObj', icon: '\u{1F4CB}' },
+        // v22.99 Security
+        { path: '/api/security/seccomp-type-audit-v2299', name: 'Seccomp Type', icon: '\u{1F6E1}' },
+        { path: '/api/security/binding-subject-census-v2299', name: 'Binding Subject', icon: '\u{1F451}' },
+        { path: '/api/security/netpol-port-catalog-v2299', name: 'NetPol Ports', icon: '\u{1F50C}' },
+        // v23.00 Documentation
+        { path: '/api/docs/service-clusterip-catalog-v2300', name: 'ClusterIP Catalog', icon: '\u{1F310}' },
+        { path: '/api/docs/pod-node-distribution-v2300', name: 'Pod Node Dist', icon: '\u{1F5FA}' },
+        { path: '/api/docs/configmap-key-count-v2300', name: 'CM Key Count', icon: '\u{1F4DD}' },
+        // v23.01 Scalability
+        { path: '/api/scalability/cluster-efficiency-score-v2301', name: 'Cluster Eff', icon: '\u{1F4CA}' },
+        { path: '/api/scalability/namespace-resource-density-v2301', name: 'NS Density', icon: '\u{1F3D7}' },
+        { path: '/api/scalability/node-cpu-commit-ratio-v2301', name: 'Node CPU Commit', icon: '\u26A1' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

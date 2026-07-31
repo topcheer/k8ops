@@ -1879,6 +1879,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/resource-waste-detection-v2295", s.cacheMiddleware(120*time.Second, s.handleResourceWaste2295))
 	mux.HandleFunc("/api/scalability/pod-spread-balance-v2295", s.cacheMiddleware(120*time.Second, s.handlePodSpreadBalance2295))
 	mux.HandleFunc("/api/scalability/workload-concentration-v2295", s.cacheMiddleware(120*time.Second, s.handleWorkloadConc2295))
+
+	// v22.96 Product
+	mux.HandleFunc("/api/product/pod-completion-index-v2296", s.cacheMiddleware(120*time.Second, s.handlePodComplete2296))
+	mux.HandleFunc("/api/product/container-args-catalog-v2296", s.cacheMiddleware(120*time.Second, s.handleArgsCatalog2296))
+	mux.HandleFunc("/api/product/sa-pull-secret-audit-v2296", s.cacheMiddleware(120*time.Second, s.handleSvcAcctPullSecret2296))
+	// v22.97 Deployment
+	mux.HandleFunc("/api/deployment/ds-desired-vs-ready-v2297", s.cacheMiddleware(120*time.Second, s.handleDSDeployReady2297))
+	mux.HandleFunc("/api/deployment/rollout-condition-v2297", s.cacheMiddleware(120*time.Second, s.handleRolloutCond2297))
+	mux.HandleFunc("/api/deployment/cronjob-last-schedule-v2297", s.cacheMiddleware(120*time.Second, s.handleCronJobLastSched2297))
+	// v22.98 Operations
+	mux.HandleFunc("/api/ops/node-network-unavailable-v2298", s.cacheMiddleware(120*time.Second, s.handleNetUnavailable2298))
+	mux.HandleFunc("/api/ops/pod-ready-transition-v2298", s.cacheMiddleware(120*time.Second, s.handleReadyTransition2298))
+	mux.HandleFunc("/api/ops/event-involved-object-v2298", s.cacheMiddleware(120*time.Second, s.handleEventInvObj2298))
+	// v22.99 Security
+	mux.HandleFunc("/api/security/seccomp-type-audit-v2299", s.cacheMiddleware(120*time.Second, s.handleSeccompType2299))
+	mux.HandleFunc("/api/security/binding-subject-census-v2299", s.cacheMiddleware(120*time.Second, s.handleBindingSubject2299))
+	mux.HandleFunc("/api/security/netpol-port-catalog-v2299", s.cacheMiddleware(120*time.Second, s.handleNetPolPort2299))
+	// v23.00 Documentation
+	mux.HandleFunc("/api/docs/service-clusterip-catalog-v2300", s.cacheMiddleware(120*time.Second, s.handleClusterIP2300))
+	mux.HandleFunc("/api/docs/pod-node-distribution-v2300", s.cacheMiddleware(120*time.Second, s.handlePodNodeDist2300))
+	mux.HandleFunc("/api/docs/configmap-key-count-v2300", s.cacheMiddleware(120*time.Second, s.handleCMKeyCount2300))
+	// v23.01 Scalability
+	mux.HandleFunc("/api/scalability/cluster-efficiency-score-v2301", s.cacheMiddleware(120*time.Second, s.handleClusterEff2301))
+	mux.HandleFunc("/api/scalability/namespace-resource-density-v2301", s.cacheMiddleware(120*time.Second, s.handleNSDensity2301))
+	mux.HandleFunc("/api/scalability/node-cpu-commit-ratio-v2301", s.cacheMiddleware(120*time.Second, s.handleNodeCPUCommit2301))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))
