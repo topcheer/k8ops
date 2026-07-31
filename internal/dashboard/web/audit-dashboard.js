@@ -1330,6 +1330,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/cluster-cpu-utilization-ratio-v2277', name: 'CPU Util Ratio', icon: '\u26A1' },
         { path: '/api/scalability/cluster-memory-utilization-ratio-v2277', name: 'Mem Util Ratio', icon: '\u{1F4BE}' },
         { path: '/api/scalability/node-pod-capacity-usage-v2277', name: 'Pod Cap Usage', icon: '\u{1F3E0}' },
+        // v22.78 Product
+        { path: '/api/product/nil-secctx-rate-v2278', name: 'Nil SecCtx Rate', icon: '\u{1F6E1}' },
+        { path: '/api/product/netpol-direction-v2278', name: 'NetPol Direction', icon: '\u{1F310}' },
+        { path: '/api/product/externalname-svc-catalog-v2278', name: 'ExtName Svc', icon: '\u{1F517}' },
+        // v22.79 Deployment
+        { path: '/api/deployment/hpa-scaling-audit-v2279', name: 'HPA Scaling', icon: '\u{1F4C8}' },
+        { path: '/api/deployment/max-surge-max-unavailable-v2279', name: 'MaxSurge', icon: '\u{1F4C9}' },
+        { path: '/api/deployment/sts-pvc-template-v2279', name: 'STS PVC Tmpl', icon: '\u{1F4BF}' },
+        // v22.80 Operations
+        { path: '/api/ops/oom-risk-detection-v2280', name: 'OOM Risk', icon: '\u{1F6A8}' },
+        { path: '/api/ops/node-pid-pressure-v2280', name: 'Node PID Pressure', icon: '\u{1F534}' },
+        { path: '/api/ops/last-termination-reason-v2280', name: 'Last Term Reason', icon: '\u{1F480}' },
+        // v22.81 Security
+        { path: '/api/security/seccomp-profile-audit-v2281', name: 'Seccomp Audit', icon: '\u{1F6E1}' },
+        { path: '/api/security/netpol-default-deny-v2281', name: 'Default Deny', icon: '\u{1F512}' },
+        { path: '/api/security/clusterrole-wildcard-v2281', name: 'CR Wildcard', icon: '\u{1F451}' },
+        // v22.82 Documentation
+        { path: '/api/docs/configmap-age-distribution-v2282', name: 'CM Age Dist', icon: '\u{1F4C5}' },
+        { path: '/api/docs/namespace-phase-inventory-v2282', name: 'NS Phase', icon: '\u{1F4CD}' },
+        { path: '/api/docs/pvc-access-mode-catalog-v2282', name: 'PVC Access Mode', icon: '\u{1F511}' },
+        // v22.83 Scalability
+        { path: '/api/scalability/top-namespace-by-pod-v2283', name: 'Top NS by Pod', icon: '\u{1F4CA}' },
+        { path: '/api/scalability/node-cpu-oversubscription-v2283', name: 'CPU Oversub', icon: '\u26A1' },
+        { path: '/api/scalability/storage-by-namespace-v2283', name: 'Storage by NS', icon: '\u{1F4E6}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

@@ -1748,6 +1748,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:cluster-cpu-utilization-ratio-v2277", "/api/scalability/cluster-cpu-utilization-ratio-v2277", "Cluster CPU utilization ratio"},
 	{"scalability:cluster-memory-utilization-ratio-v2277", "/api/scalability/cluster-memory-utilization-ratio-v2277", "Cluster memory utilization ratio"},
 	{"scalability:node-pod-capacity-usage-v2277", "/api/scalability/node-pod-capacity-usage-v2277", "Node pod capacity usage"},
+
+	// v22.78 Product
+	{"product:nil-secctx-rate-v2278", "/api/product/nil-secctx-rate-v2278", "Container nil SecurityContext rate"},
+	{"product:netpol-direction-v2278", "/api/product/netpol-direction-v2278", "NetworkPolicy direction audit"},
+	{"product:externalname-svc-catalog-v2278", "/api/product/externalname-svc-catalog-v2278", "ExternalName service catalog"},
+	// v22.79 Deployment
+	{"deployment:hpa-scaling-audit-v2279", "/api/deployment/hpa-scaling-audit-v2279", "HPA scaling config audit"},
+	{"deployment:max-surge-max-unavailable-v2279", "/api/deployment/max-surge-max-unavailable-v2279", "MaxSurge/MaxUnavailable"},
+	{"deployment:sts-pvc-template-v2279", "/api/deployment/sts-pvc-template-v2279", "STS PVC template audit"},
+	// v22.80 Operations
+	{"ops:oom-risk-detection-v2280", "/api/ops/oom-risk-detection-v2280", "OOM risk detection"},
+	{"ops:node-pid-pressure-v2280", "/api/ops/node-pid-pressure-v2280", "Node PID pressure check"},
+	{"ops:last-termination-reason-v2280", "/api/ops/last-termination-reason-v2280", "Container last termination reason"},
+	// v22.81 Security
+	{"security:seccomp-profile-audit-v2281", "/api/security/seccomp-profile-audit-v2281", "Seccomp profile audit"},
+	{"security:netpol-default-deny-v2281", "/api/security/netpol-default-deny-v2281", "NetworkPolicy default deny check"},
+	{"security:clusterrole-wildcard-v2281", "/api/security/clusterrole-wildcard-v2281", "ClusterRole wildcard verb audit"},
+	// v22.82 Documentation
+	{"docs:configmap-age-distribution-v2282", "/api/docs/configmap-age-distribution-v2282", "ConfigMap age distribution"},
+	{"docs:namespace-phase-inventory-v2282", "/api/docs/namespace-phase-inventory-v2282", "Namespace phase inventory"},
+	{"docs:pvc-access-mode-catalog-v2282", "/api/docs/pvc-access-mode-catalog-v2282", "PVC access mode catalog"},
+	// v22.83 Scalability
+	{"scalability:top-namespace-by-pod-v2283", "/api/scalability/top-namespace-by-pod-v2283", "Top namespace by pod count"},
+	{"scalability:node-cpu-oversubscription-v2283", "/api/scalability/node-cpu-oversubscription-v2283", "Node CPU oversubscription"},
+	{"scalability:storage-by-namespace-v2283", "/api/scalability/storage-by-namespace-v2283", "Storage by namespace"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

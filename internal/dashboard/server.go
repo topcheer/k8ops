@@ -1804,6 +1804,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/cluster-cpu-utilization-ratio-v2277", s.cacheMiddleware(120*time.Second, s.handleCPUUtilRatio2277))
 	mux.HandleFunc("/api/scalability/cluster-memory-utilization-ratio-v2277", s.cacheMiddleware(120*time.Second, s.handleMemUtilRatio2277))
 	mux.HandleFunc("/api/scalability/node-pod-capacity-usage-v2277", s.cacheMiddleware(120*time.Second, s.handleNodePodCapacity2277))
+
+	// v22.78 Product
+	mux.HandleFunc("/api/product/nil-secctx-rate-v2278", s.cacheMiddleware(120*time.Second, s.handleNilSecCtx2278))
+	mux.HandleFunc("/api/product/netpol-direction-v2278", s.cacheMiddleware(120*time.Second, s.handleNetPolDirection2278))
+	mux.HandleFunc("/api/product/externalname-svc-catalog-v2278", s.cacheMiddleware(120*time.Second, s.handleExtNameSvc2278))
+	// v22.79 Deployment
+	mux.HandleFunc("/api/deployment/hpa-scaling-audit-v2279", s.cacheMiddleware(120*time.Second, s.handleHPAScaling2279))
+	mux.HandleFunc("/api/deployment/max-surge-max-unavailable-v2279", s.cacheMiddleware(120*time.Second, s.handleMaxSurge2279))
+	mux.HandleFunc("/api/deployment/sts-pvc-template-v2279", s.cacheMiddleware(120*time.Second, s.handleSTSPVCTmpl2279))
+	// v22.80 Operations
+	mux.HandleFunc("/api/ops/oom-risk-detection-v2280", s.cacheMiddleware(120*time.Second, s.handleOOMRisk2280))
+	mux.HandleFunc("/api/ops/node-pid-pressure-v2280", s.cacheMiddleware(120*time.Second, s.handlePIDPressure2280))
+	mux.HandleFunc("/api/ops/last-termination-reason-v2280", s.cacheMiddleware(120*time.Second, s.handleLastTermReason2280))
+	// v22.81 Security
+	mux.HandleFunc("/api/security/seccomp-profile-audit-v2281", s.cacheMiddleware(120*time.Second, s.handleSeccomp2281))
+	mux.HandleFunc("/api/security/netpol-default-deny-v2281", s.cacheMiddleware(120*time.Second, s.handleDefaultDeny2281))
+	mux.HandleFunc("/api/security/clusterrole-wildcard-v2281", s.cacheMiddleware(120*time.Second, s.handleWildcardRole2281))
+	// v22.82 Documentation
+	mux.HandleFunc("/api/docs/configmap-age-distribution-v2282", s.cacheMiddleware(120*time.Second, s.handleConfigMapAge2282))
+	mux.HandleFunc("/api/docs/namespace-phase-inventory-v2282", s.cacheMiddleware(120*time.Second, s.handleNSPhase2282))
+	mux.HandleFunc("/api/docs/pvc-access-mode-catalog-v2282", s.cacheMiddleware(120*time.Second, s.handlePVCAccessMode2282))
+	// v22.83 Scalability
+	mux.HandleFunc("/api/scalability/top-namespace-by-pod-v2283", s.cacheMiddleware(120*time.Second, s.handleNSPodTop2283))
+	mux.HandleFunc("/api/scalability/node-cpu-oversubscription-v2283", s.cacheMiddleware(120*time.Second, s.handleCPUOversub2283))
+	mux.HandleFunc("/api/scalability/storage-by-namespace-v2283", s.cacheMiddleware(120*time.Second, s.handleStorageByNS2283))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))
