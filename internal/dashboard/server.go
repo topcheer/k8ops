@@ -2004,6 +2004,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-namespace-memory-request-v2325", s.cacheMiddleware(120*time.Second, s.handleTopNSMem2325))
 	mux.HandleFunc("/api/scalability/node-container-density-v2325", s.cacheMiddleware(120*time.Second, s.handleNodeCtnrDensity2325))
 	mux.HandleFunc("/api/scalability/cluster-configmap-total-v2325", s.cacheMiddleware(120*time.Second, s.handleClusterCMTotal2325))
+
+	// v23.26 Product
+	mux.HandleFunc("/api/product/runtime-class-audit-v2326", s.cacheMiddleware(120*time.Second, s.handleRuntimeClass2326))
+	mux.HandleFunc("/api/product/stdin-once-audit-v2326", s.cacheMiddleware(120*time.Second, s.handleStdinOnce2326))
+	mux.HandleFunc("/api/product/service-alloc-cidr-v2326", s.cacheMiddleware(120*time.Second, s.handleAllocCIDR2326))
+	// v23.27 Deployment
+	mux.HandleFunc("/api/deployment/sts-current-revision-v2327", s.cacheMiddleware(120*time.Second, s.handleSTSRevision2327))
+	mux.HandleFunc("/api/deployment/ds-updated-number-v2327", s.cacheMiddleware(120*time.Second, s.handleDSUpdatedNum2327))
+	mux.HandleFunc("/api/deployment/job-failing-rate-v2327", s.cacheMiddleware(120*time.Second, s.handleJobFailRate2327))
+	// v23.28 Operations
+	mux.HandleFunc("/api/ops/burstable-qos-audit-v2328", s.cacheMiddleware(120*time.Second, s.handleBurstable2328))
+	mux.HandleFunc("/api/ops/node-memory-frag-v2328", s.cacheMiddleware(120*time.Second, s.handleNodeMemFrag2328))
+	mux.HandleFunc("/api/ops/image-age-audit-v2328", s.cacheMiddleware(120*time.Second, s.handleImageAge2328))
+	// v23.29 Security
+	mux.HandleFunc("/api/security/sysctl-audit-v2329", s.cacheMiddleware(120*time.Second, s.handleSysctl2329))
+	mux.HandleFunc("/api/security/projected-volume-audit-v2329", s.cacheMiddleware(120*time.Second, s.handleCMProjectedVol2329))
+	mux.HandleFunc("/api/security/rolebinding-user-audit-v2329", s.cacheMiddleware(120*time.Second, s.handleRoleBindingUser2329))
+	// v23.30 Documentation
+	mux.HandleFunc("/api/docs/endpoint-ready-status-v2330", s.cacheMiddleware(120*time.Second, s.handleEPReady2330))
+	mux.HandleFunc("/api/docs/node-allocatable-cpu-v2330", s.cacheMiddleware(120*time.Second, s.handleNodeAllocCPU2330))
+	mux.HandleFunc("/api/docs/pod-dns-config-catalog-v2330", s.cacheMiddleware(120*time.Second, s.handlePodDNSConfig2330))
+	// v23.31 Scalability
+	mux.HandleFunc("/api/scalability/image-registry-distribution-v2331", s.cacheMiddleware(120*time.Second, s.handleImgRegistry2331))
+	mux.HandleFunc("/api/scalability/node-pod-headroom-v2331", s.cacheMiddleware(120*time.Second, s.handleNodeHeadroom2331))
+	mux.HandleFunc("/api/scalability/namespace-service-density-v2331", s.cacheMiddleware(120*time.Second, s.handleNSSvcDensity2331))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

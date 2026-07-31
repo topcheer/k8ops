@@ -1522,6 +1522,31 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-namespace-memory-request-v2325', name: 'Top NS Mem', icon: '\u{1F4BE}' },
         { path: '/api/scalability/node-container-density-v2325', name: 'Node Ctnr Density', icon: '\u{1F3E0}' },
         { path: '/api/scalability/cluster-configmap-total-v2325', name: 'CM Total', icon: '\u{1F4DA}' },
+
+        // v23.26 Product
+        { path: '/api/product/runtime-class-audit-v2326', name: 'RuntimeClass', icon: '\u{1F3E0}' },
+        { path: '/api/product/stdin-once-audit-v2326', name: 'StdinOnce', icon: '\u{2328}' },
+        { path: '/api/product/service-alloc-cidr-v2326', name: 'Alloc CIDR', icon: '\u{1F310}' },
+        // v23.27 Deployment
+        { path: '/api/deployment/sts-current-revision-v2327', name: 'STS Revision', icon: '\u{1F4C8}' },
+        { path: '/api/deployment/ds-updated-number-v2327', name: 'DS Updated', icon: '\u{1F680}' },
+        { path: '/api/deployment/job-failing-rate-v2327', name: 'Job Fail Rate', icon: '\u{1F6A8}' },
+        // v23.28 Operations
+        { path: '/api/ops/burstable-qos-audit-v2328', name: 'Burstable QoS', icon: '\u{1F4CA}' },
+        { path: '/api/ops/node-memory-frag-v2328', name: 'Node Mem Frag', icon: '\u{1F4A8}' },
+        { path: '/api/ops/image-age-audit-v2328', name: 'Image Age', icon: '\u{1F4C5}' },
+        // v23.29 Security
+        { path: '/api/security/sysctl-audit-v2329', name: 'Sysctl Audit', icon: '\u{1F6E1}' },
+        { path: '/api/security/projected-volume-audit-v2329', name: 'Projected Vol', icon: '\u{1F4E6}' },
+        { path: '/api/security/rolebinding-user-audit-v2329', name: 'RB User Audit', icon: '\u{1F451}' },
+        // v23.30 Documentation
+        { path: '/api/docs/endpoint-ready-status-v2330', name: 'EP Ready', icon: '\u2705' },
+        { path: '/api/docs/node-allocatable-cpu-v2330', name: 'Node Alloc CPU', icon: '\u26A1' },
+        { path: '/api/docs/pod-dns-config-catalog-v2330', name: 'Pod DNS Config', icon: '\u{1F310}' },
+        // v23.31 Scalability
+        { path: '/api/scalability/image-registry-distribution-v2331', name: 'Img Registry', icon: '\u{1F5C3}' },
+        { path: '/api/scalability/node-pod-headroom-v2331', name: 'Node Headroom', icon: '\u{1F3D7}' },
+        { path: '/api/scalability/namespace-service-density-v2331', name: 'NS Svc Density', icon: '\u{1F4CA}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

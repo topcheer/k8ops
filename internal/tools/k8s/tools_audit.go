@@ -1948,6 +1948,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-namespace-memory-request-v2325", "/api/scalability/top-namespace-memory-request-v2325", "Top namespace by memory request"},
 	{"scalability:node-container-density-v2325", "/api/scalability/node-container-density-v2325", "Node container density"},
 	{"scalability:cluster-configmap-total-v2325", "/api/scalability/cluster-configmap-total-v2325", "Cluster configmap total"},
+
+	// v23.26 Product
+	{"product:runtime-class-audit-v2326", "/api/product/runtime-class-audit-v2326", "Pod runtime class audit"},
+	{"product:stdin-once-audit-v2326", "/api/product/stdin-once-audit-v2326", "Container StdinOnce audit"},
+	{"product:service-alloc-cidr-v2326", "/api/product/service-alloc-cidr-v2326", "Service allocation CIDR"},
+	// v23.27 Deployment
+	{"deployment:sts-current-revision-v2327", "/api/deployment/sts-current-revision-v2327", "STS current revision status"},
+	{"deployment:ds-updated-number-v2327", "/api/deployment/ds-updated-number-v2327", "DS updated number scheduled"},
+	{"deployment:job-failing-rate-v2327", "/api/deployment/job-failing-rate-v2327", "Job failing rate"},
+	// v23.28 Operations
+	{"ops:burstable-qos-audit-v2328", "/api/ops/burstable-qos-audit-v2328", "Burstable QoS audit"},
+	{"ops:node-memory-frag-v2328", "/api/ops/node-memory-frag-v2328", "Node memory fragmentation"},
+	{"ops:image-age-audit-v2328", "/api/ops/image-age-audit-v2328", "Image age audit"},
+	// v23.29 Security
+	{"security:sysctl-audit-v2329", "/api/security/sysctl-audit-v2329", "Pod Sysctl audit"},
+	{"security:projected-volume-audit-v2329", "/api/security/projected-volume-audit-v2329", "Projected volume audit"},
+	{"security:rolebinding-user-audit-v2329", "/api/security/rolebinding-user-audit-v2329", "RoleBinding user audit"},
+	// v23.30 Documentation
+	{"docs:endpoint-ready-status-v2330", "/api/docs/endpoint-ready-status-v2330", "Endpoint ready vs notReady"},
+	{"docs:node-allocatable-cpu-v2330", "/api/docs/node-allocatable-cpu-v2330", "Node allocatable CPU cores"},
+	{"docs:pod-dns-config-catalog-v2330", "/api/docs/pod-dns-config-catalog-v2330", "Pod DNS config catalog"},
+	// v23.31 Scalability
+	{"scalability:image-registry-distribution-v2331", "/api/scalability/image-registry-distribution-v2331", "Image registry distribution"},
+	{"scalability:node-pod-headroom-v2331", "/api/scalability/node-pod-headroom-v2331", "Node pod headroom"},
+	{"scalability:namespace-service-density-v2331", "/api/scalability/namespace-service-density-v2331", "Namespace service density"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.
