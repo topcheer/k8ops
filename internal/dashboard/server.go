@@ -2129,6 +2129,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-namespace-configmap-v2355", s.cacheMiddleware(120*time.Second, s.handleTopNSCM2355))
 	mux.HandleFunc("/api/scalability/node-cpu-allocatable-core-v2355", s.cacheMiddleware(120*time.Second, s.handleNodeCPUAlloc2355))
 	mux.HandleFunc("/api/scalability/sts-density-v2355", s.cacheMiddleware(120*time.Second, s.handleSTSDensity2355))
+
+	// v23.56 Product
+	mux.HandleFunc("/api/product/pod-hostname-audit-v2356", s.cacheMiddleware(120*time.Second, s.handleHostname2356))
+	mux.HandleFunc("/api/product/container-stdin-audit-v2356", s.cacheMiddleware(120*time.Second, s.handleCtnrStdin2356))
+	mux.HandleFunc("/api/product/service-ipfamily-v2356", s.cacheMiddleware(120*time.Second, s.handleSvcIPFamily2356))
+	// v23.57 Deployment
+	mux.HandleFunc("/api/deployment/ds-nodename-target-v2357", s.cacheMiddleware(120*time.Second, s.handleDSNodeName2357))
+	mux.HandleFunc("/api/deployment/sts-podmgmt-policy-v2357", s.cacheMiddleware(120*time.Second, s.handleSTSPodMgmt2357))
+	mux.HandleFunc("/api/deployment/cronjob-timezone-v2357", s.cacheMiddleware(120*time.Second, s.handleCronJobTZ2357))
+	// v23.58 Operations
+	mux.HandleFunc("/api/ops/terminated-signal-v2358", s.cacheMiddleware(120*time.Second, s.handleTermSignal2358))
+	mux.HandleFunc("/api/ops/kubelet-version-v2358", s.cacheMiddleware(120*time.Second, s.handleKubeletVer2358))
+	mux.HandleFunc("/api/ops/event-type-distribution-v2358", s.cacheMiddleware(120*time.Second, s.handleEventType2358))
+	// v23.59 Security
+	mux.HandleFunc("/api/security/runas-group-audit-v2359", s.cacheMiddleware(120*time.Second, s.handleRunAsGroup2359))
+	mux.HandleFunc("/api/security/secret-ssh-key-v2359", s.cacheMiddleware(120*time.Second, s.handleSSHKey2359))
+	mux.HandleFunc("/api/security/role-apigroups-census-v2359", s.cacheMiddleware(120*time.Second, s.handleRoleAPIGroups2359))
+	// v23.60 Documentation
+	mux.HandleFunc("/api/docs/node-hostname-audit-v2360", s.cacheMiddleware(120*time.Second, s.handleNodeHostname2360))
+	mux.HandleFunc("/api/docs/image-pull-policy-v2360", s.cacheMiddleware(120*time.Second, s.handleImgPullPol2360))
+	mux.HandleFunc("/api/docs/pv-reclaim-policy-v2360", s.cacheMiddleware(120*time.Second, s.handlePVReclaim2360))
+	// v23.61 Scalability
+	mux.HandleFunc("/api/scalability/namespace-pvc-total-v2361", s.cacheMiddleware(120*time.Second, s.handleNSPVCTotal2361))
+	mux.HandleFunc("/api/scalability/node-container-runtime-v2361", s.cacheMiddleware(120*time.Second, s.handleNodeCtnrRuntime2361))
+	mux.HandleFunc("/api/scalability/cluster-ingress-total-v2361", s.cacheMiddleware(120*time.Second, s.handleIngressTotal2361))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

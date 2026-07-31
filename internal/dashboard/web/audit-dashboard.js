@@ -1643,6 +1643,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-namespace-configmap-v2355', name: 'Top NS CM', icon: '\u{1F4DA}' },
         { path: '/api/scalability/node-cpu-allocatable-core-v2355', name: 'Node CPU Core', icon: '\u26A1' },
         { path: '/api/scalability/sts-density-v2355', name: 'STS Density', icon: '\u{1F3E8}' },
+        // v23.56 Product
+        { path: '/api/product/pod-hostname-audit-v2356', name: 'Pod Hostname', icon: '\u{1F4BB}' },
+        { path: '/api/product/container-stdin-audit-v2356', name: 'Ctnr Stdin', icon: '\u{2328}' },
+        { path: '/api/product/service-ipfamily-v2356', name: 'Svc IP Family', icon: '\u{1F310}' },
+        // v23.57 Deployment
+        { path: '/api/deployment/ds-nodename-target-v2357', name: 'DS NodeName', icon: '\u{1F3ED}' },
+        { path: '/api/deployment/sts-podmgmt-policy-v2357', name: 'STS PodMgmt', icon: '\u{1F522}' },
+        { path: '/api/deployment/cronjob-timezone-v2357', name: 'CJ TimeZone', icon: '\u{1F30D}' },
+        // v23.58 Operations
+        { path: '/api/ops/terminated-signal-v2358', name: 'Term Signal', icon: '\u{1F480}' },
+        { path: '/api/ops/kubelet-version-v2358', name: 'Kubelet Ver', icon: '\u{1F527}' },
+        { path: '/api/ops/event-type-distribution-v2358', name: 'Event Type', icon: '\u{1F4CB}' },
+        // v23.59 Security
+        { path: '/api/security/runas-group-audit-v2359', name: 'RunAsGroup', icon: '\u{1F465}' },
+        { path: '/api/security/secret-ssh-key-v2359', name: 'SSH Key Secret', icon: '\u{1F511}' },
+        { path: '/api/security/role-apigroups-census-v2359', name: 'Role APIGroups', icon: '\u{1F451}' },
+        // v23.60 Documentation
+        { path: '/api/docs/node-hostname-audit-v2360', name: 'Node Hostname', icon: '\u{1F5A5}' },
+        { path: '/api/docs/image-pull-policy-v2360', name: 'Pull Policy', icon: '\u{1F4E5}' },
+        { path: '/api/docs/pv-reclaim-policy-v2360', name: 'PV Reclaim', icon: '\u{1F4BF}' },
+        // v23.61 Scalability
+        { path: '/api/scalability/namespace-pvc-total-v2361', name: 'NS PVC Total', icon: '\u{1F4BF}' },
+        { path: '/api/scalability/node-container-runtime-v2361', name: 'Node Runtime', icon: '\u{1F527}' },
+        { path: '/api/scalability/cluster-ingress-total-v2361', name: 'Ingress Total', icon: '\u{1F310}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

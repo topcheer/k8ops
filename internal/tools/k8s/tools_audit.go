@@ -2073,6 +2073,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-namespace-configmap-v2355", "/api/scalability/top-namespace-configmap-v2355", "Top namespace by configmap"},
 	{"scalability:node-cpu-allocatable-core-v2355", "/api/scalability/node-cpu-allocatable-core-v2355", "Node CPU allocatable cores"},
 	{"scalability:sts-density-v2355", "/api/scalability/sts-density-v2355", "StatefulSet density"},
+
+	// v23.56 Product
+	{"product:pod-hostname-audit-v2356", "/api/product/pod-hostname-audit-v2356", "Pod hostname audit"},
+	{"product:container-stdin-audit-v2356", "/api/product/container-stdin-audit-v2356", "Container stdin audit"},
+	{"product:service-ipfamily-v2356", "/api/product/service-ipfamily-v2356", "Service IP family"},
+	// v23.57 Deployment
+	{"deployment:ds-nodename-target-v2357", "/api/deployment/ds-nodename-target-v2357", "DS nodeName target"},
+	{"deployment:sts-podmgmt-policy-v2357", "/api/deployment/sts-podmgmt-policy-v2357", "STS pod management policy"},
+	{"deployment:cronjob-timezone-v2357", "/api/deployment/cronjob-timezone-v2357", "CronJob timezone"},
+	// v23.58 Operations
+	{"ops:terminated-signal-v2358", "/api/ops/terminated-signal-v2358", "Container terminated signal"},
+	{"ops:kubelet-version-v2358", "/api/ops/kubelet-version-v2358", "Node kubelet version"},
+	{"ops:event-type-distribution-v2358", "/api/ops/event-type-distribution-v2358", "Event type distribution"},
+	// v23.59 Security
+	{"security:runas-group-audit-v2359", "/api/security/runas-group-audit-v2359", "RunAsGroup audit"},
+	{"security:secret-ssh-key-v2359", "/api/security/secret-ssh-key-v2359", "Secret SSH key"},
+	{"security:role-apigroups-census-v2359", "/api/security/role-apigroups-census-v2359", "Role APIGroups census"},
+	// v23.60 Documentation
+	{"docs:node-hostname-audit-v2360", "/api/docs/node-hostname-audit-v2360", "Node hostname audit"},
+	{"docs:image-pull-policy-v2360", "/api/docs/image-pull-policy-v2360", "Image pull policy"},
+	{"docs:pv-reclaim-policy-v2360", "/api/docs/pv-reclaim-policy-v2360", "PV reclaim policy"},
+	// v23.61 Scalability
+	{"scalability:namespace-pvc-total-v2361", "/api/scalability/namespace-pvc-total-v2361", "Namespace PVC total"},
+	{"scalability:node-container-runtime-v2361", "/api/scalability/node-container-runtime-v2361", "Node container runtime"},
+	{"scalability:cluster-ingress-total-v2361", "/api/scalability/cluster-ingress-total-v2361", "Cluster ingress total"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.
