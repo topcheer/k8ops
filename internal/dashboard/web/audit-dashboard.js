@@ -1354,6 +1354,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-namespace-by-pod-v2283', name: 'Top NS by Pod', icon: '\u{1F4CA}' },
         { path: '/api/scalability/node-cpu-oversubscription-v2283', name: 'CPU Oversub', icon: '\u26A1' },
         { path: '/api/scalability/storage-by-namespace-v2283', name: 'Storage by NS', icon: '\u{1F4E6}' },
+        // v22.84 Product
+        { path: '/api/product/service-port-mapping-v2284', name: 'Svc Port Map', icon: '\u{1F50C}' },
+        { path: '/api/product/pod-subdomain-dns-v2284', name: 'Subdomain DNS', icon: '\u{1F310}' },
+        { path: '/api/product/container-workdir-audit-v2284', name: 'WorkDir Audit', icon: '\u{1F4C1}' },
+        // v22.85 Deployment
+        { path: '/api/deployment/ds-nodeselector-census-v2285', name: 'DS NodeSelector', icon: '\u{1F3ED}' },
+        { path: '/api/deployment/deployment-paused-status-v2285', name: 'Deploy Paused', icon: '\u{23F8}' },
+        { path: '/api/deployment/sts-service-name-link-v2285', name: 'STS Svc Link', icon: '\u{1F517}' },
+        // v22.86 Operations
+        { path: '/api/ops/crashloop-detection-v2286', name: 'CrashLoop', icon: '\u{1F6A8}' },
+        { path: '/api/ops/node-disk-pressure-v2286', name: 'Disk Pressure', icon: '\u{1F4BF}' },
+        { path: '/api/ops/restart-distribution-v2286', name: 'Restart Dist', icon: '\u{1F501}' },
+        // v22.87 Security
+        { path: '/api/security/secret-data-size-audit-v2287', name: 'Secret Size', icon: '\u{1F510}' },
+        { path: '/api/security/pod-fsgroup-audit-v2287', name: 'FSGroup Audit', icon: '\u{1F465}' },
+        { path: '/api/security/role-binding-count-v2287', name: 'Role Binding Count', icon: '\u{1F451}' },
+        // v22.88 Documentation
+        { path: '/api/docs/endpoint-subset-catalog-v2288', name: 'EP Subset', icon: '\u{1F310}' },
+        { path: '/api/docs/node-ip-range-catalog-v2288', name: 'Node IP Range', icon: '\u{1F5A5}' },
+        { path: '/api/docs/service-session-affinity-v2288', name: 'Session Affinity', icon: '\u{1F91D}' },
+        // v22.89 Scalability
+        { path: '/api/scalability/top-image-by-replica-v2289', name: 'Top Image', icon: '\u{1F4E6}' },
+        { path: '/api/scalability/node-memory-oversubscription-v2289', name: 'Mem Oversub', icon: '\u{1F4BE}' },
+        { path: '/api/scalability/pod-age-distribution-v2289', name: 'Pod Age Dist', icon: '\u{1F4C5}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

@@ -1829,6 +1829,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-namespace-by-pod-v2283", s.cacheMiddleware(120*time.Second, s.handleNSPodTop2283))
 	mux.HandleFunc("/api/scalability/node-cpu-oversubscription-v2283", s.cacheMiddleware(120*time.Second, s.handleCPUOversub2283))
 	mux.HandleFunc("/api/scalability/storage-by-namespace-v2283", s.cacheMiddleware(120*time.Second, s.handleStorageByNS2283))
+
+	// v22.84 Product
+	mux.HandleFunc("/api/product/service-port-mapping-v2284", s.cacheMiddleware(120*time.Second, s.handleSvcPortMap2284))
+	mux.HandleFunc("/api/product/pod-subdomain-dns-v2284", s.cacheMiddleware(120*time.Second, s.handleSubdomainDNS2284))
+	mux.HandleFunc("/api/product/container-workdir-audit-v2284", s.cacheMiddleware(120*time.Second, s.handleWorkDir2284))
+	// v22.85 Deployment
+	mux.HandleFunc("/api/deployment/ds-nodeselector-census-v2285", s.cacheMiddleware(120*time.Second, s.handleDSNodeSelector2285))
+	mux.HandleFunc("/api/deployment/deployment-paused-status-v2285", s.cacheMiddleware(120*time.Second, s.handleDepPaused2285))
+	mux.HandleFunc("/api/deployment/sts-service-name-link-v2285", s.cacheMiddleware(120*time.Second, s.handleSTSSvcLink2285))
+	// v22.86 Operations
+	mux.HandleFunc("/api/ops/crashloop-detection-v2286", s.cacheMiddleware(120*time.Second, s.handleCrashLoop2286))
+	mux.HandleFunc("/api/ops/node-disk-pressure-v2286", s.cacheMiddleware(120*time.Second, s.handleDiskPressure2286))
+	mux.HandleFunc("/api/ops/restart-distribution-v2286", s.cacheMiddleware(120*time.Second, s.handleRestartDist2286))
+	// v22.87 Security
+	mux.HandleFunc("/api/security/secret-data-size-audit-v2287", s.cacheMiddleware(120*time.Second, s.handleSecretSize2287))
+	mux.HandleFunc("/api/security/pod-fsgroup-audit-v2287", s.cacheMiddleware(120*time.Second, s.handleFSGroup2287))
+	mux.HandleFunc("/api/security/role-binding-count-v2287", s.cacheMiddleware(120*time.Second, s.handleCRBindingCount2287))
+	// v22.88 Documentation
+	mux.HandleFunc("/api/docs/endpoint-subset-catalog-v2288", s.cacheMiddleware(120*time.Second, s.handleEndpointSubset2288))
+	mux.HandleFunc("/api/docs/node-ip-range-catalog-v2288", s.cacheMiddleware(120*time.Second, s.handleNodeIPRange2288))
+	mux.HandleFunc("/api/docs/service-session-affinity-v2288", s.cacheMiddleware(120*time.Second, s.handleSessionAffinity2288))
+	// v22.89 Scalability
+	mux.HandleFunc("/api/scalability/top-image-by-replica-v2289", s.cacheMiddleware(120*time.Second, s.handleTopImage2289))
+	mux.HandleFunc("/api/scalability/node-memory-oversubscription-v2289", s.cacheMiddleware(120*time.Second, s.handleNodeMemOversub2289))
+	mux.HandleFunc("/api/scalability/pod-age-distribution-v2289", s.cacheMiddleware(120*time.Second, s.handlePodAgeDist2289))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

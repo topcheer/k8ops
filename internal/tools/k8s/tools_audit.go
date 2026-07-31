@@ -1773,6 +1773,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-namespace-by-pod-v2283", "/api/scalability/top-namespace-by-pod-v2283", "Top namespace by pod count"},
 	{"scalability:node-cpu-oversubscription-v2283", "/api/scalability/node-cpu-oversubscription-v2283", "Node CPU oversubscription"},
 	{"scalability:storage-by-namespace-v2283", "/api/scalability/storage-by-namespace-v2283", "Storage by namespace"},
+
+	// v22.84 Product
+	{"product:service-port-mapping-v2284", "/api/product/service-port-mapping-v2284", "Service port mapping catalog"},
+	{"product:pod-subdomain-dns-v2284", "/api/product/pod-subdomain-dns-v2284", "Pod subdomain DNS config"},
+	{"product:container-workdir-audit-v2284", "/api/product/container-workdir-audit-v2284", "Container working directory audit"},
+	// v22.85 Deployment
+	{"deployment:ds-nodeselector-census-v2285", "/api/deployment/ds-nodeselector-census-v2285", "DaemonSet nodeSelector census"},
+	{"deployment:deployment-paused-status-v2285", "/api/deployment/deployment-paused-status-v2285", "Deployment paused status"},
+	{"deployment:sts-service-name-link-v2285", "/api/deployment/sts-service-name-link-v2285", "STS service name link"},
+	// v22.86 Operations
+	{"ops:crashloop-detection-v2286", "/api/ops/crashloop-detection-v2286", "CrashLoopBackOff detection"},
+	{"ops:node-disk-pressure-v2286", "/api/ops/node-disk-pressure-v2286", "Node disk pressure"},
+	{"ops:restart-distribution-v2286", "/api/ops/restart-distribution-v2286", "Container restart count distribution"},
+	// v22.87 Security
+	{"security:secret-data-size-audit-v2287", "/api/security/secret-data-size-audit-v2287", "Secret data size audit"},
+	{"security:pod-fsgroup-audit-v2287", "/api/security/pod-fsgroup-audit-v2287", "Pod FSGroup audit"},
+	{"security:role-binding-count-v2287", "/api/security/role-binding-count-v2287", "ClusterRoleBinding/RoleBinding count"},
+	// v22.88 Documentation
+	{"docs:endpoint-subset-catalog-v2288", "/api/docs/endpoint-subset-catalog-v2288", "Endpoint subset catalog"},
+	{"docs:node-ip-range-catalog-v2288", "/api/docs/node-ip-range-catalog-v2288", "Node IP range catalog"},
+	{"docs:service-session-affinity-v2288", "/api/docs/service-session-affinity-v2288", "Service session affinity"},
+	// v22.89 Scalability
+	{"scalability:top-image-by-replica-v2289", "/api/scalability/top-image-by-replica-v2289", "Top image by replica count"},
+	{"scalability:node-memory-oversubscription-v2289", "/api/scalability/node-memory-oversubscription-v2289", "Node memory oversubscription"},
+	{"scalability:pod-age-distribution-v2289", "/api/scalability/pod-age-distribution-v2289", "Pod age distribution"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.
