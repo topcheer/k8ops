@@ -1979,6 +1979,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-namespace-cpu-request-v2319", s.cacheMiddleware(120*time.Second, s.handleTopNSCPU2319))
 	mux.HandleFunc("/api/scalability/node-pod-allocation-balance-v2319", s.cacheMiddleware(120*time.Second, s.handleNodePodBalance2319))
 	mux.HandleFunc("/api/scalability/service-endpoint-density-v2319", s.cacheMiddleware(120*time.Second, s.handleSvcEPDensity2319))
+
+	// v23.20 Product
+	mux.HandleFunc("/api/product/readiness-gate-audit-v2320", s.cacheMiddleware(120*time.Second, s.handleReadinessGate2320))
+	mux.HandleFunc("/api/product/topo-spread-constraint-audit-v2320", s.cacheMiddleware(120*time.Second, s.handleTopoSpreadAudit2320))
+	mux.HandleFunc("/api/product/ipfamily-policy-v2320", s.cacheMiddleware(120*time.Second, s.handleIPFamilyPolicy2320))
+	// v23.21 Deployment
+	mux.HandleFunc("/api/deployment/deploy-collision-check-v2321", s.cacheMiddleware(120*time.Second, s.handleDepCollision2321))
+	mux.HandleFunc("/api/deployment/sts-collision-check-v2321", s.cacheMiddleware(120*time.Second, s.handleSTSCollision2321))
+	mux.HandleFunc("/api/deployment/rs-replica-status-v2321", s.cacheMiddleware(120*time.Second, s.handleRSReplicaStatus2321))
+	// v23.22 Operations
+	mux.HandleFunc("/api/ops/pending-duration-risk-v2322", s.cacheMiddleware(120*time.Second, s.handlePendingDuration2322))
+	mux.HandleFunc("/api/ops/cpu-throttling-risk-v2322", s.cacheMiddleware(120*time.Second, s.handleCPUThrottle2322))
+	mux.HandleFunc("/api/ops/exit-code-distribution-v2322", s.cacheMiddleware(120*time.Second, s.handleExitCode2322))
+	// v23.23 Security
+	mux.HandleFunc("/api/security/apparmor-audit-v2323", s.cacheMiddleware(120*time.Second, s.handleAppArmor2323))
+	mux.HandleFunc("/api/security/configmap-immutable-v2323", s.cacheMiddleware(120*time.Second, s.handleCMImmutable2323))
+	mux.HandleFunc("/api/security/secret-rotation-risk-v2323", s.cacheMiddleware(120*time.Second, s.handleSecretRotation2323))
+	// v23.24 Documentation
+	mux.HandleFunc("/api/docs/sa-token-age-v2324", s.cacheMiddleware(120*time.Second, s.handleSATokenAge2324))
+	mux.HandleFunc("/api/docs/node-feature-label-v2324", s.cacheMiddleware(120*time.Second, s.handleNodeFeatureLabel2324))
+	mux.HandleFunc("/api/docs/pod-annotation-count-v2324", s.cacheMiddleware(120*time.Second, s.handlePodAnnotation2324))
+	// v23.25 Scalability
+	mux.HandleFunc("/api/scalability/top-namespace-memory-request-v2325", s.cacheMiddleware(120*time.Second, s.handleTopNSMem2325))
+	mux.HandleFunc("/api/scalability/node-container-density-v2325", s.cacheMiddleware(120*time.Second, s.handleNodeCtnrDensity2325))
+	mux.HandleFunc("/api/scalability/cluster-configmap-total-v2325", s.cacheMiddleware(120*time.Second, s.handleClusterCMTotal2325))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

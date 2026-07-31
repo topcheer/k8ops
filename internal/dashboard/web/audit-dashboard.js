@@ -1498,6 +1498,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-namespace-cpu-request-v2319', name: 'Top NS CPU', icon: '\u26A1' },
         { path: '/api/scalability/node-pod-allocation-balance-v2319', name: 'Node Pod Balance', icon: '\u{1F3D7}' },
         { path: '/api/scalability/service-endpoint-density-v2319', name: 'Svc EP Density', icon: '\u{1F310}' },
+        // v23.20 Product
+        { path: '/api/product/readiness-gate-audit-v2320', name: 'Readiness Gate', icon: '\u{1F6A6}' },
+        { path: '/api/product/topo-spread-constraint-audit-v2320', name: 'Topo Spread Audit', icon: '\u{1F9ED}' },
+        { path: '/api/product/ipfamily-policy-v2320', name: 'IP Family Pol', icon: '\u{1F310}' },
+        // v23.21 Deployment
+        { path: '/api/deployment/deploy-collision-check-v2321', name: 'Deploy Collision', icon: '\u{26A0}' },
+        { path: '/api/deployment/sts-collision-check-v2321', name: 'STS Collision', icon: '\u{26A0}' },
+        { path: '/api/deployment/rs-replica-status-v2321', name: 'RS Replica Status', icon: '\u{1F504}' },
+        // v23.22 Operations
+        { path: '/api/ops/pending-duration-risk-v2322', name: 'Pending Risk', icon: '\u{23F1}' },
+        { path: '/api/ops/cpu-throttling-risk-v2322', name: 'CPU Throttle', icon: '\u{1F525}' },
+        { path: '/api/ops/exit-code-distribution-v2322', name: 'Exit Code', icon: '\u{1F480}' },
+        // v23.23 Security
+        { path: '/api/security/apparmor-audit-v2323', name: 'AppArmor', icon: '\u{1F6E1}' },
+        { path: '/api/security/configmap-immutable-v2323', name: 'CM Immutable', icon: '\u{1F512}' },
+        { path: '/api/security/secret-rotation-risk-v2323', name: 'Secret Rotation', icon: '\u{1F501}' },
+        // v23.24 Documentation
+        { path: '/api/docs/sa-token-age-v2324', name: 'SA Token Age', icon: '\u{1F4C5}' },
+        { path: '/api/docs/node-feature-label-v2324', name: 'Node Feature', icon: '\u{1F527}' },
+        { path: '/api/docs/pod-annotation-count-v2324', name: 'Pod Annot Count', icon: '\u{1F4DD}' },
+        // v23.25 Scalability
+        { path: '/api/scalability/top-namespace-memory-request-v2325', name: 'Top NS Mem', icon: '\u{1F4BE}' },
+        { path: '/api/scalability/node-container-density-v2325', name: 'Node Ctnr Density', icon: '\u{1F3E0}' },
+        { path: '/api/scalability/cluster-configmap-total-v2325', name: 'CM Total', icon: '\u{1F4DA}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

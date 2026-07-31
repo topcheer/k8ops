@@ -1923,6 +1923,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-namespace-cpu-request-v2319", "/api/scalability/top-namespace-cpu-request-v2319", "Top namespace by CPU request"},
 	{"scalability:node-pod-allocation-balance-v2319", "/api/scalability/node-pod-allocation-balance-v2319", "Node pod allocation balance"},
 	{"scalability:service-endpoint-density-v2319", "/api/scalability/service-endpoint-density-v2319", "Service endpoint density"},
+
+	// v23.20 Product
+	{"product:readiness-gate-audit-v2320", "/api/product/readiness-gate-audit-v2320", "Pod readiness gate audit"},
+	{"product:topo-spread-constraint-audit-v2320", "/api/product/topo-spread-constraint-audit-v2320", "Topology spread constraint audit"},
+	{"product:ipfamily-policy-v2320", "/api/product/ipfamily-policy-v2320", "Service IP family policy"},
+	// v23.21 Deployment
+	{"deployment:deploy-collision-check-v2321", "/api/deployment/deploy-collision-check-v2321", "Deployment selector collision"},
+	{"deployment:sts-collision-check-v2321", "/api/deployment/sts-collision-check-v2321", "STS selector collision"},
+	{"deployment:rs-replica-status-v2321", "/api/deployment/rs-replica-status-v2321", "RS replica status distribution"},
+	// v23.22 Operations
+	{"ops:pending-duration-risk-v2322", "/api/ops/pending-duration-risk-v2322", "Pod pending duration risk"},
+	{"ops:cpu-throttling-risk-v2322", "/api/ops/cpu-throttling-risk-v2322", "CPU throttling risk"},
+	{"ops:exit-code-distribution-v2322", "/api/ops/exit-code-distribution-v2322", "Container exit code distribution"},
+	// v23.23 Security
+	{"security:apparmor-audit-v2323", "/api/security/apparmor-audit-v2323", "AppArmor profile audit"},
+	{"security:configmap-immutable-v2323", "/api/security/configmap-immutable-v2323", "ConfigMap immutable mark"},
+	{"security:secret-rotation-risk-v2323", "/api/security/secret-rotation-risk-v2323", "Secret rotation risk"},
+	// v23.24 Documentation
+	{"docs:sa-token-age-v2324", "/api/docs/sa-token-age-v2324", "ServiceAccount token age"},
+	{"docs:node-feature-label-v2324", "/api/docs/node-feature-label-v2324", "Node feature label census"},
+	{"docs:pod-annotation-count-v2324", "/api/docs/pod-annotation-count-v2324", "Pod annotation key count"},
+	// v23.25 Scalability
+	{"scalability:top-namespace-memory-request-v2325", "/api/scalability/top-namespace-memory-request-v2325", "Top namespace by memory request"},
+	{"scalability:node-container-density-v2325", "/api/scalability/node-container-density-v2325", "Node container density"},
+	{"scalability:cluster-configmap-total-v2325", "/api/scalability/cluster-configmap-total-v2325", "Cluster configmap total"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.
