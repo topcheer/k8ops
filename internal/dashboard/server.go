@@ -2254,6 +2254,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-image-deployment-v2385", s.cacheMiddleware(120*time.Second, s.handleTopImgDeploy2385))
 	mux.HandleFunc("/api/scalability/node-cpu-limit-commit-v2385", s.cacheMiddleware(120*time.Second, s.handleNodeCPULimit2385))
 	mux.HandleFunc("/api/scalability/cluster-service-total-v2385", s.cacheMiddleware(120*time.Second, s.handleSvcTotal2385))
+
+	// v23.86 Product
+	mux.HandleFunc("/api/product/pod-tolerations-audit-v2386", s.cacheMiddleware(120*time.Second, s.handleToleration2386))
+	mux.HandleFunc("/api/product/container-port-catalog-v2386", s.cacheMiddleware(120*time.Second, s.handleCtnrPort2386))
+	mux.HandleFunc("/api/product/service-annotation-census-v2386", s.cacheMiddleware(120*time.Second, s.handleSvcAnnot2386))
+	// v23.87 Deployment
+	mux.HandleFunc("/api/deployment/deploy-label-count-v2387", s.cacheMiddleware(120*time.Second, s.handleDepLabelCount2387))
+	mux.HandleFunc("/api/deployment/sts-volumeclaim-count-v2387", s.cacheMiddleware(120*time.Second, s.handleSTSVolClaim2387))
+	mux.HandleFunc("/api/deployment/cronjob-failed-jobs-v2387", s.cacheMiddleware(120*time.Second, s.handleCronJobFailed2387))
+	// v23.88 Operations
+	mux.HandleFunc("/api/ops/init-container-count-v2388", s.cacheMiddleware(120*time.Second, s.handleInitCtnr2388))
+	mux.HandleFunc("/api/ops/node-allocatable-pods-v2388", s.cacheMiddleware(120*time.Second, s.handleNodeAllocPods2388))
+	mux.HandleFunc("/api/ops/event-by-namespace-v2388", s.cacheMiddleware(120*time.Second, s.handleEventByNS2388))
+	// v23.89 Security
+	mux.HandleFunc("/api/security/privilege-escalation-audit-v2389", s.cacheMiddleware(120*time.Second, s.handlePrivEsc2389))
+	mux.HandleFunc("/api/security/secret-key-count-v2389", s.cacheMiddleware(120*time.Second, s.handleSecretKeyCount2389))
+	mux.HandleFunc("/api/security/clusterrole-rule-count-v2389", s.cacheMiddleware(120*time.Second, s.handleCRRuleCount2389))
+	// v23.90 Documentation
+	mux.HandleFunc("/api/docs/node-kernel-commit-v2390", s.cacheMiddleware(120*time.Second, s.handleNodeKernelCommit2390))
+	mux.HandleFunc("/api/docs/pod-finalizer-count-v2390", s.cacheMiddleware(120*time.Second, s.handlePodFinalizer2390))
+	mux.HandleFunc("/api/docs/pvc-size-summary-v2390", s.cacheMiddleware(120*time.Second, s.handlePVCSize2390))
+	// v23.91 Scalability
+	mux.HandleFunc("/api/scalability/top-namespace-event-v2391", s.cacheMiddleware(120*time.Second, s.handleTopNSEvent2391))
+	mux.HandleFunc("/api/scalability/node-allocatable-mem-v2391", s.cacheMiddleware(120*time.Second, s.handleNodeAllocMem2391))
+	mux.HandleFunc("/api/scalability/pod-by-controller-v2391", s.cacheMiddleware(120*time.Second, s.handlePodByCtrl2391))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

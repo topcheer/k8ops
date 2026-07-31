@@ -1763,6 +1763,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-image-deployment-v2385', name: 'Top Img Deploy', icon: '\u{1F4E6}' },
         { path: '/api/scalability/node-cpu-limit-commit-v2385', name: 'Node CPU Limit', icon: '\u26A1' },
         { path: '/api/scalability/cluster-service-total-v2385', name: 'Svc Total', icon: '\u{1F4CA}' },
+        // v23.86 Product
+        { path: '/api/product/pod-tolerations-audit-v2386', name: 'Tolerations', icon: '\u{1F6E1}' },
+        { path: '/api/product/container-port-catalog-v2386', name: 'Ctnr Ports', icon: '\u{1F50C}' },
+        { path: '/api/product/service-annotation-census-v2386', name: 'Svc Annot', icon: '\u{1F4DD}' },
+        // v23.87 Deployment
+        { path: '/api/deployment/deploy-label-count-v2387', name: 'Deploy Labels', icon: '\u{1F3F7}' },
+        { path: '/api/deployment/sts-volumeclaim-count-v2387', name: 'STS VolClaim', icon: '\u{1F4BF}' },
+        { path: '/api/deployment/cronjob-failed-jobs-v2387', name: 'CJ Failed', icon: '\u{1F6A8}' },
+        // v23.88 Operations
+        { path: '/api/ops/init-container-count-v2388', name: 'Init Ctnr', icon: '\u{1F504}' },
+        { path: '/api/ops/node-allocatable-pods-v2388', name: 'Node Alloc Pods', icon: '\u{1F3E0}' },
+        { path: '/api/ops/event-by-namespace-v2388', name: 'Event by NS', icon: '\u{1F4CB}' },
+        // v23.89 Security
+        { path: '/api/security/privilege-escalation-audit-v2389', name: 'PrivEsc Audit', icon: '\u{26A0}' },
+        { path: '/api/security/secret-key-count-v2389', name: 'Secret KeyCnt', icon: '\u{1F511}' },
+        { path: '/api/security/clusterrole-rule-count-v2389', name: 'CR Rule Cnt', icon: '\u{1F451}' },
+        // v23.90 Documentation
+        { path: '/api/docs/node-kernel-commit-v2390', name: 'Node Kernel', icon: '\u{1F527}' },
+        { path: '/api/docs/pod-finalizer-count-v2390', name: 'Pod Finalizer', icon: '\u{1F527}' },
+        { path: '/api/docs/pvc-size-summary-v2390', name: 'PVC Size', icon: '\u{1F4BF}' },
+        // v23.91 Scalability
+        { path: '/api/scalability/top-namespace-event-v2391', name: 'Top NS Event', icon: '\u{1F4CB}' },
+        { path: '/api/scalability/node-allocatable-mem-v2391', name: 'Node Alloc Mem', icon: '\u{1F4BE}' },
+        { path: '/api/scalability/pod-by-controller-v2391', name: 'Pod by Ctrl', icon: '\u{1F517}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

@@ -2198,6 +2198,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-image-deployment-v2385", "/api/scalability/top-image-deployment-v2385", "Top image by deployment"},
 	{"scalability:node-cpu-limit-commit-v2385", "/api/scalability/node-cpu-limit-commit-v2385", "Node CPU limit commit"},
 	{"scalability:cluster-service-total-v2385", "/api/scalability/cluster-service-total-v2385", "Cluster service total"},
+
+	// v23.86 Product
+	{"product:pod-tolerations-audit-v2386", "/api/product/pod-tolerations-audit-v2386", "Pod tolerations audit"},
+	{"product:container-port-catalog-v2386", "/api/product/container-port-catalog-v2386", "Container port catalog"},
+	{"product:service-annotation-census-v2386", "/api/product/service-annotation-census-v2386", "Service annotation census"},
+	// v23.87 Deployment
+	{"deployment:deploy-label-count-v2387", "/api/deployment/deploy-label-count-v2387", "Deployment label count"},
+	{"deployment:sts-volumeclaim-count-v2387", "/api/deployment/sts-volumeclaim-count-v2387", "STS volumeClaim count"},
+	{"deployment:cronjob-failed-jobs-v2387", "/api/deployment/cronjob-failed-jobs-v2387", "CronJob failed jobs"},
+	// v23.88 Operations
+	{"ops:init-container-count-v2388", "/api/ops/init-container-count-v2388", "Init container count"},
+	{"ops:node-allocatable-pods-v2388", "/api/ops/node-allocatable-pods-v2388", "Node allocatable pods"},
+	{"ops:event-by-namespace-v2388", "/api/ops/event-by-namespace-v2388", "Event by namespace"},
+	// v23.89 Security
+	{"security:privilege-escalation-audit-v2389", "/api/security/privilege-escalation-audit-v2389", "Privilege escalation audit"},
+	{"security:secret-key-count-v2389", "/api/security/secret-key-count-v2389", "Secret key count"},
+	{"security:clusterrole-rule-count-v2389", "/api/security/clusterrole-rule-count-v2389", "ClusterRole rule count"},
+	// v23.90 Documentation
+	{"docs:node-kernel-commit-v2390", "/api/docs/node-kernel-commit-v2390", "Node kernel commit"},
+	{"docs:pod-finalizer-count-v2390", "/api/docs/pod-finalizer-count-v2390", "Pod finalizer count"},
+	{"docs:pvc-size-summary-v2390", "/api/docs/pvc-size-summary-v2390", "PVC size summary"},
+	// v23.91 Scalability
+	{"scalability:top-namespace-event-v2391", "/api/scalability/top-namespace-event-v2391", "Top namespace by event"},
+	{"scalability:node-allocatable-mem-v2391", "/api/scalability/node-allocatable-mem-v2391", "Node allocatable memory"},
+	{"scalability:pod-by-controller-v2391", "/api/scalability/pod-by-controller-v2391", "Pod by controller kind"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.
