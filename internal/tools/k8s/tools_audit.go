@@ -2098,6 +2098,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:namespace-pvc-total-v2361", "/api/scalability/namespace-pvc-total-v2361", "Namespace PVC total"},
 	{"scalability:node-container-runtime-v2361", "/api/scalability/node-container-runtime-v2361", "Node container runtime"},
 	{"scalability:cluster-ingress-total-v2361", "/api/scalability/cluster-ingress-total-v2361", "Cluster ingress total"},
+
+	// v23.62 Product
+	{"product:share-process-namespace-v2362", "/api/product/share-process-namespace-v2362", "Share process namespace"},
+	{"product:missing-resource-limits-v2362", "/api/product/missing-resource-limits-v2362", "Missing resource limits"},
+	{"product:healthcheck-port-audit-v2362", "/api/product/healthcheck-port-audit-v2362", "HealthCheck port audit"},
+	// v23.63 Deployment
+	{"deployment:deployment-strategy-type-v2363", "/api/deployment/deployment-strategy-type-v2363", "Deployment strategy type"},
+	{"deployment:sts-update-strategy-v2363", "/api/deployment/sts-update-strategy-v2363", "STS update strategy"},
+	{"deployment:ds-revision-count-v2363", "/api/deployment/ds-revision-count-v2363", "DS revision count"},
+	// v23.64 Operations
+	{"ops:pod-start-time-audit-v2364", "/api/ops/pod-start-time-audit-v2364", "Pod start time audit"},
+	{"ops:node-architecture-census-v2364", "/api/ops/node-architecture-census-v2364", "Node architecture census"},
+	{"ops:event-recent-count-v2364", "/api/ops/event-recent-count-v2364", "Recent event count"},
+	// v23.65 Security
+	{"security:fsgroup-override-v2365", "/api/security/fsgroup-override-v2365", "FSGroup override"},
+	{"security:sa-token-secret-v2365", "/api/security/sa-token-secret-v2365", "SA token secret"},
+	{"security:role-nonresource-url-v2365", "/api/security/role-nonresource-url-v2365", "Role nonResourceURL"},
+	// v23.66 Documentation
+	{"docs:restart-policy-distribution-v2366", "/api/docs/restart-policy-distribution-v2366", "Restart policy distribution"},
+	{"docs:node-os-image-v2366", "/api/docs/node-os-image-v2366", "Node OS image"},
+	{"docs:service-port-target-v2366", "/api/docs/service-port-target-v2366", "Service port target"},
+	// v23.67 Scalability
+	{"scalability:top-namespace-deployment-v2367", "/api/scalability/top-namespace-deployment-v2367", "Top namespace by deployment"},
+	{"scalability:node-capacity-storage-v2367", "/api/scalability/node-capacity-storage-v2367", "Node capacity storage"},
+	{"scalability:networkpolicy-density-v2367", "/api/scalability/networkpolicy-density-v2367", "NetworkPolicy density"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

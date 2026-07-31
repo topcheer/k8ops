@@ -1667,6 +1667,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/namespace-pvc-total-v2361', name: 'NS PVC Total', icon: '\u{1F4BF}' },
         { path: '/api/scalability/node-container-runtime-v2361', name: 'Node Runtime', icon: '\u{1F527}' },
         { path: '/api/scalability/cluster-ingress-total-v2361', name: 'Ingress Total', icon: '\u{1F310}' },
+        // v23.62 Product
+        { path: '/api/product/share-process-namespace-v2362', name: 'Share ProcNS', icon: '\u{1F517}' },
+        { path: '/api/product/missing-resource-limits-v2362', name: 'Missing Limits', icon: '\u{26A0}' },
+        { path: '/api/product/healthcheck-port-audit-v2362', name: 'HC Port', icon: '\u{1F50C}' },
+        // v23.63 Deployment
+        { path: '/api/deployment/deployment-strategy-type-v2363', name: 'Deploy Strategy', icon: '\u{1F4C8}' },
+        { path: '/api/deployment/sts-update-strategy-v2363', name: 'STS Update Strat', icon: '\u{1F504}' },
+        { path: '/api/deployment/ds-revision-count-v2363', name: 'DS Revision', icon: '\u{1F4DC}' },
+        // v23.64 Operations
+        { path: '/api/ops/pod-start-time-audit-v2364', name: 'Pod StartTime', icon: '\u{23F1}' },
+        { path: '/api/ops/node-architecture-census-v2364', name: 'Node Arch', icon: '\u{1F527}' },
+        { path: '/api/ops/event-recent-count-v2364', name: 'Recent Events', icon: '\u{1F4CB}' },
+        // v23.65 Security
+        { path: '/api/security/fsgroup-override-v2365', name: 'FSGroup Override', icon: '\u{1F465}' },
+        { path: '/api/security/sa-token-secret-v2365', name: 'SA Token Secret', icon: '\u{1F511}' },
+        { path: '/api/security/role-nonresource-url-v2365', name: 'Role NonRes URL', icon: '\u{1F451}' },
+        // v23.66 Documentation
+        { path: '/api/docs/restart-policy-distribution-v2366', name: 'Restart Policy', icon: '\u{1F501}' },
+        { path: '/api/docs/node-os-image-v2366', name: 'Node OS Image', icon: '\u{1F4BB}' },
+        { path: '/api/docs/service-port-target-v2366', name: 'Svc Port Target', icon: '\u{1F50C}' },
+        // v23.67 Scalability
+        { path: '/api/scalability/top-namespace-deployment-v2367', name: 'Top NS Deploy', icon: '\u{1F4CA}' },
+        { path: '/api/scalability/node-capacity-storage-v2367', name: 'Node Cap Storage', icon: '\u{1F4BF}' },
+        { path: '/api/scalability/networkpolicy-density-v2367', name: 'NetPol Density', icon: '\u{1F6E1}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

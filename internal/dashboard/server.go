@@ -2154,6 +2154,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/namespace-pvc-total-v2361", s.cacheMiddleware(120*time.Second, s.handleNSPVCTotal2361))
 	mux.HandleFunc("/api/scalability/node-container-runtime-v2361", s.cacheMiddleware(120*time.Second, s.handleNodeCtnrRuntime2361))
 	mux.HandleFunc("/api/scalability/cluster-ingress-total-v2361", s.cacheMiddleware(120*time.Second, s.handleIngressTotal2361))
+
+	// v23.62 Product
+	mux.HandleFunc("/api/product/share-process-namespace-v2362", s.cacheMiddleware(120*time.Second, s.handleShareProcNS2362))
+	mux.HandleFunc("/api/product/missing-resource-limits-v2362", s.cacheMiddleware(120*time.Second, s.handleMissingRes2362))
+	mux.HandleFunc("/api/product/healthcheck-port-audit-v2362", s.cacheMiddleware(120*time.Second, s.handleHCPort2362))
+	// v23.63 Deployment
+	mux.HandleFunc("/api/deployment/deployment-strategy-type-v2363", s.cacheMiddleware(120*time.Second, s.handleDepStrategy2363))
+	mux.HandleFunc("/api/deployment/sts-update-strategy-v2363", s.cacheMiddleware(120*time.Second, s.handleSTSUpdateStrat2363))
+	mux.HandleFunc("/api/deployment/ds-revision-count-v2363", s.cacheMiddleware(120*time.Second, s.handleDSRevision2363))
+	// v23.64 Operations
+	mux.HandleFunc("/api/ops/pod-start-time-audit-v2364", s.cacheMiddleware(120*time.Second, s.handlePodStartTime2364))
+	mux.HandleFunc("/api/ops/node-architecture-census-v2364", s.cacheMiddleware(120*time.Second, s.handleNodeArch2364))
+	mux.HandleFunc("/api/ops/event-recent-count-v2364", s.cacheMiddleware(120*time.Second, s.handleEventRecent2364))
+	// v23.65 Security
+	mux.HandleFunc("/api/security/fsgroup-override-v2365", s.cacheMiddleware(120*time.Second, s.handleFSGroupOverride2365))
+	mux.HandleFunc("/api/security/sa-token-secret-v2365", s.cacheMiddleware(120*time.Second, s.handleSvcAcctToken2365))
+	mux.HandleFunc("/api/security/role-nonresource-url-v2365", s.cacheMiddleware(120*time.Second, s.handleRoleNonResURL2365))
+	// v23.66 Documentation
+	mux.HandleFunc("/api/docs/restart-policy-distribution-v2366", s.cacheMiddleware(120*time.Second, s.handleRestartPol2366))
+	mux.HandleFunc("/api/docs/node-os-image-v2366", s.cacheMiddleware(120*time.Second, s.handleNodeOSImage2366))
+	mux.HandleFunc("/api/docs/service-port-target-v2366", s.cacheMiddleware(120*time.Second, s.handleSvcPortTarget2366))
+	// v23.67 Scalability
+	mux.HandleFunc("/api/scalability/top-namespace-deployment-v2367", s.cacheMiddleware(120*time.Second, s.handleTopNSDeploy2367))
+	mux.HandleFunc("/api/scalability/node-capacity-storage-v2367", s.cacheMiddleware(120*time.Second, s.handleNodeCapStorage2367))
+	mux.HandleFunc("/api/scalability/networkpolicy-density-v2367", s.cacheMiddleware(120*time.Second, s.handleNetPolDensity2367))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))
