@@ -407,8 +407,53 @@ func now() *metav1.Time {
 	return &t
 }
 
+// maxReportAge is the maximum age before a diagnostic report is auto-deleted.
+const maxReportAge = 12 * time.Hour
+
+// StartCleanup starts a background goroutine that periodically deletes
+// diagnostic reports older than maxReportAge.
+func (r *DiagnosticReconciler) StartCleanup(ctx context.Context) {
+	go func() {
+		ticker := time.NewTicker(10 * time.Minute)
+		defer ticker.Stop()
+		r.cleanupOldReports(ctx)
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+				r.cleanupOldReports(ctx)
+			}
+		}
+	}()
+}
+
+func (r *DiagnosticReconciler) cleanupOldReports(ctx context.Context) {
+	list := &aiv1alpha1.DiagnosticReportList{}
+	if err := r.List(ctx, list); err != nil {
+		r.Log.Error("cleanup: failed to list reports", "error", err)
+		return
+	}
+	cutoff := time.Now().Add(-maxReportAge)
+	deleted := 0
+	for _, report := range list.Items {
+		if report.CreationTimestamp.Time.Before(cutoff) {
+			if err := r.Delete(ctx, &report); err != nil {
+				r.Log.Error("cleanup: failed to delete report", "name", report.Name, "error", err)
+			} else {
+				deleted++
+			}
+		}
+	}
+	if deleted > 0 {
+		r.Log.Info("cleanup: deleted old diagnostic reports", "count", deleted)
+	}
+}
+
 // SetupWithManager sets up the controller with the Manager.
 func (r *DiagnosticReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	// Start background cleanup goroutine
+	r.StartCleanup(context.Background())
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&aiv1alpha1.DiagnosticReport{}).
 		Complete(r)

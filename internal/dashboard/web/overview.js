@@ -255,10 +255,12 @@ export async function loadDiagnostics() {
     const statusFilter = document.getElementById('diagStatusFilter')?.value || '';
     const fromFilter = document.getElementById('diagDateFrom')?.value || '';
     const toFilter = document.getElementById('diagDateTo')?.value || '';
+    const nsFilter = document.getElementById('nsFilter')?.value || '';
     const params = new URLSearchParams();
     if (statusFilter) params.set('status', statusFilter);
     if (fromFilter) params.set('from', fromFilter);
     if (toFilter) params.set('to', toFilter);
+    if (nsFilter) params.set('namespace', nsFilter);
     params.set('page', String(diagCurrentPage));
     params.set('pageSize', '20');
     const url = '/api/diagnostics/history?' + params.toString();

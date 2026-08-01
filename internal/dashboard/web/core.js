@@ -396,6 +396,7 @@ export function onNsChange() {
         else if (name === 'nodes') window.loadNodes();
         else if (name === 'events') window.loadEvents();
         else if (name === 'pods') window.loadPods();
+        else if (name === 'diagnostics') window.loadDiagnostics && window.loadDiagnostics();
         else if (name === 'resources') window.loadResources && window.loadResources();
       }
     }
