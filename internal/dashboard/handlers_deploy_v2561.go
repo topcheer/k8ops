@@ -14,17 +14,14 @@ type RSPausedResult2561 struct {
 	Summary     struct {
 		TotalRS int `json:"totalRS"`
 		Paused  int `json:"pausedRS"`
-	}
+	} `json:"summary"`
 }
 
 func (s *Server) handleRSPaused2561(w http.ResponseWriter, r *http.Request) {
 	result := RSPausedResult2561{ScannedAt: time.Now()}
 	rsList, _ := s.clientset.AppsV1().ReplicaSets("").List(r.Context(), metav1.ListOptions{})
-	for _, rs := range rsList.Items {
+	for range rsList.Items {
 		result.Summary.TotalRS++
-		if rs.Spec.Paused {
-			result.Summary.Paused++
-		}
 	}
 	result.HealthScore = 100
 	gradeFromScore(&result.Grade, 100)
@@ -38,7 +35,7 @@ type STSPartitionResult2561 struct {
 	Summary     struct {
 		TotalSTS int `json:"totalSTS"`
 		WithPart int `json:"withPartition"`
-	}
+	} `json:"summary"`
 }
 
 func (s *Server) handleSTSPartition2561(w http.ResponseWriter, r *http.Request) {
@@ -64,7 +61,7 @@ type DSDeletionResult2561 struct {
 	Summary     struct {
 		TotalDS  int `json:"totalDS"`
 		Deleting int `json:"deletingDS"`
-	}
+	} `json:"summary"`
 }
 
 func (s *Server) handleDSDeletion2561(w http.ResponseWriter, r *http.Request) {
