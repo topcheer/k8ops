@@ -2323,6 +2323,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-namespace-pvc-v2415", "/api/scalability/top-namespace-pvc-v2415", "Top namespace by PVC"},
 	{"scalability:node-storage-allocatable-v2415", "/api/scalability/node-storage-allocatable-v2415", "Node storage allocatable"},
 	{"scalability:secret-by-type-v2415", "/api/scalability/secret-by-type-v2415", "Secret by type"},
+
+	// v24.16 Product
+	{"product:scheduler-name-audit-v2416", "/api/product/scheduler-name-audit-v2416", "Scheduler name audit"},
+	{"product:request-memory-summary-v2416", "/api/product/request-memory-summary-v2416", "Request memory summary"},
+	{"product:service-clusterips-count-v2416", "/api/product/service-clusterips-count-v2416", "Service ClusterIPs count"},
+	// v24.17 Deployment
+	{"deployment:deploy-selector-matchlabels-v2417", "/api/deployment/deploy-selector-matchlabels-v2417", "Deployment selector matchLabels"},
+	{"deployment:rs-owner-ref-controller-v2417", "/api/deployment/rs-owner-ref-controller-v2417", "RS owner ref controller"},
+	{"deployment:cronjob-lastschedule-v2417", "/api/deployment/cronjob-lastschedule-v2417", "CronJob last schedule time"},
+	// v24.18 Operations
+	{"ops:podip-distribution-v2418", "/api/ops/podip-distribution-v2418", "PodIP distribution"},
+	{"ops:node-machine-info-v2418", "/api/ops/node-machine-info-v2418", "Node machine info"},
+	{"ops:event-firsttimestamp-age-v2418", "/api/ops/event-firsttimestamp-age-v2418", "Event firstTimestamp age"},
+	// v24.19 Security
+	{"security:seccomp-unconfined-v2419", "/api/security/seccomp-unconfined-v2419", "Seccomp unconfined"},
+	{"security:secret-namespace-count-v2419", "/api/security/secret-namespace-count-v2419", "Secret namespace count"},
+	{"security:rolebinding-subject-user-v2419", "/api/security/rolebinding-subject-user-v2419", "RoleBinding subject User"},
+	// v24.20 Documentation
+	{"docs:node-os-version-v2420", "/api/docs/node-os-version-v2420", "Node OS version"},
+	{"docs:pod-nodename-distribution-v2420", "/api/docs/pod-nodename-distribution-v2420", "Pod nodeName distribution"},
+	{"docs:configmap-immutable-key-v2420", "/api/docs/configmap-immutable-key-v2420", "ConfigMap immutable key"},
+	// v24.21 Scalability
+	{"scalability:top-namespace-storage-v2421", "/api/scalability/top-namespace-storage-v2421", "Top namespace by storage"},
+	{"scalability:node-cpu-capacity-v2421", "/api/scalability/node-cpu-capacity-v2421", "Node CPU capacity"},
+	{"scalability:networkpolicy-by-ns-v2421", "/api/scalability/networkpolicy-by-ns-v2421", "NetworkPolicy by namespace"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

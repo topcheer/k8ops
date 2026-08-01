@@ -2379,6 +2379,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-namespace-pvc-v2415", s.cacheMiddleware(120*time.Second, s.handleTopNSPVC2415))
 	mux.HandleFunc("/api/scalability/node-storage-allocatable-v2415", s.cacheMiddleware(120*time.Second, s.handleNodeStorAlloc2415))
 	mux.HandleFunc("/api/scalability/secret-by-type-v2415", s.cacheMiddleware(120*time.Second, s.handleSecretByType2415))
+
+	// v24.16 Product
+	mux.HandleFunc("/api/product/scheduler-name-audit-v2416", s.cacheMiddleware(120*time.Second, s.handleSchedulerName2416))
+	mux.HandleFunc("/api/product/request-memory-summary-v2416", s.cacheMiddleware(120*time.Second, s.handleReqMem2416))
+	mux.HandleFunc("/api/product/service-clusterips-count-v2416", s.cacheMiddleware(120*time.Second, s.handleClusterIPs2416))
+	// v24.17 Deployment
+	mux.HandleFunc("/api/deployment/deploy-selector-matchlabels-v2417", s.cacheMiddleware(120*time.Second, s.handleDepSelector2417))
+	mux.HandleFunc("/api/deployment/rs-owner-ref-controller-v2417", s.cacheMiddleware(120*time.Second, s.handleRSOwnerRef2417))
+	mux.HandleFunc("/api/deployment/cronjob-lastschedule-v2417", s.cacheMiddleware(120*time.Second, s.handleCronJobLastSched2417))
+	// v24.18 Operations
+	mux.HandleFunc("/api/ops/podip-distribution-v2418", s.cacheMiddleware(120*time.Second, s.handlePodIP2418))
+	mux.HandleFunc("/api/ops/node-machine-info-v2418", s.cacheMiddleware(120*time.Second, s.handleMachineInfo2418))
+	mux.HandleFunc("/api/ops/event-firsttimestamp-age-v2418", s.cacheMiddleware(120*time.Second, s.handleEventFirstTS2418))
+	// v24.19 Security
+	mux.HandleFunc("/api/security/seccomp-unconfined-v2419", s.cacheMiddleware(120*time.Second, s.handleSeccompUnconf2419))
+	mux.HandleFunc("/api/security/secret-namespace-count-v2419", s.cacheMiddleware(120*time.Second, s.handleSecretNS2419))
+	mux.HandleFunc("/api/security/rolebinding-subject-user-v2419", s.cacheMiddleware(120*time.Second, s.handleRBSubjectUser2419))
+	// v24.20 Documentation
+	mux.HandleFunc("/api/docs/node-os-version-v2420", s.cacheMiddleware(120*time.Second, s.handleNodeOSVer2420))
+	mux.HandleFunc("/api/docs/pod-nodename-distribution-v2420", s.cacheMiddleware(120*time.Second, s.handlePodNodeName2420))
+	mux.HandleFunc("/api/docs/configmap-immutable-key-v2420", s.cacheMiddleware(120*time.Second, s.handleCMImmutableKey2420))
+	// v24.21 Scalability
+	mux.HandleFunc("/api/scalability/top-namespace-storage-v2421", s.cacheMiddleware(120*time.Second, s.handleTopNSStorage2421))
+	mux.HandleFunc("/api/scalability/node-cpu-capacity-v2421", s.cacheMiddleware(120*time.Second, s.handleNodeCPUCap2421))
+	mux.HandleFunc("/api/scalability/networkpolicy-by-ns-v2421", s.cacheMiddleware(120*time.Second, s.handleNetPolByNS2421))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

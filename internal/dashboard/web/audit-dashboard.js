@@ -1883,6 +1883,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-namespace-pvc-v2415', name: 'Top NS PVC', icon: '\u{1F4BF}' },
         { path: '/api/scalability/node-storage-allocatable-v2415', name: 'Node Stor Alloc', icon: '\u{1F4BD}' },
         { path: '/api/scalability/secret-by-type-v2415', name: 'Secret by Type', icon: '\u{1F510}' },
+        // v24.16 Product
+        { path: '/api/product/scheduler-name-audit-v2416', name: 'Scheduler Name', icon: '\u{1F4CB}' },
+        { path: '/api/product/request-memory-summary-v2416', name: 'Req Mem Summary', icon: '\u{1F4BE}' },
+        { path: '/api/product/service-clusterips-count-v2416', name: 'ClusterIPs Count', icon: '\u{1F310}' },
+        // v24.17 Deployment
+        { path: '/api/deployment/deploy-selector-matchlabels-v2417', name: 'Deploy MatchLbls', icon: '\u{1F3F7}' },
+        { path: '/api/deployment/rs-owner-ref-controller-v2417', name: 'RS OwnerRef', icon: '\u{1F517}' },
+        { path: '/api/deployment/cronjob-lastschedule-v2417', name: 'CJ LastSched', icon: '\u{1F4C5}' },
+        // v24.18 Operations
+        { path: '/api/ops/podip-distribution-v2418', name: 'PodIP Dist', icon: '\u{1F310}' },
+        { path: '/api/ops/node-machine-info-v2418', name: 'Node Machine', icon: '\u{1F5A5}' },
+        { path: '/api/ops/event-firsttimestamp-age-v2418', name: 'Event FirstTS', icon: '\u{1F4CB}' },
+        // v24.19 Security
+        { path: '/api/security/seccomp-unconfined-v2419', name: 'Seccomp Unc', icon: '\u{26A0}' },
+        { path: '/api/security/secret-namespace-count-v2419', name: 'Secret NS Count', icon: '\u{1F510}' },
+        { path: '/api/security/rolebinding-subject-user-v2419', name: 'RB User Sub', icon: '\u{1F464}' },
+        // v24.20 Documentation
+        { path: '/api/docs/node-os-version-v2420', name: 'Node OS Ver', icon: '\u{1F4BB}' },
+        { path: '/api/docs/pod-nodename-distribution-v2420', name: 'Pod NodeName', icon: '\u{1F5FA}' },
+        { path: '/api/docs/configmap-immutable-key-v2420', name: 'CM Immutable Key', icon: '\u{1F512}' },
+        // v24.21 Scalability
+        { path: '/api/scalability/top-namespace-storage-v2421', name: 'Top NS Storage', icon: '\u{1F4BF}' },
+        { path: '/api/scalability/node-cpu-capacity-v2421', name: 'Node CPU Cap', icon: '\u26A1' },
+        { path: '/api/scalability/networkpolicy-by-ns-v2421', name: 'NetPol by NS', icon: '\u{1F6E1}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },
