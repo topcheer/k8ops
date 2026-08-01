@@ -2404,6 +2404,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-namespace-storage-v2421", s.cacheMiddleware(120*time.Second, s.handleTopNSStorage2421))
 	mux.HandleFunc("/api/scalability/node-cpu-capacity-v2421", s.cacheMiddleware(120*time.Second, s.handleNodeCPUCap2421))
 	mux.HandleFunc("/api/scalability/networkpolicy-by-ns-v2421", s.cacheMiddleware(120*time.Second, s.handleNetPolByNS2421))
+
+	// v24.22 Product
+	mux.HandleFunc("/api/product/sa-missing-audit-v2422", s.cacheMiddleware(120*time.Second, s.handleSAMissing2422))
+	mux.HandleFunc("/api/product/startup-probe-audit-v2422", s.cacheMiddleware(120*time.Second, s.handleStartupProbe2422))
+	mux.HandleFunc("/api/product/service-externalname-v2422", s.cacheMiddleware(120*time.Second, s.handleExternalName2422))
+	// v24.23 Deployment
+	mux.HandleFunc("/api/deployment/sts-volclaim-default-v2423", s.cacheMiddleware(120*time.Second, s.handleSTSVolClaimDefault2423))
+	mux.HandleFunc("/api/deployment/job-completions-config-v2423", s.cacheMiddleware(120*time.Second, s.handleJobCompletions2423))
+	mux.HandleFunc("/api/deployment/cronjob-starting-deadline-v2423", s.cacheMiddleware(120*time.Second, s.handleCronJobStartDeadline2423))
+	// v24.24 Operations
+	mux.HandleFunc("/api/ops/pod-completed-status-v2424", s.cacheMiddleware(120*time.Second, s.handlePodCompleted2424))
+	mux.HandleFunc("/api/ops/node-outofdisk-v2424", s.cacheMiddleware(120*time.Second, s.handleNodeOutOfDisk2424))
+	mux.HandleFunc("/api/ops/image-latest-count-v2424", s.cacheMiddleware(120*time.Second, s.handleImageLatest2424))
+	// v24.25 Security
+	mux.HandleFunc("/api/security/selinux-level-audit-v2425", s.cacheMiddleware(120*time.Second, s.handleSELinuxLevel2425))
+	mux.HandleFunc("/api/security/secret-keyname-census-v2425", s.cacheMiddleware(120*time.Second, s.handleSecretKeyName2425))
+	mux.HandleFunc("/api/security/cr-resourcenames-audit-v2425", s.cacheMiddleware(120*time.Second, s.handleCRResNames2425))
+	// v24.26 Documentation
+	mux.HandleFunc("/api/docs/node-role-label-v2426", s.cacheMiddleware(120*time.Second, s.handleNodeRole2426))
+	mux.HandleFunc("/api/docs/pod-hostaliases-audit-v2426", s.cacheMiddleware(120*time.Second, s.handleHostAliases2426))
+	mux.HandleFunc("/api/docs/pvc-phase-distribution-v2426", s.cacheMiddleware(120*time.Second, s.handlePVCPhase2426))
+	// v24.27 Scalability
+	mux.HandleFunc("/api/scalability/top-namespace-restart-v2427", s.cacheMiddleware(120*time.Second, s.handleTopNSRestart2427))
+	mux.HandleFunc("/api/scalability/node-ephemeral-gb-v2427", s.cacheMiddleware(120*time.Second, s.handleNodeEphemeralGB2427))
+	mux.HandleFunc("/api/scalability/configmap-keys-total-v2427", s.cacheMiddleware(120*time.Second, s.handleCMKeys2427))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

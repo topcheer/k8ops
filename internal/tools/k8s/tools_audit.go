@@ -2348,6 +2348,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-namespace-storage-v2421", "/api/scalability/top-namespace-storage-v2421", "Top namespace by storage"},
 	{"scalability:node-cpu-capacity-v2421", "/api/scalability/node-cpu-capacity-v2421", "Node CPU capacity"},
 	{"scalability:networkpolicy-by-ns-v2421", "/api/scalability/networkpolicy-by-ns-v2421", "NetworkPolicy by namespace"},
+
+	// v24.22 Product
+	{"product:sa-missing-audit-v2422", "/api/product/sa-missing-audit-v2422", "ServiceAccount missing audit"},
+	{"product:startup-probe-audit-v2422", "/api/product/startup-probe-audit-v2422", "Startup probe audit"},
+	{"product:service-externalname-v2422", "/api/product/service-externalname-v2422", "Service ExternalName"},
+	// v24.23 Deployment
+	{"deployment:sts-volclaim-default-v2423", "/api/deployment/sts-volclaim-default-v2423", "STS volumeClaim default"},
+	{"deployment:job-completions-config-v2423", "/api/deployment/job-completions-config-v2423", "Job completions config"},
+	{"deployment:cronjob-starting-deadline-v2423", "/api/deployment/cronjob-starting-deadline-v2423", "CronJob starting deadline"},
+	// v24.24 Operations
+	{"ops:pod-completed-status-v2424", "/api/ops/pod-completed-status-v2424", "Pod completed status"},
+	{"ops:node-outofdisk-v2424", "/api/ops/node-outofdisk-v2424", "Node out of disk"},
+	{"ops:image-latest-count-v2424", "/api/ops/image-latest-count-v2424", "Image latest tag count"},
+	// v24.25 Security
+	{"security:selinux-level-audit-v2425", "/api/security/selinux-level-audit-v2425", "SELinux level audit"},
+	{"security:secret-keyname-census-v2425", "/api/security/secret-keyname-census-v2425", "Secret key name census"},
+	{"security:cr-resourcenames-audit-v2425", "/api/security/cr-resourcenames-audit-v2425", "ClusterRole resourceNames audit"},
+	// v24.26 Documentation
+	{"docs:node-role-label-v2426", "/api/docs/node-role-label-v2426", "Node role label"},
+	{"docs:pod-hostaliases-audit-v2426", "/api/docs/pod-hostaliases-audit-v2426", "Pod hostAliases audit"},
+	{"docs:pvc-phase-distribution-v2426", "/api/docs/pvc-phase-distribution-v2426", "PVC phase distribution"},
+	// v24.27 Scalability
+	{"scalability:top-namespace-restart-v2427", "/api/scalability/top-namespace-restart-v2427", "Top namespace by restart"},
+	{"scalability:node-ephemeral-gb-v2427", "/api/scalability/node-ephemeral-gb-v2427", "Node ephemeral GB"},
+	{"scalability:configmap-keys-total-v2427", "/api/scalability/configmap-keys-total-v2427", "ConfigMap keys total"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

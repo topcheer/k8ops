@@ -1907,6 +1907,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-namespace-storage-v2421', name: 'Top NS Storage', icon: '\u{1F4BF}' },
         { path: '/api/scalability/node-cpu-capacity-v2421', name: 'Node CPU Cap', icon: '\u26A1' },
         { path: '/api/scalability/networkpolicy-by-ns-v2421', name: 'NetPol by NS', icon: '\u{1F6E1}' },
+        // v24.22 Product
+        { path: '/api/product/sa-missing-audit-v2422', name: 'SA Missing', icon: '\u{26A0}' },
+        { path: '/api/product/startup-probe-audit-v2422', name: 'Startup Probe', icon: '\u{1F680}' },
+        { path: '/api/product/service-externalname-v2422', name: 'Svc ExternalName', icon: '\u{1F310}' },
+        // v24.23 Deployment
+        { path: '/api/deployment/sts-volclaim-default-v2423', name: 'STS VolClaim', icon: '\u{1F4BF}' },
+        { path: '/api/deployment/job-completions-config-v2423', name: 'Job Completions', icon: '\u2705' },
+        { path: '/api/deployment/cronjob-starting-deadline-v2423', name: 'CJ StartDeadline', icon: '\u{23F1}' },
+        // v24.24 Operations
+        { path: '/api/ops/pod-completed-status-v2424', name: 'Pod Completed', icon: '\u2705' },
+        { path: '/api/ops/node-outofdisk-v2424', name: 'Node OutDisk', icon: '\u{1F4BF}' },
+        { path: '/api/ops/image-latest-count-v2424', name: 'Image Latest', icon: '\u{1F4E6}' },
+        // v24.25 Security
+        { path: '/api/security/selinux-level-audit-v2425', name: 'SELinux Level', icon: '\u{1F6E1}' },
+        { path: '/api/security/secret-keyname-census-v2425', name: 'Secret KeyName', icon: '\u{1F511}' },
+        { path: '/api/security/cr-resourcenames-audit-v2425', name: 'CR ResNames', icon: '\u{1F451}' },
+        // v24.26 Documentation
+        { path: '/api/docs/node-role-label-v2426', name: 'Node Role', icon: '\u{1F451}' },
+        { path: '/api/docs/pod-hostaliases-audit-v2426', name: 'Pod HostAliases', icon: '\u{1F310}' },
+        { path: '/api/docs/pvc-phase-distribution-v2426', name: 'PVC Phase', icon: '\u{1F4CA}' },
+        // v24.27 Scalability
+        { path: '/api/scalability/top-namespace-restart-v2427', name: 'Top NS Restart', icon: '\u{1F504}' },
+        { path: '/api/scalability/node-ephemeral-gb-v2427', name: 'Node Ephemeral', icon: '\u{1F4BD}' },
+        { path: '/api/scalability/configmap-keys-total-v2427', name: 'CM Keys Total', icon: '\u{1F4DD}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },
