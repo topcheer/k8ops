@@ -385,21 +385,22 @@ export function onNsChange() {
   _currentNamespace = sel.value;
   localStorage.setItem('k8ops_ns', _currentNamespace);
   showToast('Namespace: ' + (_currentNamespace || 'all'), 'info', 2000);
-  const activeTab = document.querySelector('.sidebar-nav button.active');
-  if (activeTab) {
-    const tabName = activeTab.getAttribute('onclick');
-    if (tabName) {
-      const match = tabName.match(/showTab\('([^']+)'/);
-      if (match) {
-        const name = match[1];
-        if (name === 'overview') window.loadOverview();
-        else if (name === 'nodes') window.loadNodes();
-        else if (name === 'events') window.loadEvents();
-        else if (name === 'pods') window.loadPods();
-        else if (name === 'diagnostics') window.loadDiagnostics && window.loadDiagnostics();
-        else if (name === 'resources') window.loadResources && window.loadResources();
-      }
-    }
+  // Detect the currently visible tab by checking which tab div is not hidden
+  const visibleTab = Array.from(document.querySelectorAll('[id^="tab-"]')).find(el => !el.classList.contains('hidden'));
+  if (visibleTab) {
+    const name = visibleTab.id.replace('tab-', '');
+    if (name === 'overview') window.loadOverview();
+    else if (name === 'nodes') window.loadNodes && window.loadNodes();
+    else if (name === 'events') window.loadEvents && window.loadEvents();
+    else if (name === 'pods') window.loadPods && window.loadPods();
+    else if (name === 'diagnostics') window.loadDiagnostics && window.loadDiagnostics();
+    else if (name === 'remediations') window.loadRemediations && window.loadRemediations();
+    else if (name === 'resources') window.loadResources && window.loadResources();
+    else if (name === 'workloads') window.loadResources && window.loadResources();
+    else if (name === 'events') window.loadEvents && window.loadEvents();
+    else if (name === 'security') window.loadSecurityAudit && window.loadSecurityAudit();
+    else if (name === 'compliance') window.loadCompliance && window.loadCompliance();
+    else if (name === 'audit-dashboard') window.loadAuditDashboard && window.loadAuditDashboard();
   }
 }
 
