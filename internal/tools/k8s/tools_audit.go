@@ -2248,6 +2248,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-namespace-cpu-limit-v2397", "/api/scalability/top-namespace-cpu-limit-v2397", "Top namespace by CPU limit"},
 	{"scalability:node-allocatable-cpu-summary-v2397", "/api/scalability/node-allocatable-cpu-summary-v2397", "Node allocatable CPU summary"},
 	{"scalability:pvc-density-v2397", "/api/scalability/pvc-density-v2397", "PVC density"},
+
+	// v23.98 Product
+	{"product:node-affinity-required-v2398", "/api/product/node-affinity-required-v2398", "Node affinity required"},
+	{"product:volume-mount-count-v2398", "/api/product/volume-mount-count-v2398", "Volume mount count"},
+	{"product:alloc-lb-nodeports-v2398", "/api/product/alloc-lb-nodeports-v2398", "Allocate LB node ports"},
+	// v23.99 Deployment
+	{"deployment:progress-deadline-v2399", "/api/deployment/progress-deadline-v2399", "Progress deadline seconds"},
+	{"deployment:sts-pvc-retain-policy-v2399", "/api/deployment/sts-pvc-retain-policy-v2399", "STS PVC retain policy"},
+	{"deployment:ds-template-generation-v2399", "/api/deployment/ds-template-generation-v2399", "DS template generation"},
+	// v24.00 Operations
+	{"ops:oom-killed-audit-v2400", "/api/ops/oom-killed-audit-v2400", "OOMKilled audit"},
+	{"ops:node-cond-kubelet-v2400", "/api/ops/node-cond-kubelet-v2400", "Node kubelet version"},
+	{"ops:volume-device-count-v2400", "/api/ops/volume-device-count-v2400", "Volume device count"},
+	// v24.01 Security
+	{"security:privileged-container-v2401", "/api/security/privileged-container-v2401", "Privileged container audit"},
+	{"security:secret-type-opaque-v2401", "/api/security/secret-type-opaque-v2401", "Secret type Opaque"},
+	{"security:rolebinding-subjects-count-v2401", "/api/security/rolebinding-subjects-count-v2401", "RoleBinding subjects count"},
+	// v24.02 Documentation
+	{"docs:node-label-count-v2402", "/api/docs/node-label-count-v2402", "Node label count"},
+	{"docs:pod-volume-count-v2402", "/api/docs/pod-volume-count-v2402", "Pod volume count"},
+	{"docs:configmap-data-key-size-v2402", "/api/docs/configmap-data-key-size-v2402", "ConfigMap data key size"},
+	// v24.03 Scalability
+	{"scalability:top-node-memory-request-v2403", "/api/scalability/top-node-memory-request-v2403", "Top node by memory request"},
+	{"scalability:namespace-sa-count-v2403", "/api/scalability/namespace-sa-count-v2403", "Namespace SA count"},
+	{"scalability:cluster-image-unique-v2403", "/api/scalability/cluster-image-unique-v2403", "Cluster unique images"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

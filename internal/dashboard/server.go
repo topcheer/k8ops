@@ -2304,6 +2304,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-namespace-cpu-limit-v2397", s.cacheMiddleware(120*time.Second, s.handleTopNSCPULimit2397))
 	mux.HandleFunc("/api/scalability/node-allocatable-cpu-summary-v2397", s.cacheMiddleware(120*time.Second, s.handleNodeAllocCPUSum2397))
 	mux.HandleFunc("/api/scalability/pvc-density-v2397", s.cacheMiddleware(120*time.Second, s.handlePVCDensity2397))
+
+	// v23.98 Product
+	mux.HandleFunc("/api/product/node-affinity-required-v2398", s.cacheMiddleware(120*time.Second, s.handleNodeAffReq2398))
+	mux.HandleFunc("/api/product/volume-mount-count-v2398", s.cacheMiddleware(120*time.Second, s.handleVolumeMount2398))
+	mux.HandleFunc("/api/product/alloc-lb-nodeports-v2398", s.cacheMiddleware(120*time.Second, s.handleAllocLBNodePorts2398))
+	// v23.99 Deployment
+	mux.HandleFunc("/api/deployment/progress-deadline-v2399", s.cacheMiddleware(120*time.Second, s.handleProgressDeadline2399))
+	mux.HandleFunc("/api/deployment/sts-pvc-retain-policy-v2399", s.cacheMiddleware(120*time.Second, s.handleSTSPVCRetain2399))
+	mux.HandleFunc("/api/deployment/ds-template-generation-v2399", s.cacheMiddleware(120*time.Second, s.handleDSTemplateGen2399))
+	// v24.00 Operations
+	mux.HandleFunc("/api/ops/oom-killed-audit-v2400", s.cacheMiddleware(120*time.Second, s.handleOOMKilled2400))
+	mux.HandleFunc("/api/ops/node-cond-kubelet-v2400", s.cacheMiddleware(120*time.Second, s.handleNodeCondKubelet2400))
+	mux.HandleFunc("/api/ops/volume-device-count-v2400", s.cacheMiddleware(120*time.Second, s.handleVolDeviceCount2400))
+	// v24.01 Security
+	mux.HandleFunc("/api/security/privileged-container-v2401", s.cacheMiddleware(120*time.Second, s.handlePrivileged2401))
+	mux.HandleFunc("/api/security/secret-type-opaque-v2401", s.cacheMiddleware(120*time.Second, s.handleSecretOpaque2401))
+	mux.HandleFunc("/api/security/rolebinding-subjects-count-v2401", s.cacheMiddleware(120*time.Second, s.handleRBSubjects2401))
+	// v24.02 Documentation
+	mux.HandleFunc("/api/docs/node-label-count-v2402", s.cacheMiddleware(120*time.Second, s.handleNodeLabelCount2402))
+	mux.HandleFunc("/api/docs/pod-volume-count-v2402", s.cacheMiddleware(120*time.Second, s.handlePodVolumeCount2402))
+	mux.HandleFunc("/api/docs/configmap-data-key-size-v2402", s.cacheMiddleware(120*time.Second, s.handleCMDataKeySize2402))
+	// v24.03 Scalability
+	mux.HandleFunc("/api/scalability/top-node-memory-request-v2403", s.cacheMiddleware(120*time.Second, s.handleTopNodeMemReq2403))
+	mux.HandleFunc("/api/scalability/namespace-sa-count-v2403", s.cacheMiddleware(120*time.Second, s.handleNSSACount2403))
+	mux.HandleFunc("/api/scalability/cluster-image-unique-v2403", s.cacheMiddleware(120*time.Second, s.handleImgUnique2403))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))

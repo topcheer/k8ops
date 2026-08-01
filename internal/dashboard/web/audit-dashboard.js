@@ -1811,6 +1811,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-namespace-cpu-limit-v2397', name: 'Top NS CPULim', icon: '\u26A1' },
         { path: '/api/scalability/node-allocatable-cpu-summary-v2397', name: 'Node Alloc CPU', icon: '\u26A1' },
         { path: '/api/scalability/pvc-density-v2397', name: 'PVC Density', icon: '\u{1F4BF}' },
+        // v23.98 Product
+        { path: '/api/product/node-affinity-required-v2398', name: 'NodeAff Req', icon: '\u{1F517}' },
+        { path: '/api/product/volume-mount-count-v2398', name: 'VolMount Count', icon: '\u{1F4BD}' },
+        { path: '/api/product/alloc-lb-nodeports-v2398', name: 'Alloc LB NP', icon: '\u{1F50C}' },
+        // v23.99 Deployment
+        { path: '/api/deployment/progress-deadline-v2399', name: 'Progress Dl', icon: '\u{23F1}' },
+        { path: '/api/deployment/sts-pvc-retain-policy-v2399', name: 'STS PVC Retain', icon: '\u{1F4BF}' },
+        { path: '/api/deployment/ds-template-generation-v2399', name: 'DS TemplateGen', icon: '\u{1F4DC}' },
+        // v24.00 Operations
+        { path: '/api/ops/oom-killed-audit-v2400', name: 'OOMKilled', icon: '\u{1F480}' },
+        { path: '/api/ops/node-cond-kubelet-v2400', name: 'Node Kubelet', icon: '\u{1F527}' },
+        { path: '/api/ops/volume-device-count-v2400', name: 'VolDevice Cnt', icon: '\u{1F4BD}' },
+        // v24.01 Security
+        { path: '/api/security/privileged-container-v2401', name: 'Privileged Ctnr', icon: '\u{26A0}' },
+        { path: '/api/security/secret-type-opaque-v2401', name: 'Secret Opaque', icon: '\u{1F510}' },
+        { path: '/api/security/rolebinding-subjects-count-v2401', name: 'RB Subjects', icon: '\u{1F451}' },
+        // v24.02 Documentation
+        { path: '/api/docs/node-label-count-v2402', name: 'Node Label Cnt', icon: '\u{1F3F7}' },
+        { path: '/api/docs/pod-volume-count-v2402', name: 'Pod Volume Cnt', icon: '\u{1F4E6}' },
+        { path: '/api/docs/configmap-data-key-size-v2402', name: 'CM DataKey', icon: '\u{1F4DD}' },
+        // v24.03 Scalability
+        { path: '/api/scalability/top-node-memory-request-v2403', name: 'Top Node MemReq', icon: '\u{1F4BE}' },
+        { path: '/api/scalability/namespace-sa-count-v2403', name: 'NS SA Count', icon: '\u{1F511}' },
+        { path: '/api/scalability/cluster-image-unique-v2403', name: 'Cluster Img Unique', icon: '\u{1F4E6}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },
