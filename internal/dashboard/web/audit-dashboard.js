@@ -2225,6 +2225,24 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-node-mem-req-v2523', name: 'Top Node MemReq', icon: '\u{1F4A7}' },
         { path: '/api/scalability/node-pods-alloc-ratio-v2523', name: 'Node Pods AllocRatio', icon: '\u{1F4CA}' },
         { path: '/api/scalability/job-total-v2523', name: 'Job Total', icon: '\u{1F4CB}' },
+        { path: '/api/product/enable-service-links-v2524', name: 'EnableServiceLinks', icon: '\u{1F517}' },
+        { path: '/api/product/cpu-limit-summary-v2524', name: 'CPULimit Summary', icon: '\u26A1' },
+        { path: '/api/product/clusterips-count-v2524', name: 'ClusterIPs Count', icon: '\u{1F310}' },
+        { path: '/api/deploy/rs-available-rep-v2525', name: 'RS AvailableRep', icon: '\u{1F4CF}' },
+        { path: '/api/deploy/sts-updated-rep-v2525', name: 'STS UpdatedRep', icon: '\u{1F504}' },
+        { path: '/api/deploy/ds-misscheduled-detail-v2525', name: 'DS Misscheduled', icon: '\u26A0' },
+        { path: '/api/ops/node-heartbeat-v2526', name: 'Node Heartbeat', icon: '\u{1F493}' },
+        { path: '/api/ops/pod-pending-count-v2526', name: 'Pod Pending', icon: '\u23F3' },
+        { path: '/api/ops/term-reason-v2526', name: 'Term Reason', icon: '\u{1F4DD}' },
+        { path: '/api/security/proc-mount-v2527', name: 'ProcMount', icon: '\u{1F6E1}' },
+        { path: '/api/security/secret-age-v2527', name: 'Secret Age', icon: '\u{1F4C5}' },
+        { path: '/api/security/rb-verbs-total-v2527', name: 'RB Verbs Total', icon: '\u{1F4DD}' },
+        { path: '/api/docs/nodeinfo-compare-v2528', name: 'NodeInfo Compare', icon: '\u{1F4BB}' },
+        { path: '/api/docs/host-aliases-detail-v2528', name: 'HostAliases Detail', icon: '\u{1F4CD}' },
+        { path: '/api/docs/ns-label-key-v2528', name: 'NS LabelKey', icon: '\u{1F3F7}' },
+        { path: '/api/scalability/top-ns-by-ingress-v2529', name: 'Top NS by Ingress', icon: '\u{1F517}' },
+        { path: '/api/scalability/node-cpu-alloc-vs-limit-v2529', name: 'Node CPU vs Limit', icon: '\u26A1' },
+        { path: '/api/scalability/cronjob-total-v2529', name: 'CronJob Total', icon: '\u{1F552}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },
@@ -2549,12 +2567,16 @@ window.loadAuditDashboard = function() {
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
       <div>
         <h2 style="margin:0 0 4px 0;font-size:18px;">Audit Dashboard</h2>
-        <p style="margin:0;color:#8b949e;font-size:13px;">${totalCards} audits across ${Object.keys(AUDIT_STRUCTURE).length} dimensions, organized by subcategory</p>
+        <p style="margin:0;color:#8b949e;font-size:13px;">${totalCards} audits across ${Object.keys(AUDIT_STRUCTURE).length} dimensions</p>
       </div>
-      <div style="display:flex;gap:8px;align-items:center;">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
         <input type="text" id="audit-search" placeholder="Search audits..." 
-          style="background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:6px 12px;color:#c9d1d9;font-size:13px;width:220px;"
+          style="background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:6px 12px;color:#c9d1d9;font-size:13px;width:200px;"
           oninput="window.filterAuditCards(this.value)" />
+        <button id="audit-critical-btn" onclick="window.toggleCriticalOnly()"
+          style="background:#da3633;border:none;border-radius:6px;padding:6px 12px;color:white;font-size:12px;cursor:pointer;white-space:nowrap;">
+          Show Issues Only
+        </button>
         <select id="audit-filter-score" onchange="window.filterAuditScore(this.value)"
           style="background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:6px 8px;color:#c9d1d9;font-size:13px;">
           <option value="">All Scores</option>
@@ -2565,6 +2587,7 @@ window.loadAuditDashboard = function() {
       </div>
     </div>
     <div id="audit-summary-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:20px;"></div>
+    <div id="audit-critical-section" style="display:none;margin-bottom:20px;"></div>
     <div id="audit-dimensions"></div>
   `;
 
@@ -2582,9 +2605,9 @@ window.loadAuditDashboard = function() {
           <span style="font-size:16px;">${info.icon}</span>
           <h3 style="margin:0;font-size:14px;color:${color};flex:1;">${dim}</h3>
           <span style="color:#8b949e;font-size:12px;">${dimTotal} audits</span>
-          <span class="dim-toggle" id="toggle-${dim}" style="color:#8b949e;font-size:12px;">[-]</span>
+          <span class="dim-toggle" id="toggle-${dim}" style="color:#8b949e;font-size:12px;">[+]</span>
         </div>
-        <div id="audit-dim-body-${dim}" style="padding:12px 16px;">
+        <div id="audit-dim-body-${dim}" style="padding:12px 16px;display:none;">
     `;
 
     for (const [subcat, endpoints] of Object.entries(info.subcategories)) {
@@ -2747,6 +2770,41 @@ window.filterAuditScore = function(filter) {
     const visible = sec.querySelectorAll('.audit-card:not([style*="display: none"])').length;
     sec.style.display = visible > 0 ? '' : 'none';
   });
+};
+
+window.toggleCriticalOnly = function() {
+  const btn = document.getElementById('audit-critical-btn');
+  const section = document.getElementById('audit-critical-section');
+  const dims = document.getElementById('audit-dimensions');
+  if (section.style.display === 'none') {
+    // Show critical only mode
+    section.style.display = '';
+    dims.style.display = 'none';
+    btn.textContent = 'Show All';
+    btn.style.background = '#238636';
+    // Collect all non-healthy cards
+    let html = '<h3 style="font-size:14px;margin:0 0 12px 0;color:#f85149;">Items Needing Attention (Score &lt; 80)</h3>';
+    let issues = 0;
+    document.querySelectorAll('.audit-card').forEach(card => {
+      const score = parseInt(card.dataset.score || '100');
+      if (score < 80) {
+        issues++;
+        const cardClone = card.cloneNode(true);
+        html += cardClone.outerHTML;
+      }
+    });
+    if (issues === 0) {
+      html = '<div style="text-align:center;padding:40px;color:#3fb950;font-size:16px;">All checks are healthy! No issues found.</div>';
+    } else {
+      html = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;">${html}</div>`;
+    }
+    section.innerHTML = html;
+  } else {
+    section.style.display = 'none';
+    dims.style.display = '';
+    btn.textContent = 'Show Issues Only';
+    btn.style.background = '#da3633';
+  }
 };
 
 function renderSummaryCards() {
