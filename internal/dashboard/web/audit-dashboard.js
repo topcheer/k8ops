@@ -1859,6 +1859,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-namespace-container-v2409', name: 'Top NS Ctnr', icon: '\u{1F3E0}' },
         { path: '/api/scalability/node-allocatable-stor-ephemeral-v2409', name: 'Node Ephemeral', icon: '\u{1F4BD}' },
         { path: '/api/scalability/cluster-role-total-v2409', name: 'Role Total', icon: '\u{1F451}' },
+        // v24.10 Product
+        { path: '/api/product/pod-preemption-policy-v2410', name: 'Preemption Pol', icon: '\u{26A1}' },
+        { path: '/api/product/container-workingdir-v2410', name: 'WorkingDir', icon: '\u{1F4C1}' },
+        { path: '/api/product/internal-traffic-policy-v2410', name: 'Int Traffic Pol', icon: '\u{1F697}' },
+        // v24.11 Deployment
+        { path: '/api/deployment/sts-servicename-audit-v2411', name: 'STS SvcName', icon: '\u{1F517}' },
+        { path: '/api/deployment/job-parallelism-config-v2411', name: 'Job Parallel', icon: '\u{1F504}' },
+        { path: '/api/deployment/cronjob-concurrency-allow-v2411', name: 'CJ Concurrency', icon: '\u{1F91D}' },
+        // v24.12 Operations
+        { path: '/api/ops/grace-period-audit-v2412', name: 'Grace Period', icon: '\u{23F1}' },
+        { path: '/api/ops/node-memory-capacity-gb-v2412', name: 'Node Mem Cap GB', icon: '\u{1F4BE}' },
+        { path: '/api/ops/event-source-component-v2412', name: 'Event Source', icon: '\u{1F4CB}' },
+        // v24.13 Security
+        { path: '/api/security/drop-all-capabilities-v2413', name: 'Drop ALL Cap', icon: '\u{1F6E1}' },
+        { path: '/api/security/secret-stale-365d-v2413', name: 'Secret Stale', icon: '\u{1F4C5}' },
+        { path: '/api/security/role-resourcenames-count-v2413', name: 'Role ResNames', icon: '\u{1F451}' },
+        // v24.14 Documentation
+        { path: '/api/docs/node-kernel-bootid-v2414', name: 'Node BootID', icon: '\u{1F4BB}' },
+        { path: '/api/docs/pod-imagepullsecret-count-v2414', name: 'Pod IPS Count', icon: '\u{1F510}' },
+        { path: '/api/docs/configmap-namespace-count-v2414', name: 'CM NS Count', icon: '\u{1F4DA}' },
+        // v24.15 Scalability
+        { path: '/api/scalability/top-namespace-pvc-v2415', name: 'Top NS PVC', icon: '\u{1F4BF}' },
+        { path: '/api/scalability/node-storage-allocatable-v2415', name: 'Node Stor Alloc', icon: '\u{1F4BD}' },
+        { path: '/api/scalability/secret-by-type-v2415', name: 'Secret by Type', icon: '\u{1F510}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

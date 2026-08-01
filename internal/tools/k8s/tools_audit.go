@@ -2298,6 +2298,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-namespace-container-v2409", "/api/scalability/top-namespace-container-v2409", "Top namespace by container"},
 	{"scalability:node-allocatable-stor-ephemeral-v2409", "/api/scalability/node-allocatable-stor-ephemeral-v2409", "Node allocatable ephemeral storage"},
 	{"scalability:cluster-role-total-v2409", "/api/scalability/cluster-role-total-v2409", "Cluster role total"},
+
+	// v24.10 Product
+	{"product:pod-preemption-policy-v2410", "/api/product/pod-preemption-policy-v2410", "Pod preemption policy"},
+	{"product:container-workingdir-v2410", "/api/product/container-workingdir-v2410", "Container workingDir"},
+	{"product:internal-traffic-policy-v2410", "/api/product/internal-traffic-policy-v2410", "Internal traffic policy"},
+	// v24.11 Deployment
+	{"deployment:sts-servicename-audit-v2411", "/api/deployment/sts-servicename-audit-v2411", "STS serviceName audit"},
+	{"deployment:job-parallelism-config-v2411", "/api/deployment/job-parallelism-config-v2411", "Job parallelism config"},
+	{"deployment:cronjob-concurrency-allow-v2411", "/api/deployment/cronjob-concurrency-allow-v2411", "CronJob concurrency allow"},
+	// v24.12 Operations
+	{"ops:grace-period-audit-v2412", "/api/ops/grace-period-audit-v2412", "Grace period audit"},
+	{"ops:node-memory-capacity-gb-v2412", "/api/ops/node-memory-capacity-gb-v2412", "Node memory capacity GB"},
+	{"ops:event-source-component-v2412", "/api/ops/event-source-component-v2412", "Event source component"},
+	// v24.13 Security
+	{"security:drop-all-capabilities-v2413", "/api/security/drop-all-capabilities-v2413", "Drop ALL capabilities"},
+	{"security:secret-stale-365d-v2413", "/api/security/secret-stale-365d-v2413", "Secret stale 365d"},
+	{"security:role-resourcenames-count-v2413", "/api/security/role-resourcenames-count-v2413", "Role resourceNames count"},
+	// v24.14 Documentation
+	{"docs:node-kernel-bootid-v2414", "/api/docs/node-kernel-bootid-v2414", "Node kernel bootID"},
+	{"docs:pod-imagepullsecret-count-v2414", "/api/docs/pod-imagepullsecret-count-v2414", "Pod imagePullSecret count"},
+	{"docs:configmap-namespace-count-v2414", "/api/docs/configmap-namespace-count-v2414", "ConfigMap namespace count"},
+	// v24.15 Scalability
+	{"scalability:top-namespace-pvc-v2415", "/api/scalability/top-namespace-pvc-v2415", "Top namespace by PVC"},
+	{"scalability:node-storage-allocatable-v2415", "/api/scalability/node-storage-allocatable-v2415", "Node storage allocatable"},
+	{"scalability:secret-by-type-v2415", "/api/scalability/secret-by-type-v2415", "Secret by type"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.
