@@ -79,7 +79,7 @@ func (s *Server) handleSvcSessionConfig2614(w http.ResponseWriter, r *http.Reque
 	svcList, _ := s.clientset.CoreV1().Services("").List(r.Context(), metav1.ListOptions{})
 	for _, svc := range svcList.Items {
 		result.Summary.TotalSvcs++
-		if len(svc.Spec.SessionAffinityConfig.ClientIP) > 0 || (svc.Spec.SessionAffinityConfig.ClientIP != nil && *svc.Spec.SessionAffinityConfig.ClientIP > 0) {
+		if svc.Spec.SessionAffinityConfig.ClientIP != nil {
 			result.Summary.WithConfig++
 		}
 	}
