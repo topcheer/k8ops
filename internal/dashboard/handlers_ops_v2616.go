@@ -64,7 +64,7 @@ func (s *Server) handlePodShareProcNS2616(w http.ResponseWriter, r *http.Request
 			continue
 		}
 		result.Summary.TotalPods++
-		if pod.Spec.ShareProcessNamespace {
+		if pod.Spec.ShareProcessNamespace != nil && *pod.Spec.ShareProcessNamespace {
 			result.Summary.WithShare++
 		}
 	}
