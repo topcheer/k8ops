@@ -1931,6 +1931,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-namespace-restart-v2427', name: 'Top NS Restart', icon: '\u{1F504}' },
         { path: '/api/scalability/node-ephemeral-gb-v2427', name: 'Node Ephemeral', icon: '\u{1F4BD}' },
         { path: '/api/scalability/configmap-keys-total-v2427', name: 'CM Keys Total', icon: '\u{1F4DD}' },
+        // v24.28 Product
+        { path: '/api/product/topology-spread-v2428', name: 'Topology Spread', icon: '\u{1F310}' },
+        { path: '/api/product/stdinonce-audit-v2428', name: 'StdinOnce', icon: '\u{2328}' },
+        { path: '/api/product/publish-notready-v2428', name: 'Publish NotReady', icon: '\u{1F4E1}' },
+        // v24.29 Deployment
+        { path: '/api/deployment/deploy-status-replicas-v2429', name: 'Deploy StatusRep', icon: '\u{1F4CA}' },
+        { path: '/api/deployment/rs-available-replicas-v2429', name: 'RS Available', icon: '\u{1F504}' },
+        { path: '/api/deployment/cronjob-active-count-v2429', name: 'CJ Active Count', icon: '\u{1F680}' },
+        // v24.30 Operations
+        { path: '/api/ops/pod-pending-count-v2430', name: 'Pod Pending', icon: '\u{23F3}' },
+        { path: '/api/ops/node-condition-ready-v2430', name: 'Node Ready', icon: '\u2705' },
+        { path: '/api/ops/limit-memory-summary-v2430', name: 'Limit Mem Summary', icon: '\u{1F4BE}' },
+        // v24.31 Security
+        { path: '/api/security/procmount-unmasked-v2431', name: 'ProcMount Unmask', icon: '\u{26A0}' },
+        { path: '/api/security/secret-data-count-v2431', name: 'Secret Data Cnt', icon: '\u{1F510}' },
+        { path: '/api/security/cr-verb-create-v2431', name: 'CR Verb Create', icon: '\u{1F451}' },
+        // v24.32 Documentation
+        { path: '/api/docs/taint-effect-audit-v2432', name: 'Taint Effect', icon: '\u{1F6A7}' },
+        { path: '/api/docs/container-args-count-v2432', name: 'Ctnr Args Count', icon: '\u{1F4DD}' },
+        { path: '/api/docs/pv-status-phase-v2432', name: 'PV Status Phase', icon: '\u{1F4BF}' },
+        // v24.33 Scalability
+        { path: '/api/scalability/top-namespace-sa-v2433', name: 'Top NS SA', icon: '\u{1F511}' },
+        { path: '/api/scalability/node-storage-capacity-v2433', name: 'Node Stor Cap', icon: '\u{1F4BD}' },
+        { path: '/api/scalability/secret-bytes-total-v2433', name: 'Secret Bytes', icon: '\u{1F510}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

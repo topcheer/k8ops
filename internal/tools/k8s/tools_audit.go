@@ -2373,6 +2373,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-namespace-restart-v2427", "/api/scalability/top-namespace-restart-v2427", "Top namespace by restart"},
 	{"scalability:node-ephemeral-gb-v2427", "/api/scalability/node-ephemeral-gb-v2427", "Node ephemeral GB"},
 	{"scalability:configmap-keys-total-v2427", "/api/scalability/configmap-keys-total-v2427", "ConfigMap keys total"},
+
+	// v24.28 Product
+	{"product:topology-spread-v2428", "/api/product/topology-spread-v2428", "Topology spread constraints"},
+	{"product:stdinonce-audit-v2428", "/api/product/stdinonce-audit-v2428", "StdinOnce audit"},
+	{"product:publish-notready-v2428", "/api/product/publish-notready-v2428", "Publish not ready addresses"},
+	// v24.29 Deployment
+	{"deployment:deploy-status-replicas-v2429", "/api/deployment/deploy-status-replicas-v2429", "Deployment status replicas"},
+	{"deployment:rs-available-replicas-v2429", "/api/deployment/rs-available-replicas-v2429", "RS available replicas"},
+	{"deployment:cronjob-active-count-v2429", "/api/deployment/cronjob-active-count-v2429", "CronJob active count"},
+	// v24.30 Operations
+	{"ops:pod-pending-count-v2430", "/api/ops/pod-pending-count-v2430", "Pod pending count"},
+	{"ops:node-condition-ready-v2430", "/api/ops/node-condition-ready-v2430", "Node condition ready"},
+	{"ops:limit-memory-summary-v2430", "/api/ops/limit-memory-summary-v2430", "Limit memory summary"},
+	// v24.31 Security
+	{"security:procmount-unmasked-v2431", "/api/security/procmount-unmasked-v2431", "ProcMount unmasked"},
+	{"security:secret-data-count-v2431", "/api/security/secret-data-count-v2431", "Secret data count"},
+	{"security:cr-verb-create-v2431", "/api/security/cr-verb-create-v2431", "ClusterRole verb create"},
+	// v24.32 Documentation
+	{"docs:taint-effect-audit-v2432", "/api/docs/taint-effect-audit-v2432", "Taint effect audit"},
+	{"docs:container-args-count-v2432", "/api/docs/container-args-count-v2432", "Container args count"},
+	{"docs:pv-status-phase-v2432", "/api/docs/pv-status-phase-v2432", "PV status phase"},
+	// v24.33 Scalability
+	{"scalability:top-namespace-sa-v2433", "/api/scalability/top-namespace-sa-v2433", "Top namespace by SA"},
+	{"scalability:node-storage-capacity-v2433", "/api/scalability/node-storage-capacity-v2433", "Node storage capacity"},
+	{"scalability:secret-bytes-total-v2433", "/api/scalability/secret-bytes-total-v2433", "Secret bytes total"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

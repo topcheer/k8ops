@@ -2429,6 +2429,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-namespace-restart-v2427", s.cacheMiddleware(120*time.Second, s.handleTopNSRestart2427))
 	mux.HandleFunc("/api/scalability/node-ephemeral-gb-v2427", s.cacheMiddleware(120*time.Second, s.handleNodeEphemeralGB2427))
 	mux.HandleFunc("/api/scalability/configmap-keys-total-v2427", s.cacheMiddleware(120*time.Second, s.handleCMKeys2427))
+
+	// v24.28 Product
+	mux.HandleFunc("/api/product/topology-spread-v2428", s.cacheMiddleware(120*time.Second, s.handleTopologySpread2428))
+	mux.HandleFunc("/api/product/stdinonce-audit-v2428", s.cacheMiddleware(120*time.Second, s.handleStdinOnce2428))
+	mux.HandleFunc("/api/product/publish-notready-v2428", s.cacheMiddleware(120*time.Second, s.handlePublishNotReady2428))
+	// v24.29 Deployment
+	mux.HandleFunc("/api/deployment/deploy-status-replicas-v2429", s.cacheMiddleware(120*time.Second, s.handleDepStatusReps2429))
+	mux.HandleFunc("/api/deployment/rs-available-replicas-v2429", s.cacheMiddleware(120*time.Second, s.handleRSAvailable2429))
+	mux.HandleFunc("/api/deployment/cronjob-active-count-v2429", s.cacheMiddleware(120*time.Second, s.handleCronJobActiveCount2429))
+	// v24.30 Operations
+	mux.HandleFunc("/api/ops/pod-pending-count-v2430", s.cacheMiddleware(120*time.Second, s.handlePodPending2430))
+	mux.HandleFunc("/api/ops/node-condition-ready-v2430", s.cacheMiddleware(120*time.Second, s.handleNodeCondReady2430))
+	mux.HandleFunc("/api/ops/limit-memory-summary-v2430", s.cacheMiddleware(120*time.Second, s.handleLimitMem2430))
+	// v24.31 Security
+	mux.HandleFunc("/api/security/procmount-unmasked-v2431", s.cacheMiddleware(120*time.Second, s.handleProcMount2431))
+	mux.HandleFunc("/api/security/secret-data-count-v2431", s.cacheMiddleware(120*time.Second, s.handleSecretDataCount2431))
+	mux.HandleFunc("/api/security/cr-verb-create-v2431", s.cacheMiddleware(120*time.Second, s.handleCRVerbCreate2431))
+	// v24.32 Documentation
+	mux.HandleFunc("/api/docs/taint-effect-audit-v2432", s.cacheMiddleware(120*time.Second, s.handleTaintEffect2432))
+	mux.HandleFunc("/api/docs/container-args-count-v2432", s.cacheMiddleware(120*time.Second, s.handleCtnrArgsCount2432))
+	mux.HandleFunc("/api/docs/pv-status-phase-v2432", s.cacheMiddleware(120*time.Second, s.handlePVStatus2432))
+	// v24.33 Scalability
+	mux.HandleFunc("/api/scalability/top-namespace-sa-v2433", s.cacheMiddleware(120*time.Second, s.handleTopNSSA2433))
+	mux.HandleFunc("/api/scalability/node-storage-capacity-v2433", s.cacheMiddleware(120*time.Second, s.handleNodeStorCap2433))
+	mux.HandleFunc("/api/scalability/secret-bytes-total-v2433", s.cacheMiddleware(120*time.Second, s.handleSecretBytes2433))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))
