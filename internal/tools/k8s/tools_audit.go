@@ -2273,6 +2273,31 @@ var auditRegistry = []auditEndpoint{
 	{"scalability:top-node-memory-request-v2403", "/api/scalability/top-node-memory-request-v2403", "Top node by memory request"},
 	{"scalability:namespace-sa-count-v2403", "/api/scalability/namespace-sa-count-v2403", "Namespace SA count"},
 	{"scalability:cluster-image-unique-v2403", "/api/scalability/cluster-image-unique-v2403", "Cluster unique images"},
+
+	// v24.04 Product
+	{"product:pod-overhead-resource-v2404", "/api/product/pod-overhead-resource-v2404", "Pod overhead resource"},
+	{"product:container-runasuser-v2404", "/api/product/container-runasuser-v2404", "Container RunAsUser"},
+	{"product:external-traffic-policy-v2404", "/api/product/external-traffic-policy-v2404", "External traffic policy"},
+	// v24.05 Deployment
+	{"deployment:deployment-conditions-v2405", "/api/deployment/deployment-conditions-v2405", "Deployment conditions"},
+	{"deployment:sts-status-available-v2405", "/api/deployment/sts-status-available-v2405", "STS available replicas"},
+	{"deployment:ds-conditions-ready-v2405", "/api/deployment/ds-conditions-ready-v2405", "DS conditions ready"},
+	// v24.06 Operations
+	{"ops:high-restarts-audit-v2406", "/api/ops/high-restarts-audit-v2406", "High restarts audit"},
+	{"ops:node-bootid-census-v2406", "/api/ops/node-bootid-census-v2406", "Node bootID census"},
+	{"ops:event-involved-object-kind-v2406", "/api/ops/event-involved-object-kind-v2406", "Event involved object kind"},
+	// v24.07 Security
+	{"security:seccomp-runtimedefault-v2407", "/api/security/seccomp-runtimedefault-v2407", "Seccomp RuntimeDefault"},
+	{"security:secret-helm-annotation-v2407", "/api/security/secret-helm-annotation-v2407", "Secret Helm annotation"},
+	{"security:crb-subject-sa-v2407", "/api/security/crb-subject-sa-v2407", "CRB subject ServiceAccount"},
+	// v24.08 Documentation
+	{"docs:allocatable-ephemeral-v2408", "/api/docs/allocatable-ephemeral-v2408", "Allocatable ephemeral storage"},
+	{"docs:pod-subdomain-audit-v2408", "/api/docs/pod-subdomain-audit-v2408", "Pod subdomain audit"},
+	{"docs:configmap-binarydata-v2408", "/api/docs/configmap-binarydata-v2408", "ConfigMap binaryData"},
+	// v24.09 Scalability
+	{"scalability:top-namespace-container-v2409", "/api/scalability/top-namespace-container-v2409", "Top namespace by container"},
+	{"scalability:node-allocatable-stor-ephemeral-v2409", "/api/scalability/node-allocatable-stor-ephemeral-v2409", "Node allocatable ephemeral storage"},
+	{"scalability:cluster-role-total-v2409", "/api/scalability/cluster-role-total-v2409", "Cluster role total"},
 }
 
 // AuditTool lets the LLM agent run any registered cluster audit/analysis endpoint.

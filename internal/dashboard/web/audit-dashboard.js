@@ -1835,6 +1835,30 @@ const AUDIT_STRUCTURE = {
         { path: '/api/scalability/top-node-memory-request-v2403', name: 'Top Node MemReq', icon: '\u{1F4BE}' },
         { path: '/api/scalability/namespace-sa-count-v2403', name: 'NS SA Count', icon: '\u{1F511}' },
         { path: '/api/scalability/cluster-image-unique-v2403', name: 'Cluster Img Unique', icon: '\u{1F4E6}' },
+        // v24.04 Product
+        { path: '/api/product/pod-overhead-resource-v2404', name: 'Pod Overhead', icon: '\u{1F4CA}' },
+        { path: '/api/product/container-runasuser-v2404', name: 'Ctnr RunAsUser', icon: '\u{1F464}' },
+        { path: '/api/product/external-traffic-policy-v2404', name: 'Ext Traffic Pol', icon: '\u{1F697}' },
+        // v24.05 Deployment
+        { path: '/api/deployment/deployment-conditions-v2405', name: 'Deploy Conds', icon: '\u{2705}' },
+        { path: '/api/deployment/sts-status-available-v2405', name: 'STS Available', icon: '\u{1F504}' },
+        { path: '/api/deployment/ds-conditions-ready-v2405', name: 'DS Ready', icon: '\u{1F680}' },
+        // v24.06 Operations
+        { path: '/api/ops/high-restarts-audit-v2406', name: 'High Restarts', icon: '\u{1F6A8}' },
+        { path: '/api/ops/node-bootid-census-v2406', name: 'Node BootID', icon: '\u{1F4BB}' },
+        { path: '/api/ops/event-involved-object-kind-v2406', name: 'Event ObjKind', icon: '\u{1F4CB}' },
+        // v24.07 Security
+        { path: '/api/security/seccomp-runtimedefault-v2407', name: 'Seccomp RD', icon: '\u{1F6E1}' },
+        { path: '/api/security/secret-helm-annotation-v2407', name: 'Secret Helm', icon: '\u{1F510}' },
+        { path: '/api/security/crb-subject-sa-v2407', name: 'CRB SA Subject', icon: '\u{1F511}' },
+        // v24.08 Documentation
+        { path: '/api/docs/allocatable-ephemeral-v2408', name: 'Alloc Ephemeral', icon: '\u{1F4BD}' },
+        { path: '/api/docs/pod-subdomain-audit-v2408', name: 'Pod Subdomain', icon: '\u{1F310}' },
+        { path: '/api/docs/configmap-binarydata-v2408', name: 'CM BinaryData', icon: '\u{1F4DD}' },
+        // v24.09 Scalability
+        { path: '/api/scalability/top-namespace-container-v2409', name: 'Top NS Ctnr', icon: '\u{1F3E0}' },
+        { path: '/api/scalability/node-allocatable-stor-ephemeral-v2409', name: 'Node Ephemeral', icon: '\u{1F4BD}' },
+        { path: '/api/scalability/cluster-role-total-v2409', name: 'Role Total', icon: '\u{1F451}' },
         { path: '/api/product/priority-class-v2115', name: 'Priority Class', icon: '\u26A1' },
 
         { path: '/api/docs/annotation-report', name: 'Annot Report', icon: '\u{1F4DD}' },

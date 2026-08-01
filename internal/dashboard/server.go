@@ -2329,6 +2329,31 @@ func (s *Server) Start(addr string) error {
 	mux.HandleFunc("/api/scalability/top-node-memory-request-v2403", s.cacheMiddleware(120*time.Second, s.handleTopNodeMemReq2403))
 	mux.HandleFunc("/api/scalability/namespace-sa-count-v2403", s.cacheMiddleware(120*time.Second, s.handleNSSACount2403))
 	mux.HandleFunc("/api/scalability/cluster-image-unique-v2403", s.cacheMiddleware(120*time.Second, s.handleImgUnique2403))
+
+	// v24.04 Product
+	mux.HandleFunc("/api/product/pod-overhead-resource-v2404", s.cacheMiddleware(120*time.Second, s.handleOverhead2404))
+	mux.HandleFunc("/api/product/container-runasuser-v2404", s.cacheMiddleware(120*time.Second, s.handleRunAsUser2404))
+	mux.HandleFunc("/api/product/external-traffic-policy-v2404", s.cacheMiddleware(120*time.Second, s.handleExtTrafficPol2404))
+	// v24.05 Deployment
+	mux.HandleFunc("/api/deployment/deployment-conditions-v2405", s.cacheMiddleware(120*time.Second, s.handleDepConditions2405))
+	mux.HandleFunc("/api/deployment/sts-status-available-v2405", s.cacheMiddleware(120*time.Second, s.handleSTSAvailable2405))
+	mux.HandleFunc("/api/deployment/ds-conditions-ready-v2405", s.cacheMiddleware(120*time.Second, s.handleDSCondReady2405))
+	// v24.06 Operations
+	mux.HandleFunc("/api/ops/high-restarts-audit-v2406", s.cacheMiddleware(120*time.Second, s.handleHighRestarts2406))
+	mux.HandleFunc("/api/ops/node-bootid-census-v2406", s.cacheMiddleware(120*time.Second, s.handleBootID2406))
+	mux.HandleFunc("/api/ops/event-involved-object-kind-v2406", s.cacheMiddleware(120*time.Second, s.handleEventObjKind2406))
+	// v24.07 Security
+	mux.HandleFunc("/api/security/seccomp-runtimedefault-v2407", s.cacheMiddleware(120*time.Second, s.handleSeccompRD2407))
+	mux.HandleFunc("/api/security/secret-helm-annotation-v2407", s.cacheMiddleware(120*time.Second, s.handleSecretHelmAnnot2407))
+	mux.HandleFunc("/api/security/crb-subject-sa-v2407", s.cacheMiddleware(120*time.Second, s.handleCRBSubjectSA2407))
+	// v24.08 Documentation
+	mux.HandleFunc("/api/docs/allocatable-ephemeral-v2408", s.cacheMiddleware(120*time.Second, s.handleAllocEphemeral2408))
+	mux.HandleFunc("/api/docs/pod-subdomain-audit-v2408", s.cacheMiddleware(120*time.Second, s.handlePodSubdomain2408))
+	mux.HandleFunc("/api/docs/configmap-binarydata-v2408", s.cacheMiddleware(120*time.Second, s.handleCMBinary2408))
+	// v24.09 Scalability
+	mux.HandleFunc("/api/scalability/top-namespace-container-v2409", s.cacheMiddleware(120*time.Second, s.handleTopNSCtnr2409))
+	mux.HandleFunc("/api/scalability/node-allocatable-stor-ephemeral-v2409", s.cacheMiddleware(120*time.Second, s.handleNodeAllocStorEph2409))
+	mux.HandleFunc("/api/scalability/cluster-role-total-v2409", s.cacheMiddleware(120*time.Second, s.handleRoleTotal2409))
 	mux.HandleFunc("/api/docs/annotation-report", s.cacheMiddleware(120*time.Second, s.handleAnnotationReport))
 	mux.HandleFunc("/api/docs/topology-map-v2", s.cacheMiddleware(120*time.Second, s.handleTopologyMap))
 	mux.HandleFunc("/api/docs/storage-attachment-inv", s.cacheMiddleware(120*time.Second, s.handleStorageAttachmentInv))
