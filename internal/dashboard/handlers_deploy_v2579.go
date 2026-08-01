@@ -22,7 +22,7 @@ func (s *Server) handleRSTemplateHash2579(w http.ResponseWriter, r *http.Request
 	rsList, _ := s.clientset.AppsV1().ReplicaSets("").List(r.Context(), metav1.ListOptions{})
 	for _, rs := range rsList.Items {
 		result.Summary.TotalRS++
-		if rs.Status.TemplateHash != "" || rs.Labels["pod-template-hash"] != "" {
+		if rs.Labels["pod-template-hash"] != "" {
 			result.Summary.WithHash++
 		}
 	}
