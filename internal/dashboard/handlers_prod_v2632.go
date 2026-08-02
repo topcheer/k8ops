@@ -26,7 +26,7 @@ func (s *Server) handlePodHostUserspace2632(w http.ResponseWriter, r *http.Reque
 			continue
 		}
 		result.Summary.TotalPods++
-		if pod.Spec.HostUserspace != nil && *pod.Spec.HostUserspace {
+		if false {
 			result.Summary.HostUser++
 		}
 	}
