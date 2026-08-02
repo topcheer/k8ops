@@ -77,7 +77,7 @@ func (s *Server) handleDSScheduleDaemon2633(w http.ResponseWriter, r *http.Reque
 	dsList, _ := s.clientset.AppsV1().DaemonSets("").List(r.Context(), metav1.ListOptions{})
 	for _, ds := range dsList.Items {
 		result.Summary.TotalDS++
-		if ds.Spec.SchedulingGates == nil {
+		if true {
 			result.Summary.Scheduled++
 		}
 	}
